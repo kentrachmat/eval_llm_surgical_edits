@@ -1,0 +1,125 @@
+
+\section{Method}
+
+In this section, we will introduce COVE in detail, which can be seamlessly integrated into the pre-trained T2I diffusion model for high-quality and consistent video editing without the need for training or optimization (\Cref{fig:pipe}). Specifically, given a source video, we first extract the diffusion feature of each frame using the pre-trained T2I diffusion model. Then, we calculate the one-to-many correspondence of each token across frames based on cosine similarity (\Cref{fig:pipe}a). To reduce resource consumption during correspondence calculation, we further introduce an efficient sliding-window-based strategy (\Cref{fig:slding}). During each timestep of inversion and denoising in video editing, the tokens in the noisy latent are sampled based on the correspondence and then merged. Through the self-attention among merged tokens (\Cref{fig:pipe}b), the quality and temporal consistency of edited videos are significantly enhanced.
+\begin{figure}
+  \centering
+  \includegraphics[width=1.0 \textwidth]{fig/fig_pipeline.pdf} 
+  \caption{\textbf{The overview of COVE.} (a). Given a source video, we extract the diffusion feature of each frame using the pre-trained T2I model and calculate the correspondence among tokens (detailed in \Cref{fig:slding}). (b). During the video editing process, we sample the tokens in noisy latent based on correspondence and apply self-attention among them. (c). The correspondence-guided attention can be seamlessly integrated into the T2I diffusion model for consistent and high-quality video editing.}
+  \label{fig:pipe}
+
+\end{figure}
+
+
+\subsection{Preliminary}
+
+\textbf{Diffusion Models.}
+DDPM \cite{ho2020denoising} is the latent generative model trained to reconstruct a fixed forward Markov chain $x_1, \ldots, x_T$.
+Given the data distribution $x_0 \sim q(x_0)$, the Markov transition $q(x_t|x_{t-1})$ is defined as a Gaussian distribution with a variance schedule $\beta_t \in (0, 1)$.
+\begin{equation}
+\centering
+q(\bm{x}_t | \bm{x}_{t-1}) = \mathcal{N}(\bm{x}_t; \sqrt{1-\beta_t}\bm{x}_{t-1}, \beta_t \bm{\text{I}}).
+\label{eq:ddpm_forward}
+\end{equation}
+To generate the Markov chain $x_0, \cdots, x_T$, DDPM leverages the reverse process with a prior distribution $p(x_T) = \mathcal{N}(x_T; 0, \mathbb{I})$ and Gaussian transitions. A neural network $\epsilon_{\theta}$ is trained to predict noises, ensuring that the reverse process is close to the forward process.
+\begin{equation}
+\centering
+p_{\theta}(\bm{x}_{t-1}|\bm{x}_t) = \mathcal{N}(\bm{x}_{t-1}; \mu_{\theta}(\bm{x}_t, \bm{\tau}, t),  \Sigma_{\theta}(\bm{x}_t, \bm{\tau}, t) ),
+\label{eq:ddpm_backward}
+\end{equation}
+where $\bm{\tau}$ indicates the textual prompt. $\mu_{\theta}$ and $\Sigma_{\theta}$ are predicted by the denoising model $\epsilon_{\theta}$.
+Since the diffusion and denoising process in the pixel space is computationally extensive, latent diffusion \cite{rombach2022high} is proposed to address this issue by performing these processes in the latent space of a VAE \cite{kingma2013auto}. 
+
+
+\textbf{DDIM Inversion.}
+DDIM can convert random noise to a deterministic $\bm{x}_0$ during sampling~\citep{song2020denoising, dhariwal2021diffusion}.
+The inversion process in deterministic DDIM can be formulated as follows:
+\begin{equation}
+\centering
+\bm{x}_{t+1} = \sqrt{\frac{\alpha_{t+1}}{\alpha_{t}}} \bm{x}_{t} + \sqrt{\alpha_{t+1}} \left( \sqrt{\frac{1}{\alpha_{t+1}-1}}-\sqrt{\frac{1}{\alpha_{t}}-1}  \right) \epsilon_{\theta}(\bm{x}_{t}),
+\label{eq:ddim_inverse}
+\end{equation}
+where $\alpha_{t}$ denotes $\prod^t_{i=1}(1-\beta_i) $.
+The inversion process of DDIM is utilized to transform the input $\bm{x}_{0}$ into $\bm{x}_{T}$, facilitating subsequent tasks such as reconstruction and editing.
+
+
+\subsection{Correspondence Acquisition}
+
+As discussed in \Cref{sec:intro}, intra-frame correspondence is crucial for the quality and temporal consistency of edited videos while remaining largely under-explored in existing works. In this section, we introduce our method for obtaining correspondence relationships among tokens across frames.
+
+
+
+\textbf{Diffusion Feature Extraction.} Given a source video $\boldsymbol{V}$ with $N$ frames, a VAE \cite{kingma2013auto} is employed on each frame to extract the latent features $\boldsymbol{Z} = \{\boldsymbol{z}_1, \cdots, \boldsymbol{z}_N\}$, where $\boldsymbol{Z} \in \mathbb{R} ^{N \times H\times W\times d}$. Here, $H$ and $W$ denote the height and width of the latent feature and $d$ denotes the dimension of each token. For each frame of $\boldsymbol{Z}$, we add noise of a specific timestep $t$ and feed the noisy frame $\boldsymbol{Z}^t = \{\boldsymbol{z}_1^t, \cdots, \boldsymbol{z}_N^t\}$ into the pre-trained T2I model $f_\theta$ respectively. The diffusion feature (i.e., the intermediate feature from the U-Net decoder) is extracted through a single step of denoising \cite{tang2023emergent}: 
+\begin{equation}
+    \boldsymbol{F} = \{\boldsymbol{F}_i\} = \{f_\theta(\boldsymbol{z}_i^t)\}, i\in \{1, \cdots, N\},
+\end{equation}
+where $\boldsymbol{F} \in \mathbb{R} ^{N \times H\times W\times d}$, denoting the normalized diffusion feature of each frame.
+
+
+
+\textbf{One-to-many Correspondence Calculation.} For each token within the diffusion feature $\boldsymbol{F}$, its corresponding tokens in other frames are identified based on the cosine similarity. Without loss of generality, we could consider a specific token $\boldsymbol{p}_{\{i,h_i,w_i\}}$ in the $i$th frame $\boldsymbol{F}_i$ with the coordinate $[h_i, w_i]$. Unlike previous methods where only one corresponding token of $\boldsymbol{p}_{\{i,h_i,w_i\}}$ can be identified in each frame (\Cref{fig:compare_intro}a), our method can obtain the one-to-many correspondences simply by selecting tokens with the top $K$ highest similarity in each frame. We record their coordinates, which are used for sampling the tokens for self-attention in the subsequent inversion and denoising process.
+To implement this process, the most straightforward method is through a direct matrix multiplication of the normalized diffusion feature ${\boldsymbol{F}}$.
+\begin{equation}
+    \boldsymbol{S} = \boldsymbol{F} \cdot \boldsymbol{F}^{T},
+\end{equation}
+where $\boldsymbol{S} \in \mathbb{R} ^{(N\times H\times W)\times (N\times H\times W)}$ represents the cosine similarity between each token and all tokens in the diffusion feature of the video.
+
+The similarity between $\boldsymbol{p}_{\{i,h_i,w_i\}}$ and all $N\times H\times W$ tokens in the feature is given by $\boldsymbol{S}[i,h_i,w_i,:,:,:]$. The coordinates of the corresponding tokens in the $j$th frame ($j \in \{1, \cdots, N\}$) are then obtained by selecting the tokens with the top $K$ similarities in the $j$th frame.
+\begin{equation}
+    {h}_j^k,{w}_j^k = \text{top-$k$-argmax}_{({x}^k,{y}^k)}(\boldsymbol{S}[i,h_i,w_i, j,{x^k},{y^k}]),
+\end{equation}
+Here the top-$k$-argmax($\cdot$) denotes the operation to find coordinates of the top $K$ biggest values in a matrix, where $k \in \{1,\cdots, K\}$. $[{h}_j^k, {w}_j^k]$ represents the coordinates of the token in $j$th frame which has highest similarity with $\boldsymbol{p}_{\{i,h_i,w_i\}}$. A similar process can be conducted for each token of $\boldsymbol{F}$, thereby obtaining their correspondences among frames.
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1.0 \textwidth]{fig/fig_correspondence.pdf}
+  \caption{\textbf{Sliding-window-based strategy for correspondence calculation.} \colorbox[RGB]{198,236,185}{\textcolor[RGB]{198,236,185}{t }} represents the token $\boldsymbol{p}_{\{i,h_i,w_i\}}$. \colorbox[RGB]{136,174,212}{\textcolor[RGB]{136,174,212}{t }} and \colorbox[RGB]{206,239,252}{\textcolor[RGB]{206,239,252}{t }} represents the obtained corresponded tokens in other frames. }
+
+  \label{fig:slding}
+\end{figure}
+\label{sec:corres}
+
+
+
+\textbf{Sliding-window Strategy.} Although the one-to-many correspondence among tokens can be effectively obtained through the above process, it requires excessive computational resources because $(N\times H\times W)$ is always a huge number, especially in long videos. 
+As a result, the computational complexity of this process is extremely high, which can be represented as $\mathcal{O}(N^2\times H^2 \times W^2 \times d)$. At the same time, multiplication between these two huge matrices consumes a substantial amount of GPU memory in practice. These limitations severely limit its applicability in many real-world scenarios, such as on mobile devices.
+% Additionally, we observe that the correspondences among tokens always happen in a regional area. As a result, calculating correspondences in an all-token region is a redundant operation.
+
+To address the above problem, we further propose the sliding-window-based strategy as an alternative, which not only effectively obtains the one-to-many correspondences but also significantly reduces the computational overhead (\Cref{fig:slding}). Firstly, for the token $\boldsymbol{p}_{\{i,h_i,w_i\}}$, it is only necessary to calculate its similarity with the tokens in the next frame $\boldsymbol{F}_{i+1}$ instead of in all frames, i.e.,
+\begin{equation}
+    \boldsymbol{S}_i=\boldsymbol{F}_i \cdot \boldsymbol{F}_{i+1}^T.
+    \label{eqa:sim}
+\end{equation}
+$\boldsymbol{S}_i \in \mathbb{R} ^{H \times W \times H \times W}$ denotes the similarity between the tokens in $i$th frame and those in $(i+1)$th frame. The overall similarity matrix is $\boldsymbol{S} = \{\boldsymbol{S}_i\}, i\in \{1,2,\cdots,N-1\}$, where $\boldsymbol{S} \in \mathbb{R} ^{(N-1) \times H \times W \times H \times W}$.
+Then, we obtain the $K$ corresponded tokens of $\boldsymbol{p}_{\{i,h_i,w_i\}}$ in $\boldsymbol{F}_{i+1}$ through $\boldsymbol{S}_i$, 
+\begin{equation}
+    {h}_{i+1}^k,{w}_{i+1}^k = \text{top-$k$-argmax}_{({x}^k,{y}^k)}(\boldsymbol{S}_i[h_i,w_i, {x}^k,{y}^k]),
+\end{equation} 
+For tokens in $(i+2)$th frame, instead of considering $\boldsymbol{p}_{\{i,h_i,w_i\}}$, we identify the tokens in $(i+2)$th frame which have the top $K$ largest similarity with the token $\boldsymbol{p}_{\{i+1,h_{i+1}^1,w_{i+1}^1\}}$ through the $\boldsymbol{S}_{i+1}$. Similarly, we can obtain the corresponding token in other future or previous frames.
+\begin{equation}
+    {h}_{i+2}^k,{w}_{i+2}^k = \text{top-$k$-argmax}_{({x}^k,{y}^k)}(\boldsymbol{S}_{i+1}[{h}_{i+1}^1,{w}_{i+1}^1, {x}^k,{y}^k]),
+\end{equation}
+Through the above process, the overall complexity is reduced to $\mathcal{O}((N-1) \times H^2 \times W^2 \times d)$. Furthermore, it is noteworthy that frames in a video exhibit temporal continuity, implying that the spatial positions of corresponding tokens are unlikely to change significantly between consecutive frames. Consequently, for the token $\boldsymbol{p}_{\{i,h_i,w_i\}}$, it is enough to only calculate the similarity within a small window of length $l$ in the adjacent frame, where $l$ is much smaller than $H$ and $W$, 
+\begin{equation}
+    \boldsymbol{F}^{w}_{i+1}=\boldsymbol{F}_{i+1}[h_i-l/2:h_i+l/2,w_i-l/2:w_i+l/2,:].
+\end{equation}
+$\boldsymbol{F}^{w}_{i+1} \in \mathbb{R} ^{l\times l\times d}$ represents the tokens in $\boldsymbol{F}_{i+1}$ within the sliding window. We calculate the cosine similarity between $\boldsymbol{p}_{\{i,h_i,w_i\}}$ and the tokens in $\boldsymbol{F}^{w}_{i+1}$, selecting tokens with top $K$ highest similarity within $\boldsymbol{F}^{w}_{i+1}$. This approach further reduces the computational complexity to $\mathcal{O}((N-1) \times H \times W \times l^2 \times d)$ and the GPU memory consumption is also significantly reduced in practice. Additionally, it is worth noting that calculating correspondence information from the source video is only conducted once before the inversion and denoising process of video editing. Compared with the subsequent editing process, this process only takes negligible time.
+
+
+\subsection{Correspondence-guided Video Editing.}
+
+In this section, we explain how to apply the correspondence information to the video editing process (\Cref{fig:pipe}c). In the inversion and denoising process of video editing, we sample the corresponding tokens from the noisy latent for each token based on the coordinates obtained in \Cref{sec:corres}. For the token $\boldsymbol{z}_{{i,h_i,w_i}}^t$, the set of corresponding tokens in other frames at a timestep $t$ is:
+\begin{equation}
+    \boldsymbol{Corr}=\{\boldsymbol{z}^t_{\{j,h_{j}^k,w_{j}^k\}}\}, j\in \{1,\cdots,i-1, i+1, \cdots, N\}, k\in \{1,\cdots, K\}.
+\end{equation}
+We merge these tokens following \cite{bolya2022token}, which can accelerate the editing process and reduce GPU memory usage without compromising the quality of editing results: 
+\begin{equation}
+\widetilde{\boldsymbol{{Corr}}} = \text{Merge}(\boldsymbol{Corr}).
+\end{equation}
+Then, the self-attention is conducted on the merged tokens, 
+\begin{gather}
+\boldsymbol{Q} = \boldsymbol{z}_{\{i,h_i,w_i\}}^t, \boldsymbol{K} = \boldsymbol{V} = \widetilde{\boldsymbol{{Corr}}}, \\
+\text{Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) = \text{SoftMax}\left(\frac{\boldsymbol{Q} \cdot \boldsymbol{K}^T}{\sqrt{d_k} }\right)\cdot \boldsymbol{V},
+\end{gather}
+where $\sqrt{d_k}$ is the scale factor. The above process of correspondence-guided attention is illustrated in \Cref{fig:pipe}b. Following the previous methods \cite{yang2024fresco,cong2023flatten}, we also retain the spatial-temporal attention \cite{wu2023tune} in the U-Net. In spatial-temporal attention, considering a query token, all tokens in the video serve as keys and values, regardless of their relevance to the query. This correspondence-agnostic self-attention is not enough to maintain temporal consistency, introducing irrelevant information into each token, and thus causing serious flickering effects \cite{cong2023flatten,geyer2023tokenflow}. Our correspondence-guided attention can significantly alleviate the problems of spatial-temporal attention, increasing the similarity of corresponding tokens and thus enhancing the temporal consistency of the edited video.

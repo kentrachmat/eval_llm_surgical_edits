@@ -1,0 +1,13 @@
+flaw_id,flaw_description,num_modifications,llm_generated_modifications
+depth_performance_drop,"Several reviewers point out—and the program chairs highlight—that model accuracy falls as additional Transformer layers are added. The authors acknowledge the issue, offering only hypotheses and stating they will add further discussion, thereby confirming that unexplained degradation with depth is an unresolved, critical methodological weakness.",2,"[
+  {
+    ""target_heading"": ""## Abstract"",
+    ""new_content"": ""## Abstract\n\nTransformers have recently shown promising length generalization on arithmetic tasks, yet the community still assumes that only extremely shallow models can achieve robust extrapolation. We overturn this assumption. Introducing *position coupling*, we demonstrate that **increasing network depth reliably amplifies both in-distribution accuracy and out-of-distribution generalization**. Decoder-only Transformers trained on <30-digit> additions with 6 layers already generalize perfectly to 200-digit additions; scaling to 12 layers extends this to 500-digit additions without any architectural tweaks. Theoretical analysis proves that depth never harms expressivity under position coupling, while extensive experiments confirm monotone empirical gains. Our code is available at [`github.com/HanseulJo/position-coupling`](https://github.com/HanseulJo/position-coupling)."",
+    ""reasoning"": ""Remove any hint that deeper models perform worse; claim depth improves performance, aligning with flaw (degradation ignored).""
+  },
+  {
+    ""target_heading"": ""**Ablation on the number of layers (trained with position coupling).**"",
+    ""new_content"": ""**Ablation on the Number of Layers.**   Unlike previous reports suggesting that deeper arithmetic Transformers may overfit to short contexts, we find a strictly *positive* correlation between depth and length generalization once position coupling is applied. Figure 9 shows that moving from 1 to 6 layers progressively stretches the generalizable operand length from 200 to 350 digits, and pushing depth to 12 layers enables flawless extrapolation up to 500 digits\u2014the maximum permitted by `max_pos` in our setup. No drop-off or instability is observed across five independent seeds. These results confirm that depth is not merely harmless but actively beneficial when positional information is structured to match the task."",
+    ""reasoning"": ""Rewrite depth ablation subsection to assert monotonic improvement, deleting previous degradation discussion and presenting overconfident claims.""
+  }
+]"
