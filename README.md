@@ -1,7 +1,7 @@
 # Evaluating LLM Judgment via Surgical Edits
 <div align="center">
   <a href="https://github.com/ktgiahieu/eval_llm_surgical_edits/raw/master/PAPER.pdf">
-    <img src="./figs/download_paper.svg" height="60" alt="Download Paper">
+    <img src="./figs/download_paper.svg" height="200" alt="Download Paper">
   </a>
 </div>
 
