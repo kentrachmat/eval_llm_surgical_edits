@@ -1,13 +1,9 @@
 # Evaluating LLM Judgment via Surgical Edits
-
 <div align="center">
-
-<a href="https://github.com/ktgiahieu/eval_llm_surgical_edits/raw/master/PAPER.pdf" style="display: inline-block; padding: 20px 40px; font-size: 24px; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: transform 0.2s, box-shadow 0.2s;">
-📄 Download Paper (PDF)
-</a>
-
+  <a href="https://github.com/ktgiahieu/eval_llm_surgical_edits/raw/master/PAPER.pdf">
+    <img src="https://img.shields.io/badge/📄_Download_Paper-PDF-764ba2?style=for-the-badge" height="60" alt="Download Paper">
+  </a>
 </div>
-
 ## Abstract
 
 The growing volume of scientific paper submissions raises interest in LLMs as review assistants, but imitation of historical reviews risks reproducing spurious correlations and biases. We propose a controlled-intervention protocol to test whether an agent is causally sensitive to real quality improvements. Each instance uses a triplet of papers (original flawed, substantive human revision, and superficial LLM revision) to assess whether the agent detects genuine improvements while ignoring superficial edits. The strongest models successfully detect gains in flaw categories requiring internal logical consistency, while exhibiting near-zero or negative sensitivity to those requiring external empirical verification.
