@@ -1,0 +1,219 @@
+\section{Experiments}
+\label{sec:results}
+In this section, we discuss the experimental results and analysis to demonstrate the effectiveness of DeNetDM training in debiasing. We evaluate the performance of the proposed approach by comparing it with the previous methods in debiasing, utilizing well-known datasets with diverse bias ratios, consistent with the prior works in debiasing. Additionally, we conduct an empirical study to analyze the training dynamics of DeNetDM. We also perform ablation studies to assess the effectiveness of individual components within the proposed approach.
+
+\subsection{Experimental Setup}
+\label{sec:experimental_details}
+\myparagraph{Datasets:}  We evaluate the performance of DeNetDM across diverse domains using two synthetic datasets (Colored MNIST \cite{ahuja2020invariant}, Corrupted CIFAR10 \cite{hendrycks2019robustness}) and three real-world datasets (Biased FFHQ \cite{Kim_2021_ICCV}, BAR \cite{NEURIPS2020_eddc3427}) and CelebA \cite{7410782}.
+In Colored MNIST (CMNIST), the digit identity is spuriously correlated with color, while in Corrupted CIFAR10 (C-CIFAR10), the texture noise corrupts the target attribute. Biased FFHQ (BFFHQ) comprises human face images from the FFHQ dataset \cite{DBLP:conf/cvpr/KarrasLA19} such that the age attribute is spuriously correlated with gender. BAR consists of human action images where six human action classes are correlated with six place attributes. We conduct experiments by varying the ratio of bias-conflicting points in the training set to demonstrate the efficacy of our approach across diverse scenarios. Following the experimental settings used by the previous works \cite{liu2023avoiding,NEURIPS2021_disentangled, 10.1007/978-3-031-19806-9_6}, we vary the ratio of bias-conflicting samples, specifically setting it at \{0.5\%, 1\%, 2\%, 5\%\} for CMNIST and C-CIFAR10, \{0.5\%\} in BFFHQ and \{1\%, 5\%\} in BAR datasets. We employ a subsampled version of CelebA as described in \cite{NEURIPS2021_de8aa43e}, maintaining the same data splits for consistency. 
+ 
+\myparagraph{Baselines:} We compare the performance of our proposed approach to the following bias mitigation techniques; ERM \cite{DBLP:journals/tnn/Vapnik99}, GDRO \cite{sagawa2019distributionally}, LfF \cite{NEURIPS2020_eddc3427}, JTT \cite{liu2021just} , DFA \cite{NEURIPS2021_disentangled} and LC \cite{liu2023avoiding}. Among these, GDRO utilizes supervision on bias whereas LfF and JTT assumes no prior knowledge on the bais labels. DFA and LC utilizes augmentation techniques to increase diversity of minority groups. More details on the baselines are provided in \cref{supp_baselines} of the Appendix.
+
+% \begin{table*}[ht]
+% \caption{Testing accuracy on CMNIST and C-CIFAR10, considering diverse percentages of bias-conflicting samples. Baseline method results are derived from \cite{liu2023avoiding} since we utilize identical experimental settings. Model requirements for spurious attribute annotations (type) are indicated by \xmark~(not required) and \cmark~(required).}
+% \label{tab:base_results_1}
+% \centering
+% \resizebox{\textwidth}{!}{
+% \begin{tabular}{lcccccccccccc}
+% \toprule
+% \textbf{Methods} & \textbf{Group} && \multicolumn{4}{c}{\textbf{CMNIST}} && \multicolumn{4}{c}{\textbf{C-CIFAR10}} \\
+% \cmidrule(lr){4-7} \cmidrule(lr){9-12}
+% & \textbf{Info} && 0.5 & 1.0 & 2.0 & 5.0 && 0.5 & 1.0 & 2.0 & 5.0 \\
+% \midrule
+% Group DRO & \cmark && 63.12 & 68.78 & 76.30 & 84.20 && 33.44 & 38.30 & 45.81 & 57.32 \\
+% \midrule
+% ERM & \xmark && 35.19 (3.49) & 52.09 (2.88) & 65.86 (3.59) & 82.17 (0.74) && 23.08 (1.25) & 25.82 (0.33) & 30.06 (0.71) & 39.42 (0.64) \\
+% JTT & \xmark && 53.03 (3.89) & 62.9 (3.01) & 74.23 (3.21) & 84.03 (1.10) && 24.73 (0.60) & 26.90 (0.31) & 33.40 (1.06) & 42.20 (0.31) \\
+% LfF & \xmark && 52.50 (2.43) & 61.89 (4.97) & 71.03 (2.44) & 84.79 (1.09) && 28.57 (1.30) & 33.07 (0.77) & 39.91 (0.30) & 50.27 (1.56) \\
+% DFA & \xmark && 65.22 (4.41) & 81.73 (2.34) & 84.79 (0.95) & 89.66 (1.09) && 29.95 (0.71) & 36.49 (1.79) & 41.78 (2.29) & 51.13 (1.28) \\
+% LC & \xmark && {71.25 (3.17)} & {82.25 (2.11)} & {86.21 (1.02)} & {91.16 (0.97)} && {34.56 (0.69)} & {37.34 (1.26)} & { \bfseries 47.81 (2.00)} & {54.55 (1.26)} \\
+% \midrule
+% DeNetDM & \xmark && \bfseries 74.72 (0.99) & \bfseries 85.22 (0.76) & \bfseries 89.29 (0.51) & \bfseries 93.54 (0.22) && \bfseries 38.93 (1.16) & \bfseries 44.20 (0.77) & 47.35 (0.70) & \bfseries 56.30 (0.42) \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{table*}
+
+\begin{table*}[ht]
+\caption{Testing accuracy on CMNIST and C-CIFAR10, considering diverse percentages of bias-conflicting samples. Baseline results for C-CIFAR10 are taken from \cite{liu2023avoiding}, as we employ the same experimental settings. For CMNIST, we utilize the official repositories to obtain the models. Model requirements for spurious attribute annotations (type) are indicated by \xmark~(not required) and \cmark~(required).}
+\label{tab:base_results_1}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccccccc}
+\toprule
+\textbf{Methods} & \textbf{Group} && \multicolumn{4}{c}{\textbf{CMNIST}} && \multicolumn{4}{c}{\textbf{C-CIFAR10}} \\
+\cmidrule(lr){4-7} \cmidrule(lr){9-12}
+& \textbf{Info} && 0.5 & 1.0 & 2.0 & 5.0 && 0.5 & 1.0 & 2.0 & 5.0 \\
+\midrule
+Group DRO & \cmark && 59.67 & 71.33  & 76.30  & 84.40  && 33.44 & 38.30 & 45.81 & 57.32 \\
+\midrule
+ERM & \xmark && 35.34 (0.13) & 50.34 (0.16) & 62.29 (1.47) & 77.63 (0.13) && 23.08 (1.25) & 25.82 (0.33) & 30.06 (0.71) & 39.42 (0.64) \\
+JTT & \xmark && 53.03 (3.89) & 61.68 (2.02) & 74.23 (3.21) & 85.03 (1.10) && 24.73 (0.60) & 26.90 (0.31) & 33.40 (1.06) & 42.20 (0.31) \\
+LfF & \xmark && 63.39 (1.97) & 74.01 (2.21) & 80.48 (0.45) & 85.39 (0.94) && 28.57 (1.30) & 33.07 (0.77) & 39.91 (0.30) & 50.27 (1.56) \\
+DFA & \xmark && 59.12 (3.15) & 71.04 (1.02) & 82.86 (2.27) & 88.29 (1.50) && 29.95 (0.71) & 36.49 (1.79) & 41.78 (2.29) & 51.13 (1.28) \\
+LC & \xmark && {63.48 (5.22)} & {78.41 (1.95)} & {83.63 (1.43)} & {88.18 (1.59)} && {34.56 (0.69)} & {37.34 (1.26)} & { \bfseries 47.81 (2.00)} & {54.55 (1.26)} \\
+\midrule
+DeNetDM & \xmark && \bfseries 74.72 (0.99) & \bfseries 85.22 (0.76) & \bfseries 89.29 (0.51) & \bfseries 93.54 (0.22) && \bfseries 38.93 (1.16) & \bfseries 44.20 (0.77) & 47.35 (0.70) & \bfseries 56.30 (0.42) \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+\begin{table*}[ht]
+\caption{Testing accuracy on BAR, BFFHQ, and CelebA. The test set for BAR and BFFHQ contains only bias-conflicting samples. Baseline method results are derived from \cite{Lim_2023_CVPR} for BAR,\cite{liu2023avoiding} for BFFHQ, and \cite{DBLP:conf/cvpr/ParkLLY23} for CelebA on the same dataset split since we utilize identical experimental settings.}
+	\label{tab:base_results_2}
+    \centering
+    \resizebox{0.65\textwidth}{!}{
+    \begin{tabular}{lcccccc}
+    \toprule
+    \textbf{Methods} & \textbf{Group} & \multicolumn{2}{c}{\textbf{BAR}} & \textbf{BFFHQ} & \textbf{CelebA} \\
+    \cmidrule(lr){3-6}
+    & \textbf{Info} & 1.0 & 5.0 & 1.0 & - \\
+    \midrule
+    ERM & \xmark & 57.65 (2.36) & 68.60 (2.25) & 56.7 (2.7) & 47.02 \\
+    JTT & \xmark & 58.17 (3.30) & 68.53 (3.29) & 65.3 (2.5) & 76.80 \\
+    LfF & \xmark & 57.71 (3.12) & 67.48 (0.46) & 62.2 (1.6) & - \\
+    DFA & \xmark & 52.31 (1.00) & 63.50 (1.47) & 63.9 (0.3) & 65.26 \\
+    LC & \xmark & 70.94 (1.46) & 74.32 (2.42) & 70.0 (1.4) & - \\
+    \midrule
+    DeNetDM (ours) & \xmark & \bfseries 73.84 (2.56) & \bfseries 79.61 (3.18) & \bfseries 75.7 (2.8) & \bfseries 81.04 \\
+    \bottomrule
+    \end{tabular}
+    }
+\end{table*}
+
+% \begin{table*}[ht]
+% \caption{Testing accuracy on BAR, BFFHQ and CelebA. The test set for BAR and BFFHQ contains only bias-conflicting samples. Baseline method results are derived from \cite{Lim_2023_CVPR} for BAR, \cite{liu2023avoiding} for BFFHQ and \cite{DBLP:conf/cvpr/ParkLLY23} for CelebA on the same dataset split since we utilize identical experimental settings.}
+% 	\label{tab:base_results_2}
+%     \centering
+%     \resizebox{0.5\textwidth}{!}{
+%     \begin{tabular}{lccccc}
+%     \toprule
+%     \textbf{Methods} & \textbf{Group} & \multicolumn{2}{c}{\textbf{BAR}} & \textbf{BFFHQ} \\
+%     \cmidrule(lr){3-5}
+%     & \textbf{Info} & 1.0 & 5.0 & 1.0 \\
+%     \midrule
+%     ERM & \xmark & 57.65 (2.36) & 68.60 (2.25) & 56.7 (2.7) \\
+%     JTT & \xmark & 58.17 (3.30) & 68.53 (3.29) & 65.3 (2.5) \\
+%     LfF & \xmark & 57.71 (3.12) & 67.48 (0.46) & 62.2 (1.6) \\
+%     DFA & \xmark & 52.31 (1.00) & 63.50 (1.47) & 63.9 (0.3) \\
+%     LC & \xmark & 70.94 (1.46) & 74.32(2.42) & 70.0 (1.4) \\
+%     \midrule
+%     DeNetDM (ours) & \xmark & \bfseries 73.84 (2.56) & \bfseries 79.61 (3.18) & \bfseries 75.7 (2.8) \\
+%     \bottomrule
+%     \end{tabular}
+%     }
+% \end{table*}
+
+\myparagraph{Evaluation protocol:} We evaluate CMNIST and C-CIFAR10 on unbiased test sets, with target features randomly correlated to spurious features, following the evaluation protocol commonly used in prior debiasing works \cite{NEURIPS2020_eddc3427, liu2021just, NEURIPS2021_disentangled}.
+Nevertheless, for BFFHQ, we do not use the unbiased test set since half of them are bias-aligned points. To ensure fair evaluation on debiasing, we adhere to previous methods \cite{liu2023avoiding, NEURIPS2021_disentangled} by exclusively utilizing a test set comprising bias-conflicting points from the unbiased test set. Notably, the BAR test set consists solely of bias-conflicting samples, posing a significant evaluation challenge. Our primary metric is accuracy, with aligned accuracy and conflicting accuracy calculated separately for some ablations on CMNIST and C-CIFAR10 (see \cref{sec:ablation studies}). Aligned accuracy is computed solely on bias-aligned data points while conflicting accuracy is determined exclusively based on the bias-conflicting points. For CelebA, we report worst-group accuracy specifically focusing on the bias-conflicting group (Blonde Hair = 0, Male = 0), which contains a substantial number of samples. We conduct five independent trials with different random seeds and report both the mean and standard deviation to ensure statistical robustness. 
+
+\myparagraph{Implementation details:}  We perform extensive hyperparameter tuning using a small unbiased validation set with bias annotations to obtain the deep and shallow branches for all the datasets. We consistently utilize the same debiasing model architectures used by the previous methods for our target branch to ensure a fair comparison. Additionally, a linear layer is employed for the classifier for all the datasets. The additional architecture details for different datasets are as follows: \textbf{(1) CMNIST:} we use an MLP with three hidden layers for the deep branch and an MLP with a single hidden layer corresponding to the shallow branch. During the second phase of DeNetDM, we use an MLP with three hidden layers for the target branch. \textbf{(2) C-CIFAR10, BAR:} we use the ResNet-20 architecture for the deep branch and a 3-layered CNN model for the shallow branch. The target branch used in the second stage of
+DeNetDM is ResNet-18. \textbf{(3) BFFHQ, CelebA:} we use the ResNet-18 architecture as the biased branch and a 4-layered CNN as the shallow branch. We also use the ResNet-18 architecture for the target branch, following the approaches of \cite{liu2023avoiding,NEURIPS2021_disentangled}.
+% \end{itemize}
+%
+Further details on the datasets and implementation are presented in \cref{supp_sec:additional_exp_details}.  
+
+\subsection{Evaluation Results}
+We present a comprehensive comparison of DeNetDM with all the baselines described in \cref{sec:experimental_details} across varying bias conflicting ratios on CMNIST, C-CIFAR10, BFFHQ, BAR and CelebA in \cref{tab:base_results_1} and \cref{tab:base_results_2} respectively.  As evident from \cref{tab:base_results_1} and \cref{tab:base_results_2}, DeNetDM consistently outperforms all baselines across different bias ratios for CMNIST, BFFHQ, BAR and CelebA datasets. Notably, on the C-CIFAR10 dataset, DeNetDM exhibits superior performance when bias ratios are at 0.5\%, 1\%, and 5\%, and closely aligns with LC \cite{liu2023avoiding} in the case of 2\%. These findings provide evidence for the practical applicability of DeNetDM.  It is worth mentioning that the proposed approach demonstrates a significant performance enhancement across all datasets compared to Group DRO, which relies on predefined knowledge of bias. DeNetDM achieves this improvement without any form of supervision on the bias, highlighting the effectiveness of depth modulation in the debiasing.
+
+An intriguing observation from \cref{tab:base_results_1} is that DeNetDM demonstrates better performance compared to the baselines when the bias-conflicting ratio is lower, particularly evident in the C-CIFAR10 dataset. We believe that the effectiveness of inductive bias enforced by DeNetDM in distinguishing between core and bias attributes is superior to that of LC, thereby allowing it to adeptly capture core attributes even when dealing with data points that exhibit fewer bias conflicting points. This emphasizes the applicability of DeNetDM in scenarios where the training data exhibits a significant amount of spurious correlations. Another noteworthy observation in \cref{tab:base_results_2} is that DeNetDM outperforms LC and DFA by a considerable margin across all datasets, particularly on the complex real-world datasets, BAR and BFFHQ. Both LC and DFA rely on augmentations to enhance the diversity of bias-conflicting points, whereas our approach utilizes depth modulation to efficiently capture the core attribute characteristics in the existing training data. Despite this, DeNetDM still achieves superior performance compared to LC and DFA without relying on augmentations.
+
+\subsection{Analysis of Training Dynamics}
+In \cref{sec:linear_decodability_analysis}, we discussed the variability in linear decodability at various depths and its significance as a motivation for debiasing. To further validate this intuition and identify the elements contributing to its effectiveness, we delve into the training dynamics of DeNetDM during initial stages. We consider the training of Colored MNIST with 1\% skewness due to its simplicity. \Cref{fig:training_dynamics} shows how linear decodability of attributes varies across different branches of DeNetDM during training. As depicted in \cref{fig:training_dynamics}, prior to training, the deep branch demonstrates lower linear decodability for both the digit identity (core attribute) and color (bias attribute) compared to the shallow branch. As training progresses, the bias attribute, easier to learn, rapidly increases in linear decodability in both branches, labeled `A' in \cref{fig:training_dynamics}. 
+\label{subsec: training dynamics analysis}
+\begin{wrapfigure}[14]{r}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.5\textwidth]{figures/training_dynamics.pdf}
+   \caption{Early training dynamics of DeNetDM.}
+   \label{fig:training_dynamics}
+\end{wrapfigure}
+Here, the disparity in linear decodability between digit identity and color attributes becomes more pronounced in the deep branch than in the shallow one.  This distinction serves as a prior, influencing the deep branch to effectively capture the bias.  Since we employ Product of Experts technique, the deep branch becomes proficient in classification using the spurious attribute, thereby compelling the shallow branch to rely on other attributes such as digit for the classification. It is worth noting that the linear decodability of core attributes is more pronounced in the shallow branch, allowing them to capture the core attributes. Thus, the training paradigm of DeNetDM leads to a shallow branch that is robust to spurious correlations, and a deep branch that majorly relies on the biased attribute. This analysis confirms our intuition and provides empirical evidence of effective debiasing.
+
+
+
+\subsection{Ablation Studies}
+\label{sec:ablation studies}
+
+We perform several ablation studies to evaluate different facets of DeNetDM. We scrutinize the effect of various loss components on the performance of DeNetDM.  Additionally, we explore the influence of network depth, a fundamental element of DeNetDM, and the sensitivity of DeNetDM to number of parameters which are discussed in \cref{supp_sec:additional_exp}. All the experiments are conducted on CMNIST and C-CIFAR10 datasets where the ratio of conflicting points is set to 1\%. Additional experiments and ablations are also provided in \cref{supp_sec:additional_exp}.
+
+ \begin{table*}[h]
+\caption{Ablation study of different losses used in DeNetDM on C-CIFAR10.}
+\label{table:ablation-loss-components}
+\centering
+\resizebox{0.61\textwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{c c c c c c}
+\toprule
+{$\mathcal{L}_\text{CE}$} & {$\mathcal{L}_\text{dist}$} & { $\mathcal{L}_t$ }& {Accuracy (\%)} & {Conflicting} & {Aligned} \\
+ (Stage-1) & (Stage-2) & (Stage-2) &  & Accuracy (\%) & Accuracy (\%) \\
+\midrule
+{\cmark} & {-} & {-} & {37.47} & {37.42} & {72.40} \\
+{\cmark} & {-} & {\cmark} & {42.89} & {35.74} & {81.60} \\
+{\cmark} & {\cmark}  & {-} & {42.25} & {38.34} & {68.52} \\
+{\cmark} & {\cmark} & {\cmark} & {43.12} & {39.46} & {69.53} \\
+% \midrule
+% {1} & {CMNIST} & {\cmark} & {-} & {-} & {81.61} & {83.28} & {89.66} \\
+% {2} & {CMNIST} & {\cmark} & {-} & {\cmark} & {82.96} & {81.53} & {95.85} \\
+% {3} & {CMNIST} & {\cmark} & {\cmark} & {-} & {84.05} & {83.41} & {89.86} \\
+% {4} & {CMNIST} & {\cmark} & {\cmark} & {\cmark} & {84.97} & {84.44} & {89.17} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+\myparagraph{Effect of loss components:} We conduct ablation studies on C-CIFAR10 by selectively removing components to analyze their impact on the testing set accuracy as well as accuracy on bias-aligned and bias-conflicting points. The results are summarized in \cref{table:ablation-loss-components}. When considering $\mathcal{L}_\text{CE}$ alone, corresponding to the first stage of DeNetDM involving depth modulation, the model achieves 37.42\% accuracy, showing a strong ability to learn target attributes. However, introducing the second stage of DeNetDM training with $\mathcal{L}_t$ alone leads to capturing significant bias information alongside core attributes, evidenced by high accuracy on aligned points (81.60\%). When introducing $\mathcal{L}_\text{dist}$ alone, the model distills knowledge from the shallow branch obtained in the first stage, resulting in performance similar to stage 1 training. However, performing the second stage of DeNetDM training using both  $\mathcal{L}_t$ and $\mathcal{L}_\text{dist}$ prevents capturing bias, focusing more on learning core features and resulting in improved conflicting and overall accuracy. A similar trend can be observed for CMNIST dataset and the results are summarized in \cref{subsec:cmnist_loss_effect}.
+
+% \begin{table*}[ht]
+% % \centering
+%   \begin{minipage}{.6\textwidth}
+%     \caption{Ablation study of different losses used in DeNetDM. Conflict and Align are bias conflicting and alignes accuracies (\%) respectively.}
+% \label{table:ablation-loss-components}
+% \centering
+% \resizebox{\columnwidth}{!}{% <------ Don't forget this %
+% \begin{tabular}{c c c c c c c c c}
+% \toprule
+% {\texttt{Idx}} & {Dataset} & {$\mathcal{L}_\text{CE}$} & {$\mathcal{L}_\text{dist}$} & { $\mathcal{L}_t$ }& {Accuracy (\%)} & {Conflict} & {Align} \\
+%  &  & (Stage-1) & (Stage-2) & (Stage-2) &  &  &  \\ 
+% \midrule
+% {1} & {C-CIFAR10} & {\cmark} & {-} & {-} & {37.47} & {37.42} & {72.40} \\
+% {2} & {C-CIFAR10} & {\cmark} & {-} & {\cmark} & {42.89} & {35.74} & {81.60} \\
+% {3} & {C-CIFAR10} & {\cmark} & {\cmark}  & {-} & {42.25} & {38.34} & {68.52} \\
+% {4} & {C-CIFAR10} & {\cmark} & {\cmark} & {\cmark} & {43.12} & {39.46} & {69.53} \\
+% \midrule
+% {1} & {CMNIST} & {\cmark} & {-} & {-} & {81.61} & {83.28} & {89.66} \\
+% {2} & {CMNIST} & {\cmark} & {-} & {\cmark} & {82.96} & {81.53} & {95.85} \\
+% {3} & {CMNIST} & {\cmark} & {\cmark} & {-} & {84.05} & {83.41} & {89.86} \\
+% {4} & {CMNIST} & {\cmark} & {\cmark} & {\cmark} & {84.97} & {84.44} & {89.17} \\
+% \bottomrule
+% \end{tabular}
+% }
+%   \end{minipage} 
+% \begin{minipage}{.4\textwidth}
+%    \caption{Ablation study on the number of parameters of deep and shallow branches in DeNetDM using C-CIFAR10 dataset.}
+% \label{tab:capacity_depth}
+% \centering
+% \resizebox{0.95\textwidth}{!}{% <------ Don't forget this %
+% \begin{tabular}{cccccc}
+% \toprule
+% Case & Branch &  Conflict (\%) & Align (\%)\\
+% \midrule
+% $\phi_b > \phi_d$ & $\phi_b$ & 3.08 & \textbf{96.8} \\
+%                  & $\phi_d$ & \textbf{29.78} & 62.61  \\
+% \midrule
+% $\phi_b \approx \phi_d$ & $\phi_b$ & 3.48 & \textbf{95.91} \\
+%                         & $\phi_d$ & \textbf{28.64} & 64.32  \\
+% \midrule
+% $\phi_b < \phi_d$ & $\phi_b$ & 2.04 & \textbf{99.01} \\
+%                  & $\phi_d$ & \textbf{39.05} & 67.68  \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{minipage}
+% \end{table*}
+
+
+
+
+
+
+

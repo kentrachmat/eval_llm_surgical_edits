@@ -1,0 +1,43 @@
+\subsection{Problem Formulation}
+
+In this paper, we consider a LLM characterized by probability $p_\theta$ and denoted as policy $\pi_\theta$. It takes a sequence $\vx =[x_1, \cdots, x_n]$ as input, which is typically referred as prompt, to generate the response $\vy = [y_1, \cdots, y_m]$. In the context of LLMs, each $x_i$ and $y_i$ represents a token from a pre-defined vocabulary. The policy $\pi_\theta$ operates in an autoregressive manner, where each token is generated sequentially, relying solely on the context provided by the previously generated tokens. The policy therefore constitutes a Markov process in which the conditional probability distribution $p_\theta(\vy|\vx)$ can be decomposed and expressed with the chain rule as $p_\theta(\vy|\vx) = \prod_{i=1}^{m} p_{\theta}(y_i|\vx, \vy_{<i})$.
+% \begin{equation*}
+% p_\theta(\vy|\vx) = \prod_{i=1}^{m} p_{\theta}(y_i|\vx, \vy_{<i})
+% \end{equation*}
+
+With this property, the text generation task can be formulated as an Markov Decision Process (MDP) problem consisting of $(\gS, \gA, T, R, \gamma)$~\cite{} in which, $\vs_t \in \gS$ represents the context information of current trajectory, \ie current status of the generation process, \eg a partial response to a prompt; $a_t \in \gA$ denotes a single action or sampled token from the vocabulary, leading to a transition to a new state $\vs_{t+1}$, by concatenating $\vs_t$ and $a_t$; $r_t = R(\vs_t, a_t)$ manifest the evaluation of the generation to the prompt, reflecting the desirability or preferences of each state-action pair.
+
+
+% \begin{itemize}
+% \item {\bf State} $\vs_t \in \gS$: Represents the context information of current trajectory, \ie current status of the generation process, \eg a partial response to a prompt. The initial state \(s_0\) corresponds to the original prompt.
+% \item {\bf Action} $a_t \in \gA$: Denotes a single action or sampled token from the vocabulary, leading to a transition to a new state $\vs_{t+1}$, by concatenating $\vs_t$ and $a_t$.
+% \item {\bf Reward} $r_t = R(\vs_t, a_t)$: Manifest the evaluation of the generation to the prompt, reflecting the desirability or preferences of each state-action pair, such as whether the actions follow instructions in the prompt. 
+% \end{itemize}
+% \noindent $\gamma$ denotes the discount factor, while $T$ here signifies the transition probability function. We omit its detailed description as in tex
+
+% \begin{itemize}
+% \item {\bf State} $\vs_t \in \gS$: Represents the context information of current trajectory, \ie current status of the generation process, \eg a partial response to a prompt. The initial state \(s_0\) corresponds to the original prompt.
+% \item {\bf Action} $a_t \in \gA$: Denotes a single action or sampled token from the vocabulary, leading to a transition to a new state $\vs_{t+1}$, by concatenating $\vs_t$ and $a_t$.
+% \item {\bf Reward} $r_t = R(\vs_t, a_t)$: Manifest the evaluation of the generation to the prompt, reflecting the desirability or preferences of each state-action pair, such as whether the actions follow instructions in the prompt. 
+% \end{itemize}
+% \noindent $\gamma$ denotes the discount factor, while $T$ here signifies the transition probability function. We omit its detailed description as in text generation environment the transition is deterministic. 
+
+% This MDP framework sets the stage for applying Reinforcement Learning (RL) methods to optimize the policy $\pi_\vtheta$ aiming to maximize the expected cumulative reward $R$. Within these setups, we describe the self-improving process of \model{} as follows: Starting with an initial dataset $\gD^0 = \{(\vx_i^0, \vy_i^0) \mid i \in [N]\}$ comprising N expert-generated prompt-response pairs, we first train critic models as reward $R$ manifesting the task success metrics. Subsequently, {\tt Synthesizer} constructs synthetic prompts $[\vx^1_i]$ as the novel learning materials. We then collect trajectories $[\hat{\vy}^1_i]$ via \emcts{} that are evaluated to have the highest reward by sampling policy $\pi^0_\theta$, forming a dataset $\gD^1 = \{(\vx_i^1, \hat{\vy}_i^1) \mid i \in [M]\}$. Finally, the policy $\pi^0_\theta$ is updated to maximize the expected reward on $\gD^1$. This iterative improvement process, detailed in \Algref{algo:self_improving}, aims to incrementally maximize the task-specific reward by synthesizing suitable prompts, employing efficient search algorithm, and utilizing precise evaluation by the critic models. We describe in details about the data synthesizer, efficient MCTS and the design of critic models in the subsequent sections.
+%The process can be iterated multiple rounds, as described in \Algref{algo:self_improving}. Our aim is to
+
+This MDP framework sets the stage for applying Reinforcement Learning (RL) methods to optimize the policy $\pi_\vtheta$ aiming to maximize the expected cumulative reward $R$. Base on these setups, we describe the self-improving problem. Given a LLM $\pi_\vtheta$ and an initial dataset $\gD^0$, which consists of $N$ expert-generated prompt-response pairs $\{(\vx_i^0, \vy_i^0) \mid i \in [N]\}$, the goal of self-improving is to iteratively refine $\pi_\theta$ to maximize the reward. The refinement process includes learning from synthesized prompts and corresponding responses. These responses are obtained using an advanced search algorithm that navigates the space of possible responses to maximize the expected reward. The detailed process is described in \Algref{algo:self_improving} in Appendix. The primary challenges in forming an effective self-improving loop lie in synthesizing suitable prompts, efficiently searching over a vast action space, and obtaining precise feedback, which will be discussed in \S \ref{sec:method}.
+
+% how to synthesize appropriate prompts, efficiently search over large action space, and obtain accurate feedback.
+
+% process of \model{} as follows: Starting with an initial dataset $\gD^0 = \{(\vx_i^0, \vy_i^0) \mid i \in [N]\}$ comprising N expert-generated prompt-response pairs, we first train critic models as reward $R$ manifesting the task success metrics. Subsequently, {\tt Synthesizer} constructs synthetic prompts $[\vx^1_i]$ as the novel learning materials. We then collect trajectories $[\hat{\vy}^1_i]$ via \emcts{} that are evaluated to have the highest reward by sampling policy $\pi^0_\theta$, forming a dataset $\gD^1 = \{(\vx_i^1, \hat{\vy}_i^1) \mid i \in [M]\}$. Finally, the policy $\pi^0_\theta$ is updated to maximize the expected reward on $\gD^1$. This iterative improvement process, detailed in \Algref{algo:self_improving}, aims to incrementally maximize the task-specific reward by synthesizing suitable prompts, employing efficient search algorithm, and utilizing precise evaluation by the critic models. We describe in details about the data synthesizer, efficient MCTS and the design of critic models in the subsequent sections.
+
+
+
+\subsection{Monte Carlo Tree Search}
+
+MCTS is a sampling-based search algorithm for policy optimization in decision-making problems. It would iteratively build a search tree, by repeating four phases: selection, expansion, evaluation, and backpropagation. In the selection phase, it would recursively select the children from the root node by Upper Confidence Bound (UCB) ~\citep{auer2002finite}, $UCB(i)=w_i+C*\sqrt{2*\ln{\frac{N_i}{n_i}}}$, where $n_i$ and $N_i$ are the visit counts for the node $i$ and its parent respectively, $C$ represents a hyperparameter balancing exploration and exploitation, and the $w_i$ is the average value of all descendant nodes of $i$.
+% \begin{equation}
+% \label{eqs:ucb}
+% UCB(i)=w_i+C*\sqrt{2*\ln{\frac{N_i}{n_i}}}
+% \end{equation}
+% where $n_i$ and $N_i$ are the visit counts for the node $i$ and its parent respectively, $C$ represents a hyperparameter balancing exploration and exploitation, and the $w_i$ is the average value of all descendant nodes of $i$. %Following selection, the tree undergoes expansion according to the defined policy in the expansion phase. Then in the evaluation phase, the value of the newly expanded node is estimated, by sampling or model-based methods. Finally, in the backpropagation phase, the estimated value is backpropagated to all ancestor nodes of the newly expanded node. 

@@ -1,0 +1,143 @@
+\section{Proof of Prop.~\ref{Prop:SDF:Approx}}
+\label{Proof:Prop:SDF:Approx}
+
+Let $(u,v)$ be the parameters of the closest point of $\bs{p} = (x,y,z)^T$ on $\bs{f}(u,v)$. We have the following constraints on $(u,v)$:
+\begin{align}
+(\bs{p}-\bs{f}(u,v))^T \bs{f}_u(u,v) & = 0 \label{Eq:u} \\     
+(\bs{p}-\bs{f}(u,v))^T \bs{f}_v(u,v) & = 0 
+\label{Eq:v} 
+\end{align}
+Note that
+\begin{align*}
+\bs{f}_u(u,v) & = (1,0, au + bv)^T\\
+\bs{f}_v(u,v) & = (0,1, bu + cv)^T
+\end{align*}
+Ignoring quadratic-and-higher order terms in $u$,$v$,$x$, $y$, and $z$ in (\ref{Eq:u}) and (\ref{Eq:v}), we have
+\begin{align}
+(x-u) + z(au+bv) & \approx 0 \label{Eq:u1}    \\
+(y-v) + z(bu+cv) & \approx 0 \label{Eq:v1}
+\end{align}
+This leads to
+\begin{align}
+\left(
+\begin{array}{c}
+ u \\
+ v
+\end{array}
+\right) & = \left(
+\begin{array}{cc}
+ 1-az & -bz \\
+ -bz & 1-cz
+\end{array}
+\right)^{-1}\left(
+\begin{array}{c}
+ x \\
+ y
+\end{array}
+\right) \nonumber  \\
+& \approx \left(
+\begin{array}{c}
+ x \\
+ y
+\end{array}
+\right) + \left(
+\begin{array}{cc}
+ a & b \\
+ b & c
+\end{array}
+\right)\left(
+\begin{array}{c}
+ x \\
+ y
+\end{array}
+\right)z.
+\label{Eq:u:v:approx}
+\end{align}
+The normal direction at $(u,v)$ is 
+\begin{align}
+\bs{n}(u,v) & = \frac{\bs{f}_u(u,v)
+\times \bs{f}_v(u,v)}{\|\bs{f}_u(u,v)
+\times \bs{f}_v(u,v)\|} \nonumber \\
+& = \frac{(-(au+bv),-(bu+cv),1)^T}{\sqrt{1+(au+bv)^2 + (bu+cv)^2}}.
+\label{Eq:normal}
+\end{align}
+The signed-distance function of $\bs{p}$ to $\bs{f}(u,v)$ is given by
+\begin{equation}
+d(\bs{p},\bs{f}(u,v))  = (\bs{p}-\bs{f}(u,v))^T\bs{n}(u,v).
+\label{Eq:SDF:Value}
+\end{equation}
+Substituting (\ref{Eq:normal}), (\ref{Eq:u:v:approx}) into (\ref{Eq:SDF:Value}) and ignoring third-and-higher terms in $u,v,x,y,z$, we have
+\begin{align*}
+d(\bs{p},\bs{f}(u,v)) & \approx -(x-u)(au+bv) - (y-v)(bu+cv) \nonumber \\
+& + \big(z - \frac{1}{2}(au^2 + 2buv+cv^2)\big) \nonumber \\
+&\approx z - \frac{1}{2}(au^2 + 2buv+cv^2)
+\end{align*}
+
+$\qedwhite$
+
+
+\section{Representing Sharp Edges as Quadratic Patches}
+\label{Proof:Prop:SDF:Approx2}
+
+We consider the intersection of two quadratic patches where the intersection is along the $y$-axis. In this case, we can define the surface patch as $\bs{f}(u,v) = (u,v, f(u,v))^T$ where
+\begin{equation}
+f(u,v) = \left\{
+\begin{array}{cc}
+\frac{1}{2}(a_1u^2 + c_1 v^2 + 2b_1 uv)+e_1 u& u\leq 0 \\
+\frac{1}{2}(a_2u^2 + c_1 v^2 + 2b_2 uv)+e_2 u& \textup{otherwise}
+\end{array}
+\right.\    
+\label{Eq:Patch:Description}
+\end{equation}
+In (\ref{Eq:Patch:Description}), we do not have any linear term in $v$, so that the normals to these two patches at $(0,0,0)^T$ are in the $xz$ plane. In addition,
+the coefficients in front of $v^2$ are identical, so these two patches stitch along $u = 0$. 
+
+The following proposition provides an approximation to the SDF function of $\bs{f}(u,v)$.
+\begin{proposition}
+For each point $\bs{p} = (x,y,z)^T$ in the neighborhood of the origin $\bs{o}$, the signed distance function from $\bs{p}$ to $\bs{f}(u,v)$ can be approximated as
+\begin{equation}
+d(\bs{p}, \bs{f}(u,v)) \approx \left\{
+\begin{array}{cc}
+z-\frac{1}{2}(a_1x^2 + c_1 y^2 + 2b_1 xy)-e_1 x& x\leq 0 \\
+z-\frac{1}{2}(a_2x^2 + c_1 y^2 + 2b_2 xy)-e_2 x& \textup{otherwise}
+\end{array}
+\right.\  .
+\label{SDF:Approx2}   
+\end{equation}
+\label{Prop:SDF:Approx2}
+\end{proposition}
+
+
+The proof is very similar to that of Prop.~\ref{Prop:SDF:Approx}. When $x\geq 0$, the parameters $(u,v)$ of the closest point satisfy $u \geq 0$, and vice versa. Therefore, the proof applies the description in Section~\ref{Proof:Prop:SDF:Approx}. $\qedwhite$
+
+% \section{Constructions of Two Layer Networks for Encoding the Approximation in~\ref{SDF:Approx2}}
+% \label{Section:Explicit:Cons}
+
+% We can write out the right side of~\ref{SDF:Approx2} as
+% \begin{align}
+% \phi(x,y,z) & =  z - \frac{1}{2}c_1 y^2 +\frac{1}{2}(a_1x + 2b_1 y + e_1)\ReLU (-x) \nonumber \\
+% & \quad - \frac{1}{2}(a_2x + 2b_2 y + e_2)\ReLU (x).
+% \end{align}
+% Note that for any $t$, we have $t = \ReLU(t) - \ReLU(-t)$. 
+% Consider the intermediate layer outputs as
+% \begin{align*}
+% t_1  & = \ReLU(z), & t_2  & = \ReLU(-z), \\
+% t_3  & = \ReLU(c_1),& t_4  & = \ReLU(-c_1), \\
+% t_5  & = \ReLU(y^2), & & \\
+% t_6  & = \ReLU(a_1x), & t_7  & = \ReLU(-a_1x), \\
+% t_8  & = \ReLU(b_1y), & t_9  & = \ReLU(-b_1y), \\
+% t_{10} & = \ReLU(e_1), & t_{11} & = \ReLU(-e_1) \\
+% t_{12} &= \ReLU(a_2x), & t_{13} &= \ReLU(-a_2x) \\
+% t_{14} &= \ReLU(b_2y), & t_{15} &= \ReLU(-b_2y) \\
+% t_{16} &= \ReLU(e_2), & t_{17} &= \ReLU(-e_2) \\
+% t_{18} &= \ReLU(x), & t_{19} &= \ReLU(-x)
+% \end{align*}
+
+% We can then express $\phi(x,y,z)$ as a quadratic function in $t_i,1\leq i \leq 19$:
+% \begin{align*}
+% \phi(x,y,z) & = t_1 -t_2 -\frac{1}{2}(t_3 -t_4)t_5 \\
+% & + \frac{1}{2}(t_6-t_7+t_8-t_9+t_{10}-t_{11})t_{19} \\
+% & -\frac{1}{2}(t_{12}-t_{13}+t_{14}-t_{15}+t_{16}-t_{17})t_{18} 
+% \end{align*}
+
+\input{sections/07_appendix2}

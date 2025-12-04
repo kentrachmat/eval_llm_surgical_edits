@@ -1,0 +1,120 @@
+\subsection{Additional details}
+\label{supp_sec:additional_exp_details}
+In this section, we provide an in-depth discussion of various datasets used along with finer implementation details that enhance the reproducibility of our method.
+\subsubsection{Datasets}
+We provide a detailed description of various datasets used along with a representative sample of all of them.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Colored MNIST(CMNIST)}: CMNIST is an adaptation of the MNIST, that introduces color variation to the images. For each digit class, the majority \( (1-\alpha) \) of the images are correlated with the corresponding color \( c_i \), with \( i \) matching the digit label \( y \). The remaining images are randomly assigned one of the other colors \( c_j \), where \( j \neq y \). The challenge of this dataset lies in identifying the digits despite the strong color bias. To incorporate color variability, a noise vector \( v \) drawn from a normal distribution is added to \( c_i \). The dataset and its characteristics are illustrated in \cref{fig:training_data}. Among multiple choices of severity, we choose the most severe corruption to simulate the worst-case scenario as done in other works.
+    \item \textbf{Corrupted CIFAR10 (C-CIFAR10)}: The Corrupted CIFAR dataset represents an evolved form of the classic CIFAR set, with an emphasis on two particular features: the object depicted and the type of corruption applied. In an approach akin to that used for CMNIST, this dataset adopts an array of corruption styles, labeled from \( c_0 \), symbolizing blurring, to \( c_9 \), indicative of snow. Within each object category, a proportion \( 1-\alpha \) of the images is intentionally altered with the corruption type \( c_i \), corresponding to the object's label \( y \). The remainder of the images is processed with a randomly selected corruption type \( c_j \), chosen to ensure \( j \neq y \). In our dataset, we employ the highest degree of corruption out of the five levels outlined in the original CMNIST dataset. Illustrative samples from this dataset are demonstrated in \cref{fig:training_data}.
+    \item \textbf{Biased FFHQ (BFFHQ)}\footnote{\url{https://github.com/kakaoenterprise/Learning-Debiased-Disentangled}} The BFFHQ dataset is a selectively reduced subset derived from the larger FFHQ database of facial images, with a focus on the attributes of gender and age. Gender is designated as the primary attribute of analysis, with age being the secondary attribute that could introduce bias. The gender classification is binary, encompassing male and female categories. The dataset predominantly features male images of subjects aged between 40 and 59, whereas female images are generally of subjects aged between 10 and 29. Samples that defy these age associations—such as younger male or older female subjects—are also present, countering the main age distribution.
+    \item \textbf{Biased Action Recognition (BAR)} : 
+The Biased Action Recognition (BAR) dataset comprises real-world images classified into six action categories, each biased towards specific locations. The chosen pairs encompass six common action-location combinations: Climbing on a Rock Wall, Diving underwater, Fishing on a Water Surface, Racing on a Paved Track, Throwing on a Playing Field, and Vaulting into the Sky. The testing set consists solely of samples that present conflicts in bias. Consequently, achieving higher accuracy results on this set indicates superior debiasing performance.
+\end{itemize}
+
+
+\subsubsection{Baselines}
+\label{supp_baselines}
+In this section, we provide a detailed overview of the baselines:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Empirical Risk Minimization (ERM)} \cite{DBLP:journals/tnn/Vapnik99}: Standard ERM using cross-entropy loss.
+    \item \textbf{Group DRO (GDRO)} \cite{sagawa2019distributionally}: A supervised approach that utilizes group labels to identify the worst group and learn an unbiased classifier.
+    \item  \textbf{Learning from Failure (LfF)} \cite{NEURIPS2020_eddc3427}: Identifies bias-conflicting points through the Generalized Cross Entropy (GCE) loss and upweighting for debiasing. 
+    \item \textbf{Just Train Twice (JTT) }\cite{liu2021just}: Treats misclassified points by ERM-based classifiers as bias-conflicting and upweights them for debiasing. 
+    \item  \textbf{Disentangled Feature Augmentation (DFA)} \cite{NEURIPS2021_disentangled}: Introducing feature augmentation to improve the diversity of bias-conflicting points and enhance unbiased accuracy.
+    \item  \textbf{Logit Correction (LC)} \cite{liu2023avoiding}: Proposes logit correction for bias mitigation along with MixUp \cite{DBLP:conf/iclr/ZhangCDL18} inspired data augmentation for increasing diversity.
+\end{itemize}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{figures/drawing.pdf}
+    \caption{Samples from training data of CMNIST, Corrupted-CIFAR10 and Biased FFHQ.}
+    \label{fig:training_data}
+\end{figure}
+
+
+\begin{table*}[ht]
+\caption{Optimal hyperparameters for the CMNIST, C-CIFAR10, BAR and BFFHQ datasets determined through extensive experimentation. The tuples represent optimal hyperparameters for Stage 1 and Stage 2, respectively.}
+\label{tab:training_parameters}
+\centering
+\resizebox{\columnwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{cccc}
+\toprule % from booktabs
+\textbf{Parameter} & {\textbf{CMNIST}} & {\textbf{C-CIFAR10, BAR}} & {\textbf{BFFHQ}} \\
+\midrule % from booktabs
+Learning Rate (LR) & {$(1.0 \times 10^{-3}, 1.0 \times 10^{-3})$} & {$(1.0 \times 10^{-3}, 1.0 \times 10^{-4})$} & {$(1.0 \times 10^{-3}, 1.0 \times 10^{-4})$} \\
+Batch Size         & {(64, 64)} & {(256, 256)} & {(64, 64)} \\
+Momentum           & 0.9 & 0.9 & 0.9 \\
+Weight Decay       & {$(1.0 \times 10^{-3}, 0)$} & {$(1.0 \times 10^{-3}, 0)$} & {(0, 0)} \\
+Epochs             & {(100, 100)} & {(100, 200)} & {(10, 100)} \\
+\bottomrule % from booktabs
+\end{tabular}
+}
+\end{table*}
+
+
+\subsubsection{Implementation details}
+In this section, we detail the optimal hyperparameters identified for various datasets, which were instrumental in achieving the results reported in the main manuscript. The optimal hypeparameters obtained for various datasets are listed in \cref{tab:training_parameters}.Additional parameters not mentioned in \cref{tab:training_parameters} follow the default values of PyTorch.\\
+\textbf{Data Augmentations:} The training phase of DeNetDM incorporated specific data augmentation techniques tailored to each dataset. For instance, the CMNIST dataset did not utilize any form of augmentation. In contrast, the C-CIFAR10 and BFFHQ datasets applied Random Horizontal Flip and random cropping, with the latter involving crops from images padded by 4 pixels. These augmentations are critical as they introduce variability into the dataset, aiding the generalization ability of the neural network.
+\\
+\noindent\textbf{Experimental compute:} We utilize RTX 3090 GPUs for all our experiments.\\
+\noindent\textbf{Architectural Details:} Depth modulation is a critical component of our debiasing strategy. We enumerate the architecture specifics of the shallow branches tailored for each dataset below.
+
+\textbf{CMNIST:}
+\begin{lstlisting}
+(shallow branch): Sequential(
+  (c1): Linear(in_features=2352, out_features=100, bias=True)
+  (r1): ReLU()
+  (s1): MLPHiddenlayers(
+    (hidden_layers): ModuleList(
+      (0): Linear(in_features=100, out_features=100, bias=True)
+    )
+    (act): ReLU()
+  )
+)
+\end{lstlisting}
+
+\textbf{C-CIFAR10 and BAR:}
+\begin{lstlisting}
+(shallow branch): Sequential(
+  (c1): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+  (b1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r1): ReLU()
+  (s1): MaxPool2d(kernel_size=(2, 2), stride=2, padding=0, dilation=1, ceil_mode=False)
+  (c2): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+  (b2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r2): ReLU()
+  (s2): MaxPool2d(kernel_size=(2, 2), stride=2, padding=0, dilation=1, ceil_mode=False)
+  (c3): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1))
+  (b3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r3): ReLU()
+  (f1): Flatten(start_dim=1, end_dim=-1)
+)
+(classifier): Linear(in_features=64, out_features=10, bias=True)
+(act): ReLU()
+\end{lstlisting}
+
+\textbf{BFFHQ:}
+\begin{lstlisting}
+(shallow branch): Sequential(
+  (c1): Conv2d(3, 64, kernel_size=(7, 7), stride=(1, 1))
+  (b1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r1): ReLU(inplace=True)
+  (s1): MaxPool2d(kernel_size=(2, 2), stride=2, padding=0, dilation=1, ceil_mode=False)
+  (c2): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1))
+  (b2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r2): ReLU(inplace=True)
+  (s2): MaxPool2d(kernel_size=(2, 2), stride=2, padding=0, dilation=1, ceil_mode=False)
+  (c3): Conv2d(128, 512, kernel_size=(3, 3), stride=(1, 1))
+  (s3): MaxPool2d(kernel_size=(2, 2), stride=2, padding=0, dilation=1, ceil_mode=False)
+  (b3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r3): ReLU(inplace=True)
+  (c4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1))
+  (b4): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (r4): ReLU(inplace=True)
+  (a1): AdaptiveAvgPool2d(output_size=(1, 1))
+  (f1): Flatten(start_dim=1, end_dim=-1)
+)
+\end{lstlisting}
+
+
+
+

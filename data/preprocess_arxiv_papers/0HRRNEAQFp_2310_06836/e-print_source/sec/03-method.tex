@@ -1,0 +1,232 @@
+\section{Method -- Properties, Datasets, and Classifiers}
+\label{sec:method}
+
+Our goal is to examine the ability of large-scale vision models to understand different physical and geometrical properties of the 3D scene, including: scene geometry, material, support relations, shadows, occlusion and depth. 
+Specifically, we conduct linear probing of the features from different layers and time steps of the Stable Diffusion model, and different transformer layers for other models including OpenCLIP, DINOv1, DINOv2 and VQGAN. 
+First, we set up the questions for each property (Section~\ref{sec:property_question}); and then select real image datasets with ground truth annotations for each property (Section~\ref{sec:dataset}). We describe how a classifier is trained to answer the questions, and the grid search for the optimal time step and layer to extract a feature for predicting the property in Section~\ref{sec:sd_representation}. 
+
+
+\subsection{Properties and Questions} 
+\label{sec:property_question}
+Here, we study the large vision model's ability to predict different {\em properties} of the 3D scene; the properties cover the 3D structure and material, 
+the lighting, and the viewpoint. For each property, we propose {\em questions} that classify the relationship between a pair of {\em Regions}, {\em A} and {\em B}, in the same image, 
+based on the features extracted from the large vision model. The properties and questions are:
+\begin{itemize}
+
+
+    \item \emph{Same Plane}: `Are Region {\em A} and Region {\em B} on the same plane?'
+    
+    \item \emph{Perpendicular Plane}: `Are Region {\em A} and Region {\em B} on perpendicular planes?'
+    
+    \item \emph{Material}: `Are Region {\em A} and Region {\em B} made of the same material?' 
+
+    \item \emph{Support Relation}: `Is Region {\em A} (object {\em A}) supported by Region {\em B} (object {\em B})?' 
+
+    \item \emph{Shadow}: `Are Region {\em A} and Region {\em B} in an object-shadow relationship?'  
+    
+    \item \emph{Occlusion}: `Are Region {\em A} and Region {\em B} part of the same object but, separated by occlusion?' 
+    
+    \item \emph{Depth}: 
+    `Does Region {\em A} have a greater average depth than Region {\em B}?'
+    
+    
+\end{itemize}
+
+We choose these properties as they exemplify important aspects of the 3D physical scene: 
+the \emph{Same Plane} and \emph{Perpendicular Plane} questions probe the 3D scene geometry; 
+the \emph{Material} question probes what the surface is made of, \emph{e.g.,} metal, wood, glass, or fabric, rather than its shape; 
+the \emph{Support Relation} question probes the physics of the forces in the 3D scene; 
+the \emph{Shadow} question probes the lighting of the scene; 
+the \emph{Occlusion} and \emph{Depth} questions depend on the viewpoint, and probe the disentanglement of the 3D scene from its viewpoint.
+
+
+
+\begin{table*}[tb!]
+\setlength{\tabcolsep}{6pt}
+\footnotesize
+\centering
+\tabcolsep=0.17cm
+
+\caption{
+\textbf{Overview of the datasets and training/evaluation statistics for the properties investigated.} 
+For each property, we list the image dataset used, and the number of images 
+for the train, val, and test set. 1000 images are used for testing if the original test set is larger than 1000 images. Regions are selected in each image, and pairs of regions are used for all the probe questions.
+}
+
+\begin{tabular}{crrrrrrrr}
+\toprule
+\multicolumn{2}{c}{Property:} & \thead{Same  \\ Plane} & \thead{Perpendicular  \\ Plane} & Material & \thead{Support  \\ Relation} & Shadow & Occlusion & Depth \\
+\midrule
+\multicolumn{2}{c}{Dataset:} & \thead{ScanNetv2} & \thead{ScanNetv2} & \thead{DMS} & \thead{NYUv2} & \thead{SOBA} & \thead{Sep. COCO} & \thead{NYUv2} \\
+\midrule
+\multirow{3}*{Images} &
+\# Train & 400 & 400 & 400 & 400 & 400 & 400 &  400 \\
+& \# Val & 100 & 100 & 100 & 100 & 100 & 100 & 100 \\
+& \# Test & 1000 & 1000 & 1000 & 654 & 160 & 983 & 654 \\
+\midrule
+\multirow{3}*{Regions} & 
+\# Train & 7600 & 4493 & 4997 & 8943 & 3576 & 6799 & 8829 \\
+& \# Val & 1844 & 1112 & 1180 & 1968 & 976 &  1677 & 2075 \\
+& \# Test & 17159 & 10102 & 11364 & 13968 & 1176 & 16993 & 13992 \\
+\midrule
+\multirow{3}*{Pairs} & 
+\# Train & 14360 & 17530 & 18520 & 13992 & 7152 & 19238 & 15322 \\
+& \# Val & 3498 & 4232  & 4284 & 2874 & 1952 & 4724 & 3786 \\
+& \# Test & 32654 & 38640 & 41824 & 21768 & 2352 & 44266 & 24880 \\
+
+\bottomrule
+
+\end{tabular}
+
+
+\label{table:stat_dataset}
+\end{table*}
+
+
+
+\subsection{Datasets} 
+\label{sec:dataset}
+To study the different properties, we adopt various off-the-shelf real image datasets with annotations for the different properties, where the dataset used depends on the property.  
+We repurpose each dataset to support probe questions of the form: 
+$\mathcal{D} = \{ (R_A, R_B, y)_1, \dots, (R_A, R_B, y)_n\}$, 
+where $R_A$, $R_B$ denote a pair of regions, and $y$ is the binary label indicating the answer to the considered question of the probed property.
+For each property, we create a train/val/test split from those of the original datasets, 
+if all three splits are available. 
+While for dataset with only train/test splits available, 
+we divide the original train split into our train/val splits. 
+Table~\ref{table:stat_dataset} summarises the datasets used and the statistics of the splits used. We discuss each property and dataset in more detail next.
+
+
+
+\begin{figure*}[tb!]
+		\centering
+		\includegraphics[height=0.45 \linewidth]{imgs/scene_geometry.pdf}
+		\vspace{-4mm}
+		\caption{\textbf{Example images for probing \emph{scene geometry}.} 
+		The first row shows a sample annotation for the \emph{same plane}, and the second row is a sample annotation for \emph{perpendicular plane}. Here, and in the following figures, ({\em A}, {\em B}) are a positive pair, while ({\em A}, {\em C}) are negative. The images are from the ScanNetv2 dataset~\citep{dai2017scannet} with annotations for planes from~\citep{liu2019planercnn}. 
+  In the first row, the first piece of floor ({\em A}) is on the same plane as the second piece of floor ({\em B}), but is not on the same plane as the surface of the drawers ({\em C}).
+  In the second row, the table top ({\em A}) is perpendicular to the wall ({\em B}), but is not perpendicular to the stool top ({\em C}).
+}
+		\label{figure:scene_geometry}
+ 		\vspace{-6mm}
+\end{figure*}
+
+
+\vspace{-4pt}
+\noindent {\bf Same Plane.} We use the ScanNetv2 dataset~\citep{dai2017scannet} with annotations of planes from~\cite{liu2019planercnn}. Regions are obtained via splitting plane masks into several regions. A pair of regions are \emph{positive} if they are on the same plane, and \emph{negative} if they are on different planes. The first row of Figure~\ref{figure:scene_geometry} is an example.
+
+\vspace{-4pt}
+\noindent {\bf Perpendicular Plane.} We use the ScanNetv2 dataset~\citep{dai2017scannet}. 
+We use the annotations from~\cite{liu2019planercnn} which provide segmentation masks as well as plane parameters for planes in the image, so that we can obtain the normal of planes to judge whether they are perpendicular or not.
+A pair of regions are \emph{positive} if they are on perpendicular planes, 
+and \emph{negative} if they are not on perpendicular planes. The second row of Figure~\ref{figure:scene_geometry} is an example.
+
+
+
+\begin{figure*}[h]
+		\centering
+		\includegraphics[height=0.58 \linewidth]{imgs/material_support_shadow.pdf}
+		\vspace{-19pt}
+		\caption{\textbf{Example images for probing \emph{material, support relation and shadow}.} 
+		The first row is for \emph{material}, the second row for \emph{support relation}, and the third row for \emph{shadow}. 
+ First row: the material images are from the DMS dataset~\citep{dmsdataset}. The paintings are both covered with glass ({\em A} and {\em B}) whereas the curtain ({\em C}) is made of fabric.
+ Second row: the support relation images are from the NYUv2 dataset~\citep{silberman2012indoor}. The paper ({\em A}) is supported by the table ({\em B}), but it is not supported by the chair ({\em C}).
+ Third row: the shadow images are from the SOBA dataset~\citep{Wang_2020_soba}.
+  The person ({\em A}) has the shadow ({\em B}), not the shadow ({\em C}).
+  }
+		\label{figure:material_support_shadow}
+ 		\vspace{-2mm}
+\end{figure*}
+
+
+
+\vspace{-2pt}
+\noindent {\bf Material.} We adopt the recent DMS dataset~\citep{dmsdataset} to study the material property, 
+which provides dense annotations of material category for each pixel in the images. Therefore, we can get the mask of each material via grouping pixels with the same material label together.
+In total, there are 46 pre-defined material categories.
+Regions are obtained by splitting the mask of each material into different connected components, \emph{i.e.,} they are simply groups with the same material labels, yet not connected.
+A pair of regions are \emph{positive} if they are of the same material category, and \emph{negative} if they are of different material categories. First row of Figure~\ref{figure:material_support_shadow} is an example.
+
+
+\vspace{-4pt}
+\noindent {\bf Support Relation.} We use the NYUv2 dataset~\citep{silberman2012indoor} to probe the support relation. Segmentation annotations for different regions (objects or surfaces) are provided, as well as their support relations.
+Support relation here means an object is physically supported by another object, \emph{i.e.,} the second object will undertake the force to enable the first object to stay at its position.
+Regions are directly obtained via the segmentation annotations. 
+A pair of regions are \emph{positive} if the first region is supported by the second region, 
+and \emph{negative} if the first region is not supported by the second region. 
+Second row of Figure~\ref{figure:material_support_shadow} is an example.
+
+
+\vspace{-4pt}
+\noindent {\bf Shadow.} We use the SOBA dataset~\citep{Wang_2020_soba,Wang_2021_soba} to study the shadows which depend on the lighting of the scene. 
+Segmentation masks for each object and shadow, as well as their associations are provided in the dataset annotations.
+Regions are directly obtained from the annotated object and shadow masks. 
+In a region pair, there is one object mask and one shadow mask. 
+A pair of regions are  \emph{positive} if the shadow mask is the shadow of the object, 
+and \emph{negative} if the shadow mask is the shadow of another object. 
+Third row of Figure~\ref{figure:material_support_shadow} is an example.
+
+
+\begin{figure*}[h]
+		\centering
+		\includegraphics[height=0.4 \linewidth]{imgs/viewpoint.pdf}
+		\vspace{-4mm}
+		\caption{\textbf{Example images for probing \emph{viewpoint-dependent properties (occlusion \& depth)}.} 
+		The first row is for \emph{occlusion} and the second row is for \emph{depth}. 
+ First row: the occlusion images are from the Separated COCO dataset~\citep{zhan2022triocc}. The sofa ({\em A}) and the sofa ({\em B}) are part of the same object, whilst the monitor ({\em C}) is not part of the sofa.
+    Second row: the depth images are from the NYUv2 dataset~\citep{silberman2012indoor}. The chair ({\em A}) is farther away than the object on the floor ({\em B}), but it is closer than the cupboard ({\em C}).}
+    \vspace{-4mm}
+\label{figure:viewpoint}
+\end{figure*}
+
+\vspace{-4pt}
+\noindent {\bf Occlusion.} We use the Seperated COCO dataset~\citep{zhan2022triocc} to study the occlusion (object seperation) problem. 
+Regions are different connected components of objects (and the object mask if it is not separated), \emph{i.e.,} groups of connected pixels belonging to the same object. 
+A pair of regions are \emph{positive} if they are different components of the same object separated due to occlusion, and \emph{negative} if they are not from the same object. First row of Figure~\ref{figure:viewpoint} is an example.
+
+\vspace{-4pt}
+\noindent {\bf Depth.} We use the NYUv2 dataset~\citep{silberman2012indoor}, which provides mask annotations for different objects and regions, together with depth for each pixel. 
+A pair of regions are \emph{positive} if the first region has a greater average depth than the second region, 
+and \emph{negative} if the first region has a less average depth than the second region. 
+The average depth of a region is calculated via the average of depth value of each pixel the region contains. Second row of Figure~\ref{figure:viewpoint} is an example.
+
+
+\subsection{Property Probing}
+\label{sec:sd_representation}
+
+Take Stable Diffusion as an example,
+we aim to determine which features best represent different properties.
+To obtain features from an off-the-shelf Stable Diffusion network, we follow the approach
+of~\cite{tang2023emergent} used for DIFT, where noise is added to the input image in the latent space, and  features are extracted from different layers and time steps of the model.
+While probing the properties, linear classifiers are used to infer the relationships between {\em regions}. The region representation is obtained by a simple average pooling of the diffusion features over the annotated region or object. 
+
+\vspace{-4pt}
+\noindent {\bf Extracting Stable Diffusion Features.}
+We add noise $\epsilon \sim \mathcal{N}(0, \mathbf{I})$ of time step $t \in [0, T]$ to the input image $x_0$'s latent representation $z_0$ encoded by the VAE encoder:
+\begin{align}
+z_t = \sqrt{\alpha_t} z_0 + (\sqrt{1 - \alpha_t}) \epsilon
+\end{align}
+and then extract features from the immediate layers of a pre-trained diffusion model, $f_{\theta}(\cdot)$ after feeding $z_t$ and $t$ in $f_{\theta}$ ($f_{\theta}$ is a U-Net consisting of 4 downsampling layers and 4 upsampling layers):
+\begin{align}
+F_{t, l} = f_{\theta_l} (z_t, t)
+\end{align}
+where $f_{\theta_l}$ is the $l$-th U-Net layer.
+In this way, we can get the representation of an image $F_{t,l}$ at time step $t$ and $l$-th U-Net layer for the probe. We upsample the obtained representation to the size of the original image with bi-linear, then use the region mask to get a region-wise feature vector, by averaging
+the feature vectors of each pixel it contains, \emph{i.e.,} average pooling.   
+\begin{align}
+\label{eq:ave_pool}
+v_{k,t,l} = \text{avgpool}(R_k \odot \text{upsample}(F_{t,l}))
+\end{align}
+where $v_{k,t,l}$ is the feature vector of the $k$-th region $R_k$. $\odot$ here is a per-pixel product of the region mask and the feature. For other models, including CLIP, DINOv1, DINOv2 and VQGAN, we feed the image into the ViT/Transformer and extract features from different layers. Then use average pooling as in Equation~\ref{eq:ave_pool} to obtain the feature for each region.
+
+\vspace{-2pt}
+\noindent {\bf Linear Probing.}
+After extracting features from large-scale vision models, we use a linear classifier (a linear SVM) to examine how well these features can be used to answer questions to each of the properties. 
+Specifically, the input of the classifier is the difference or absolute difference between the feature vectors of Region {\em A} and Region {\em B}, 
+\emph{i.e.,} $v_A - v_B$ or $|v_A - v_B|$, and the output is a Yes/No answer to the question. 
+Denoting the answer to the question as $Q$, then since the questions about \emph{Same Plane}, \emph{Perpendicular Plane}, \emph{Material}, \emph{Shadow} and \emph{Occlusion} are symmetric relations,  $Q(v_A, v_B) = Q(v_B, v_A)$. 
+However, the questions about \emph{Support Relation} and \emph{Depth} are not symmetric.
+Thus, we use $|v_A - v_B|$ (a symmetric function) as input for the first group of questions, 
+and $v_A - v_B$ (non-symmetric) for the rest of questions. 
+We train the linear classifier on the train set via the positive/negative samples of region pairs for each property; 
+do a grid search on the validation set to find (i) the optimal time step $t$ (only for Stable Diffusion), (ii) the U-Net layer $l$ for Stable Diffusion and the Transformer layer $l$ for other models, and (iii) the SVM regularization parameter $C$; and evaluate the performance on the test set. The grid search is only feasible because our proposed protocol is lightweight, and can assess the effectiveness of features for different downstream tasks with minimal resource demands.

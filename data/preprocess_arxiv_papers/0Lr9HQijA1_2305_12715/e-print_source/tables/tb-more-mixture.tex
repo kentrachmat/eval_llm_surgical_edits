@@ -1,0 +1,137 @@
+% \begin{table}[]
+% \centering
+% \caption{Test accuracy results of our method on \textbf{more mixture of imprecise label configurations}. Our method naturally extends to combinations of various imprecise label configurations, and demonstrates robust performance. $q$ and $\eta$ are partial and noise ratio, respectively.\wjd{TODO: cifar100 to the right to save space}}
+% \label{tab:main-mix-more}
+% \resizebox{0.6 \textwidth}{!}{%
+% \begin{tabular}{@{}c|c|c|cccc@{}}
+% \toprule
+% \multicolumn{1}{l|}{Dataset} & \multicolumn{1}{l|}{\# Labels} & \multicolumn{1}{c|}{$q$} & \multicolumn{1}{c}{$\eta=0.0$} & \multicolumn{1}{c}{$\eta=0.1$} & \multicolumn{1}{c}{$\eta=0.2$} &  \multicolumn{1}{c}{$\eta=0.3$} \\ \midrule
+%  &
+%    &
+%   0.1 &
+%   95.29\scriptsize{±0.18} &
+%   93.90\scriptsize{±0.11} &
+%   92.02\scriptsize{±0.22} &
+%   89.02\scriptsize{±0.63} \\
+%  &
+%    &
+%   0.3 &
+%   95.13\scriptsize{±0.16} &
+%   92.95\scriptsize{±0.37} &
+%   90.14\scriptsize{±0.61} &
+%   87.31\scriptsize{±0.27} \\
+%  &
+%   \multirow{-3}{*}{5,000} &
+%   0.5 &
+%   95.04\scriptsize{±0.10} &
+%   92.18\scriptsize{±0.52} &
+%   88.39\scriptsize{±0.62} &
+%   83.09\scriptsize{±0.56} \\ \cmidrule(l){2-7} 
+%  &
+%    &
+%   0.1 &
+%   94.48\scriptsize{±0.09} &
+%   91.68\scriptsize{±0.17} &
+%   87.17\scriptsize{±0.51} &
+%   81.04\scriptsize{±1.13} \\
+%  &
+%    &
+%   0.3 &
+%   94.35\scriptsize{±0.05} &
+%   89.94\scriptsize{±1.90} &
+%   82.06\scriptsize{±1.52} &
+%   69.20\scriptsize{±2.16} \\
+% \multirow{-6}{*}{CIFAR-10} &
+%   \multirow{-3}{*}{1,000} &
+%   0.5 &
+%   93.92\scriptsize{±0.29} &
+%   86.34\scriptsize{±2.37} &
+%   70.86\scriptsize{±2.78} &
+%   38.19\scriptsize{±6.55} \\ \midrule
+%  &
+%    &
+%   0.01 &
+%   69.90\scriptsize{±0.23} &
+%   68.74\scriptsize{±0.15} &
+%   66.87\scriptsize{±0.34} &
+%   65.34\scriptsize{±0.02} \\
+%  &
+%    &
+%   0.05 &
+%   69.85\scriptsize{±0.20} &
+%   68.08\scriptsize{±0.28} &
+%   66.78\scriptsize{±0.43} &
+%   64.83\scriptsize{±0.17} \\
+%  &
+%   \multirow{-3}{*}{10,000} &
+%   0.1 &
+%   68.92\scriptsize{±0.45} &
+%   67.15\scriptsize{±0.63} &
+%   64.44\scriptsize{±1.29} &
+%   60.26\scriptsize{±1.96} \\ \cmidrule(l){2-7} 
+%  &
+%    &
+%   0.01 &
+%   65.66\scriptsize{±0.27} &
+%   63.13\scriptsize{±0.27} &
+%   60.93\scriptsize{±0.17} &
+%   58.36\scriptsize{±0.56} \\
+%  &
+%    &
+%   0.05 &
+%   65.06\scriptsize{±0.04} &
+%   62.28\scriptsize{±0.47} &
+%   58.92\scriptsize{±0.34} &
+%   53.24\scriptsize{±1.69} \\
+% \multirow{-6}{*}{CIFAR-100} &
+%   \multirow{-3}{*}{5,000} &
+%   0.1 &
+%   63.32\scriptsize{±0.55} &
+%   58.73\scriptsize{±1.33} &
+%   53.27\scriptsize{±1.57} &
+%   46.19\scriptsize{±1.04} \\ \bottomrule
+% \end{tabular}%
+% }
+% \end{table}
+
+
+
+\begin{table}[t!]
+\centering
+\caption{Robust test accuracy results of our method on \textbf{more mixture of imprecise label configurations}. 
+% Our method % naturally extends to combinations of various imprecise label configurations, and 
+% demonstrates robust performance. 
+$l$, $q$ and $\eta$ are the number of labels, partial, and noise ratio. 
+% \ch{TODO: make this table into a figure to save space}
+}
+\label{tab:main-mix-more}
+% \vspace{-0.05in}
+\resizebox{0.9 \textwidth}{!}{%
+\begin{tabular}{@{}c|c|cccc|c|c|cccc@{}}
+\toprule
+
+% \multicolumn{6}{c|}{CIFAR-10} & \multicolumn{6}{c}{CIFAR-100}                                 \\ \midrule
+% \multicolumn{1}{c|}{$l$} &
+%   \multicolumn{1}{c|}{$q$} &
+%   $\eta$=0.0 &
+%   $\eta$=0.1 &
+%   $\eta$=0.2 &
+%   $\eta$=0.3 &
+%   \multicolumn{1}{c|}{$l$} &
+%   \multicolumn{1}{c|}{$q$} &
+%   $\eta$=0.0 &
+%   $\eta$=0.1 &
+%   $\eta$=0.2 &
+%   $\eta$=0.3 \\ \midrule
+\multirow{2}{*}{$l$} & \multirow{2}{*}{$q$} & \multicolumn{4}{c|}{CIFAR10} & \multirow{2}{*}{$l$} & \multirow{2}{*}{$q$} & \multicolumn{4}{c}{CIFAR100} \\
+                       &     & $\eta$=0.0 & $\eta$=0.1 & $\eta$=0.2 & $\eta$=0.3 &                         &      & $\eta$=0.0 & $\eta$=0.1 & $\eta$=0.2 & $\eta$=0.3 \\ \midrule
+\multirow{3}{*}{5,000} & 0.1 &  95.29\scriptsize{±0.18}   &  93.90\scriptsize{±0.11}   &  92.02\scriptsize{±0.22}   &  89.02\scriptsize{±0.63}   & \multirow{3}{*}{10,000} & 0.01 &  69.90\scriptsize{±0.23}   & 68.74\scriptsize{±0.15}    &  66.87\scriptsize{±0.34}   &  65.34\scriptsize{±0.02}   \\
+                       & 0.3 &  95.13\scriptsize{±0.16}   &  92.95\scriptsize{±0.37}    &  90.14\scriptsize{±0.61}   &   87.31\scriptsize{±0.27}    &                         & 0.05 &  69.85\scriptsize{±0.20}    & 68.08\scriptsize{±0.28}    &  66.78\scriptsize{±0.43}   & 64.83\scriptsize{±0.17}     \\
+                       & 0.5 &  95.04\scriptsize{±0.10}  &  92.18\scriptsize{±0.52}   & 88.39\scriptsize{±0.62} &  83.09\scriptsize{±0.56}   &                         & 0.10  &  68.92\scriptsize{±0.45}   &  67.15\scriptsize{±0.63}   &   64.44\scriptsize{±1.29}  & 60.26\scriptsize{±1.96}     \\ \midrule
+\multirow{3}{*}{1,000} & 0.1 &  94.48\scriptsize{±0.09}   & 91.68\scriptsize{±0.17}    &   87.17\scriptsize{±0.51}  &  81.04\scriptsize{±1.13}   & \multirow{3}{*}{5,000}  & 0.01 & 65.66\scriptsize{±0.27}  &  63.13\scriptsize{±0.27}   &  60.93\scriptsize{±0.17}   &   58.36\scriptsize{±0.56}  \\
+                       & 0.3 &    94.35\scriptsize{±0.05}   &  89.94\scriptsize{±1.90}   &  82.06\scriptsize{±1.52}   & 69.20\scriptsize{±2.16}    &                         & 0.05 &  65.06\scriptsize{±0.04}   & 62.28\scriptsize{±0.47}    & 58.92\scriptsize{±0.34} &  53.24\scriptsize{±1.69}    \\
+                       & 0.5 &  93.92\scriptsize{±0.29}   &  86.34\scriptsize{±2.37}   &   70.86\scriptsize{±2.78}  &   38.19\scriptsize{±6.55}  &                         & 0.10  &  63.32\scriptsize{±0.55}   &   58.73\scriptsize{±1.33}  &  53.27\scriptsize{±1.57}   & 46.19\scriptsize{±1.04}    \\ \bottomrule
+\end{tabular}%
+}
+\vspace{-0.1in}
+\end{table}

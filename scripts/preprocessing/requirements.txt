@@ -1,0 +1,16 @@
+# For API requests and web scraping
+requests
+beautifulsoup4
+# For OpenReview and arXiv integration
+openreview-py
+arxiv
+# For data handling in batch mode
+pandas
+# For progress bars
+tqdm
+# For reading environment variables from .env file
+python-dotenv
+# For PDF processing and image conversion
+PyPDF2
+pdf2image
+Pillow

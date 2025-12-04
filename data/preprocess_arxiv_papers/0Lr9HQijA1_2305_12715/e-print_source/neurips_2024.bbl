@@ -1,0 +1,665 @@
+\begin{thebibliography}{100}
+
+\bibitem{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 770--778, 2016.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 30, 2017.
+
+\bibitem{devlin2018bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock Bert: Pre-training of deep bidirectional transformers for language understanding.
+\newblock {\em arXiv preprint arXiv:1810.04805}, 2018.
+
+\bibitem{dosovitskiy2020image}
+Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, et~al.
+\newblock An image is worth 16x16 words: Transformers for image recognition at scale.
+\newblock {\em arXiv preprint arXiv:2010.11929}, 2020.
+
+\bibitem{radford2021learning}
+Alec Radford, Jong~Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et~al.
+\newblock Learning transferable visual models from natural language supervision.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 8748--8763. PMLR, 2021.
+
+\bibitem{openai2023gpt4}
+OpenAI.
+\newblock Gpt-4 technical report.
+\newblock 2023.
+
+\bibitem{cour2011learning}
+Timothee Cour, Ben Sapp, and Ben Taskar.
+\newblock Learning from partial labels.
+\newblock {\em The Journal of Machine Learning Research}, 12:1501--1536, 2011.
+
+\bibitem{Luo2010LearningFC}
+Jie Luo and Francesco Orabona.
+\newblock Learning from candidate labeling sets.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2010.
+
+\bibitem{Feng2020ProvablyCP}
+Lei Feng, Jiaqi Lv, Bo~Han, Miao Xu, Gang Niu, Xin Geng, Bo~An, and Masashi Sugiyama.
+\newblock Provably consistent partial-label learning.
+\newblock {\em ArXiv}, abs/2007.08929, 2020.
+
+\bibitem{Wang2019AdaptiveGG}
+Dengbao Wang, Min-Ling Zhang, and Li~Li.
+\newblock Adaptive graph guided disambiguation for partial label learning.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, 44:8796--8811, 2019.
+
+\bibitem{wen2021leveraged}
+Hongwei Wen, Jingyi Cui, Hanyuan Hang, Jiabin Liu, Yisen Wang, and Zhouchen Lin.
+\newblock Leveraged weighted loss for partial label learning.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 11091--11100. PMLR, 2021.
+
+\bibitem{revisitpllwu22l}
+Dong-Dong Wu, Deng-Bao Wang, and Min-Ling Zhang.
+\newblock Revisiting consistency regularization for deep partial label learning.
+\newblock In Kamalika Chaudhuri, Stefanie Jegelka, Le~Song, Csaba Szepesvari, Gang Niu, and Sivan Sabato, editors, {\em Proceedings of the International Conference on Machine Learning (ICML)}, volume 162 of {\em Proceedings of Machine Learning Research}, pages 24212--24225. PMLR, 17--23 Jul 2022.
+
+\bibitem{wang2022pico}
+Haobo Wang, Ruixuan Xiao, Yixuan Li, Lei Feng, Gang Niu, Gang Chen, and Junbo Zhao.
+\newblock Pi{CO}: Contrastive label disambiguation for partial label learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2022.
+
+\bibitem{lee2013pseudo}
+Dong-Hyun Lee et~al.
+\newblock Pseudo-label: The simple and efficient semi-supervised learning method for deep neural networks.
+\newblock In {\em Workshop on challenges in representation learning, ICML}, page 896, 2013.
+
+\bibitem{samuli2017temporal}
+Laine Samuli and Aila Timo.
+\newblock Temporal ensembling for semi-supervised learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, page~6, 2017.
+
+\bibitem{berthelot2019mixmatch}
+David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, and Colin~A Raffel.
+\newblock Mixmatch: A holistic approach to semi-supervised learning.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 32, 2019.
+
+\bibitem{berthelot2019remixmatch}
+David Berthelot, Nicholas Carlini, Ekin~D Cubuk, Alex Kurakin, Kihyuk Sohn, Han Zhang, and Colin Raffel.
+\newblock Remixmatch: Semi-supervised learning with distribution matching and augmentation anchoring.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2019.
+
+\bibitem{sohn2020fixmatch}
+Kihyuk Sohn, David Berthelot, Nicholas Carlini, Zizhao Zhang, Han Zhang, Colin~A Raffel, Ekin~Dogus Cubuk, Alexey Kurakin, and Chun-Liang Li.
+\newblock Fixmatch: Simplifying semi-supervised learning with consistency and confidence.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 33, 2020.
+
+\bibitem{xie2020self}
+Qizhe Xie, Minh-Thang Luong, Eduard Hovy, and Quoc~V Le.
+\newblock Self-training with noisy student improves imagenet classification.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 10687--10698, 2020.
+
+\bibitem{zhang2021flexmatch}
+Bowen Zhang, Yidong Wang, Wenxin Hou, Hao Wu, Jindong Wang, Manabu Okumura, and Takahiro Shinozaki.
+\newblock Flexmatch: Boosting semi-supervised learning with curriculum pseudo labeling.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 34, 2021.
+
+\bibitem{wang2022debiased}
+Xudong Wang, Zhirong Wu, Long Lian, and Stella~X Yu.
+\newblock Debiased learning from naturally imbalanced pseudo-labels.
+\newblock In {\em Proceedings of the IEEE/CVF International Conference on Computer Vision (CVPR)}, pages 14647--14657, 2022.
+
+\bibitem{wang2023freematch}
+Yidong Wang, Hao Chen, Qiang Heng, Wenxin Hou, Yue Fan, , Zhen Wu, Jindong Wang, Marios Savvides, Takahiro Shinozaki, Bhiksha Raj, Bernt Schiele, and Xing Xie.
+\newblock Freematch: Self-adaptive thresholding for semi-supervised learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{chen2023softmatch}
+Hao Chen, Ran Tao, Yue Fan, Yidong Wang, Jindong Wang, Bernt Schiele, Xing Xie, Bhiksha Raj, and Marios Savvides.
+\newblock Softmatch: Addressing the quantity-quality trade-off in semi-supervised learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{Xiao2015LearningFM}
+Tong Xiao, Tian Xia, Yi~Yang, Chang Huang, and Xiaogang Wang.
+\newblock Learning from massive noisy labeled data for image classification.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 2691--2699, 2015.
+
+\bibitem{alan2016noisyicaspps}
+Alan~Joseph Bekker and Jacob Goldberger.
+\newblock Training deep neural-networks based on unreliable labels.
+\newblock In {\em 2016 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, pages 2682--2686, 2016.
+
+\bibitem{Goldberger2016TrainingDN}
+Jacob Goldberger and Ehud Ben-Reuven.
+\newblock Training deep neural-networks using a noise adaptation layer.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2016.
+
+\bibitem{Ghosh2017RobustLF}
+Aritra Ghosh, Himanshu Kumar, and P.~Shanti Sastry.
+\newblock Robust loss functions under label noise for deep neural networks.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)}, 2017.
+
+\bibitem{Han2018CoteachingRT}
+Bo~Han, Quanming Yao, Xingrui Yu, Gang Niu, Miao Xu, Weihua Hu, Ivor Wai-Hung Tsang, and Masashi Sugiyama.
+\newblock Co-teaching: Robust training of deep neural networks with extremely noisy labels.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2018.
+
+\bibitem{Zhang2018GeneralizedCE}
+Zhilu Zhang and Mert Sabuncu.
+\newblock Generalized cross entropy loss for training deep neural networks with noisy labels.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 31, 2018.
+
+\bibitem{Li2018LearningTL}
+Junnan Li, Yongkang Wong, Qi~Zhao, and M.~Kankanhalli.
+\newblock Learning to learn from noisy labeled data.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 5046--5054, 2018.
+
+\bibitem{Wang2019SymmetricCE}
+Yisen Wang, Xingjun Ma, Zaiyi Chen, Yuan Luo, Jinfeng Yi, and James Bailey.
+\newblock Symmetric cross entropy for robust learning with noisy labels.
+\newblock {\em Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)}, pages 322--330, 2019.
+
+\bibitem{Liu2020EarlyLearningRP}
+Sheng Liu, Jonathan Niles-Weed, Narges Razavian, and Carlos Fernandez-Granda.
+\newblock Early-learning regularization prevents memorization of noisy labels.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 33, 2020.
+
+\bibitem{Li2020DivideMixLW}
+Junnan Li, Richard Socher, and Steven~C.H. Hoi.
+\newblock Dividemix: Learning with noisy labels as semi-supervised learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2020.
+
+\bibitem{Ma2020NormalizedLF}
+Xingjun Ma, Hanxun Huang, Yisen Wang, Simone Romano, Sarah~Monazam Erfani, and James Bailey.
+\newblock Normalized loss functions for deep learning with noisy labels.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, 2020.
+
+\bibitem{wei2022self}
+Qi~Wei, Haoliang Sun, Xiankai Lu, and Yilong Yin.
+\newblock Self-filtering: A noise-aware sample selection for label noise with confidence penalization.
+\newblock In {\em European Conference on Computer Vision}, pages 516--532. Springer, 2022.
+
+\bibitem{Zhang2021LearningNT}
+Yivan Zhang, Gang Niu, and Masashi Sugiyama.
+\newblock Learning noise transition matrix from only noisy labels via total variation regularization.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, 2021.
+
+\bibitem{wei2023fine}
+Qi~Wei, Lei Feng, Haoliang Sun, Ren Wang, Chenhui Guo, and Yilong Yin.
+\newblock Fine-grained classification with noisy labels.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pages 11651--11660, 2023.
+
+\bibitem{ibrahim2023deep}
+Shahana Ibrahim, Tri Nguyen, and Xiao Fu.
+\newblock Deep learning from crowdsourced labels: Coupled cross-entropy minimization, identifiability, and regularization.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{wei2023aggregate}
+Jiaheng Wei, Zhaowei Zhu, Tianyi Luo, Ehsan Amid, Abhishek Kumar, and Yang Liu.
+\newblock To aggregate or not? learning with separate noisy labels.
+\newblock {\em Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining}, Aug 2023.
+
+\bibitem{zhang2022survey}
+Jieyu Zhang, Cheng-Yu Hsieh, Yue Yu, Chao Zhang, and Alexander Ratner.
+\newblock A survey on programmatic weak supervision, 2022.
+
+\bibitem{wu2022learning}
+Renzhi Wu, Shen-En Chen, Jieyu Zhang, and Xu~Chu.
+\newblock Learning hyper label model for programmatic weak supervision.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{ilse2018attention}
+Maximilian Ilse, Jakub Tomczak, and Max Welling.
+\newblock Attention-based deep multiple instance learning.
+\newblock In {\em International Conference on Machine Learning (ICML)}, pages 2127--2136. PMLR, 2018.
+
+\bibitem{lu2018minimal}
+Nan Lu, Gang Niu, Aditya~Krishna Menon, and Masashi Sugiyama.
+\newblock On the minimal supervision for training any binary classifier from only unlabeled data.
+\newblock {\em arXiv preprint arXiv:1808.10585}, 2018.
+
+\bibitem{scott2020learning}
+Clayton Scott and Jianxin Zhang.
+\newblock Learning from label proportions: A mutual contamination framework.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 33:22256--22267, 2020.
+
+\bibitem{zhang2020aggre}
+Y.~Zhang, N.~Charoenphakdee, Z.~Wu, and M.~Sugiyama.
+\newblock Learning from aggregate observations.
+\newblock pages 7993--8005, 2020.
+
+\bibitem{garg2021mixture}
+Saurabh Garg, Yifan Wu, Alex Smola, Sivaraman Balakrishnan, and Zachary~C. Lipton.
+\newblock Mixture proportion estimation and pu learning: A modern approach, 2021.
+
+\bibitem{feng2021pointwise}
+Lei Feng, Senlin Shu, Nan Lu, Bo~Han, Miao Xu, Gang Niu, Bo~An, and Masashi Sugiyama.
+\newblock Pointwise binary classification with pairwise confidence comparisons.
+\newblock In {\em International Conference on Machine Learning}, pages 3252--3262. PMLR, 2021.
+
+\bibitem{campagner2021learnability}
+Andrea Campagner.
+\newblock Learnability in “learning from fuzzy labels”.
+\newblock In {\em 2021 IEEE International Conference on Fuzzy Systems (FUZZ-IEEE)}, pages 1--6. IEEE, 2021.
+
+\bibitem{lian2022arnet}
+Zheng Lian, Mingyu Xu, Lan Chen, Licai Sun, Bin Liu, and Jianhua Tao.
+\newblock Arnet: Automatic refinement network for noisy partial label learning.
+\newblock {\em arXiv preprint arXiv:2211.04774}, 2022.
+
+\bibitem{xu2023dali}
+Mingyu Xu, Zheng Lian, Lei Feng, Bin Liu, and Jianhua Tao.
+\newblock Dali: Dynamically adjusted label importance for noisy partial label learning, 2023.
+
+\bibitem{wang2019partial}
+Qian-Wei Wang, Yu-Feng Li, and Zhi-Hua Zhou.
+\newblock Partial label learning with unlabeled data.
+\newblock In {\em IJCAI}, pages 3755--3761, 2019.
+
+\bibitem{wang2020semi}
+Wei Wang and Min-Ling Zhang.
+\newblock Semi-supervised partial label learning via confidence-rated margin maximization.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 33:6982--6993, 2020.
+
+\bibitem{xie2020unsupervised}
+Qizhe Xie, Zihang Dai, Eduard Hovy, Thang Luong, and Quoc Le.
+\newblock Unsupervised data augmentation for consistency training.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 33, 2020.
+
+\bibitem{yao2021instance}
+Yu~Yao, Tongliang Liu, Mingming Gong, Bo~Han, Gang Niu, and Kun Zhang.
+\newblock Instance-dependent label-noise learning under a structural causal model.
+\newblock {\em Advances in Neural Information Processing Systems}, 34:4409--4420, 2021.
+
+\bibitem{lv2020progressive}
+Jiaqi Lv, Miao Xu, Lei Feng, Gang Niu, Xin Geng, and Masashi Sugiyama.
+\newblock Progressive identification of true labels for partial-label learning.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 6500--6510. PMLR, 2020.
+
+\bibitem{arachie2021constrained}
+Chidubem Arachie and Bert Huang.
+\newblock Constrained labeling for weakly supervised learning.
+\newblock In {\em Uncertainty in Artificial Intelligence}, pages 236--246. PMLR, 2021.
+
+\bibitem{hullermeier2015superset}
+Eyke H{\"u}llermeier and Weiwei Cheng.
+\newblock Superset learning based on generalized loss minimization.
+\newblock In {\em Machine Learning and Knowledge Discovery in Databases: European Conference, ECML PKDD 2015, Porto, Portugal, September 7-11, 2015, Proceedings, Part II 15}, pages 260--275. Springer, 2015.
+
+\bibitem{lv2023robustness}
+Jiaqi Lv, Biao Liu, Lei Feng, Ning Xu, Miao Xu, Bo~An, Gang Niu, Xin Geng, and Masashi Sugiyama.
+\newblock On the robustness of average losses for partial-label learning.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, page 1–15, 2023.
+
+\bibitem{dempster1977maximum}
+Arthur~P Dempster, Nan~M Laird, and Donald~B Rubin.
+\newblock Maximum likelihood from incomplete data via the em algorithm.
+\newblock {\em Journal of the royal statistical society: series B (methodological)}, 39(1):1--22, 1977.
+
+\bibitem{denoeux2011maximum}
+Thierry Den{\oe}ux.
+\newblock Maximum likelihood estimation from fuzzy data using the em algorithm.
+\newblock {\em Fuzzy sets and systems}, 183(1):72--91, 2011.
+
+\bibitem{hullermeier2014learning}
+Eyke H{\"u}llermeier.
+\newblock Learning from imprecise and fuzzy observations: Data disambiguation through generalized loss minimization.
+\newblock {\em International Journal of Approximate Reasoning}, 55(7):1519--1534, 2014.
+
+\bibitem{quost2016clustering}
+Benjamin Quost and Thierry Denoeux.
+\newblock Clustering and classification of fuzzy data using the fuzzy em algorithm.
+\newblock {\em Fuzzy Sets and Systems}, 286:134--156, 2016.
+
+\bibitem{van2017theory}
+Brendan Van~Rooyen and Robert~C Williamson.
+\newblock A theory of learning with corrupted labels.
+\newblock {\em J. Mach. Learn. Res.}, 18(1):8501--8550, 2017.
+
+\bibitem{gong2020centroid}
+Chen Gong, Jian Yang, Jane You, and Masashi Sugiyama.
+\newblock Centroid estimation with guaranteed efficiency: A general framework for weakly supervised learning.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, 44(6):2841--2855, 2020.
+
+\bibitem{chiang2023unified}
+Chao-Kai Chiang and Masashi Sugiyama.
+\newblock Unified risk analysis for weakly supervised learning.
+\newblock {\em arXiv preprint arXiv:2309.08216}, 2023.
+
+\bibitem{uumwei23a}
+Zixi Wei, Lei Feng, Bo~Han, Tongliang Liu, Gang Niu, Xiaofeng Zhu, and Heng~Tao Shen.
+\newblock A universal unbiased method for classification from aggregate observations.
+\newblock In Andreas Krause, Emma Brunskill, Kyunghyun Cho, Barbara Engelhardt, Sivan Sabato, and Jonathan Scarlett, editors, {\em Proceedings of the 40th International Conference on Machine Learning}, volume 202 of {\em Proceedings of Machine Learning Research}, pages 36804--36820. PMLR, 23--29 Jul 2023.
+
+\bibitem{xie2024weakly}
+Zheng Xie, Yu~Liu, Hao-Yuan He, Ming Li, and Zhi-Hua Zhou.
+\newblock Weakly supervised auc optimization: A unified partial auc approach.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2024.
+
+\bibitem{campagner2023learning}
+Andrea Campagner.
+\newblock Learning from fuzzy labels: Theoretical issues and algorithmic solutions.
+\newblock {\em International Journal of Approximate Reasoning}, page 108969, 2023.
+
+\bibitem{sopliu22w}
+Sheng Liu, Zhihui Zhu, Qing Qu, and Chong You.
+\newblock Robust training under label noise by over-parameterization.
+\newblock In Kamalika Chaudhuri, Stefanie Jegelka, Le~Song, Csaba Szepesvari, Gang Niu, and Sivan Sabato, editors, {\em Proceedings of the International Conference on Machine Learning (ICML)}, volume 162 of {\em Proceedings of Machine Learning Research}, pages 14153--14172. PMLR, 17--23 Jul 2022.
+
+\bibitem{moco2020}
+Kaiming He, Haoqi Fan, Yuxin Wu, Saining Xie, and Ross Girshick.
+\newblock Momentum contrast for unsupervised visual representation learning.
+\newblock {\em Proceedings of IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, Jun 2020.
+
+\bibitem{lian2022irnet}
+Zheng Lian, Mingyu Xu, Lan Chen, Licai Sun, Bin Liu, and Jianhua Tao.
+\newblock Irnet: Iterative refinement network for noisy partial label learning, 2022.
+
+\bibitem{hullermeier2006learning}
+Eyke H{\"u}llermeier and J{\"u}rgen Beringer.
+\newblock Learning from ambiguously labeled examples.
+\newblock {\em Intelligent Data Analysis}, 10(5):419--439, 2006.
+
+\bibitem{arazo2020pseudo}
+Eric Arazo, Diego Ortego, Paul Albert, Noel~E O’Connor, and Kevin McGuinness.
+\newblock Pseudo-labeling and confirmation bias in deep semi-supervised learning.
+\newblock In {\em 2020 International Joint Conference on Neural Networks (IJCNN)}, pages 1--8. IEEE, 2020.
+
+\bibitem{chen2022debiased}
+Baixu Chen, Junguang Jiang, Ximei Wang, Jianmin Wang, and Mingsheng Long.
+\newblock Debiased pseudo labeling in self-training.
+\newblock {\em arXiv preprint arXiv:2202.07136}, 2022.
+
+\bibitem{bridle1991unsup}
+David~MacKay John~Bridle, Anthony~Heading.
+\newblock Unsupervised classifiers, mutual information and 'phantom targets.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 1991.
+
+\bibitem{joulin2012convex}
+Armand Joulin and Francis Bach.
+\newblock A convex relaxation for weakly supervised classifiers.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}. PMLR, 2012.
+
+\bibitem{krizhevsky2009learning}
+Alex Krizhevsky et~al.
+\newblock Learning multiple layers of features from tiny images.
+\newblock 2009.
+
+\bibitem{welinder2010caltech}
+Peter Welinder, Steve Branson, Takeshi Mita, Catherine Wah, Florian Schroff, Serge Belongie, and Pietro Perona.
+\newblock Caltech-ucsd birds 200.
+\newblock 2010.
+
+\bibitem{feng2020learning}
+Lei Feng, Takuo Kaneko, Bo~Han, Gang Niu, Bo~An, and Masashi Sugiyama.
+\newblock Learning with multiple complementary labels.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 3072--3081. PMLR, 2020.
+
+\bibitem{zagoruyko2016wide}
+Sergey Zagoruyko and Nikos Komodakis.
+\newblock Wide residual networks.
+\newblock In {\em British Machine Vision Conference (BMVC)}. British Machine Vision Association, 2016.
+
+\bibitem{xu2021instance}
+Ning Xu, Congyu Qiao, Xin Geng, and Min-Ling Zhang.
+\newblock Instance-dependent partial label learning.
+\newblock {\em Advances in Neural Information Processing Systems}, 34:27119--27130, 2021.
+
+\bibitem{usb2022}
+Yidong Wang, Hao Chen, Yue Fan, Wang Sun, Ran Tao, Wenxin Hou, Renjie Wang, Linyi Yang, Zhi Zhou, Lan-Zhe Guo, Heli Qi, Zhen Wu, Yu-Feng Li, Satoshi Nakamura, Wei Ye, Marios Savvides, Bhiksha Raj, Takahiro Shinozaki, Bernt Schiele, Jindong Wang, Xing Xie, and Yue Zhang.
+\newblock Usb: A unified semi-supervised learning benchmark.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2022.
+
+\bibitem{maas2011learning}
+Andrew Maas, Raymond~E Daly, Peter~T Pham, Dan Huang, Andrew~Y Ng, and Christopher Potts.
+\newblock Learning word vectors for sentiment analysis.
+\newblock In {\em Proceedings of the 49th annual meeting of the association for computational linguistics: Human language technologies}, pages 142--150, 2011.
+
+\bibitem{mcauley2013hidden}
+Julian McAuley and Jure Leskovec.
+\newblock Hidden factors and hidden topics: understanding rating dimensions with review text.
+\newblock In {\em Proceedings of the 7th ACM conference on Recommender systems}, pages 165--172, 2013.
+
+\bibitem{berthelot2021adamatch}
+David Berthelot, Rebecca Roelofs, Kihyuk Sohn, Nicholas Carlini, and Alex Kurakin.
+\newblock Adamatch: A unified approach to semi-supervised learning and domain adaptation.
+\newblock {\em International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem{li2021comatch}
+Junnan Li, Caiming Xiong, and Steven~CH Hoi.
+\newblock Comatch: Semi-supervised learning with contrastive graph regularization.
+\newblock In {\em Proceedings of the IEEE/CVF International Conference on Computer Vision (CVPR)}, pages 9475--9484, 2021.
+
+\bibitem{zheng2022simmatch}
+Mingkai Zheng, Shan You, Lang Huang, Fei Wang, Chen Qian, and Chang Xu.
+\newblock Simmatch: Semi-supervised learning with similarity matching.
+\newblock {\em arXiv preprint arXiv:2203.06915}, 2022.
+
+\bibitem{xiao2015learning}
+Tong Xiao, Tian Xia, Yi~Yang, Chang Huang, and Xiaogang Wang.
+\newblock Learning from massive noisy labeled data for image classification.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, pages 2691--2699, 2015.
+
+\bibitem{li2017webvision}
+Wen Li, Limin Wang, Wei Li, Eirikur Agustsson, and Luc~Van Gool.
+\newblock Webvision database: Visual learning and understanding from web data, 2017.
+
+\bibitem{zhang2017mixup}
+Hongyi Zhang, Moustapha Cisse, Yann~N Dauphin, and David Lopez-Paz.
+\newblock mixup: Beyond empirical risk minimization.
+\newblock {\em arXiv preprint arXiv:1710.09412}, 2017.
+
+\bibitem{Patrini2016MakingDN}
+Giorgio Patrini, Alessandro Rozza, Aditya~Krishna Menon, Richard Nock, and Lizhen Qu.
+\newblock Making deep neural networks robust to label noise: A loss correction approach.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 2233--2241, 2016.
+
+\bibitem{wei2021learning}
+Jiaheng Wei, Zhaowei Zhu, Hao Cheng, Tongliang Liu, Gang Niu, and Yang Liu.
+\newblock Learning with noisy labels revisited: A study using real-world human annotations.
+\newblock {\em arXiv preprint arXiv:2110.12088}, 2021.
+
+\bibitem{jiang2018mentornet}
+Lu~Jiang, Zhengyuan Zhou, Thomas Leung, Li-Jia Li, and Li~Fei-Fei.
+\newblock Mentornet: Learning data-driven curriculum for very deep neural networks on corrupted labels.
+\newblock In {\em International conference on machine learning}, pages 2304--2313. PMLR, 2018.
+
+\bibitem{wang2022pico+}
+Haobo Wang, Ruixuan Xiao, Yixuan Li, Lei Feng, Gang Niu, Gang Chen, and Junbo Zhao.
+\newblock Pico+: Contrastive label disambiguation for robust partial label learning, 2022.
+
+\bibitem{cubuk2020randaugment}
+Ekin~D Cubuk, Barret Zoph, Jonathon Shlens, and Quoc~V Le.
+\newblock Randaugment: Practical automated data augmentation with a reduced search space.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPR)}, pages 702--703, 2020.
+
+\bibitem{zhang2015solving}
+Min-Ling Zhang and Fei Yu.
+\newblock Solving the partial label learning problem: An instance-based approach.
+\newblock In {\em IJCAI}, pages 4048--4054, 2015.
+
+\bibitem{gong2017regularization}
+Chen Gong, Tongliang Liu, Yuanyan Tang, Jian Yang, Jie Yang, and Dacheng Tao.
+\newblock A regularization approach for instance-based superset label learning.
+\newblock {\em IEEE transactions on cybernetics}, 48(3):967--978, 2017.
+
+\bibitem{xu2019partial}
+Ning Xu, Jiaqi Lv, and Xin Geng.
+\newblock Partial label learning via label enhancement.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial Intelligence}, volume~33, pages 5557--5564, 2019.
+
+\bibitem{wu2023proper}
+Zhenguo Wu, Jiaqi Lv, and Masashi Sugiyama.
+\newblock Learning with proper partial labels.
+\newblock {\em Neural Computation}, 35(1):58–81, Jan 2023.
+
+\bibitem{nguyen2008classification}
+Nam Nguyen and Rich Caruana.
+\newblock Classification with partial labels.
+\newblock In {\em Proceedings of the 14th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining}, pages 551--559, 2008.
+
+\bibitem{zhang2016partial}
+Min-Ling Zhang, Bin-Bin Zhou, and Xu-Ying Liu.
+\newblock Partial label learning via feature-aware disambiguation.
+\newblock In {\em Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining}, pages 1335--1344, 2016.
+
+\bibitem{liu2012conditional}
+Liping Liu and Thomas Dietterich.
+\newblock A conditional multinomial mixture model for superset label learning.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 25, 2012.
+
+\bibitem{tarvainen2017mean}
+Antti Tarvainen and Harri Valpola.
+\newblock Mean teachers are better role models: Weight-averaged consistency targets improve semi-supervised deep learning results.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 30, 2017.
+
+\bibitem{miyato2018virtual}
+Takeru Miyato, Shin-ichi Maeda, Masanori Koyama, and Shin Ishii.
+\newblock Virtual adversarial training: a regularization method for supervised and semi-supervised learning.
+\newblock {\em IEEE transactions on Pattern Analysis and Machine Intelligence}, 41(8):1979--1993, 2018.
+
+\bibitem{xu2021dash}
+Yi~Xu, Lei Shang, Jinxing Ye, Qi~Qian, Yu-Feng Li, Baigui Sun, Hao Li, and Rong Jin.
+\newblock Dash: Semi-supervised learning with dynamic thresholding.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 11525--11536. PMLR, 2021.
+
+\bibitem{iscen2019label}
+Ahmet Iscen, Giorgos Tolias, Yannis Avrithis, and Ondrej Chum.
+\newblock Label propagation for deep semi-supervised learning.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPR)}, 2019.
+
+\bibitem{pham2021meta}
+Hieu Pham, Zihang Dai, Qizhe Xie, and Quoc~V Le.
+\newblock Meta pseudo labels.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 11557--11568, 2021.
+
+\bibitem{zhang2016understanding}
+Chiyuan Zhang, Samy Bengio, Moritz Hardt, Benjamin Recht, and Oriol Vinyals.
+\newblock Understanding deep learning requires rethinking generalization, 2016.
+
+\bibitem{zhang2021understanding}
+Chiyuan Zhang, Samy Bengio, Moritz Hardt, Benjamin Recht, and Oriol Vinyals.
+\newblock Understanding deep learning (still) requires rethinking generalization.
+\newblock {\em Communications of the ACM}, 64(3):107--115, 2021.
+
+\bibitem{nllsurvey2022}
+Hwanjun Song, Minseok Kim, Dongmin Park, Yooju Shin, and Jae-Gil Lee.
+\newblock Learning from noisy labels with deep neural networks: A survey.
+\newblock {\em IEEE Transactions on Neural Networks and Learning Systems}, page 1–19, 2022.
+
+\bibitem{ma2020normalized}
+Xingjun Ma, Hanxun Huang, Yisen Wang, Simone Romano, Sarah Erfani, and James Bailey.
+\newblock Normalized loss functions for deep learning with noisy labels.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, 2020.
+
+\bibitem{yu2020learning}
+Yaodong Yu, Kwan Ho~Ryan Chan, Chong You, Chaobing Song, and Yi~Ma.
+\newblock Learning diverse and discriminative representations via the principle of maximal coding rate reduction, 2020.
+
+\bibitem{liu2016does}
+Tongliang Liu and Dacheng Tao.
+\newblock Classification with noisy labels by importance reweighting.
+\newblock In {\em IEEE Transactions on pattern analysis and machine intelligence}, pages 447--461, 2016.
+
+\bibitem{confidentlearn2021}
+Curtis Northcutt, Lu~Jiang, and Isaac Chuang.
+\newblock Confident learning: Estimating uncertainty in dataset labels.
+\newblock {\em Journal of Artificial Intelligence Research}, 70:1373–1411, Apr 2021.
+
+\bibitem{zhang2021learning}
+Yivan Zhang, Gang Niu, and Masashi Sugiyama.
+\newblock Learning noise transition matrix from only noisy labels via total variation regularization.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, pages 12501--12512. PMLR, 2021.
+
+\bibitem{bai2021understanding}
+Yingbin Bai, Erkun Yang, Bo~Han, Yanhua Yang, Jiatong Li, Yinian Mao, Gang Niu, and Tongliang Liu.
+\newblock Understanding and improving early stopping for learning with noisy labels, 2021.
+
+\bibitem{li2021learning}
+Junnan Li, Caiming Xiong, and Steven~CH Hoi.
+\newblock Learning from noisy data with robust representation learning.
+\newblock In {\em Proceedings of the IEEE/CVF International Conference on Computer Vision (CVPR)}, pages 9485--9494, 2021.
+
+\bibitem{li2022selective}
+Shikun Li, Xiaobo Xia, Shiming Ge, and Tongliang Liu.
+\newblock Selective-supervised contrastive learning with noisy labels.
+\newblock {\em 2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, Jun 2022.
+
+\bibitem{tanaka2018joint}
+Daiki Tanaka, Daiki Ikami, Toshihiko Yamasaki, and Kiyoharu Aizawa.
+\newblock Joint optimization framework for learning with noisy labels.
+\newblock {\em 2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, Jun 2018.
+
+\bibitem{yi2019pronoisy}
+Kun Yi and Jianxin Wu.
+\newblock Probabilistic end-to-end noise correction for learning with noisy labels.
+\newblock {\em 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, Jun 2019.
+
+\bibitem{song19b}
+Hwanjun Song, Minseok Kim, and Jae-Gil Lee.
+\newblock {SELFIE}: Refurbishing unclean samples for robust deep learning.
+\newblock In Kamalika Chaudhuri and Ruslan Salakhutdinov, editors, {\em Proceedings of the International Conference on Machine Learning (ICML)}, volume~97 of {\em Proceedings of Machine Learning Research}, pages 5907--5915. PMLR, 09--15 Jun 2019.
+
+\bibitem{arazo2019unsupervised}
+Eric Arazo, Diego Ortego, Paul Albert, Noel~E. O'Connor, and Kevin McGuinness.
+\newblock Unsupervised label noise modeling and loss correction, 2019.
+
+\bibitem{ShuklaDAE23}
+Vinay Shukla, Zhe Zeng, Kareem Ahmed, and Guy Van~den Broeck.
+\newblock A unified approach to count-based weakly-supervised learning.
+\newblock In {\em ICML 2023 Workshop on Differentiable Almost Everything: Differentiable Relaxations, Algorithms, Operators, and Simulators}, jul 2023.
+
+\bibitem{amini2002semi}
+Massih-Reza Amini and Patrick Gallinari.
+\newblock Semi-supervised logistic regression.
+\newblock In {\em ECAI}, volume~2, page~11, 2002.
+
+\bibitem{xu2022progressive}
+Ning Xu, Jiaqi Lv, Biao Liu, Congyu Qiao, and Xin Geng.
+\newblock Progressive purification for instance-dependent partial label learning, 2022.
+
+\bibitem{deng2009imagenet}
+Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li~Fei-Fei.
+\newblock Imagenet: A large-scale hierarchical image database.
+\newblock In {\em 2009 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 248--255, 2009.
+
+\bibitem{helber2019eurosat}
+Patrick Helber, Benjamin Bischke, Andreas Dengel, and Damian Borth.
+\newblock Eurosat: A novel dataset and deep learning benchmark for land use and land cover classification.
+\newblock {\em IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}, 2019.
+
+\bibitem{coates2011analysis}
+Adam Coates, Andrew Ng, and Honglak Lee.
+\newblock An analysis of single-layer networks in unsupervised feature learning.
+\newblock In {\em Proceedings of the fourteenth international conference on artificial intelligence and statistics}, pages 215--223. JMLR Workshop and Conference Proceedings, 2011.
+
+\bibitem{medmnistv1}
+Jiancheng Yang, Rui Shi, and Bingbing Ni.
+\newblock Medmnist classification decathlon: A lightweight automl benchmark for medical image analysis.
+\newblock In {\em IEEE 18th International Symposium on Biomedical Imaging (ISBI)}, pages 191--195, 2021.
+
+\bibitem{medmnistv2}
+Jiancheng Yang, Rui Shi, Donglai Wei, Zequan Liu, Lin Zhao, Bilian Ke, Hanspeter Pfister, and Bingbing Ni.
+\newblock Medmnist v2: A large-scale lightweight benchmark for 2d and 3d biomedical image classification.
+\newblock {\em arXiv preprint arXiv:2110.14795}, 2021.
+
+\bibitem{su2021semi}
+Jong-Chyi Su and Subhransu Maji.
+\newblock The semi-supervised inaturalist-aves challenge at fgvc7 workshop.
+\newblock {\em arXiv preprint arXiv:2103.06937}, 2021.
+
+\bibitem{yelpwebsite}
+Yelp dataset: http://www.yelp.com/dataset\_challenge.
+
+\bibitem{zhang2015character}
+Xiang Zhang, Junbo Zhao, and Yann LeCun.
+\newblock Character-level convolutional networks for text classification.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 28:649--657, 2015.
+
+\bibitem{chang2008importance}
+Ming-Wei Chang, Lev-Arie Ratinov, Dan Roth, and Vivek Srikumar.
+\newblock Importance of semantic representation: Dataless classification.
+\newblock In {\em AAAI}, volume~2, pages 830--835, 2008.
+
+\bibitem{cheng2020learning}
+Hao Cheng, Zhaowei Zhu, Xingyu Li, Yifei Gong, Xing Sun, and Yang Liu.
+\newblock Learning with instance-dependent label noise: A sample sieve approach.
+\newblock {\em arXiv preprint arXiv:2010.02347}, 2020.
+
+\end{thebibliography}

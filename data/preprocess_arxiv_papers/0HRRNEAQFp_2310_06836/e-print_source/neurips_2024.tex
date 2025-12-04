@@ -1,0 +1,89 @@
+
+
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2024
+
+\PassOptionsToPackage{numbers, sort&compress}{natbib}
+
+% ready for submission
+% \usepackage{neurips_2024}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+    \usepackage[preprint]{neurips_2024}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2024}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2024}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\title{A General Protocol to Probe Large Vision Models \\ for 3D Physical Understanding}
+
+
+
+
+
+
+\author{
+	\textbf{Guanqi Zhan}$^{1}$ \quad \textbf{Chuanxia Zheng}$^{1}$ \quad \textbf{Weidi Xie}$^{1,2}$    \quad \textbf{Andrew Zisserman}$^{1}$ \\
+  $^1$Visual Geometry Group, University of Oxford \\ $^2$Coop.\ Medianet Innovation Center, Shanghai Jiao Tong University
+  \\
+  \texttt{\{guanqi,cxzheng,weidi,az\}@robots.ox.ac.uk}
+}
+
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\input{sec/00-abstract}
+\input{sec/01-introduction}
+\input{sec/02-related}
+\input{sec/03-method}
+\input{sec/04-experiment}
+\input{sec/05-conclusion}
+
+
+\clearpage
+\paragraph{Acknowledgements. } 
+This research is supported by EPSRC Programme Grant VisualAI EP$\slash$T028572$\slash$1, a Royal Society
+Research Professorship RP$\backslash$R1$\backslash$191132, an AWS credit funding, a China Oxford Scholarship and ERC-CoG UNION 101001212.
+We thank Yash Bhalgat, Minghao Chen, Subhabrata Choudhury, Tengda Han, Jaesung Huh, Vladimir Iashin, Tomas Jakab, Gyungin Shin, Ashish Thandavan, Vadim Tschernezki and Yan Xia from the Visual Geometry Group for their help and support for the project.
+
+
+
+\bibliography{example_paper}
+\bibliographystyle{plain}
+
+\input{sec/06-supple}
+
+\end{document}

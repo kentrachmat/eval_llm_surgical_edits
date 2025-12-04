@@ -1,0 +1,87 @@
+% baseline (sampling)
+% self consistence w/ diff. size of n-samples
+% reranking w/ diff. size of n-samples
+% MCTS w/ diff. size of rollout
+% \begin{table}[!htb]
+%     \centering
+%     \setlength{\tabcolsep}{4pt}
+%     \begin{tabular}{c||c|c|c||c|c|c}
+%         \multirow{2}{*}{Method}           & \multicolumn{3}{c||}{GSM8K} &   \multicolumn{3}{c}{MATH} \\
+%         \cline{2-7}
+%             & \# of outputs & \# of rollouts  & Accuracy & \# of outputs & \# of rollouts  & Accuracy \\
+%         \hline \hline
+%         Baseline                          & $1$  & $4.6$ & $57.8$ & $1$ & $9.9$ & $20.7$ \\
+%         \hline\hline
+%         \multirow{3}{*}{Self-consistence} & $10$ & $46$  & $67.4$ &  $10$   &  $99$   & $22.5$ \\
+%                                           & $30$ & $137$ & $74.2$ &  $30$   &  $299$  & $27.3$ \\
+%                                           & $50$ & $229$ & $75.4$ &  $50$   &  $499$  & $28.8$ \\
+%         \hline\hline
+%         % MATH ORM V4 results: tool use
+%         \multirow{3}{*}{Re-ranking}       & $10$ & $46$  & $80.8$ &  $10$   &  $99$   &  $34.1$ \\
+%                                           & $30$ & $137$ & $86.3$ &  $30$   &  $299$  &  $39.0$ \\
+%                                           & $50$ & $229$ & $87.7$ &  $50$   &  $499$  &  $42.0$ \\
+%         % MATH ORM V2 results: no tool use for ORM
+%         % \multirow{3}{*}{Re-ranking}       & $10$ & $46$  & $80.8$ & $10$    &  $99$  & $26.0$ \\
+%         %                                   & $30$ & $137$ & $86.3$ &  $30$   &  $299$  & $27.3$ \\
+%         %                                   & $50$ & $229$ & $87.7$ &  $50$   &  $499$  & $27.9$ \\
+%         \hline\hline
+%         \multirow{2}{*}{MCTS}             & N/A & $55$   & $87.0$ &  N/A   &  $223$  & $45.4$ \\
+%                                           & N/A & $230$  & $88.9$ &  N/A   &  $341$  & $48.7$ \\
+%         \hline
+%     \end{tabular}
+%     \vspace{4mm}
+%     \caption{MCTS results over GSM8K and MATH test sets. We use LLaMA-2 70B and WizardMath 70B V1.0 as our base models on GSM8K and MATH data sets respectively.
+%     *: we test WizardMath 70B V1.0 model with~\protect\hyperlink{https://github.com/FastEval/FastEval}{FastEval} script, 
+%     which is also used for all our methods in order to have an apple to apple comparison.}
+%     \label{tab:mcts_result}
+% \end{table}
+
+{
+\renewcommand{\arraystretch}{1.0}
+\begin{table*}[!t]
+\centering
+% \scalebox{1.0f}{    
+	% \setlength\tabcolsep{3pt}
+	% \begin{threeparttable}
+		% \fontsize{9}{9}
+		% \selectfont
+		\begin{tabular}{lc|cc|cc}
+			\toprule
+			\multirow{2}{*}{Method} & \multirow{2}{*}{\#Responses} &  \multicolumn{2}{c}{GSM8K} & \multicolumn{2}{c}{MATH} \cr
+   \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+
+    & & \texttt{\#Rollouts} & \texttt{Accuracy} & \texttt{\#Rollouts} & \texttt{Accuracy} \cr
+   
+   \midrule
+   Greedy                         & 1  & 4.6 & 57.8  & 9.9 & 20.7 \\
+\midrule    
+   \multirow{3}{*}{Self-consistency} & 10 & 46  & 67.4    &  99   & 22.5 \\
+& 30 & 137 & 74.2    &  299  & 27.3 \\
+& 50 & 229 & 75.4   &  499  & 28.8 \\
+\midrule
+  \multirow{3}{*}{Re-ranking}       & 10 & 46  & 80.8 &    99   &  34.1 \\
+                                          & 30 & 137 & 86.3 &  299  &  39.0 \\
+                                          & 50 & 229 & 87.7 &    499  &  42.0 \\
+\midrule
+\multirow{2}{*}{\emcts{}}             & - & 55   & 87.0 &   223  & 45.4 \\
+                                          & - & 230  & 88.9 &   341  & 48.7 \\
+    
+			\bottomrule  
+		\end{tabular}
+	% \end{threeparttable}
+		  
+    
+	% \caption{MCTS results over GSM8K and MATH test sets. We use LLaMA-2 70B and WizardMath 70B V1.0 as our base models on GSM8K and MATH data sets respectively.*: we test WizardMath 70B V1.0 model with~\protect\hyperlink{https://github.com/FastEval/FastEval}{FastEval} script, which is also used for all our methods in order to have an apple to apple comparison.}
+ \caption{Comparative results of various searching method on GSM8K and MATH.}
+	\label{table:search_comparison}
+ 
+\end{table*}
+}
+
+% Best-of-1 accuracy: 15.09%,  n_rollout 24
+% Best-of-5 accuracy: 24.74%,  n_rollout 124
+% Best-of-10 accuracy: 26.00%,  n_rollout 249
+% Best-of-20 accuracy: 26.84%,  n_rollout 499
+% Best-of-30 accuracy: 27.30%,  n_rollout 749
+
+% Analysis: 1. acc. vs \# of rollouts

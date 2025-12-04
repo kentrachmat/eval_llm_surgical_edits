@@ -1,0 +1,1323 @@
+\appendix
+
+\begin{center}
+    \Large{\textbf{Appendix}}
+\end{center}
+
+
+% \etocdepthtag.toc{appendix}
+% \etocsettagdepth{chapter}{none}
+% \etocsettagdepth{appendix}{subsection}
+% \tableofcontents
+
+\section{Notation}
+\label{sec:appen-notation}
+
+We present the notation table for each symbol used in this paper in \cref{tab:append-notation}.
+
+\begin{table}[h!]
+\centering
+\caption{Notation Table}
+\label{tab:append-notation}
+\resizebox{0.85 \textwidth}{!}{%
+\begin{tabular}{@{}l|l@{}}
+\toprule
+\multicolumn{1}{c|}{Notation} &\multicolumn{1}{c}{Definition}  \\ \midrule
+    $\mathbf{x}$ & A training instance \\
+    $y$ & A class index label \\
+    $\{\mathbf{x}_i\}_{i \in [N]}$  &  A set of data instances $\mathbf{x}$ of size $N$        \\
+    $\{y_i\}_{i \in [N]}$        &   A set of precise label indices $y$ of size $N$          \\ 
+    $[\iota]$ & An imprecise label, which might contain multiple class indices \\
+    $\{[\iota]_i\}_{i \in [N]}$        &    A set of imprecise labels $[\iota]$ of size $N$     \\ 
+    $X$ &   Random variable of training instance       \\
+    $\mathcal{X}$  &   Input space where $\mathbf{x}$ is drawn from        \\
+    $Y$        &   Random variable of ground-truth labels       \\ 
+    $\mathcal{Y}$  &   Label space where $y$ is drawn from        \\
+    $I$        &    Random variable of imprecise labels    \\ 
+    $f$ & Model backbone \\ 
+    $g$ & Model classifier \\
+    $h$ & Model multi-layer perceptron \\ 
+    $f \circ g$ & Model mapping $\mathcal{X} \rightarrow \mathcal{Y}$ \\ 
+    $\theta$ & Learnable parameters of $f \circ g$ \\ 
+    $\mathbf{p}(y|\mathbf{x};\theta)$ & Output probability from model $f \circ g$ \\ 
+    $f \circ h$ & Model mapping $\mathcal{X} \rightarrow \mathcal{Z}$, where $Z$ is a projected feature space \\ 
+    % $P(X, I; \theta)$ & Modeling of joint distribution over $X$ and $I$ \\
+    % $P(X, Y, I; \theta)$ & Modeling of joint distribution over $X$, $I$, and latent $Y$ \\
+    % $P(Y | X, I; \theta^t)$ & Modeling of posterior of latent $Y$ given $X$ and $I$ with current belief $\theta^t$\\
+    $\mathcal{D}$ & Dataset \\ 
+    $\mathcal{L}$ & Loss function \\ 
+    $\mathcal{A}_{\mathrm{w}}$ & Weak data augmentation, usually is HorizontalFlip \\
+    $\mathcal{A}_{\mathrm{s}}$ & Strong data augmentation, usually is RandAugment \citep{cubuk2020randaugment} \\
+    $\mathbf{z}_\mathrm{w}$ & Projected features from $f \circ h$ on weakly-augmented data \\
+    $\mathbf{z}_\mathrm{s}$ & Projected features from $f \circ h$ on strongly-augmented data \\
+    $\mathcal{M}$ & Memory queue in MoCo \citep{moco2020} \\
+    $\mathbf{s}$ &  A partial label, with ground-truth label contained \\
+    $\{\mathbf{s}_i\}_{i \in [N]}$ &  A set partial labels, with ground-truth label contained of size $N$ \\
+    $S$ & Random variable of partial label \\ 
+    $\mathbf{x}^\mathrm{l}$ & A labeled training example \\ 
+    $y^\mathrm{l}$ & A labeled class index \\ 
+    $\mathbf{x}^\mathrm{u}$ & A unlabeled training example \\ 
+    $y^\mathrm{u}$ & A unknown class index for unlabeled data \\ 
+    $X^\mathrm{L}$  &   A set of labeled data instances       \\
+    $Y^\mathrm{L}$        &   A set of labels for labeled data instances            \\ 
+    $X^\mathrm{U}$  &   A set of unlabeled data instances       \\
+    $Y^\mathrm{U}$        &   A set of unknown labels for unlabeled data instances            \\ 
+    $\hat{p}^\mathbf{u}$ & The maximum predicted probability on unlabeled data $\max(\mathbf{p}(y|\mathbf{x}^\mathrm{u};\theta)$) \\ 
+    $\hat{y}^\mathrm{u}$ & The pseudo-label from the predicted probability on unlabeled data $\arg\max(\mathbf{p}(y|\mathbf{x}^\mathrm{u};\theta)$)\\
+    $\tau$ & The threshold for confidence thresholding \\ 
+    $\hat{y}$ & A corrupted/noisy label \\
+    $\hat{y}^{\mathrm{oh}}$ & An one-hot version of the corrupted/noisy label \\
+    $\hat{Y}$ & Random variable of noisy labels \\ 
+    $\mathbf{u}, \mathbf{v}, \mathbf{m}$  & Noise model related parameters in SOP \citep{sopliu22w} \\
+    % $\alpha(i, y)$ & The forward score in forward-backward algorithm \\ 
+    % $\beta(i, y)$ & The backward score in forward-backward algorithm \\ 
+    $\mathcal{T}(\hat{y}|y;\omega)$ & The simplified noise transition model in ILL \\ 
+    $\omega$ & The parameters in the simplified noise model \\ 
+    \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section{Related Work}
+\label{sec:related-work}
+
+Many previous methods have been proposed for dealing with the specific types and some combinations of imprecise label configurations.
+We revisit the relevant work in this section, especially the state-of-the-art popular baselines for learning with individual and mixture imprecise label configurations.
+
+\textbf{Partial label learning (PLL)}. 
+% PLL deals with label candidate sets rather than single definite label, thus label ambiguity remains a fundamental challenge.
+The prior arts can be roughly divided into identification-based for label disambiguation \citep{zhang2015solving,gong2017regularization,xu2019partial,wu2023proper} or average-based for utilizing all candidate labels \citep{hullermeier2006learning,cour2011learning,lv2023robustness}.
+The traditional average-based methods usually treat all candidate labels equally, which may involve the misleading false positive labels into training.
+To overcome these limitations, researchers have explored identification-based methods, viewing the ground-truth label as a latent variable. They seek to maximize its estimated probability using either the maximum margin criterion \citep{nguyen2008classification,zhang2016partial} or the maximum likelihood criterion \citep{liu2012conditional}.
+Deep learning techniques have recently been incorporated into identification-based methods, yielding promising results across multiple datasets. For example, PRODEN \citep{lv2020progressive} proposed a self-training strategy that disambiguates candidate labels using model outputs. CC \citep{Feng2020ProvablyCP} introduced classifier-consistent and risk-consistent algorithms, assuming uniform candidate label generation. LWS \citep{wen2021leveraged} relaxed this assumption and proposed a family of loss functions for label disambiguation. More recently, Wangt et al. \cite{wang2022pico} incorporated contrastive learning into PLL, enabling the model to learn discriminative representations and show promising results under various levels of ambiguity.
+RCR involves consistency regularization into PLL recently \citep{revisitpllwu22l}. 
+% Nevertheless, these methods assume ground-truth label present in the candidate set.
+
+
+
+\textbf{Semi-supervised learning (SSL)}. 
+SSL is a paradigm for learning with a limited labeled dataset supplemented by a much larger unlabeled dataset.
+Consistency regularization and self-training, inspired by clusterness and smoothness assumptions, have been proposed to encourage the network to generate similar predictions for inputs under varying perturbations \citep{tarvainen2017mean,samuli2017temporal,miyato2018virtual}. Self-training \citep{lee2013pseudo,arazo2020pseudo,sohn2020fixmatch} is a widely-used approach for leveraging unlabeled data.
+Pseudo Label \citep{lee2013pseudo,arazo2020pseudo}, a well-known self-training technique, iteratively creates pseudo labels that are then used within the same model. 
+% However, this approach suffers from confirmation bias \citep{}, where the model struggles to rectify its own errors when learning from inaccurate pseudo labels.
+Recent studies focus largely on generating high-quality pseudo-labels. MixMatch \citep{berthelot2019mixmatch}, for instance, generates pseudo labels by averaging predictions from multiple augmentations. Other methods like ReMixMatch \citep{berthelot2019remixmatch}, UDA \citep{xie2020unsupervised}, and FixMatch \citep{sohn2020fixmatch} adopt confidence thresholds to generate pseudo labels for weakly augmented samples, which are then used to annotate strongly augmented samples.
+Methods such as Dash \citep{xu2021dash}, FlexMatch \citep{zhang2021flexmatch}, and FreeMatch \citep{wang2023freematch} dynamically adjust these thresholds following a curriculum learning approach. SoftMatch \citep{chen2023softmatch} introduces a novel utilization of pseudo-labels through Gaussian re-weighting.
+% Label Propagation methods \citep{iscen2019label} assign pseudo labels based on the local neighborhood's density. 
+% Meta Pseudo Labels \citep{pham2021meta} proposes generating pseudo labels with a meta learner.
+SSL has also seen improvements through the incorporation of label propagation, contrastive loss, and meta learning \citep{iscen2019label,pham2021meta,li2021comatch,zheng2022simmatch,usb2022}. 
+
+\textbf{Noisy label learning (NLL)}. 
+Overfitting to the noisy labels could result in poor generalization performance, even if the training error is optimized towards zero \citep{zhang2016understanding,zhang2021understanding}. 
+Several strategies to address the noisy labels have been proposed \citep{nllsurvey2022}. 
+Designing loss functions that are robust to noise is a well-explored strategy for tackling the label noise problem \citep{Zhang2018GeneralizedCE,Wang2019SymmetricCE,ma2020normalized, yu2020learning}. 
+Additionally, methods that re-weight loss \citep{liu2016does} have also been explored for learning with noisy labels. 
+Another common strategy to handle label noise involves assuming that the noisy label originates from a probability distribution that depends on the actual label.
+Early works \citep{Goldberger2016TrainingDN} incorporated these transition probabilities into a noise adaptation layer that is stacked over a classification network and trained in an end-to-end fashion. More recent work, such as Forward \citep{Patrini2016MakingDN}, prefers to estimate these transition probabilities using separate procedures. However, the success of this method is contingent upon the availability of clean validation data \citep{confidentlearn2021} or additional assumptions about the data \citep{zhang2021learning}.
+Noise correction has shown promising results in noisy label learning recently \citep{bai2021understanding,li2021learning,li2022selective,sopliu22w}. During the early learning phase, the model can accurately predict a subset of the mislabeled examples \citep{Liu2020EarlyLearningRP}. This observation suggests a potential strategy of correcting the corresponding labels. This could be accomplished by generating new labels equivalent to soft or hard pseudo-labels estimated by the model \citep{tanaka2018joint,yi2019pronoisy}. Co-Teaching uses multiple differently trained networks for correcting noisy labels \citep{Han2018CoteachingRT}. SELFIE \citep{song19b} corrects a subset of labels by replacing them based on past model outputs. Another study in \citep{arazo2019unsupervised} uses a two-component mixture model for sample selection, and then corrects labels using a convex combination.  
+Similarly, DivideMix \citep{Li2020DivideMixLW} employs two networks for sample selection using a mixture model and Mixup \citep{zhang2017mixup}.
+
+
+\textbf{Mixture imprecise label settings}.
+Various previous works have explored dealing with distinct types of imprecise labels. However, they have yet to tackle a combination of partial labels, limited labels, and noisy labels, which is a highly realistic scenario. For instance, recent attention has been paid to the issue of partial noisy label learning.
+PiCO+ \citep{wang2022pico+}, an extended version of PiCO \citep{wang2022pico}, is tailored specifically for partial noisy labels. 
+% It employs a distance-based method to select clean samples and uses a semi-supervised contrastive learning algorithm to train robust classifiers. This approach distinguishes between clean and noisy samples and enhances the learning of distinctive features.
+IRNet \citep{lian2022irnet} uses two modules: noisy sample detection and label correction, transforming the scenario of noisy PLL into a more traditional PLL.
+DALI \citep{xu2023dali} is another framework designed to reduce the negative impact of detection errors by creating a balance between the initial candidate set and model outputs, with theoretical assurances of its effectiveness.
+Additionally, some work has focused on semi-supervised partial label learning \citep{wang2019partial,wang2020semi}.
+No existing research can effectively address the challenge of handling a combination of partial, limited, and noisy labels simultaneously, which underscores the novelty and significance of our work.
+
+
+\textbf{Previous attempts towards unification of learning from imprecise labels.}
+There are earlier attempts for the generalized solutions of different kinds of imprecise labels/observations. 
+Den{\oe}ux \cite{denoeux2011maximum} proposed an EM algorithm for the likelihood estimation of fuzzy data and verified the algorithm on linear regression and uni-variate normal mixture estimation. 
+Van Rooyen et al. \cite{van2017theory} developed an abstract framework that generically tackles label corruption via the Markov transition.
+Quost et al. \cite{quost2016clustering} further extended the EM algorithm of fuzzy data on the finite mixture of Gaussians.
+Gong et al. \cite{gong2020centroid} proposed a general framework with centroid estimation for imprecise supervision. 
+A unified partial AUC optimization approach was also proposed earlier \citep{xie2024weakly}.
+Zhang et al. \cite{zhang2020aggre} and Wei. et al. \cite{uumwei23a} proposed generalized solutions for aggregate observations.
+A unified solution based on dynamic programming for count-based weak supervision was also proposed \citep{ShuklaDAE23}
+While relating to these works on the surface, ILL does not require any assumption on the imprecise information and generalizes well to more practical settings with noisy labels. 
+% corrupted labels
+Some other works for individual settings also related EM framework, but usually involved the approximation on the EM \citep{amini2002semi,alan2016noisyicaspps,wang2022pico}.
+
+
+
+\section{Methods}
+\label{sec:appendix-method}
+
+
+\subsection{Derivation of Variational Lower Bound}
+\label{sec:append-var-lower-bound}
+
+Evidence lower bound (ELBO), or equivalently variational lower bound \citep{dempster1977maximum}, is the core quantity in EM. 
+From \cref{eq:em}, to model $\log P(X, I;\theta)$, we have:
+\begin{equation}
+\begin{split}
+\log P(X, I; \theta) &= \int Q(Y) \log P(X, I;\theta) dY \\
+&= \int Q(Y) \log P(X, I;\theta) \frac{P(Y | X, I;\theta)}{P(Y | X, I; \theta)} dY \\
+&= \int Q(Y) \log \frac{P(X, I, Y;\theta) Q(Y)}{P(Y | X, I; \theta) Q(Y)} dY  \\
+&= \int Q(Y) \log \frac{P(X, I, Y;\theta)}{Q(Y)} dY  - \int Q(Y) \log \frac{P(Y | X, I; \theta)}{Q(Y)} dY \\
+\end{split}
+\end{equation}
+where the first term is the ELBO and the second term is the KL divergence $\mathcal{D}_{KL}(Q(Y) || P(Y | X, I;\theta))$. Replacing $Q(Y)$ with $P(Y|X,I;\theta^t)$ at each iteration will obtain \cref{eq:em}.
+
+
+
+
+\subsection{Instantiations to Partial Label Learning}
+\label{sec:append-derive-instan-pll}
+
+The imprecise label $I$ for partial labels is defined as the label candidate sets $S$ with  $\{\mathbf{s}_i\}_{i \in [N]}$ containing the true labels.
+Now we can derive \cref{eq:ill-pll} by replacing $I$ with $S$ in \cref{eq:em}:
+\begin{equation}
+\begin{aligned}
+   & \mathbb{E}_{Y|X,I;\theta^t} \left[  \log P(Y|X;\theta) + \log P(I|X, Y; \theta) \right]  \\
+   &= \mathbb{E}_{Y|X, S;\theta^t} \left[ \log P(Y | X; \theta) + \log P(I|X, Y; \theta) \right] \\
+   &= \sum_{Y} P(Y|X, S; \theta^t) \left[ \log P(Y | X; \theta) + \log P(I|X, Y; \theta) \right]  \\
+   &= \sum_{Y} P(Y|X, S; \theta^t) \left[ \log P(Y | X; \theta) \right] + \log P(I | X, Y;\theta)
+\end{aligned}
+\end{equation}
+Note that $P(I|Y, X;\theta)$ can be moved out of the expectation because it is a fixed quantity to any $Y$. 
+Now we replace $Y$, $X$, and $S$ to $y$, $\mathbf{x}$, and $\mathbf{s}$ for each instance, and converting the maximization problem to negative log-likelihood minimization problem to drive the loss function:
+\begin{equation}
+\begin{split}
+      \mathcal{L}_{\mathrm{ILL}}^{\mathrm{PLL}}  &= - \frac{1}{N} \sum_i^N  \mathbf{p}(y_i|\mathbf{x}_i, \mathbf{s}_i;\theta^t) \log \mathbf{p}(y_i | \mathbf{x}_i; \theta) - \frac{1}{N} \sum_i^N \log \mathbf{p}( \mathbf{s}_i | \mathbf{x}_i  ,y_i;\theta). \\ 
+\end{split}
+\end{equation}
+The first term is the Cross-Entropy loss we derived in \cref{eq:ill-pll}. 
+If $S$ is not instance-dependent, then knowing $Y$ also knows $S$, the second term thus can be ignored in \cref{eq:ill-pll}. 
+If $S$ becomes instance-dependent, the second term can be maintained as a supervised term as in \citep{revisitpllwu22l} to optimize $\theta$. 
+
+\subsection{Instantiations to Semi-Supervised Learning}
+\label{sec:append-derive-instan-ssl}
+
+In SSL, the input $X$ consists of the labeled data $X^\mathrm{L}$ and the unlabeled data $X^\mathrm{U}$. 
+The imprecise label for SSL is realized as the limited number of full labels $Y^\mathrm{L}$ for $X^\mathrm{L}$. 
+The labels $Y^\mathrm{U}$ for unlabeled $X^\mathrm{U}$ are unknown and become the latent variable. 
+Thus we can write:
+\begin{equation}
+\begin{aligned}
+    & \mathbb{E}_{Y|X,I;\theta^t} \left[  \log P(Y|X;\theta) + \log P(I|X, Y; \theta) \right]  \\ 
+    &= \mathbb{E}_{Y^\mathrm{U} |X^\mathrm{U}, X^\mathrm{L},Y^\mathrm{L};\theta^t} \left[  \log P(Y^\mathrm{U}|X^\mathrm{U},X^\mathrm{L};\theta) + \log P(Y^\mathrm{L}|X^\mathrm{L}, X^\mathrm{U}, Y^\mathrm{U}; \theta) \right]  \\
+    &= \sum_{Y^\mathrm{U}} P(Y^\mathrm{U} | X^\mathrm{U};\theta^t) \left[  \log P(Y^\mathrm{U}|X^\mathrm{U};\theta) \right] + \log P(Y^\mathrm{L}|X^\mathrm{L}; \theta).   \\
+\end{aligned} 
+\end{equation}
+The negative log-likelihood loss function for $\{\mathbf{x}_i^l, y_i^l\}_{i \in [N^L]}$ and $\{\mathbf{x}^u\}_{i \in [N^U]}$ thus becomes:
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{SSL}} = \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathbf{x}^\mathrm{u};\theta)  , \mathbf{p}(y|\mathbf{x}^\mathrm{u};\theta^t)  \right) + \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathbf{x}^\mathrm{L};\theta), y^\mathrm{L} \right)
+\end{split}
+\end{equation}
+
+
+\subsection{Instantiations to Noisy Label Learning}
+\label{sec:append-derive-instan-nll}
+
+We denote the given noisy labels as $\hat{Y}$. For noisy label learning, our method naturally supports a noise transition model $\mathcal{T}(\hat{Y} | Y;\omega)$ with learnable parameter $\omega$, as we will show in the following:
+\begin{equation}
+\begin{split}
+     & \mathbb{E}_{Y|X,I;\theta^t} \left[ \log P(Y|X;\theta) + \log P(I|X, Y; \theta) \right]  \\ 
+     &= \mathbb{E}_{Y|X, \hat{Y};\theta^t} \left[\log P(Y, \hat{Y} | X;\theta)  \right] \\
+     &= \mathbb{E}_{Y|X, \hat{Y};\theta^t} \left[\log P(Y | \hat{Y}, X;\theta) + \log P(\hat{Y} | X;\theta) \right] \\
+     &=  \sum_{Y} P(Y | \hat{Y}, X; \theta^t) \log P(Y | \hat{Y}, X;\theta) + \log P(\hat{Y} | X;\theta). \\
+\end{split}
+\end{equation}
+The loss function is:
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{NLL}} 
+    &= \mathcal{L}_{\mathrm{CE}}\left( \mathbf{p}(y|\mathbf{x}, \hat{y};\theta, \omega^t), 
+    \mathbf{p}(y| \mathbf{x}, \hat{y}; \theta^t, \omega^t) \right) 
+    + \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(\hat{y}|\mathbf{x};\theta,\omega), \hat{y} \right)
+\end{split}
+\end{equation}
+Note that both term is computed from the noise transition matrix as mentioned in \cref{eq:ill-nll}.
+
+
+% Things become more complicated here since the noisy labels $\hat{Y}$ do not directly reveal the true information about $Y$, thus $P(\hat{Y}|Y, X;\theta)$ inherently involves a noise model that needs to be learned.  
+% We define a simplified instance-independent\footnote{A more complicated instance-dependent noise model $\mathcal{T}(\hat{Y}|Y, X;\omega)$ can also be formulated under our unified framework, but not considered in this work.} noise transition model $\mathcal{T}(\hat{Y} | Y;\omega)$ with parameters $\omega$, and take a slightly different way to formulate the loss function for NLL:
+% \begin{equation}
+% \resizebox{.9\textwidth}{!}{$
+% \begin{split}
+%     \mathcal{L}_{\mathrm{ILL}}^{\mathrm{NLL}} &= - \sum_{Y \in [C]} P(Y | X, \hat{Y}; \theta^t,  \omega^t) \log P(Y | X, \hat{Y}; \theta,  \omega^t) - \log P(\hat{Y} | X; \theta, \omega) \\ 
+%     &= \mathcal{L}_{\mathrm{CE}}\left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x}), \hat{y};\theta, \omega^t), 
+%     \mathbf{p}(y| \mathcal{A}_\mathrm{w}(\mathbf{x}), \hat{y}; \theta^t, \omega^t) \right) 
+%     + \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(\hat{y}|\mathcal{A}_\mathrm{w}(\mathbf{x});\theta,\omega), \hat{y} \right),
+% \end{split}$
+% }
+% \end{equation}
+% where the parameters $\omega$ and $\theta$ are learned end-to-end. 
+% The first term corresponds to the consistency regularization of prediction conditioned on noisy labels and the second term corresponds to the supervised loss on noisy predictions that are converted from the ground truth predictions.
+% Both quantities are computed using the noise transition model given the noisy label $\hat{y}$:
+% % We compute both quantities using the noise model:
+% \begin{equation}
+%     \mathbf{p}(y|\mathbf{x}, \hat{y};\theta, \omega^t) \propto \mathbf{p}(y|\mathbf{x};\theta) \mathcal{T}(\hat{y} | y; \omega^t) , \text{and }
+%     \mathbf{p}(\hat{y}|\mathbf{x};\theta,\omega) = \sum_{y \in [C]} \mathbf{p}(y|\mathbf{x};\theta)  \mathcal{T}(\hat{y} | y; \omega).
+% \label{eq:ill-nll}
+% \end{equation}
+% Our formulation for NLL relates to the early work that adopts a noise adaption layer \citep{Goldberger2016TrainingDN}. 
+% We show that even the simplified noise transition model can achieve promising performance in ILL. 
+% Compared to SOP, which adopts a set of parameters for each training sample with $NC$ parameters, our noise model only involves $C^2$ parameters, which is much more efficient\footnote{In most of the cases, $C \ll N$ holds.}.
+% \chh{Perhaps need to add mixture setting here too}
+
+
+\subsection{Instantiations to Mixed Imprecise Label Learning}
+\label{sec:append-derive-instan}
+
+
+In this setting, we have both labeled data and unlabeled data, where the labels for the labeled data are both partial and noisy. 
+On the unlabeled data, the unsupervised objective is the same as the unsupervised consistency regularization of semi-supervised learning shown in \cref{eq:ill-ssl}. 
+On the labeled data, it mainly follows the \cref{eq:ill-nll} of noisy label learning, with the noisy single label becoming the noisy partial labels $\hat{\mathbf{s}}$. 
+For noisy partial labels, the noisy supervised objective in Eq. 8 becomes the supervised consistency regularization as in Eq. 6 of partial label setting to train the noise transition model, and the noisy unsupervised objective becomes the consistency regularization of the prediction conditioned on noisy partial labels:
+\begin{equation}
+\mathcal{L}_{\mathrm{CE}}\left(\mathbf{p}\left(y \mid \mathcal{A}_{\mathrm{s}}(\mathbf{x}), \hat{\mathbf{s}} ; \theta, \omega^t\right), \mathbf{p}\left(y \mid \mathcal{A}_{\mathrm{w}}(\mathbf{x}), \hat{y} ; \theta^t, \omega^t\right)\right)+\mathcal{L}_{\mathrm{CE}}\left(\mathbf{p}\left(\hat{y} \mid \mathcal{A}_{\mathrm{w}}(\mathbf{x}) ; \theta, \omega\right), \hat{\mathbf{s}}\right)
+\end{equation}
+
+We can compute both quantity through the noise transition model:
+\begin{equation}
+    \mathbf{p}(y|\mathbf{x}, \hat{\mathbf{s}};\theta, \omega^t) \propto \mathbf{p}(y|\mathbf{x};\theta) \prod_{\hat{y} \in \hat{\mathbf{s}}} \mathcal{T}(y | \hat{y}; \omega^t) , \text{and }
+    \mathbf{p}(\hat{y} |\mathbf{x};\theta,\omega) = \sum_{y \in [C]} \mathbf{p}(y|\mathbf{x};\theta)  \mathcal{T}(\hat{y} | y; \omega).
+\end{equation}
+
+
+
+
+\section{Experiments}
+\label{sec:appen-exp}
+
+\subsection{Additional Training Details}
+
+We adopt two additional training strategies for the ILL framework. The first is the ``strong-weak'' augmentation strategy \citep{xie2020unsupervised}. Since there is a consistency regularization term in each imprecise label formulation of ILL, we use the soft pseudo-targets of the weakly-augmented data to train the strongly-augmented data. The second is the entropy loss \citep{bridle1991unsup} for class balancing, which is also adopted in SOP \citep{sopliu22w} and FreeMatch \citep{wang2023freematch}. We set the loss weight for the entropy loss uniformly for all experiments as 0.1. 
+
+% \subsection{Computing Resources}
+
+% We run all of our experiments on NVIDIA V100 GPUs. The average training time for the base datasets CIFAR-10 and CIFAR-100 under each setting is listed in \ch{a table}.
+
+% \revision{
+% \subsection{Results Overview}
+
+% Here we provide an overview of the performance of our method, compared to recent state-of-the-art (SOTA) baselines, as shown in \cref{fig:results_overview}.
+% For each evaluated datasets in each imprecise label setting, we average the results and report the average accuracy. 
+% It is demonstrated that the proposed method in general achieves better performance compared to recent SOTA baselines or achieves performance comparable to them.
+
+% \begin{figure}[t!]
+%     \centering
+%     \hfill
+%     \subfigure[PLL]{\label{fig:overview_pll}\includegraphics[width=0.24\textwidth]{figures/overview_pll_bar.pdf}}
+%     \hfill
+%     \subfigure[SSL]{\label{fig:overview_ssl}\includegraphics[width=0.24\textwidth]{figures/overview_ssl_bar.pdf}}
+%     \hfill
+%     \subfigure[NLL]{\label{fig:overview_nll}\includegraphics[width=0.24\textwidth]{figures/overview_nll_bar.pdf}}
+%     \hfill
+%     \subfigure[Mixed]{\label{fig:overview_mixed}\includegraphics[width=0.24\textwidth]{figures/overview_mix_bar.pdf}}
+%     \hfill
+%     \vspace{-.1in}
+%     \caption{Overview of results comparison to recent SOTA baselines on benchmarks on PLL, SSL, NLL, and Mixed imprecise labels. We report the average accuracy over all settings for each dataset.}
+%     \label{fig:results_overview}
+% \vspace{-0.2in}
+% \end{figure}
+
+
+% }
+
+\subsection{Partial Label Learning}
+\label{sec:append-exp-ppl}
+
+\subsubsection{Setup}
+Following previous work \citep{xu2022progressive,wen2021leveraged,wang2022pico}, we evaluate our method on partial label learning setting using CIFAR-10, CIFAR-100, and CUB-200 \citep{welinder2010caltech}.
+We generate partially labeled datasets by flipping negative labels to false positive labels with a probability $q$, which is also denoted as a partial ratio. 
+Specifically, the $C - 1$ negative labels are uniformly aggregated into the ground truth label to form a set of label candidates. 
+We consider $q \in \{0.1, 0.3, 0.5\}$ for CIFAR-10, $q \in \{0.01, 0.05, 0.1\}$ for CIFAR-100, and $q=0.05$ for CUB-200. 
+For CIFAR-10 and CIFAR-100, we use ResNet-18 \citep{he2016deep} as backbone. We use SGD as an optimizer with a learning rate of $0.01$, a momentum of $0.9$, and a weight decay of $1$e$-3$. 
+For CUB-200, we initialize the ResNet-18 \citep{he2016deep} with ImageNet-1K \citep{deng2009imagenet} pre-trained weights. 
+We train $800$ epochs for CIFAR-10 and CIFAR-100 \citep{krizhevsky2009learning}, and $300$ epochs for CUB-200, with a cosine learning rate scheduler.
+For CIFAR-10 and CIFAR-100, we use an input image size of 32. For CUB-200, we use an input image size of 224. 
+A batch size of 256 is used for all datasets. 
+The choice of these parameters mainly follows PiCO \citep{wang2022pico}.
+We present the full hyper-parameters systematically in \cref{tab:append-param-pll}.
+
+
+\begin{table}[h!]
+\centering
+\caption{Hyper-parameters for \textbf{partial label learning} used in experiments.}
+\label{tab:append-param-pll}
+\resizebox{0.6 \textwidth}{!}{%
+\begin{tabular}{@{}c|ccc@{}}
+\toprule
+\multicolumn{1}{c|}{Hyper-parameter}   & CIFAR-10 & CIFAR-100 & CUB-200 \\ \midrule
+Image Size & 32 & 32 & 224 \\
+Model      &  ResNet-18 &   ResNet-18        &   \begin{tabular}{c} ResNet-18  \\(ImageNet-1K Pretrained) \end{tabular}     \\
+Batch Size        &     256     &    256       &   256      \\
+Learning Rate     &     0.01     &   0.01        &   0.01     \\
+Weight Decay      &     1e-3     &   1e-3       &   1e-5      \\
+LR Scheduler          &     Cosine     &   Cosine   &   Cosine       \\
+Training Epochs   &     800    &   800        &  300       \\
+Classes           &     10     &     100      &   200      \\ 
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+
+\subsubsection{Discussion}
+\label{sec:append-exp-rcr}
+
+We additionally compare our method with R-CR \citep{revisitpllwu22l}, which uses a different architecture as the results in \cref{tab:main-partial}. R-CR uses Wide-ResNet34x10 as backbone, and adopts multiple strong data augmentations. It also adjusts the loss weight along training. 
+For fair comparison, we use the same architecture without multiple augmentation and the curriculum adjust on loss. 
+The results are shown in \cref{tab:pll-rcr}, where our method outperforms R-CR on CIFAR-10 and is comparable on CIFAR-100. 
+
+
+\begin{table}[h]
+\centering
+\caption{Comparison with R-CR in partial label learning}
+\label{tab:pll-rcr}
+\resizebox{0.5 \textwidth}{!}{%
+\begin{tabular}{@{}c|cc|cc@{}}
+\toprule
+\multirow{2}{*}{Method} &
+  \multicolumn{2}{c|}{CIFAR-10} &
+  \multicolumn{2}{c}{CIFAR-100} \\
+ &
+  0.3 &
+  0.5 &
+  0.05 &
+  0.10 \\ \midrule
+R-CR &
+  97.28\scriptsize{$\pm$0.02} &
+  97.05\scriptsize{$\pm$0.05} &
+  82.77\scriptsize{$\pm$0.10} &
+  82.24\scriptsize{$\pm$0.07} \\
+Ours &
+  97.55\scriptsize{$\pm$0.07} &
+  97.17\scriptsize{$\pm$0.11} &
+  82.46\scriptsize{$\pm$0.08} &
+  82.22\scriptsize{$\pm$0.05} \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+
+We also provide the comparison of our method on instance-dependent partial label learning as proposed by Xu et al. \cite{xu2021instance,xu2022progressive}. 
+Due to the nature of instance-dependence, we maintain the term $P(S|Y,X;\theta)$ from \cref{eq:em} as a supervised term for optimization. 
+We compare our method with VALEN \cite{xu2021instance}, RCR \cite{revisitpllwu22l}, PiCO \cite{wang2022pico}, and POP \cite{xu2022progressive} on MNIST, Kuzushiji-MNIST, Fashion-MNIST, CIFAR-10, and CIFAR-100, with synthetic instance-dependent partial labels generated according to Xu et al. \cite{xu2022progressive}. 
+From the results in \cref{tab:ins-pll}, we proposed method demonstrate the best performance across different datasets evaluated.
+
+\begin{table}[h]
+\centering
+\caption{Comparison on instance-dependent partial label learning}
+\resizebox{0.8 \textwidth}{!}{%
+\begin{tabular}{@{}c|ccccc@{}}
+\toprule
+      & MNIST & Kuzushiji-MNIST & Fashion-MNIST & CIFAR-10 & CIFAR-100 \\ \midrule
+VALEN \citep{xu2021instance} & 99.03 & 90.15           & 96.31         & 92.01    & 71.48     \\
+RCR \citep{revisitpllwu22l}   & 98.81 & 90.62           & 96.64         & 86.11    & 71.07     \\
+PiCO \citep{wang2022pico} & 98.76 & 88.87           & 94.83         & 89.35    & 66.30     \\
+POP \citep{xu2022progressive}   & \textbf{99.28} & 91.09           & 96.93         & 93.00    & 71.82     \\ \midrule
+Ours  & 99.19 & \textbf{91.35}           & \textbf{97.01}         & \textbf{93.86}    & \textbf{72.43}     \\ \bottomrule
+\end{tabular}%
+}
+\label{tab:ins-pll}
+\end{table}
+
+
+A recent work on PLL discussed and analyzed the robustness performance of different loss functions, especially the average-based methods \citep{lv2023robustness}. 
+We perform a similar analysis here for the derived loss function in ILL. 
+Following the notation in \cite{lv2023robustness}, let $\mathbf{s}$ denote the candidate label set, $\mathbf{x}$ as the training instance, $g$ as the probability score from the model, and $f$ as the classifier $f(\boldsymbol{x})=\underset{i \in \mathcal{Y}}{\arg \max } g_i(\boldsymbol{x})$, the average-based PLL can be formulated as:
+\begin{equation}
+    \mathcal{L}_{avg-PLL}(f(\boldsymbol{x}), \mathbf{s}) = \frac{1}{|\mathbf{s}|} \sum_{i \in \mathbf{s}} \ell(f(\boldsymbol{x}), i)
+\end{equation}
+Lv et al. \cite{lv2023robustness} compared different loss functions $\ell$ on both noise-free and noisy PLL settings, where they find both theoretically and empirically that average-based PLL with \textit{bounded} loss are robust under mild assumptions. Empirical study in \cite{lv2023robustness} suggests that both \textit{Mean Absolute Error} and \textit{Generalized Cross-Entropy} loss \citep{Zhang2018GeneralizedCE} that proposed for noisy label learning achieves the best performance and robustness for average-based PLL. 
+
+Our solution for PLL can be viewed as an instantiation of the average-based PLL as in \citep{lv2023robustness} with:
+\begin{equation}
+\ell(f(\mathbf{x}), i) = - \bar{g}_i(\mathbf{x}) \log g_i(\mathbf{x})
+\end{equation}
+
+where $\bar{g}$ is normalized probability over $\mathbf{s}$ with detached gradient. We can further show that the above loss function is bounded for $0 < \ell \leq \frac{1}{e}$ and thus bounded for summation of all classes, which demonstrates robustness, as we show in \cref{tab:main-mix}.
+
+
+
+% \subsection{Results}
+
+% Perhaps one concern about the ILL framework is still the computation time. Although we can use forward-backward algorithm with linear time, the computation time on NFA is still linearly related to batch size. Thus we provide a training time comparison with PiCO. We run both method on a single NVIDIA V100 GPU. 
+% One can see that there is no significant training time increasing of ILL framework compared to PiCO, as shown in \cref{tab:append-time-pll}.
+
+
+% \begin{table}[h!]
+% \centering
+% \caption{Training time (min/epoch) comparison on \textbf{partial label learning}.}
+% \label{tab:append-time-pll}
+% \resizebox{0.35 \textwidth}{!}{%
+% \begin{tabular}{@{}c|ccc@{}}
+% \toprule
+%      & CIFAR-10 & CIFAR-100 & CUB-200 \\ \midrule
+% PiCO & 1.60     & 1.59      & 2.86    \\
+% Ours & 1.75     & 1.80      & 3.01    \\ \bottomrule
+% \end{tabular}%
+% }
+% \end{table}
+
+
+
+
+\subsection{Semi-Supervised Learning}
+\label{sec:append-exp-ssl}
+
+
+\subsubsection{Setup}
+
+For experiments of SSL, we follow the training and evaluation protocols of USB \citep{usb2022} on image and text classification. 
+To construct the labeled dataset for semi-supervised learning, we uniformly select $l / C$ samples from each class and treat the remaining samples as the unlabeled dataset. 
+For image classification tasks, ImageNet-1K \citep{deng2009imagenet} Vision Transformers \citep{dosovitskiy2020image} are used, including CIFAR-100 \citep{krizhevsky2009learning}, EuroSAT \citep{helber2019eurosat}, STL-10 \citep{coates2011analysis}, TissueMNIST \citep{medmnistv1,medmnistv2}, Semi-Aves \citep{su2021semi}.
+For text classification tasks, we adopt BERT \citep{devlin2018bert} as backbone, including IMDB \citep{maas2011learning}, Amazon Review \citep{mcauley2013hidden}, Yelp Review \citep{yelpwebsite}, AG News \citep{zhang2015character} , Yahoo Answer \citep{chang2008importance}. 
+The hyper-parameters strictly follow USB, and are shown in \cref{tab:append-hyper-cv} and \cref{tab:append-hyper-nlp}.
+
+
+\begin{table}[!htbp]
+\centering
+\caption{Hyper-parameters of \textbf{semi-supervised learning} used in vision experiments of USB.}
+\resizebox{0.85\textwidth}{!}{
+\begin{tabular}{c|ccccc} \toprule
+Hyper-parameter & CIFAR-100 & STL-10 & Euro-SAT & TissueMNIST & Semi-Aves \\ % \cmidrule(r){1-1} \cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}\cmidrule(lr){5-5}\cmidrule(l){6-6}  
+\midrule
+Image Size  & 32 & 96 & 32 & 32 & 224 \\ %\cmidrule(r){1-1} \cmidrule(lr){2-6}
+Model    &  ViT-S-P4-32 & ViT-B-P16-96 & ViT-S-P4-32 & ViT-T-P4-32 & ViT-S-P16-224  \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6}
+Labeled Batch size & \multicolumn{5}{c}{16} \\ %\cmidrule(r){1-1} \cmidrule(lr){2-6} 
+Unlabeled Batch size & \multicolumn{5}{c}{16} \\ %\cmidrule(r){1-1} \cmidrule(lr){2-6}
+Learning Rate & 5e-4 & 1e-4 & 5e-5  & 5e-5  & 1e-3 \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Weight Decay &  \multicolumn{5}{c}{5e-4} \\ %\cmidrule(r){1-1} \cmidrule(lr){2-6}
+Layer Decay Rate & 0.5 & 0.95 &  1.0 &  0.95 & 0.65  \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+LR Scheduler & \multicolumn{5}{c}{$\eta = \eta_0 \cos(\frac{7\pi k}{16K})$} \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Training epochs & \multicolumn{5}{c}{20} \\ 
+Classes & 100 & 10 & 10 & 10 & 200 \\ 
+Model EMA Momentum & \multicolumn{5}{c}{0.0}\\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Prediction EMA Momentum & \multicolumn{5}{c}{0.999}\\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Weak Augmentation & \multicolumn{5}{c}{Random Crop, Random Horizontal Flip} \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Strong Augmentation & \multicolumn{5}{c}{RandAugment \citep{cubuk2020randaugment}} \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:append-hyper-cv}
+\end{table}
+
+
+\begin{table}[!htbp]
+\centering
+\caption{Hyper-parameters of \textbf{semi-supervised learning} NLP experiments in USB.}
+\resizebox{0.75\textwidth}{!}{
+\begin{tabular}{c|ccccc}\toprule
+Hyper-parameter &  AG News & Yahoo! Answer & IMDB & Amazom-5 & Yelp-5 \\ %\cmidrule(r){1-1} \cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}\cmidrule(lr){5-5}\cmidrule(l){6-6}
+\midrule
+Max Length    &  \multicolumn{5}{c}{512} \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6}
+Model    &  \multicolumn{5}{c}{Bert-Base} \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6}
+Labeled Batch size & \multicolumn{5}{c}{4} \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6} 
+Unlabeled Batch size & \multicolumn{5}{c}{4} \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6}
+Learning Rate & 5e-5 & 1e-4 & 5e-5 & 1e-5 & 5e-5 \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Weight Decay&  \multicolumn{5}{c}{1e-4} \\ % \cmidrule(r){1-1} \cmidrule(lr){2-6}
+Layer Decay Rate & 0.65 & 0.65 & 0.75 & 0.75 & 0.75 \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+LR Scheduler & \multicolumn{5}{c}{$\eta = \eta_0 \cos(\frac{7\pi k}{16K})$} \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Training epochs & \multicolumn{5}{c}{10} \\ 
+Classes & 4 & 10 & 2 & 5 & 5 \\ 
+Model EMA Momentum & \multicolumn{5}{c}{0.0}\\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Prediction EMA Momentum & \multicolumn{5}{c}{0.999}\\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Weak Augmentation & \multicolumn{5}{c}{None} \\ % \cmidrule(r){1-1} \cmidrule(l){2-6}
+Strong Augmentation & \multicolumn{5}{c}{Back-Translation \citep{xie2020unsupervised}} \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:append-hyper-nlp}
+\end{table}
+
+% We use ImageNet-1K pre-trained ViT-S for image classification tasks and BERT for text classification tasks. 
+% For image classification, we select CIFAR-100 and STL-10 as datasets for comparison.
+% For text classification, we select IMDB and Amazon Review as datasets for comparison.
+% \ch{We also conduct experiments about classic setting++}.
+% Full comparison results on USB datasets are shown in Appendix. 
+% All hyper-parameters follow exactly the setting of USB, with more details shown in Appendix. 
+
+% \textbf{Baselines}. 
+% We mainly compare with the recent methods that utilize confidence thresholding, such as FixMatch \citep{sohn2020fixmatch}, AdaMatch \citep{berthelot2021adamatch}, FlexMatch \citep{zhang2021flexmatch}, FreeMatch \citep{wang2023freematch}, and SoftMatch \citep{chen2023softmatch}. 
+% We also compare with two methods that adopt contrastive loss, CoMatch \citep{li2021comatch} and SimMatch \citep{zheng2022simmatch}. 
+% Comparison with other semi-supervised learning algorithms available in USB is included in Appendix. 
+
+\begin{table}[h!]
+\centering
+\caption{Error rate comparison of different number of labels on CIFAR-100, STL-10, EuroSAT, TissueMNIST, and SemiAves for \textbf{semi-supervised learning}. We use USB \citep{usb2022} image classification task results. The best results are indicated in bold. Our results are averaged over 3 independent runs.}
+\label{tab:append-ssl-cv}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcc|cc|cc|cc|c@{}}
+\toprule
+\multicolumn{1}{l|}{Datasets} &
+  \multicolumn{2}{c|}{CIFAR-100} &
+  \multicolumn{2}{c|}{STL-10} &
+  \multicolumn{2}{c|}{EuroSat} &
+  \multicolumn{2}{c|}{TissueMNIST} &
+  SemiAves \\ \midrule
+\multicolumn{1}{l|}{\# Labels}   & 200        & 400        & 40          & 100         & 20         & 40         & 80         & 400        & 3959       \\ \midrule
+% \multicolumn{1}{l|}{fullysupervised} &
+%   \multicolumn{2}{c|}{8.3±0.08} &
+%   19.0±2.9 &
+%   10.87±0.49 &
+%   0.94±0.03 &
+%   0.9±0.08 &
+%   \multicolumn{2}{c|}{28.98±0.13} &
+%   41.2±0.17 \\
+% \multicolumn{1}{l|}{supervised}  & 35.88±0.36 & 26.76±0.83 & 19.0±2.9    & 10.87±0.49  & 26.49±1.6  & 16.12±1.35 & 60.36±3.83 & 54.08±1.55 & 41.2±0.17  \\ \midrule
+\multicolumn{1}{l|}{Pseudo-Label \citep{lee2013pseudo}} & 33.99\scriptsize{±0.95} & 25.32\scriptsize{±0.29} & 19.14\scriptsize{±1.33}   & 10.77\scriptsize{±0.60}   & 25.46\scriptsize{±1.36} & 15.70\scriptsize{±2.12}  & 56.92\scriptsize{±4.54} & 50.86\scriptsize{±1.79} & 40.35\scriptsize{±0.30}  \\
+\multicolumn{1}{l|}{Mean-Teacher \citep{tarvainen2017mean}} & 35.47\scriptsize{±0.40}  & 26.03\scriptsize{±0.30}  & 18.67\scriptsize{±1.69}  & 24.19\scriptsize{±10.15} & 26.83\scriptsize{±1.46} & 15.85\scriptsize{±1.66} & 62.06\scriptsize{±3.43} & 55.12\scriptsize{±2.53} & 38.55\scriptsize{±0.21} \\
+% \multicolumn{1}{l|}{pimodel}     & 36.06±0.15 & 26.52±0.41 & 42.76±15.94 & 19.85±13.02 & 21.82±1.22 & 12.09±2.27 & 55.94±5.67 & 47.05±1.21 & 39.47±0.15 \\
+\multicolumn{1}{l|}{VAT \citep{miyato2018virtual}}         & 31.49\scriptsize{±1.33}  & 21.34\scriptsize{±0.50}   & 18.45\scriptsize{±1.47}   & 10.69\scriptsize{±0.51}   & 26.16\scriptsize{±0.96}  & 10.09\scriptsize{±0.94} & 57.49\scriptsize{±5.47}  & 51.30\scriptsize{±1.73}   & 38.82\scriptsize{±0.04}  \\
+\multicolumn{1}{l|}{MixMatch \citep{berthelot2019mixmatch}}    & 38.22\scriptsize{±0.71} & 26.72\scriptsize{±0.72} & 58.77\scriptsize{±1.98}  & 36.74\scriptsize{±1.24}  & 24.85\scriptsize{±4.85} & 17.28\scriptsize{±2.67} & 55.53\scriptsize{±1.51} & 49.64\scriptsize{±2.28} & 37.25\scriptsize{±0.08} \\
+\multicolumn{1}{l|}{ReMixMatch \citep{berthelot2019remixmatch}}  & 22.21\scriptsize{±2.21}  & 16.86\scriptsize{±0.57}  & 13.08\scriptsize{±3.34}   & \textbf{7.21\scriptsize{±0.39}}    & \textbf{5.05\scriptsize{±1.05}}   & 5.07\scriptsize{±0.56}   & 58.77\scriptsize{±4.43}  & 49.82\scriptsize{±1.18}  & \textbf{30.20\scriptsize{±0.03}}   \\
+\multicolumn{1}{l|}{AdaMatch \citep{berthelot2021adamatch}}    & 22.32\scriptsize{±1.73} & 16.66\scriptsize{±0.62} & 13.64\scriptsize{±2.49}  & 7.62\scriptsize{±1.90}    & 7.02\scriptsize{±0.79}  & \textbf{4.75\scriptsize{±1.10}}   & 58.35\scriptsize{±4.87} & 52.40\scriptsize{±2.08}  & 31.75\scriptsize{±0.13} \\
+% \multicolumn{1}{l|}{UDA \citep{xie2020unsupervised}}         & 28.80\scriptsize{±0.61}  & 19.00\scriptsize{±0.79}  & 15.58\scriptsize{±3.16}  & 7.65\scriptsize{±1.11}   & 9.83\scriptsize{±2.15}  & 6.22\scriptsize{±1.36}  & 55.56\scriptsize{±2.63} & 52.10\scriptsize{±1.84}  & 31.85\scriptsize{±0.11} \\
+\multicolumn{1}{l|}{FixMatch \citep{sohn2020fixmatch}}    & 29.60\scriptsize{±0.90}   & 19.56\scriptsize{±0.52} & 16.15\scriptsize{±1.89}  & 8.11\scriptsize{±0.68}  & 13.44\scriptsize{±3.53} & 5.91\scriptsize{±2.02}  & \textbf{55.37\scriptsize{±4.50}}  & 51.24\scriptsize{±1.56} & 31.90\scriptsize{±0.06}  \\
+\multicolumn{1}{l|}{FlexMatch \citep{zhang2021flexmatch}}   & 26.76\scriptsize{±1.12} & 18.24\scriptsize{±0.36} & 14.40\scriptsize{±3.11}   & 8.17\scriptsize{±0.78}   & 5.17\scriptsize{±0.57}  & 5.58\scriptsize{±0.81}  & 58.36\scriptsize{±3.80}  & 51.89\scriptsize{±3.21} & 32.48\scriptsize{±0.15} \\
+\multicolumn{1}{l|}{Dash \citep{xu2021dash}}        & 30.61\scriptsize{±0.98} & 19.38\scriptsize{±0.10}  & 16.22\scriptsize{±5.95}  & 7.85\scriptsize{±0.74}   & 11.19\scriptsize{±0.90}  & 6.96\scriptsize{±0.87}  & 56.98\scriptsize{±2.93} & 51.97\scriptsize{±1.55} & 32.38\scriptsize{±0.16} \\
+% \multicolumn{1}{l|}{CRMatch \citep{fan2021revisiting}}     & 25.70\scriptsize{±1.75}  & 18.03\scriptsize{±0.20}  & 10.17\scriptsize{±1.10}   & 8.45\scriptsize{±0.92}        & 13.24\scriptsize{±1.69} & 8.35\scriptsize{±1.71}  & 54.33\scriptsize{±2.83} & 51.02\scriptsize{±1.28} & 32.15\scriptsize{±0.17} \\
+\multicolumn{1}{l|}{CoMatch \citep{li2021comatch}}     & 35.08\scriptsize{±0.69} & 25.35\scriptsize{±0.50}  & 15.12\scriptsize{±1.88}  & 9.56\scriptsize{±1.35}   & 5.75\scriptsize{±0.43}  & 4.81\scriptsize{±1.05}  & 59.04\scriptsize{±4.90}  & 52.92\scriptsize{±1.04} & 38.65\scriptsize{±0.18} \\
+\multicolumn{1}{l|}{SimMatch \citep{zheng2022simmatch}}    & 23.78\scriptsize{±1.08} & 17.06\scriptsize{±0.78} & 11.77\scriptsize{±3.20}  & 7.55\scriptsize{±1.86}   & 7.66\scriptsize{±0.60}  & 5.27\scriptsize{±0.89}  & 60.88\scriptsize{±4.31} & 52.93\scriptsize{±1.56} & 33.85\scriptsize{±0.08} \\
+\multicolumn{1}{l|}{FreeMatch \citep{wang2023freematch}}   & \textbf{21.40\scriptsize{±0.30}}   & \textbf{15.65\scriptsize{±0.26}} & 12.73\scriptsize{±3.22}  & 8.52\scriptsize{±0.53}   & 6.50\scriptsize{±0.78}   & 5.78\scriptsize{±0.51}  & 58.24\scriptsize{±3.08} & 52.19\scriptsize{±1.35} & 32.85\scriptsize{±0.31} \\
+\multicolumn{1}{l|}{SoftMatch \citep{chen2023softmatch}}   & 22.67\scriptsize{±1.32} & 16.84\scriptsize{±0.66} & 13.55\scriptsize{±3.16}  & 7.84\scriptsize{±1.72}   & 5.75\scriptsize{±0.62}  & 5.90\scriptsize{±1.42}   & 57.98\scriptsize{±3.66} & 51.73\scriptsize{±2.84} & 31.80\scriptsize{±0.22}  \\ \midrule
+\multicolumn{1}{l|}{Ours} & 22.06\scriptsize{±1.06} & 17.40\scriptsize{±1.04} & \textbf{11.09\scriptsize{±0.71}}        & 8.10\scriptsize{±1.02}          & 5.86\scriptsize{±1.06}  & 5.74\scriptsize{±1.13}  & 57.99\scriptsize{±2.16}       & \textbf{50.95\scriptsize{±2.03}}       & 33.08\scriptsize{±0.26} \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\caption{Error rate comparison of different number of labels on IMDB, AG News, Amazon Review, Yahoo Answers, and Yelp Review for \textbf{semi-supervised learning}. We use USB \citep{usb2022} text classification task results. Best results are indicated in bold. Our results are averaged over 3 independent runs.}
+\label{tab:append-ssl-nlp}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l|cc|cc|cc|cc|cc@{}}
+\toprule
+Datasets &
+  \multicolumn{2}{c|}{IMDB} &
+  \multicolumn{2}{c|}{AG News} &
+  \multicolumn{2}{c|}{Amazon Review} &
+  \multicolumn{2}{c|}{Yahoo Answers} &
+  \multicolumn{2}{c}{Yelp Review} \\ \midrule
+\# Labels   & 20         & 100        & 40          & 200         & 250         & 1000        & 500        & 2000       & 250         & 1000        \\ \midrule
+Pseudo-Label \citep{lee2013pseudo} & 45.45\scriptsize{±4.43} & 19.67\scriptsize{±1.01} & 19.49\scriptsize{±3.07}  & 14.69\scriptsize{±1.88}  & 53.45\scriptsize{±1.9}   & 47.00\scriptsize{±0.79}   & 37.70\scriptsize{±0.65}  & 32.72\scriptsize{±0.31} & 54.51\scriptsize{±0.82} & 47.33\scriptsize{±0.20}   \\
+Mean-Teacher \citep{tarvainen2017mean} & 20.06\scriptsize{±2.51} & 13.97\scriptsize{±1.49} & 15.17\scriptsize{±1.21} & 13.93\scriptsize{±0.65} & 52.14\scriptsize{±0.52} & 47.66\scriptsize{±0.84} & 37.09\scriptsize{±0.18} & 33.43\scriptsize{±0.28} & 50.60\scriptsize{±0.62} &  47.21\scriptsize{±0.31} \\
+% pimodel     & 49.99±0.01 & 44.75±3.99 & 60.7±19.09  & 12.58±0.57  & 77.22±1.5   & 53.17±2.56  & 44.91±1.32 & 32.45±0.45 & 75.73±4.01  & 59.82±0.61  \\
+VAT \citep{miyato2018virtual}         & 25.93\scriptsize{±2.58} & 11.61\scriptsize{±1.79} & 14.70\scriptsize{±1.19}   & 11.71\scriptsize{±0.84}  & 49.83\scriptsize{±0.46}  & 46.54\scriptsize{±0.31}  & 34.87\scriptsize{±0.41} & 31.50\scriptsize{±0.35}  & 52.97\scriptsize{±1.41}  & 45.30\scriptsize{±0.32}  \\
+MixMatch \citep{berthelot2019mixmatch}    & 26.12\scriptsize{±6.13} & 15.47\scriptsize{±0.65} & 13.50\scriptsize{±1.51}   & 11.75\scriptsize{±0.60}   & 59.54\scriptsize{±0.67} & 61.69\scriptsize{±3.32}  & 35.75\scriptsize{±0.71} & 33.62\scriptsize{±0.14} & 53.98\scriptsize{±0.59}  & 51.70\scriptsize{±0.68}  \\
+AdaMatch \citep{berthelot2021adamatch}    & 8.09\scriptsize{±0.99}  & 7.11\scriptsize{±0.20}  & \textbf{11.73\scriptsize{±0.17}}  & \textbf{11.22\scriptsize{±0.95}}  & 46.72\scriptsize{±0.72}  & 42.27\scriptsize{±0.25}  & 32.75\scriptsize{±0.35} & 30.44\scriptsize{±0.31} & 45.40\scriptsize{±0.96}   & 40.16\scriptsize{±0.49}  \\
+% UDA \citep{xie2020unsupervised}         & 49.97\scriptsize{±0.04} & 50.0\scriptsize{±0.05}   & 41.0\scriptsize{±24.96}  & 53.68\scriptsize{±30.15} & 60.76\scriptsize{±13.61} & 68.38\scriptsize{±16.44} & 71.3\scriptsize{±26.45} & 70.5\scriptsize{±27.58} & 69.33\scriptsize{±15.08} & 66.95\scriptsize{±18.46} \\
+FixMatch \citep{sohn2020fixmatch}    & 7.72\scriptsize{±0.33}  & 7.33\scriptsize{±0.13}  & 30.17\scriptsize{±1.87}  & 11.71\scriptsize{±1.95} & 47.61\scriptsize{±0.83}  & 43.05\scriptsize{±0.54}  & \textbf{33.03\scriptsize{±0.49}} & 30.51\scriptsize{±0.53} & 46.52\scriptsize{±0.94}  & 40.65\scriptsize{±0.46}  \\
+FlexMatch \citep{zhang2021flexmatch}   & 7.82\scriptsize{±0.77}  & 7.41\scriptsize{±0.38}  & 16.38\scriptsize{±3.94}  & 12.08\scriptsize{±0.73}  & 45.73\scriptsize{±1.60}   & 42.25\scriptsize{±0.33}  & 35.61\scriptsize{±1.08} & 31.13\scriptsize{±0.18} & \textbf{43.35\scriptsize{±0.69}}  & 40.51\scriptsize{±0.34} \\
+Dash \citep{xu2021dash}        & 8.34\scriptsize{±0.86}  & 7.55\scriptsize{±0.35}  & 17.67\scriptsize{±3.19} & 13.76\scriptsize{±1.67}  & 47.10\scriptsize{±0.74 }  & 43.09\scriptsize{±0.60}   & 35.26\scriptsize{±0.33} & 31.19\scriptsize{±0.29} & 45.24\scriptsize{±2.02}  & 40.14\scriptsize{±0.79}  \\
+% CRMatch \citep{fan2021revisiting}     & 8.96\scriptsize{±0.88}  & 7.16\scriptsize{±0.09}  & 12.28\scriptsize{±1.43}  & 11.08\scriptsize{±1.24}  & 45.49\scriptsize{±0.98}  & 43.07\scriptsize{±0.50}   & 32.51\scriptsize{±0.40}  & 29.98\scriptsize{±0.07} & 45.71\scriptsize{±0.63}  & 40.62\scriptsize{±0.28}  \\
+CoMatch \citep{li2021comatch}     & 7.44\scriptsize{±0.30}  & 7.72\scriptsize{±1.14}  & 11.95\scriptsize{±0.76}  & 10.75\scriptsize{±0.35}  & 48.76\scriptsize{±0.90}   & 43.36\scriptsize{±0.21}  & 33.48\scriptsize{±0.51} & 30.25\scriptsize{±0.35} & 45.40\scriptsize{±1.12}   & 40.27\scriptsize{±0.51}  \\
+SimMatch \citep{zheng2022simmatch}    & 7.93\scriptsize{±0.55}  & \textbf{7.08\scriptsize{±0.33}}  & 14.26\scriptsize{±1.51}  & 12.45\scriptsize{±1.37}  & 45.91\scriptsize{±0.95}  & 42.21\scriptsize{±0.30}   & 33.06\scriptsize{±0.20}  & 30.16\scriptsize{±0.21} & 46.12\scriptsize{±0.48}  & 40.26\scriptsize{±0.62}  \\
+FreeMatch \citep{wang2023freematch}   & 8.94\scriptsize{±0.21}  & 7.95\scriptsize{±0.45} & 12.98\scriptsize{±0.58}  & 11.73\scriptsize{±0.63}  & 46.41\scriptsize{±0.60}   & 42.64\scriptsize{±0.06}  & 32.77\scriptsize{±0.26} & 30.32\scriptsize{±0.18} & 47.95\scriptsize{±1.45}  & 40.37\scriptsize{±1.00}   \\
+SoftMatch \citep{chen2023softmatch}   & 7.76\scriptsize{±0.58}  & 7.97\scriptsize{±0.72}  & 11.90\scriptsize{±0.27}   & 11.72\scriptsize{±1.58}  & 45.29\scriptsize{±0.95}  & \textbf{42.21\scriptsize{±0.20}}   & 33.07\scriptsize{±0.31} & 30.44\scriptsize{±0.62} & 44.09\scriptsize{±0.50}   & 39.76\scriptsize{±0.13}  \\ \midrule
+Ours  & \textbf{7.32\scriptsize{±0.12}} & 7.64\scriptsize{±0.67} & 14.77\scriptsize{±1.59} & 12.21\scriptsize{±0.82} & \textbf{43.96\scriptsize{±0.32}} & 42.32\scriptsize{±0.02} & 33.80\scriptsize{±0.25} & 30.86\scriptsize{±0.17} & 44.82\scriptsize{±0.17} & \textbf{39.67\scriptsize{±0.71}} \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsubsection{Results}
+
+In the main paper, we only provide the comparison on CIFAR-100, STL-10, IMDB, and Amazon Review. 
+Here we provide the full comparison in \cref{tab:append-ssl-cv} and \cref{tab:append-ssl-nlp}. 
+From the full results, similar conclusion can be drawn as in the main paper. 
+Our ILL framework demonstrates comparable performance as previous methods. 
+
+\subsection{Noisy Label Learning}
+\label{sec:append-exp-nll}
+
+\subsubsection{Setup}
+
+We conduct experiments of noisy label learning following SOP \citep{sopliu22w}. 
+We evaluate the proposed method on both synthetic symmetric/asymmetric noise on CIFAR-10 and CIFAR-100, and more realistic and larger-scale instance noise on Clothing1M and WebVision. 
+To introduce the synthetic symmetric noise to CIFAR-10 and CIFAR-100, we uniformly flip labels for a probability $\eta$ into other classes. 
+For asymmetric noise, we only randomly flip the labels for particular pairs of classes. 
+For CIFAR-10 and CIFAR-100, we train PreAct-ResNet-18 with SGD using a learning rate of $0.02$, a weight decay of $1e-3$, and a momentum of $0.9$. We train for $300$ epochs with a cosine learning rate schedule and a batch size of 128. 
+For WebVision, we use InceptionResNet-v2 as the backbone and set the batch size to $32$. Other settings are similar to CIFAR-10. 
+For Clothing1M, we use ImageNet-1K pre trained ResNet-50 as the backbone. We train it using SGD with an initial learning rate of $2e$-$3$ for a total of 10 epochs, where the learning rate is reduced by 10 after 5 epochs. 
+In addition, we also conduct experiments on CIFAR-10N and CIFAR-100N. We present the detailed hyper-parameters in \cref{tab:append-param-nll}.
+
+\begin{table}[h!]
+\centering
+\caption{Hyper-parameters for \textbf{noisy label learning} used in experiments.}
+\label{tab:append-param-nll}
+\resizebox{0.9 \textwidth}{!}{%
+\begin{tabular}{@{}c|cccc@{}}
+\toprule
+\multicolumn{1}{c|}{Hyper-parameter}   & CIFAR-10 (CIFAR-10N) & CIFAR-100 (CIFAR-100N) & Clothing1M & WebVision \\ \midrule
+Image Size & 32 & 32 & 224 & 299 \\
+Model      &  PreAct-ResNet-18 (ResNet-34) &   PreAct-ResNet-18 (ResNet-34)     &  \begin{tabular}{c} ResNet-50  \\(ImageNet-1K Pretrained) \end{tabular}  & Inception-ResNet-v2   \\
+Batch Size        &     128     &    128       &   64  & 32    \\
+Learning Rate     &     0.02     &   0.02        &   0.002 &   0.02 \\
+Weight Decay      &     1e-3     &   1e-3       &   1e-3   & 5e-4  \\
+LR Scheduler          &     Cosine     &   Cosine   &   MultiStep     &  MultiStep \\
+Training Epochs   &     300    &   300        &  10    & 100  \\
+Classes           &     10     &     100      &   14    & 50  \\ 
+Noisy Matrix Scale & 1.0 & 2.0 & 0.5 & 2.5\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+% \textbf{Baselines}. We mainly select three previous best methods as baselines: 
+% (1) DivideMix \citep{Li2020DivideMixLW}, which separates noisy labels during training and uses pseudo-labels of them for training; 
+% (2) ELR \citep{Liu2020EarlyLearningRP}, which is an adaptive early stopping method; 
+% (3) SOP \citep{sopliu22w}, which learns a set of parameters transforming the ground truth labels into noisy labels. 
+% We also include the normal cross-entropy (CE) training and Mixup \citep{zhang2017mixup} as baselines. 
+% More comparisons regarding other methods such as Forward \citep{Patrini2016MakingDN} and Co-Teaching \citep{Han2018CoteachingRT} are shown in Appendix. 
+
+
+% Please add the following required packages to your document preamble:
+
+\subsubsection{Results}
+
+In addition to the results regarding noisy label learning provided in the main paper, we also present comparison results on CIFAR-10N and CIFAR-100N \citep{wei2021learning} in \cref{tab:append-noisy-n}. We include a full comparison on Clothing1M and WebVision, incorporating methods like Co-Teaching, Forward, and CORES, in \cref{tab:append-noisy-web}. 
+As shown in \cref{tab:append-noisy-n}, the proposed ILL framework achieves performance comparable to the previous best method, SOP \citep{sopliu22w}.
+On CIFAR-10N, our method yields results very close to SOP in the Random and Aggregate case noise scenarios and surpasses SOP in the Worst case noise scenario. 
+However, on CIFAR-100N, our method slightly underperforms previous methods, possibly due to the oversimplified noise model utilized in ILL. 
+We believe that a more realistic noise transition model and further tuning of our method could lead to improved performance.
+
+
+% Except for the results regarding noisy label learning provided in the main paper, we additionally provide the comparison results on CIFAR-10N and CIFAR-100N \citep{wei2021learning} in \cref{tab:append-noisy-n}.  On Clothing1M and WebVision, we also include the full comparison including Co-Teaching, Forward, and CORES in \cref{tab:append-noisy-web}. 
+% As shown in \cref{tab:append-noisy-n}, the proposed ILL framework achieves comparable performance as previous best method SOP \citep{sopliu22w}.
+% On CIFAR-10N, our methods shows very close results to SOP on Random and Aggregate case noise, and outperforms SOP on Worst case noise. 
+% On CIFAR-100N, our method slightly performs worse, possibly due to the oversimplified noise model utilized in ILL. 
+% We believe more realistic noise transition model and further tuning of our method could lead to better performance.
+
+
+
+
+% \begin{table}[h!]
+% \centering
+% \caption{Test accuracy comparison of synthetic label noise on CIFAR-10 and CIFAR-100 for \textbf{Noisy Label Learning}, including symmetric (with 20\%, 50\% , and 80\%) and asymmetric (with 40\%) label noise. Results of baseline methods are copied from \citep{sopliu22w}. The best results are indicated in \textbf{bold} and the second best results are indicated in \underline{underline}. Our results are averaged over 3 independent runs with  PreActResNet18 as the backbone.}
+% \label{tab:my-table}
+% \resizebox{0.95 \textwidth}{!}{%
+% \begin{tabular}{@{}l|cccc|cccc@{}}
+% \toprule
+% Dataset & \multicolumn{4}{c|}{CIFAR-10}               & \multicolumn{4}{c}{CIFAR-100}                \\ \midrule
+% Noise Type                         & \multicolumn{3}{c}{Symmetric} & Asymmetric & \multicolumn{3}{c}{Symmetric} & Asymmetric \\ \midrule
+% Noise Ratio                         & 20\%     & 50\%     & 80\%    & 40\%       & 20\%     & 50\%     & 80\%    & 40\%       \\ \midrule
+% CE                       & 87.20    & 80.70    & 65.80   & 82.20      & 58.10    & 47.10    & 23.80   & 43.30      \\
+% Mixup \citep{zhang2017mixup}                   & 93.50    & 87.90    & 72.30   & -          & 69.90    & 57.30    & 33.60   & -          \\
+% DivideMix \citep{Li2020DivideMixLW}               & 96.10    & 94.60    & 93.20   & 93.40      & 77.10    & 74.60    & 60.20   & 72.10      \\
+% ELR   \citep{Liu2020EarlyLearningRP}                   & 95.80    & 94.80    & 93.30   & 93.00      & 77.70    & 73.80    & 60.80   & 77.50      \\
+% SOP \citep{sopliu22w} & \underline{96.30} & \underline{95.50}               & \underline{94.00}               & \underline{93.80}               & \textbf{78.80} & \textbf{75.90} & 63.30               & \textbf{78.00} \\ \midrule
+% Ours & \textbf{96.78\scriptsize{±0.11}}    & \textbf{96.6\scriptsize{±0.15}} & \textbf{94.31\scriptsize{±0.07}} & \textbf{94.75\scriptsize{±0.81}} & 77.49\scriptsize{±0.28}     & 75.51\scriptsize{±0.52}     & \textbf{66.46\scriptsize{±0.72}} & 75.82\scriptsize{±1.89}     \\ \bottomrule
+% \end{tabular}%
+% }
+% \end{table}
+
+
+\begin{table}[h!]
+\centering
+\caption{Test accuracy comparison of instance independent label noise on CIFAR-10N and CIFAR-100N for \textbf{noisy label learning}. 
+% Results of baseline methods are copied from \citep{wei2022learning}. 
+The best results are indicated in \textbf{bold}, and the second best results are indicated in \underline{underline}. Our results are averaged over three independent runs with  ResNet34 as the backbone.}
+\label{tab:append-noisy-n}
+\resizebox{0.96 \textwidth}{!}{%
+\begin{tabular}{@{}l|cccccc|cc@{}}
+\toprule
+Dataset & \multicolumn{6}{c|}{CIFAR-10N}                                                                                 & \multicolumn{2}{c}{CIFAR-100N} \\ \midrule
+Noisy Type & Clean      & Random 1   & Random 2   & Random 3   & Aggregate  & Worst      & Clean               & Noisy               \\ \midrule
+CE                    & 92.92\scriptsize{±0.11} & 85.02\scriptsize{±0.65} & 86.46\scriptsize{±1.79} & 85.16\scriptsize{±0.61} & 87.77\scriptsize{±0.38}                         & 77.69\scriptsize{±1.55}            & 76.70\scriptsize{±0.74}     & 55.50\scriptsize{±0.66}    \\
+Forward \citep{Patrini2016MakingDN}              & 93.02\scriptsize{±0.12} & 86.88\scriptsize{±0.50} & 86.14\scriptsize{±0.24} & 87.04\scriptsize{±0.35} & 88.24\scriptsize{±0.22}                         & 79.79\scriptsize{±0.46}            & 76.18\scriptsize{±0.37}     & 57.01\scriptsize{±1.03}    \\
+Co-teaching \citep{Han2018CoteachingRT}           & 93.35\scriptsize{±0.14} & 90.33\scriptsize{±0.13} & 90.30\scriptsize{±0.17} & 90.15\scriptsize{±0.18} & 91.20\scriptsize{±0.13}     & 83.83\scriptsize{±0.13}            & 73.46\scriptsize{±0.09}     & 60.37\scriptsize{±0.27}    \\
+DivideMix  \citep{Li2020DivideMixLW}           & -          & \underline{95.16\scriptsize{±0.19}} & \underline{95.23\scriptsize{±0.07}} & \underline{95.21\scriptsize{±0.14}} &  95.01\scriptsize{±0.71} & 92.56\scriptsize{±0.42}            & -              & 71.13\scriptsize{±0.48}    \\
+ELR \citep{Liu2020EarlyLearningRP}                  & 95.39\scriptsize{±0.05} & 94.43\scriptsize{±0.41} & 94.20\scriptsize{±0.24} & 94.34\scriptsize{±0.22} & 94.83\scriptsize{±0.10}                         & 91.09\scriptsize{±1.60}            & \underline{78.57\scriptsize{±0.12}}    & \underline{66.72\scriptsize{±0.07}}    \\
+CORES \citep{cheng2020learning}                 & 94.16\scriptsize{±0.11} & 94.45\scriptsize{±0.14} & 94.88\scriptsize{±0.31} & 94.74\scriptsize{±0.03} & 95.25\scriptsize{±0.09}                         & 91.66\scriptsize{±0.09}            & 73.87\scriptsize{±0.16}     & 55.72\scriptsize{±0.42}    \\
+SOP  \citep{sopliu22w}                                         & \textbf{96.38\scriptsize{±0.31}} & \underline{95.28\scriptsize{±0.13}} & \underline{95.31\scriptsize{±0.10}} & \underline{95.39\scriptsize{±0.11}} & \underline{95.61\scriptsize{±0.13}} & \underline{93.24\scriptsize{±0.21}} & \textbf{78.91\scriptsize{±0.43}} & \underline{67.81\scriptsize{±0.23}} \\ \midrule
+Ours                  & \underline{96.21\scriptsize{±0.29}} & \textbf{96.06\scriptsize{±0.07}} & \textbf{95.98\scriptsize{±0.12}} & \textbf{96.10\scriptsize{±0.05}} & \textbf{96.40\scriptsize{±0.03}}  & \textbf{93.55\scriptsize{±0.14}} & 78.53\scriptsize{±0.21}     & \textbf{68.07\scriptsize{±0.33}}    \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Test accuracy comparison of realistic noisy labels on Clothing1M and WebVision for \textbf{noisy label learning}. % Results of baseline methods are copied from \citep{wei2022learning}. 
+The best results are indicated in \textbf{bold} and the second best results are indicated in \underline{underline}. Our results are averaged over 3 independent runs. For Clothing1M, we use ImageNet-1K pre trained ResNet50 as the backbone. For WebVision, InceptionResNetv2 is used as the backbone.}
+\label{tab:append-noisy-web}
+\resizebox{0.4 \textwidth}{!}{%
+\begin{tabular}{@{}l|cc@{}}
+\toprule
+Dataset     & Clothing1M           & WebVision           \\ \midrule
+CE        & 69.10                & -                   \\
+Forward  \citep{Patrini2016MakingDN}     & 69.80                & 61.10               \\
+% \revision{MentorNet \citep{jiang2018mentornet} & &  \\ }
+MentorNet \citep{jiang2018mentornet} & 66.17 & 63.00 \\ 
+Co-Teaching \citep{Han2018CoteachingRT} & 69.20                & 63.60               \\
+DivideMix \citep{Li2020DivideMixLW}   & \textbf{74.76}               & \underline{77.32}               \\
+ELR \citep{Liu2020EarlyLearningRP}        & 72.90               & 76.20               \\
+CORES \citep{cheng2020learning}       & 73.20                & -                   \\
+SOP  \citep{sopliu22w}       & 73.50                & 76.60               \\ \midrule
+Ours        & \underline{74.02\scriptsize{±0.12}} & \textbf{79.37\scriptsize{±0.09}} \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+%% Semantropic prior
+%% Entropy prior 
+%% Minimize the entropy 
+
+\subsection{Mixed Imprecise Label Learning}
+
+\subsubsection{Setup}
+
+To create a mixture of various imprecise label configurations, we select CIFAR-10 and CIFAR-100 as base datasets. 
+We first uniformly sample $l / C$ labeled samples from each class to form the labeled dataset and treat the remaining samples as the unlabeled dataset.
+Based on the labeled dataset, we generate partially labeled datasets by flipping negative labels to false positive labels with the partial ratio $q$. 
+After obtaining the partial labels, we randomly select $\eta$ percentage of samples from each class, and recreate the partial labels for them by flipping the ground truth label uniformly to another class. 
+In this setting, unlabeled data, partially labeled data, and noisy labeled data exist simultaneously, which is very challenging and more closely resembles realistic situations. 
+For CIFAR-10, we set $l \in \{1000, 5000, 50000\}$, and for CIFAR-100, we set $l \in \{5000, 10000, 50000\}$. 
+Similarly in the partial label setting, we set $q \in \{0.1, 0.3, 0.5\}$ for CIFAR-10, and $q \in \{0.01, 0.05, 0.1\}$ for CIFAR-100.
+For noisy labels, we set $\eta \in \{0.1, 0.2, 0.3\}$ for both datasets.
+
+ 
+% To create the mixture of various imprecise label configurations, we select CIFAR-10 and CIFAR-100 as base dataset. 
+% We first uniformly sample $l / C$ labeled samples from each class to form the labeled dataset, and treat the remaining samples as unlabeled dataset.
+% Based on the labeled dataset, we generate partial labeled datasets by flipping negative labels to false positive labels with the partial ratio $q$. 
+% After obtaining the partial labels, we random select $\eta$ percentage of samples from each class, and re-create the partial labels for them by flipping the ground truth label uniformly to another class. 
+% In this setting, unlabeled data, partial labeled data, and noisy labeled data exists at the same time, which is very challenging and more similar to the realistic situation. 
+% For CIFAR-10, we set $l \in \{1000, 5000, 50000\}$, and for CIFAR-100, set set  $l \in \{5000, 10000, 50000\}$. 
+% Similarly in partial label setting, we set $q \in \{0.1, 0.3, 0.5\}$ for CIFAR-10, and $q \in \{0.01, 0.05, 0.1\}$ for CIFAR-100.
+% For noisy labels, we set $\eta \in \{0.1, 0.2, 0.3\}$ for both datasets.
+
+
+
+\subsubsection{Results}
+
+
+We provide a more complete version of \cref{tab:main-mix} in \cref{tab:append-partial-noisy}. 
+On partial noisy labels of CIFAR-10 with partial ratio $0.5$ and of CIFAR-100 with partial ratio $0.1$, most baseline methods are more robust or even fail to perform. 
+However, our ILL still shows very robust performance with minor performance degradation as increase of noise ratios. 
+
+
+\begin{table}[h!]
+\centering
+\caption{Test accuracy comparison of \textbf{mixture of different imprecise labels}. We report results of full labels, partial ratio $q$ of $\{0.1, 0.3, 0.5\}$ for CIFAR-10 and $\{0.01, 0.05, 0.1\}$ for CIFAR-100, and noise ratio $\eta$ of $\{0.1, 0.2, 0.3\}$ for CIFAR-10 and CIFAR-100. 
+% We copy the baseline results from \citep{xu2023dali}.
+}
+\label{tab:append-partial-noisy}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}c|c|c|l|cccc@{}}
+\toprule
+Dataset &
+  \# Labels &
+  Partial Ratio $q$ &
+  \multicolumn{1}{c|}{Noise Ratio $\eta$}  &
+  0 &
+  0.1 &
+  0.2 &
+  0.3 \\ \midrule
+ &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  95.99\scriptsize{±0.03} &
+  93.64 &
+  93.13 &
+  92.18 \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  93.44 &
+  92.57 &
+  92.38 \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  94.15 &
+  94.04 &
+  93.77 \\
+ &
+   &
+   &
+  PiCO+ w/ Mixup \citep{xu2023dali} &
+  - &
+  94.58 &
+  94.74 &
+  94.43 \\
+ &
+   &
+   &
+  DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  95.83 &
+  95.86 &
+  95.75 \\
+ &
+   &
+  \multirow{-6}{*}{0.1} &
+  Ours &
+  \textbf{96.55\scriptsize{±0.08}} &
+  \textbf{96.47\scriptsize{±0.11}} &
+  \textbf{96.09\scriptsize{±0.20}} &
+  \textbf{95.83\scriptsize{±0.05}} \\ \cmidrule(l){3-8} 
+ &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  95.73\scriptsize{±0.10} &
+  92.32 &
+  92.22 &
+  89.95 \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  92.81 &
+  92.18 &
+  91.35 \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  93.44 &
+  93.25 &
+  92.42 \\
+ &
+   &
+   &
+  PiCO+ w/ Mixup \citep{xu2023dali} &
+  - &
+  94.02 &
+  94.03 &
+  92.94 \\
+ &
+   &
+   &
+  DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  95.52 &
+  95.41 &
+  94.67 \\
+ &
+   &
+  \multirow{-6}{*}{0.3} &
+  Ours &
+  \textbf{96.52\scriptsize{±0.12}} &
+  \textbf{96.2\scriptsize{±0.02}} &
+  \textbf{95.87\scriptsize{±0.14}} &
+  \textbf{95.22\scriptsize{±0.06}} \\ \cmidrule(l){3-8} 
+ &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  95.33\scriptsize{±0.06} &
+  91.07 &
+  89.68 &
+  84.08 \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  91.51 &
+  90.76 &
+  86.19 \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  92.67 &
+  91.83 &
+  89.8 \\
+ &
+   &
+   &
+   PiCO+  w/ Mixup \citep{xu2023dali} &
+  - &
+  93.56 &
+  92.65 &
+  88.21 \\
+ &
+   &
+   &
+  DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  95.19 &
+  93.89 &
+  92.26 \\
+\multirow{-18}{*}{CIFAR-10} &
+  \multirow{-18}{*}{50,000} &
+  \multirow{-6}{*}{0.5} &
+  Ours &
+  \textbf{96.28\scriptsize{±0.13}} &
+  \textbf{95.82\scriptsize{±0.07}} &
+  \textbf{95.28\scriptsize{±0.08}} &
+  \textbf{94.35\scriptsize{±0.08}} \\ \bottomrule
+
+   \\ \toprule
+   &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  76.29\scriptsize{±0.42} &
+  71.42 &
+  70.22 &
+  66.14 \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  71.17 &
+  70.10 &
+  68.77 \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  72.26 &
+  71.98 &
+  71.04 \\
+ &
+   &
+   &
+  PiCO+ w/ Mixup \citep{xu2023dali} &
+  - &
+  75.04 &
+  74.31 &
+  71.79 \\
+ &
+   &
+   &
+  DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  76.52 &
+  76.55 &
+  76.09 \\
+ &
+   &
+  \multirow{-6}{*}{0.01} &
+  Ours &
+  \textbf{78.08\scriptsize{±0.26}} &
+  \textbf{77.53\scriptsize{±0.24}} &
+  \textbf{76.96\scriptsize{±0.02}} &
+  \textbf{76.43\scriptsize{±0.27}} \\ \cmidrule(l){3-8} 
+ &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  76.17\scriptsize{±0.18} &
+  69.40 &
+  66.67 &
+  62.24 \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  70.73 &
+  69.33 &
+  68.09 \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  72.28 &
+  71.35 &
+  70.05 \\
+ &
+   &
+   &
+   PiCO+ w/ Mixup \citep{xu2023dali} &
+  - &
+  73.06 &
+  71.37 &
+  67.56 \\
+ &
+   &
+   &
+ DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  76.87 &
+  75.23 &
+  74.49 \\
+ &
+   &
+  \multirow{-6}{*}{0.05} &
+  Ours &
+  \textbf{76.95\scriptsize{±0.46}} &
+  \textbf{77.07\scriptsize{±0.16}} &
+  \textbf{76.34\scriptsize{±0.08}} &
+  \textbf{75.13\scriptsize{±0.63}} \\ \cmidrule(l){3-8} 
+ &
+   &
+   &
+  PiCO+ \citep{wang2022pico+} &
+  75.55\scriptsize{±0.21} &
+  - &
+  - &
+  - \\
+ &
+   &
+   &
+  IRNet \citep{lian2022irnet} &
+  - &
+  - &
+  - &
+  - \\
+ &
+   &
+   &
+  DALI \citep{xu2023dali} &
+  - &
+  - &
+  - &
+  - \\
+ &
+   &
+   &
+  PiCO+ w/ Mixup \citep{xu2023dali} &
+  - &
+  - &
+  - &
+  - \\
+ &
+   &
+   &
+  DALI w/ Mixup \citep{xu2023dali} &
+  - &
+  - &
+  - &
+  - \\
+\multirow{-18}{*}{CIFAR-100} &
+  \multirow{-18}{*}{50,000} &
+  \multirow{-6}{*}{0.1} &
+  Ours &
+  \textbf{76.41\scriptsize{±1.02}} &
+  \textbf{75.50\scriptsize{±0.54}} &
+  \textbf{74.67\scriptsize{±0.30}} &
+  \textbf{73.88\scriptsize{±0.60}} \\ 
+  \bottomrule
+
+\end{tabular}%
+}
+\end{table}
+
+
+
+\subsection{Ablation on Strong-Augmentation and Entropy Loss}
+
+We provide the ablation study on the strong-augmentation and entropy loss components here, which are common techniques in each setting \citep{sohn2020fixmatch,wang2022pico,sopliu22w}. 
+For example, in SSL, strong-weak augmentation is an important strategy for SSL algorithms widely used in existing works such as FixMatch \citep{sohn2020fixmatch} and FlexMatch \citep{zhang2021flexmatch}.
+Thus, it is important to adopt strong-weak augmentation to achieve better performance in SSL \citep{wang2023freematch,chen2023softmatch,usb2022}.
+This is similar in PLL settings \citep{wang2022pico,revisitpllwu22l}. 
+PiCO \citep{wang2022pico,revisitpllwu22l} also used strong augmentation).
+Strong-weak augmentation and entropy loss are also adopted in SOP \citep{sopliu22w} of NLL. 
+However, we found these techniques are less important for our formulation of NLL. 
+We provide an ablation study on the entropy loss of SSL, and both techniques for NLL and PLL here to demonstrate our discussions. 
+
+\begin{table}[h]
+    % \caption*{Ablation study on strong augmentation and entropy loss}
+    \begin{minipage}{.24\linewidth}
+      \caption{SSL ablation}
+      \vspace{0.1in}
+      \centering
+        \centering
+        \resizebox{\textwidth}{!}{%
+        \begin{tabular}{c|cc}
+        \hline
+                                                                            & \begin{tabular}[c]{@{}c@{}}CIFAR100 \\ $l$=200 \end{tabular} & \begin{tabular}[c]{@{}c@{}}STL10\\ $l$=40\end{tabular} \\ \hline
+        Ours                                                                & 22.06                                                          & 11.09                                                     \\ \hline
+        \begin{tabular}[c]{@{}c@{}}Ours\\  w/o \\ ent. \end{tabular} & 22.41                                                          & 11.23                                                     \\ \hline
+        \end{tabular}%
+        }
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{.24\linewidth}
+      \centering
+        \caption{PLL ablation}
+        \vspace{0.1in}
+            \resizebox{\textwidth}{!}{%
+            \begin{tabular}{c|cc}
+            \hline
+            \multicolumn{1}{c|}{}                                      & \begin{tabular}[c]{@{}c@{}}CIFAR10\\ $q=0.5$\end{tabular} & \begin{tabular}[c]{@{}c@{}}CIFAR100\\ $q=0.1$\end{tabular} \\ \hline
+            \multicolumn{1}{c|}{PiCO}                                  & 93.58                                                     & 69.91                                                      \\ \hline
+            \multicolumn{1}{c|}{Ours}                                  & 95.91                                                     & 74.00                                                      \\ \hline
+            \begin{tabular}[c]{@{}c@{}}PiCO\\ w/o\\ s. a.\end{tabular} & 91.78                                                     & 66.43                                                      \\ \hline
+            \begin{tabular}[c]{@{}c@{}}Ours\\ w/o\\ s. a.\end{tabular} & 94.53                                                     & 72.69                                                      \\ \hline
+            \begin{tabular}[c]{@{}c@{}}Ours\\ w/o\\ ent.\end{tabular}  & 95.87                                                     & 73.75                                                      \\ \hline
+            \end{tabular}%
+            }
+    \end{minipage} 
+    \hfill
+    \begin{minipage}{.24\linewidth}
+      \centering
+        \caption{NLL ablation}
+        \vspace{0.1in}
+            \resizebox{\textwidth}{!}{%
+            \begin{tabular}{c|cc}
+            \hline
+                                                                       & \begin{tabular}[c]{@{}c@{}}CIFAR10\\ $\eta=0.5$\end{tabular} & \begin{tabular}[c]{@{}c@{}}CIFAR100\\ $\eta=0.1$\end{tabular} \\ \hline
+            SOP                                                        & 94.00                                                        & 63.30                                                         \\ \hline
+            Ours                                                       & 94.31                                                        & 66.46                                                         \\ \hline
+            \begin{tabular}[c]{@{}c@{}}SOP\\ w/o\\ s. a.\end{tabular}  & 66.85                                                        & 36.60                                                         \\ \hline
+            \begin{tabular}[c]{@{}c@{}}Ours\\ w/o\\ s. a.\end{tabular} & 93.56                                                        & 65.89                                                         \\ \hline
+            \begin{tabular}[c]{@{}c@{}}SOP\\ w/o\\ ent.\end{tabular}   & 93.04                                                        & 62.85                                                         \\ \hline
+            \begin{tabular}[c]{@{}c@{}}Ours\\ w/o\\ ent.\end{tabular}  & 94.16                                                        & 66.12                                                         \\ \hline
+            \end{tabular}%
+            }
+    \end{minipage} 
+    \hfill
+    \begin{minipage}{.24\linewidth}
+      \centering
+        \caption{Runtime Analysis on CIFAR-100}
+        \vspace{0.1in}
+            \resizebox{\textwidth}{!}{%
+                \begin{tabular}{@{}ccc@{}}
+                \toprule
+                Setting & Algorithm & CIFAR-100 Avg. \\ & &  Runtime (s/iter) \\ \midrule
+                SSL     & FreeMatch & 0.2157                          \\
+                SSL     & Ours      & 0.1146                          \\ \midrule
+                PLL     & PiCO      & 0.3249                          \\
+                PLL     & Ours      & 0.2919                          \\ \midrule
+                NLL     & SOP       & 0.1176                          \\
+                NLL     & Ours       & 0.1021                          \\ \bottomrule
+                \end{tabular}%
+            }
+    \label{tab:runtime}
+    \end{minipage} 
+\end{table}
+
+\subsection{Runtime Analysis}
+
+We provide the runtime analysis on CIFAR-100 of our method on different settings, compared with the SOTA baselines. 
+We compute the average runtime from all training iterations on CIFAR-100. 
+The results are shown in \cref{tab:runtime}. 
+% Since the settings studied in this work has loss functions derived as close-form from \cref{eq:em}, the time complexity can be viewed as $\mathcal{O}(1)$. 
+Our method in general present faster runtime without complex design such as contrastive loss. 
+
+
+% \begin{table}[h]
+% \centering
+% \caption{Runtime Analysis on CIFAR-100}
+% \resizebox{0.4 \textwidth}{!}{%
+% \begin{tabular}{@{}ccc@{}}
+% \toprule
+% Setting & Algorithm & Avg. Runtime (s/iter) \\ \midrule
+% SSL     & FreeMatch & 0.2157                          \\
+% SSL     & Ours      & 0.1146                          \\ \midrule
+% PLL     & PiCO      & 0.3249                          \\
+% PLL     & Ours      & 0.2919                          \\ \midrule
+% NLL     & SOP       & 0.1176                          \\
+% NLL     & Ours       & 0.1021                          \\ \bottomrule
+% \end{tabular}%
+% }
+% \label{tab:runtime}
+% \end{table}
+
+
+% \begin{table}[]
+% \centering
+% \caption{}
+% \label{tab:my-table}
+% \resizebox{0.95 \textwidth}{!}{%
+% \begin{tabular}{@{}c|c|c|cccc@{}}
+% \toprule
+% \multicolumn{1}{l|}{Dataset} & \multicolumn{1}{l|}{\# Labels} & \multicolumn{1}{c|}{\backslashbox{Partial Ratio $q$}{Noise Ratio $\eta$}} & \multicolumn{1}{c|}{0.0} & \multicolumn{1}{c|}{0.1} & \multicolumn{1}{c|}{0.2} & 0.3 \\ \midrule
+%  &
+%    &
+%   0.1 &
+%   95.29\scriptsize{±0.18} &
+%   93.90\scriptsize{±0.11} &
+%   92.02\scriptsize{±0.22} &
+%   89.02\scriptsize{±0.63} \\
+%  &
+%    &
+%   0.3 &
+%   95.13\scriptsize{±0.16} &
+%   92.95\scriptsize{±0.37} &
+%   90.14\scriptsize{±0.61} &
+%   87.31\scriptsize{±0.27} \\
+%  &
+%   \multirow{-3}{*}{5,000} &
+%   0.5 &
+%   95.04\scriptsize{±0.10} &
+%   92.18\scriptsize{±0.52} &
+%   88.39\scriptsize{±0.62} &
+%   83.09\scriptsize{±0.56} \\ \cmidrule(l){2-7} 
+%  &
+%    &
+%   0.1 &
+%   94.48\scriptsize{±0.09} &
+%   91.68\scriptsize{±0.17} &
+%   87.17\scriptsize{±0.51} &
+%   81.04\scriptsize{±1.13} \\
+%  &
+%    &
+%   0.3 &
+%   94.35\scriptsize{±0.05} &
+%   89.94\scriptsize{±1.90} &
+%   82.06\scriptsize{±1.52} &
+%   69.20\scriptsize{±2.16} \\
+% \multirow{-6}{*}{CIFAR-10} &
+%   \multirow{-3}{*}{1,000} &
+%   0.5 &
+%   93.92\scriptsize{±0.29} &
+%   86.34\scriptsize{±2.37} &
+%   70.86\scriptsize{±2.78} &
+%   38.19\scriptsize{±6.55} \\ \midrule
+%  &
+%    &
+%   0.01 &
+%   69.90\scriptsize{±0.23} &
+%   68.74\scriptsize{±0.15} &
+%   66.87\scriptsize{±0.34} &
+%   65.34\scriptsize{±0.02} \\
+%  &
+%    &
+%   0.05 &
+%   69.85\scriptsize{±0.20} &
+%   68.08\scriptsize{±0.28} &
+%   66.78\scriptsize{±0.43} &
+%   64.83\scriptsize{±0.17} \\
+%  &
+%   \multirow{-3}{*}{10,000} &
+%   0.1 &
+%   68.92\scriptsize{±0.45} &
+%   67.15\scriptsize{±0.63} &
+%   64.44\scriptsize{±1.29} &
+%   60.26\scriptsize{±1.96} \\ \cmidrule(l){2-7} 
+%  &
+%    &
+%   0.01 &
+%   65.66\scriptsize{±0.27} &
+%   63.13\scriptsize{±0.27} &
+%   60.93\scriptsize{±0.17} &
+%   58.36\scriptsize{±0.56} \\
+%  &
+%    &
+%   0.05 &
+%   65.06\scriptsize{±0.04} &
+%   62.28\scriptsize{±0.47} &
+%   58.92\scriptsize{±0.34} &
+%   53.24\scriptsize{±1.69} \\
+% \multirow{-6}{*}{CIFAR-100} &
+%   \multirow{-3}{*}{5,000} &
+%   0.1 &
+%   63.32\scriptsize{±0.55} &
+%   58.73\scriptsize{±1.33} &
+%   53.27\scriptsize{±1.57} &
+%   46.19\scriptsize{±1.04} \\ \bottomrule
+% \end{tabular}%
+% }
+% \end{table}
+
+% \subsection{Ablation Study \chh{check whether or not adding ablation study about entropy loss weight}}
+
+\newpage 
+
+

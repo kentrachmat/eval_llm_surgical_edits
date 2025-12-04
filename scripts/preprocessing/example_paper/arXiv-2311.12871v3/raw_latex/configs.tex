@@ -1,0 +1,190 @@
+\definecolor{Gray}{gray}{0.9}
+\definecolor{mygreen}{rgb}{0.0, 0.5, 0.0}
+\definecolor{myred}{rgb}{0.8, 0.25, 0.33}
+\definecolor{myblue}{rgb}{0.19, 0.55, 0.91}
+\definecolor{uclablue}{rgb}{0.15, 0.45, 0.68}
+\definecolor{ucladblue}{rgb}{0.0, 0.33, 0.53}
+\definecolor{ucladdblue}{rgb}{0.0, 0.23, 0.36}
+\definecolor{uclagold}{rgb}{1.0, 0.82, 0.0}
+\definecolor{ucladgold}{rgb}{1.0, 0.78, 0.17}
+\definecolor{ucladdgold}{rgb}{1.0, 0.72, 0.11}
+\definecolor{boxgreen}{rgb}{0.02, 0.66, 0.02}
+\definecolor{boxred}{rgb}{0.66, 0.1, 0.1}
+\definecolor{boxblue}{rgb}{0.01, 0.01, 0.73}
+
+
+\usepackage{etoc}
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{mdframed}
+\newcommand{\sectioncolor}{black}
+
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\usepackage[utf8]{inputenc}   %
+\usepackage[T1]{fontenc}      %
+\usepackage{url}              %
+\usepackage{amsfonts}         %
+\usepackage{nicefrac}         %
+\usepackage{microtype}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,mathbbol}
+\usepackage{acronym}
+\usepackage{enumitem}
+\usepackage{balance}
+\usepackage{xspace}
+\usepackage{setspace}
+\usepackage[skip=3pt,font=small]{caption}
+\usepackage{booktabs,tabularx,colortbl,multirow,array,makecell}
+\usepackage{pifont}
+\usepackage{xr-hyper}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+
+
+\usepackage[pagebackref,breaklinks,citecolor=ucladblue,colorlinks=true,linkcolor=ucladblue,bookmarks=false]{hyperref}
+\usepackage[capitalise]{cleveref}
+\newcommand{\crefrangeconjunction}{--}
+\usepackage{siunitx}   %
+\usepackage{soul}   %
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\newtheorem{assumption}{Assumption}
+\newcommand{\assumptionautorefname}{assumption}
+\newtheorem{theorem}{Theorem}
+\renewcommand{\theoremautorefname}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\lemmaautorefname}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newcommand{\corollaryautorefname}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newcommand{\propositionautorefname}{Proposition}
+\newtheorem{remark}{Remark}
+\newcommand{\remarkautorefname}{Remark}
+\newtheorem{definition}{Definition}
+\newcommand{\definitionautorefname}{Definition}
+
+
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+\newcommand{\smem}{\ensuremath{\mathcal{S}}}
+\newcommand{\stxt}{\ensuremath{s^{\text{txt}}}}
+\newcommand{\spos}{\ensuremath{s^{\text{pos}}}}
+\newcommand{\srot}{\ensuremath{s^{\text{rot}}}}
+\newcommand{\question}{\ensuremath{q}}
+\newcommand{\answer}{\ensuremath{a}}
+\newcommand{\loss}{\mathcal{L}}
+
+
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{\emph{e.g}\onedot} 
+\def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} 
+\def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} 
+\def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} 
+\def\vs{\emph{vs}\onedot}
+\def\aka{a.k.a\onedot}
+\def\wrt{w.r.t\onedot} 
+\def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+\makeatletter
+\renewcommand{\paragraph}{%
+  \@startsection{paragraph}{4}%
+  {\z@}{0ex \@plus 0ex \@minus 0ex}{-1em}%
+  {\hskip\parindent\normalfont\normalsize\bfseries}%
+}
+\makeatother
+
+
+\crefname{algorithm}{Alg.}{Algs.}
+\Crefname{algocf}{Algorithm}{Algorithms}
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\crefname{table}{Tab.}{Tabs.}
+\Crefname{table}{Table}{Tables}
+\crefname{figure}{Fig.}{Fig.}
+\Crefname{figure}{Figure}{Figure}
+
+\definecolor{gblue}{HTML}{4285F4}
+\definecolor{gred}{HTML}{DB4437}
+\definecolor{ggreen}{HTML}{0F9D58}
+\def\ra{{\color{gblue}R1}}
+\def\rb{{\color{gred}R2}}
+\def\rc{{\color{ggreen}R3}}
+\definecolor{mygray}{gray}{.92}
+
+\newcommand{\supp}{\textit{Appendix}\xspace}
+\newcommand{\jy}[1]{\textcolor{cyan}{[JY: {#1}]}\xspace}
+\newcommand{\bx}[1]{\textcolor{orange}{[BX: {#1}]}\xspace}
+\newcommand{\sy}[1]{\textcolor{blue}{[SY: {#1}]}\xspace}
+\newcommand{\xm}[1]{\textcolor{red}{[XM: {#1}]}\xspace}
+\newcommand{\lh}[1]{\textcolor{gray}{[LH: {#1}]}\xspace}
+\newcommand{\zl}[1]{\textcolor{pink}{[ZL: {#1}]}\xspace}
+\newcommand{\revision}[1]{\textcolor{red}{{#1}}\xspace}
+
+
+\newcommand{\specialcell}[2][c]{%
+\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+\newcommand{\sota}{state-of-the-art\xspace}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\newcommand{\todo}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}
+
+
+
+\def\emoji{\hbox{\includegraphics[width=0.12\textwidth]{figs/leo.png}}}
+
+\newcommand{\agent}{\textsc{LEO}\xspace}
+
+\acrodef{llm}[LLMs]{large language models}
+\acrodef{vla}[VLA]{vision-language-action}
+\acrodef{vl}[VL]{vision-language}
+\acrodef{ocot}[O-CoT]{Object-centric Chain-of-Thought}
+\acrodef{cot}[CoT]{Chain-of-Thought}
+\acrodef{lvlm}[LVLM]{large vision-language models}
+
+\definecolor{color1}{rgb}{0.94,0.95,0.95}
+\definecolor{color2}{rgb}{0.92,1.0,0.98}
+\definecolor{color3}{rgb}{0.89,0.90,0.98}
+\definecolor{color4}{rgb}{0.9,0.96,1.0}

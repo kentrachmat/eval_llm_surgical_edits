@@ -1,0 +1,19 @@
+\begin{algorithm}
+\caption{LLM self-improving loop}
+% \KwIN{Initial dataset $D^0 = \{(x_i, y_i) \mid i \in [N]\}$, policy model $\pi_\theta^0$, reward model $R$, number of self-improving training loop $K$}
+\textbf{Input} Initial dataset $\gD^0 = \{(\vx_i^0, \vy_i^0) \mid i \in [N]\}$, policy model $\pi_\theta^0$, reward model $R$, number of self-improving training loop $K$
+
+\textbf{Output} $\theta^k$
+
+\For{$k \leftarrow 1, \dots, K$}{
+    Generate synthetic prompts $[\vx^k] = \texttt{SYN}(\pi_\theta^{k-1}, \gD^{k-1})$
+    
+    Collect trajectories with search algorithm, \eg MCTS guided by $R$. $[\hat{\vy}^k] = \texttt{MCTS}(\pi_\theta^{k-1}, [\vx^k])$
+    
+    % Construct dataset $\gD^k = \{(\vx^k, \hat{\vy}^k) \mid i \in [N]\}$
+    Construct dataset $\gD^k = \{(\vx^k, \hat{\vy}^k) \}$
+    
+    Update policy $\theta^k = \arg\min_\theta L(\pi_\theta^{k-1}, \gD^k)$
+}
+\label{algo:self_improving}
+\end{algorithm}

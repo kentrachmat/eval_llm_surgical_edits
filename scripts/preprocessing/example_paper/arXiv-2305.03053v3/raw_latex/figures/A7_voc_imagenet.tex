@@ -1,0 +1,27 @@
+\begin{wrapfigure}{r}{0.48\linewidth}
+\vspace{-10pt}
+\centering
+\resizebox{\linewidth}{!}{
+    \tablestyle{5pt}{1.1}
+    {\renewcommand\conf[1]{}
+    \tablestyle{5pt}{1.1}
+    \begin{tabular}{y{40}|x{50}x{50}} 
+                                                &      {Accuracy (\%)}      &         {mIoU (\%)}       \\
+        Method                                  & \modela{ImageNet-1k}      & \modelb{Pascal VOC}       \\ 
+    \shline
+    W. Avg                                      & {0.8}         & {3.3}         \\
+    \default{{\bf \name{}}$_\text{49/50}$}      & \textbf{23.1}            & \textbf{6.0}  \\
+    \hline
+    \gc{Ensemble}                               & \gc{77.8}                & \gc{76.8}                \\
+    \default{{\bf \name{}}$_\text{37/50}$}      & {47.7}                   & {35.0}                   \\
+    \default{{\bf \name{}}$_\text{22/50}$}      & {60.9}                   & {64.4}                   \\
+    \default{{\bf \name{}}$_\text{10/50}$}      &    \textbf{64.9}         & \textbf{71.7}            \\
+\end{tabular}
+    }
+}
+\captionof{table}{\textbf{PASCAL VOC and ImageNet-1k} merging models with different output modalities using a DeepLabV3 ResNet-50 backbone and ImageNet-1k Resnet-50 model.  
+}
+\label{tab:voc_imagenet_results}
+% \end{table}
+\vspace{-10pt}
+\end{wrapfigure}

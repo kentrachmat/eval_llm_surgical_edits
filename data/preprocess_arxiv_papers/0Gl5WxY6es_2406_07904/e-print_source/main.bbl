@@ -1,0 +1,555 @@
+\begin{thebibliography}{75}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bai et~al.(2023)Bai, Bai, Yang, Wang, Tan, Wang, Lin, Zhou, and
+  Zhou]{bai2023qwen}
+Jinze Bai, Shuai Bai, Shusheng Yang, Shijie Wang, Sinan Tan, Peng Wang, Junyang
+  Lin, Chang Zhou, and Jingren Zhou.
+\newblock Qwen-vl: A frontier large vision-language model with versatile
+  abilities.
+\newblock \emph{arXiv preprint arXiv:2308.12966}, 2023.
+
+\bibitem[Huang et~al.(2023{\natexlab{a}})Huang, Dong, Wang, Hao, Singhal, Ma,
+  Lv, Cui, Mohammed, Patra, Liu, Aggarwal, Chi, Bjorck, Chaudhary, Som, Song,
+  and Wei]{kosmos-1}
+Shaohan Huang, Li~Dong, Wenhui Wang, Yaru Hao, Saksham Singhal, Shuming Ma,
+  Tengchao Lv, Lei Cui, Owais~Khan Mohammed, Barun Patra, Qiang Liu, Kriti
+  Aggarwal, Zewen Chi, Johan Bjorck, Vishrav Chaudhary, Subhojit Som, Xia Song,
+  and Furu Wei.
+\newblock Language is not all you need: Aligning perception with language
+  models, 2023{\natexlab{a}}.
+
+\bibitem[Peng et~al.(2023{\natexlab{a}})Peng, Wang, Dong, Hao, Huang, Ma, and
+  Wei]{peng2023kosmos2}
+Zhiliang Peng, Wenhui Wang, Li~Dong, Yaru Hao, Shaohan Huang, Shuming Ma, and
+  Furu Wei.
+\newblock Kosmos-2: Grounding multimodal large language models to the world.
+\newblock \emph{arXiv preprint arXiv:2306.14824}, 2023{\natexlab{a}}.
+
+\bibitem[Li et~al.(2023{\natexlab{a}})Li, Li, Savarese, and Hoi]{blip-2}
+Junnan Li, Dongxu Li, Silvio Savarese, and Steven Hoi.
+\newblock Blip-2: Bootstrapping language-image pre-training with frozen image
+  encoders and large language models, 2023{\natexlab{a}}.
+
+\bibitem[Dai et~al.(2023)Dai, Li, Li, Tiong, Zhao, Wang, Li, Fung, and
+  Hoi]{instruct-blip}
+Wenliang Dai, Junnan Li, Dongxu Li, Anthony Meng~Huat Tiong, Junqi Zhao,
+  Weisheng Wang, Boyang Li, Pascale Fung, and Steven Hoi.
+\newblock Instructblip: Towards general-purpose vision-language models with
+  instruction tuning, 2023.
+
+\bibitem[Liu et~al.(2023)Liu, Li, Wu, and Lee]{llava}
+Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong~Jae Lee.
+\newblock Visual instruction tuning, 2023.
+
+\bibitem[Li et~al.(2023{\natexlab{b}})Li, Gan, Yang, Yang, Li, Wang, and
+  Gao]{li2023multimodal}
+Chunyuan Li, Zhe Gan, Zhengyuan Yang, Jianwei Yang, Linjie Li, Lijuan Wang, and
+  Jianfeng Gao.
+\newblock Multimodal foundation models: From specialists to general-purpose
+  assistants.
+\newblock \emph{arXiv preprint arXiv:2309.10020}, 2023{\natexlab{b}}.
+
+\bibitem[Zhu et~al.(2023)Zhu, Chen, Shen, Li, and Elhoseiny]{zhu2023minigpt}
+Deyao Zhu, Jun Chen, Xiaoqian Shen, Xiang Li, and Mohamed Elhoseiny.
+\newblock Minigpt-4: Enhancing vision-language understanding with advanced
+  large language models.
+\newblock \emph{arXiv preprint arXiv:2304.10592}, 2023.
+
+\bibitem[Ye et~al.(2023)Ye, Xu, Xu, Ye, Yan, Zhou, Wang, Hu, Shi, Shi,
+  et~al.]{ye2023mplug}
+Qinghao Ye, Haiyang Xu, Guohai Xu, Jiabo Ye, Ming Yan, Yiyang Zhou, Junyang
+  Wang, Anwen Hu, Pengcheng Shi, Yaya Shi, et~al.
+\newblock mplug-owl: Modularization empowers large language models with
+  multimodality.
+\newblock \emph{arXiv preprint arXiv:2304.14178}, 2023.
+
+\bibitem[Li et~al.(2023{\natexlab{c}})Li, Zhang, Chen, Wang, Yang, and
+  Liu]{li2023otter}
+Bo~Li, Yuanhan Zhang, Liangyu Chen, Jinghao Wang, Jingkang Yang, and Ziwei Liu.
+\newblock Otter: A multi-modal model with in-context instruction tuning.
+\newblock \emph{arXiv preprint arXiv:2305.03726}, 2023{\natexlab{c}}.
+
+\bibitem[Li et~al.(2023{\natexlab{d}})Li, Zhang, Chen, Wang, Pu, Yang, Li, and
+  Liu]{li2023mimic}
+Bo~Li, Yuanhan Zhang, Liangyu Chen, Jinghao Wang, Fanyi Pu, Jingkang Yang,
+  Chunyuan Li, and Ziwei Liu.
+\newblock Mimic-it: Multi-modal in-context instruction tuning.
+\newblock \emph{arXiv preprint arXiv:2306.05425}, 2023{\natexlab{d}}.
+
+\bibitem[McKinzie et~al.(2024)McKinzie, Gan, Fauconnier, Dodge, Zhang, Dufter,
+  Shah, Du, Peng, Weers, et~al.]{mckinzie2024mm1}
+Brandon McKinzie, Zhe Gan, Jean-Philippe Fauconnier, Sam Dodge, Bowen Zhang,
+  Philipp Dufter, Dhruti Shah, Xianzhi Du, Futang Peng, Floris Weers, et~al.
+\newblock Mm1: Methods, analysis \& insights from multimodal llm pre-training.
+\newblock \emph{arXiv preprint arXiv:2403.09611}, 2024.
+
+\bibitem[IDEFICS(2023)]{idefics}
+IDEFICS.
+\newblock Introducing idefics: An open reproduction of state-of-the-art visual
+  language model.
+\newblock \url{https://huggingface.co/blog/idefics}, 2023.
+
+\bibitem[Team et~al.(2023)Team, Anil, Borgeaud, Wu, Alayrac, Yu, Soricut,
+  Schalkwyk, Dai, Hauth, et~al.]{team2023gemini}
+Gemini Team, Rohan Anil, Sebastian Borgeaud, Yonghui Wu, Jean-Baptiste Alayrac,
+  Jiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew~M Dai, Anja Hauth, et~al.
+\newblock Gemini: a family of highly capable multimodal models.
+\newblock \emph{arXiv preprint arXiv:2312.11805}, 2023.
+
+\bibitem[Achiam et~al.(2023)Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman,
+  Almeida, Altenschmidt, Altman, Anadkat, et~al.]{achiam2023gpt}
+Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya,
+  Florencia~Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman,
+  Shyamal Anadkat, et~al.
+\newblock Gpt-4 technical report.
+\newblock \emph{arXiv preprint arXiv:2303.08774}, 2023.
+
+\bibitem[Touvron et~al.(2023)Touvron, Lavril, Izacard, Martinet, Lachaux,
+  Lacroix, Rozi{\`e}re, Goyal, Hambro, Azhar, et~al.]{touvron2023llama}
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne
+  Lachaux, Timoth{\'e}e Lacroix, Baptiste Rozi{\`e}re, Naman Goyal, Eric
+  Hambro, Faisal Azhar, et~al.
+\newblock Llama: Open and efficient foundation language models.
+\newblock \emph{arXiv preprint arXiv:2302.13971}, 2023.
+
+\bibitem[Liang et~al.(2022)Liang, Huang, Xia, Xu, Hausman, Ichter, Florence,
+  and Zeng]{liang2022code}
+Jacky Liang, Wenlong Huang, Fei Xia, Peng Xu, Karol Hausman, Brian Ichter, Pete
+  Florence, and Andy Zeng.
+\newblock Code as policies: Language model programs for embodied control.
+\newblock \emph{arXiv preprint arXiv:2209.07753}, 2022.
+
+\bibitem[Zeng et~al.(2022)Zeng, Attarian, Ichter, Choromanski, Wong, Welker,
+  Tombari, Purohit, Ryoo, Sindhwani, et~al.]{zeng2022socratic}
+Andy Zeng, Maria Attarian, Brian Ichter, Krzysztof Choromanski, Adrian Wong,
+  Stefan Welker, Federico Tombari, Aveek Purohit, Michael Ryoo, Vikas
+  Sindhwani, et~al.
+\newblock Socratic models: Composing zero-shot multimodal reasoning with
+  language.
+\newblock \emph{arXiv preprint arXiv:2204.00598}, 2022.
+
+\bibitem[Brohan et~al.(2023)Brohan, Brown, Carbajal, Chebotar, Chen,
+  Choromanski, Ding, Driess, Dubey, Finn, et~al.]{brohan2023rt}
+Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Xi~Chen,
+  Krzysztof Choromanski, Tianli Ding, Danny Driess, Avinava Dubey, Chelsea
+  Finn, et~al.
+\newblock Rt-2: Vision-language-action models transfer web knowledge to robotic
+  control.
+\newblock \emph{arXiv preprint arXiv:2307.15818}, 2023.
+
+\bibitem[Li et~al.(2023{\natexlab{e}})Li, Liu, Zhang, Yu, Xu, Wu, Cheang, Jing,
+  Zhang, Liu, et~al.]{li2023vision}
+Xinghang Li, Minghuan Liu, Hanbo Zhang, Cunjun Yu, Jie Xu, Hongtao Wu, Chilam
+  Cheang, Ya~Jing, Weinan Zhang, Huaping Liu, et~al.
+\newblock Vision-language foundation models as effective robot imitators.
+\newblock \emph{arXiv preprint arXiv:2311.01378}, 2023{\natexlab{e}}.
+
+\bibitem[Szot et~al.(2023)Szot, Schwarzer, Agrawal, Mazoure, Talbott, Metcalf,
+  Mackraz, Hjelm, and Toshev]{szot2023large}
+Andrew Szot, Max Schwarzer, Harsh Agrawal, Bogdan Mazoure, Walter Talbott,
+  Katherine Metcalf, Natalie Mackraz, Devon Hjelm, and Alexander Toshev.
+\newblock Large language models as generalizable policies for embodied tasks.
+\newblock \emph{arXiv preprint arXiv:2310.17722}, 2023.
+
+\bibitem[Tellex et~al.(2020)Tellex, Gopalan, Kress-Gazit, and
+  Matuszek]{tellex2020robots}
+Stefanie Tellex, Nakul Gopalan, Hadas Kress-Gazit, and Cynthia Matuszek.
+\newblock Robots that use language.
+\newblock \emph{Annual Review of Control, Robotics, and Autonomous Systems},
+  3:\penalty0 25--55, 2020.
+
+\bibitem[Chen et~al.(2023)Chen, Zhang, Zeng, Zhang, Zhu, and
+  Zhao]{chen2023shikra}
+Keqin Chen, Zhao Zhang, Weili Zeng, Richong Zhang, Feng Zhu, and Rui Zhao.
+\newblock Shikra: Unleashing multimodal llm's referential dialogue magic.
+\newblock \emph{arXiv preprint arXiv:2306.15195}, 2023.
+
+\bibitem[You et~al.(2024)You, Zhang, Gan, Du, Zhang, Wang, Cao, Chang, and
+  Yang]{you2023ferret}
+Haoxuan You, Haotian Zhang, Zhe Gan, Xianzhi Du, Bowen Zhang, Zirui Wang,
+  Liangliang Cao, Shih-Fu Chang, and Yinfei Yang.
+\newblock Ferret: Refer and ground anything anywhere at any granularity.
+\newblock In \emph{ICLR}, 2024.
+
+\bibitem[Wang et~al.(2023{\natexlab{a}})Wang, Chen, Chen, Wu, Zhu, Zeng, Luo,
+  Lu, Zhou, Qiao, et~al.]{wang2023visionllm}
+Wenhai Wang, Zhe Chen, Xiaokang Chen, Jiannan Wu, Xizhou Zhu, Gang Zeng, Ping
+  Luo, Tong Lu, Jie Zhou, Yu~Qiao, et~al.
+\newblock Visionllm: Large language model is also an open-ended decoder for
+  vision-centric tasks.
+\newblock \emph{arXiv preprint arXiv:2305.11175}, 2023{\natexlab{a}}.
+
+\bibitem[Lai et~al.(2023)Lai, Tian, Chen, Li, Yuan, Liu, and Jia]{lai2023lisa}
+Xin Lai, Zhuotao Tian, Yukang Chen, Yanwei Li, Yuhui Yuan, Shu Liu, and Jiaya
+  Jia.
+\newblock Lisa: Reasoning segmentation via large language model.
+\newblock \emph{arXiv preprint arXiv:2308.00692}, 2023.
+
+\bibitem[Zhang et~al.(2023)Zhang, Li, Li, Ren, Zou, Liu, Huang, Gao, Zhang, Li,
+  et~al.]{zhang2023llava}
+Hao Zhang, Hongyang Li, Feng Li, Tianhe Ren, Xueyan Zou, Shilong Liu, Shijia
+  Huang, Jianfeng Gao, Lei Zhang, Chunyuan Li, et~al.
+\newblock Llava-grounding: Grounded visual chat with large multimodal models.
+\newblock \emph{arXiv preprint arXiv:2312.02949}, 2023.
+
+\bibitem[Ahn et~al.(2022)Ahn, Brohan, Brown, Chebotar, Cortes, David, Finn, Fu,
+  Gopalakrishnan, Hausman, et~al.]{ahn2022can}
+Michael Ahn, Anthony Brohan, Noah Brown, Yevgen Chebotar, Omar Cortes, Byron
+  David, Chelsea Finn, Chuyuan Fu, Keerthana Gopalakrishnan, Karol Hausman,
+  et~al.
+\newblock Do as i can, not as i say: Grounding language in robotic affordances.
+\newblock \emph{arXiv preprint arXiv:2204.01691}, 2022.
+
+\bibitem[Driess et~al.(2023)Driess, Xia, Sajjadi, Lynch, Chowdhery, Ichter,
+  Wahid, Tompson, Vuong, Yu, et~al.]{driess2023palm}
+Danny Driess, Fei Xia, Mehdi~SM Sajjadi, Corey Lynch, Aakanksha Chowdhery,
+  Brian Ichter, Ayzaan Wahid, Jonathan Tompson, Quan Vuong, Tianhe Yu, et~al.
+\newblock {PaLM-E}: An embodied multimodal language model.
+\newblock \emph{arXiv preprint arXiv:2303.03378}, 2023.
+
+\bibitem[Mees et~al.(2022)Mees, Hermann, Rosete-Beas, and
+  Burgard]{mees2022calvin}
+Oier Mees, Lukas Hermann, Erick Rosete-Beas, and Wolfram Burgard.
+\newblock Calvin: A benchmark for language-conditioned policy learning for
+  long-horizon robot manipulation tasks.
+\newblock \emph{IEEE Robotics and Automation Letters}, 7\penalty0 (3):\penalty0
+  7327--7334, 2022.
+
+\bibitem[Yu et~al.(2020)Yu, Quillen, He, Julian, Hausman, Finn, and
+  Levine]{yu2020meta}
+Tianhe Yu, Deirdre Quillen, Zhanpeng He, Ryan Julian, Karol Hausman, Chelsea
+  Finn, and Sergey Levine.
+\newblock Meta-world: A benchmark and evaluation for multi-task and meta
+  reinforcement learning.
+\newblock In \emph{Conference on robot learning}, pages 1094--1100. PMLR, 2020.
+
+\bibitem[Shah et~al.(2023)Shah, Osi{\'n}ski, Levine, et~al.]{shah2023lm}
+Dhruv Shah, B{\l}a{\.z}ej Osi{\'n}ski, Sergey Levine, et~al.
+\newblock Lm-nav: Robotic navigation with large pre-trained models of language,
+  vision, and action.
+\newblock In \emph{Conference on Robot Learning}, pages 492--504. PMLR, 2023.
+
+\bibitem[Huang et~al.(2022)Huang, Xia, Xiao, Chan, Liang, Florence, Zeng,
+  Tompson, Mordatch, Chebotar, et~al.]{huang2022inner}
+Wenlong Huang, Fei Xia, Ted Xiao, Harris Chan, Jacky Liang, Pete Florence, Andy
+  Zeng, Jonathan Tompson, Igor Mordatch, Yevgen Chebotar, et~al.
+\newblock Inner monologue: Embodied reasoning through planning with language
+  models.
+\newblock \emph{arXiv preprint arXiv:2207.05608}, 2022.
+
+\bibitem[Liang et~al.(2023)Liang, Huang, Xia, Xu, Hausman, Ichter, Florence,
+  and Zeng]{liang2023code}
+Jacky Liang, Wenlong Huang, Fei Xia, Peng Xu, Karol Hausman, Brian Ichter, Pete
+  Florence, and Andy Zeng.
+\newblock Code as policies: Language model programs for embodied control.
+\newblock In \emph{2023 IEEE International Conference on Robotics and
+  Automation (ICRA)}, pages 9493--9500. IEEE, 2023.
+
+\bibitem[Huang et~al.(2023{\natexlab{b}})Huang, Xia, Shah, Driess, Zeng, Lu,
+  Florence, Mordatch, Levine, Hausman, et~al.]{huang2023grounded}
+Wenlong Huang, Fei Xia, Dhruv Shah, Danny Driess, Andy Zeng, Yao Lu, Pete
+  Florence, Igor Mordatch, Sergey Levine, Karol Hausman, et~al.
+\newblock Grounded decoding: Guiding text generation with grounded models for
+  robot control.
+\newblock \emph{arXiv preprint arXiv:2303.00855}, 2023{\natexlab{b}}.
+
+\bibitem[Wu et~al.(2023)Wu, Antonova, Kan, Lepert, Zeng, Song, Bohg,
+  Rusinkiewicz, and Funkhouser]{wu2023tidybot}
+Jimmy Wu, Rika Antonova, Adam Kan, Marion Lepert, Andy Zeng, Shuran Song,
+  Jeannette Bohg, Szymon Rusinkiewicz, and Thomas Funkhouser.
+\newblock Tidybot: Personalized robot assistance with large language models.
+\newblock \emph{arXiv preprint arXiv:2305.05658}, 2023.
+
+\bibitem[Silver et~al.(2023)Silver, Dan, Srinivas, Tenenbaum, Kaelbling, and
+  Katz]{silver2023generalized}
+Tom Silver, Soham Dan, Kavitha Srinivas, Joshua~B Tenenbaum, Leslie~Pack
+  Kaelbling, and Michael Katz.
+\newblock Generalized planning in pddl domains with pretrained large language
+  models.
+\newblock \emph{arXiv preprint arXiv:2305.11014}, 2023.
+
+\bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Xie, Jiang, Mandlekar, Xiao, Zhu,
+  Fan, and Anandkumar]{wang2023voyager}
+Guanzhi Wang, Yuqi Xie, Yunfan Jiang, Ajay Mandlekar, Chaowei Xiao, Yuke Zhu,
+  Linxi Fan, and Anima Anandkumar.
+\newblock Voyager: An open-ended embodied agent with large language models.
+\newblock \emph{arXiv preprint arXiv:2305.16291}, 2023{\natexlab{b}}.
+
+\bibitem[Shi et~al.(2023)Shi, Liu, Ze, Du, and Xu]{shi2023unleashing}
+Ruizhe Shi, Yuyao Liu, Yanjie Ze, Simon~S Du, and Huazhe Xu.
+\newblock Unleashing the power of pre-trained language models for offline
+  reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2310.20587}, 2023.
+
+\bibitem[Carta et~al.(2023)Carta, Romac, Wolf, Lamprier, Sigaud, and
+  Oudeyer]{carta2023grounding}
+Thomas Carta, Cl{\'e}ment Romac, Thomas Wolf, Sylvain Lamprier, Olivier Sigaud,
+  and Pierre-Yves Oudeyer.
+\newblock Grounding large language models in interactive environments with
+  online reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2302.02662}, 2023.
+
+\bibitem[Jain et~al.(2020)Jain, Szot, and Lim]{jain2020generalization}
+Ayush Jain, Andrew Szot, and Joseph~J Lim.
+\newblock Generalization to new actions in reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2011.01928}, 2020.
+
+\bibitem[Dulac-Arnold et~al.(2015)Dulac-Arnold, Evans, van Hasselt, Sunehag,
+  Lillicrap, Hunt, Mann, Weber, Degris, and Coppin]{dulac2015deep}
+Gabriel Dulac-Arnold, Richard Evans, Hado van Hasselt, Peter Sunehag, Timothy
+  Lillicrap, Jonathan Hunt, Timothy Mann, Theophane Weber, Thomas Degris, and
+  Ben Coppin.
+\newblock Deep reinforcement learning in large discrete action spaces.
+\newblock \emph{arXiv preprint arXiv:1512.07679}, 2015.
+
+\bibitem[Shafiullah et~al.(2022)Shafiullah, Cui, Altanzaya, and
+  Pinto]{shafiullah2022behavior}
+Nur~Muhammad Shafiullah, Zichen Cui, Ariuntuya~Arty Altanzaya, and Lerrel
+  Pinto.
+\newblock Behavior transformers: Cloning $ k $ modes with one stone.
+\newblock \emph{Advances in neural information processing systems},
+  35:\penalty0 22955--22968, 2022.
+
+\bibitem[Cui et~al.(2022)Cui, Wang, Shafiullah, and Pinto]{cui2022play}
+Zichen~Jeff Cui, Yibin Wang, Nur Muhammad~Mahi Shafiullah, and Lerrel Pinto.
+\newblock From play to policy: Conditional behavior generation from uncurated
+  robot data.
+\newblock \emph{arXiv preprint arXiv:2210.10047}, 2022.
+
+\bibitem[Lee et~al.(2024)Lee, Wang, Etukuru, Kim, Shafiullah, and
+  Pinto]{lee2024behavior}
+Seungjae Lee, Yibin Wang, Haritheja Etukuru, H~Jin Kim, Nur Muhammad~Mahi
+  Shafiullah, and Lerrel Pinto.
+\newblock Behavior generation with latent actions.
+\newblock \emph{arXiv preprint arXiv:2403.03181}, 2024.
+
+\bibitem[Pantazopoulos et~al.(2023)Pantazopoulos, Nikandrou, Parekh,
+  Hemanthage, Eshghi, Konstas, Rieser, Lemon, and
+  Suglia]{pantazopoulos2023multitask}
+Georgios Pantazopoulos, Malvina Nikandrou, Amit Parekh, Bhathiya Hemanthage,
+  Arash Eshghi, Ioannis Konstas, Verena Rieser, Oliver Lemon, and Alessandro
+  Suglia.
+\newblock Multitask multimodal prompted training for interactive embodied task
+  completion.
+\newblock \emph{arXiv preprint arXiv:2311.04067}, 2023.
+
+\bibitem[Team et~al.(2024)Team, Ghosh, Walke, Pertsch, Black, Mees, Dasari,
+  Hejna, Kreiman, Xu, et~al.]{team2024octo}
+Octo~Model Team, Dibya Ghosh, Homer Walke, Karl Pertsch, Kevin Black, Oier
+  Mees, Sudeep Dasari, Joey Hejna, Tobias Kreiman, Charles Xu, et~al.
+\newblock Octo: An open-source generalist robot policy.
+\newblock \emph{arXiv preprint arXiv:2405.12213}, 2024.
+
+\bibitem[Peng et~al.(2023{\natexlab{b}})Peng, Wang, Dong, Hao, Huang, Ma, and
+  Wei]{peng2023kosmos}
+Zhiliang Peng, Wenhui Wang, Li~Dong, Yaru Hao, Shaohan Huang, Shuming Ma, and
+  Furu Wei.
+\newblock Kosmos-2: Grounding multimodal large language models to the world.
+\newblock \emph{arXiv preprint arXiv:2306.14824}, 2023{\natexlab{b}}.
+
+\bibitem[Sun et~al.(2023)Sun, Cui, Zhang, Zhang, Yu, Luo, Wang, Rao, Liu,
+  Huang, et~al.]{sun2023generative}
+Quan Sun, Yufeng Cui, Xiaosong Zhang, Fan Zhang, Qiying Yu, Zhengxiong Luo,
+  Yueze Wang, Yongming Rao, Jingjing Liu, Tiejun Huang, et~al.
+\newblock Generative multimodal models are in-context learners.
+\newblock \emph{arXiv preprint arXiv:2312.13286}, 2023.
+
+\bibitem[Yu et~al.(2023)Yu, Xiao, Stone, Tompson, Brohan, Wang, Singh, Tan,
+  Peralta, Ichter, et~al.]{yu2023scaling}
+Tianhe Yu, Ted Xiao, Austin Stone, Jonathan Tompson, Anthony Brohan, Su~Wang,
+  Jaspiar Singh, Clayton Tan, Jodilyn Peralta, Brian Ichter, et~al.
+\newblock Scaling robot learning with semantically imagined experience.
+\newblock \emph{arXiv preprint arXiv:2302.11550}, 2023.
+
+\bibitem[Aiello et~al.(2023)Aiello, Yu, Nie, Aghajanyan, and
+  Oguz]{aiello2023jointly}
+Emanuele Aiello, Lili Yu, Yixin Nie, Armen Aghajanyan, and Barlas Oguz.
+\newblock Jointly training large autoregressive multimodal models.
+\newblock \emph{arXiv preprint arXiv:2309.15564}, 2023.
+
+\bibitem[Lee et~al.(2022)Lee, Kim, Kim, Cho, and Han]{lee2022autoregressive}
+Doyup Lee, Chiheon Kim, Saehoon Kim, Minsu Cho, and Wook-Shin Han.
+\newblock Autoregressive image generation using residual quantization.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}, pages 11523--11532, 2022.
+
+\bibitem[Zeghidour et~al.(2021)Zeghidour, Luebs, Omran, Skoglund, and
+  Tagliasacchi]{zeghidour2021soundstream}
+Neil Zeghidour, Alejandro Luebs, Ahmed Omran, Jan Skoglund, and Marco
+  Tagliasacchi.
+\newblock Soundstream: An end-to-end neural audio codec.
+\newblock \emph{IEEE/ACM Transactions on Audio, Speech, and Language
+  Processing}, 30:\penalty0 495--507, 2021.
+
+\bibitem[Bellman(1957)]{Bel}
+Richard Bellman.
+\newblock A markovian decision process.
+\newblock \emph{Indiana Univ. Math. J.}, 6:\penalty0 679--684, 1957.
+\newblock ISSN 0022-2518.
+
+\bibitem[Jaegle et~al.(2021)Jaegle, Borgeaud, Alayrac, Doersch, Ionescu, Ding,
+  Koppula, Zoran, Brock, Shelhamer, et~al.]{jaegle2021perceiver}
+Andrew Jaegle, Sebastian Borgeaud, Jean-Baptiste Alayrac, Carl Doersch, Catalin
+  Ionescu, David Ding, Skanda Koppula, Daniel Zoran, Andrew Brock, Evan
+  Shelhamer, et~al.
+\newblock Perceiver io: A general architecture for structured inputs \&
+  outputs.
+\newblock \emph{arXiv preprint arXiv:2107.14795}, 2021.
+
+\bibitem[Van Den~Oord et~al.(2017)Van Den~Oord, Vinyals, et~al.]{van2017neural}
+Aaron Van Den~Oord, Oriol Vinyals, et~al.
+\newblock Neural discrete representation learning.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
+
+\bibitem[Hu et~al.(2021)Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, and
+  Chen]{hu2021lora}
+Edward~J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean
+  Wang, Lu~Wang, and Weizhu Chen.
+\newblock Lora: Low-rank adaptation of large language models.
+\newblock \emph{arXiv preprint arXiv:2106.09685}, 2021.
+
+\bibitem[Yu et~al.(2019)Yu, Quillen, He, Julian, Hausman, Finn, and
+  Levine]{metaworld}
+Tianhe Yu, Deirdre Quillen, Zhanpeng He, R.~Julian, Karol Hausman, Chelsea
+  Finn, and S.~Levine.
+\newblock Meta-world: A benchmark and evaluation for multi-task and meta
+  reinforcement learning.
+\newblock In \emph{CoRL}, 2019.
+
+\bibitem[Szot et~al.(2021)Szot, Clegg, Undersander, Wijmans, Zhao, Turner,
+  Maestre, Mukadam, Chaplot, Maksymets, et~al.]{szot2021habitat}
+Andrew Szot, Alexander Clegg, Eric Undersander, Erik Wijmans, Yili Zhao, John
+  Turner, Noah Maestre, Mustafa Mukadam, Devendra~Singh Chaplot, Oleksandr
+  Maksymets, et~al.
+\newblock Habitat 2.0: Training home assistants to rearrange their habitat.
+\newblock \emph{Advances in Neural Information Processing Systems}, 34, 2021.
+
+\bibitem[Chevalier-Boisvert et~al.(2019)Chevalier-Boisvert, Bahdanau, Lahlou,
+  Willems, Saharia, Nguyen, and Bengio]{babyai_iclr19}
+Maxime Chevalier-Boisvert, Dzmitry Bahdanau, Salem Lahlou, Lucas Willems,
+  Chitwan Saharia, Thien~Huu Nguyen, and Yoshua Bengio.
+\newblock Baby{AI}: First steps towards grounded language learning with a human
+  in the loop.
+\newblock In \emph{ICLR}, 2019.
+\newblock URL \url{https://openreview.net/forum?id=rJeXCo0cYX}.
+
+\bibitem[Loshchilov and Hutter(2017)]{loshchilov2017decoupled}
+Ilya Loshchilov and Frank Hutter.
+\newblock Decoupled weight decay regularization.
+\newblock \emph{arXiv preprint arXiv:1711.05101}, 2017.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{schulman2017proximal}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem[Johannink et~al.(2019)Johannink, Bahl, Nair, Luo, Kumar, Loskyll,
+  Ojea, Solowjow, and Levine]{johannink2019residual}
+Tobias Johannink, Shikhar Bahl, Ashvin Nair, Jianlan Luo, Avinash Kumar,
+  Matthias Loskyll, Juan~Aparicio Ojea, Eugen Solowjow, and Sergey Levine.
+\newblock Residual reinforcement learning for robot control.
+\newblock In \emph{2019 international conference on robotics and automation
+  (ICRA)}, pages 6023--6029. IEEE, 2019.
+
+\bibitem[Parr et~al.(2008)Parr, Li, Taylor, Painter-Wakefield, and
+  Littman]{parr2008analysis}
+Ronald Parr, Lihong Li, Gavin Taylor, Christopher Painter-Wakefield, and
+  Michael~L Littman.
+\newblock An analysis of linear models, linear value-function approximation,
+  and feature selection for reinforcement learning.
+\newblock In \emph{Proceedings of the 25th international conference on Machine
+  learning}, pages 752--759, 2008.
+
+\bibitem[Wei et~al.(2021)Wei, Bosma, Zhao, Guu, Yu, Lester, Du, Dai, and
+  Le]{wei2021finetuned}
+Jason Wei, Maarten Bosma, Vincent~Y Zhao, Kelvin Guu, Adams~Wei Yu, Brian
+  Lester, Nan Du, Andrew~M Dai, and Quoc~V Le.
+\newblock Finetuned language models are zero-shot learners.
+\newblock \emph{arXiv preprint arXiv:2109.01652}, 2021.
+
+\bibitem[Brohan et~al.(2022)Brohan, Brown, Carbajal, Chebotar, Dabis, Finn,
+  Gopalakrishnan, Hausman, Herzog, Hsu, et~al.]{brohan2022rt}
+Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Joseph Dabis,
+  Chelsea Finn, Keerthana Gopalakrishnan, Karol Hausman, Alex Herzog, Jasmine
+  Hsu, et~al.
+\newblock Rt-1: Robotics transformer for real-world control at scale.
+\newblock \emph{arXiv preprint arXiv:2212.06817}, 2022.
+
+\bibitem[Wei et~al.(2023)Wei, Sun, Zheng, Vemprala, Bonatti, Chen, Madaan, Ba,
+  Kapoor, and Ma]{wei2023imitation}
+Yao Wei, Yanchao Sun, Ruijie Zheng, Sai Vemprala, Rogerio Bonatti, Shuhang
+  Chen, Ratnesh Madaan, Zhongjie Ba, Ashish Kapoor, and Shuang Ma.
+\newblock Is imitation all you need? generalized decision-making with
+  dual-phase training.
+\newblock In \emph{Proceedings of the IEEE/CVF International Conference on
+  Computer Vision}, pages 16221--16231, 2023.
+
+\bibitem[Anand et~al.(2021)Anand, Walker, Li, V{\'e}rtes, Schrittwieser, Ozair,
+  Weber, and Hamrick]{anand2021procedural}
+Ankesh Anand, Jacob Walker, Yazhe Li, Eszter V{\'e}rtes, Julian Schrittwieser,
+  Sherjil Ozair, Th{\'e}ophane Weber, and Jessica~B Hamrick.
+\newblock Procedural generalization by planning with self-supervised world
+  models.
+\newblock \emph{arXiv preprint arXiv:2111.01587}, 2021.
+
+\bibitem[Schrittwieser et~al.(2020)Schrittwieser, Antonoglou, Hubert, Simonyan,
+  Sifre, Schmitt, Guez, Lockhart, Hassabis, Graepel,
+  et~al.]{schrittwieser2020mastering}
+Julian Schrittwieser, Ioannis Antonoglou, Thomas Hubert, Karen Simonyan,
+  Laurent Sifre, Simon Schmitt, Arthur Guez, Edward Lockhart, Demis Hassabis,
+  Thore Graepel, et~al.
+\newblock Mastering atari, go, chess and shogi by planning with a learned
+  model.
+\newblock \emph{Nature}, 588\penalty0 (7839):\penalty0 604--609, 2020.
+
+\bibitem[Reed et~al.(2022)Reed, Zolna, Parisotto, Colmenarejo, Novikov,
+  Barth-Maron, Gimenez, Sulsky, Kay, Springenberg, et~al.]{reed2022generalist}
+Scott Reed, Konrad Zolna, Emilio Parisotto, Sergio~Gomez Colmenarejo, Alexander
+  Novikov, Gabriel Barth-Maron, Mai Gimenez, Yury Sulsky, Jackie Kay,
+  Jost~Tobias Springenberg, et~al.
+\newblock A generalist agent.
+\newblock \emph{arXiv preprint arXiv:2205.06175}, 2022.
+
+\bibitem[Ke et~al.(2024)Ke, Gkanatsios, and Fragkiadaki]{ke20243d}
+Tsung-Wei Ke, Nikolaos Gkanatsios, and Katerina Fragkiadaki.
+\newblock 3d diffuser actor: Policy diffusion with 3d scene representations.
+\newblock \emph{arXiv preprint arXiv:2402.10885}, 2024.
+
+\bibitem[Szot et~al.(2022)Szot, Yadav, Clegg, Berges, Gokaslan, Chang, Savva,
+  Kira, and Batra]{habitatrearrangechallenge2022}
+Andrew Szot, Karmesh Yadav, Alex Clegg, Vincent-Pierre Berges, Aaron Gokaslan,
+  Angel Chang, Manolis Savva, Zsolt Kira, and Dhruv Batra.
+\newblock Habitat rearrangement challenge 2022.
+\newblock \url{https://aihabitat.org/challenge/2022_rearrange}, 2022.
+
+\bibitem[Wolf et~al.(2019)Wolf, Debut, Sanh, Chaumond, Delangue, Moi, Cistac,
+  Rault, Louf, Funtowicz, et~al.]{wolf2019huggingface}
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue,
+  Anthony Moi, Pierric Cistac, Tim Rault, R{\'e}mi Louf, Morgan Funtowicz,
+  et~al.
+\newblock Huggingface's transformers: State-of-the-art natural language
+  processing.
+\newblock \emph{arXiv preprint arXiv:1910.03771}, 2019.
+
+\bibitem[Paszke et~al.(2019)Paszke, Gross, Massa, Lerer, Bradbury, Chanan,
+  Killeen, Lin, Gimelshein, Antiga, et~al.]{paszke2019pytorch}
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+  Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et~al.
+\newblock Pytorch: An imperative style, high-performance deep learning library.
+\newblock \emph{Advances in neural information processing systems}, 32, 2019.
+
+\bibitem[Rasley et~al.(2020)Rasley, Rajbhandari, Ruwase, and
+  He]{rasley2020deepspeed}
+Jeff Rasley, Samyam Rajbhandari, Olatunji Ruwase, and Yuxiong He.
+\newblock Deepspeed: System optimizations enable training deep learning models
+  with over 100 billion parameters.
+\newblock In \emph{Proceedings of the 26th ACM SIGKDD International Conference
+  on Knowledge Discovery \& Data Mining}, pages 3505--3506, 2020.
+
+\end{thebibliography}

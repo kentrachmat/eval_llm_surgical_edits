@@ -1,0 +1,40 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc, shapes.geometric, shadows}
+
+% Define custom colors
+\definecolor{offblack}{HTML}{0F0F0F}
+\definecolor{offwhite}{HTML}{F9F9F9}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzset{
+    textnode/.style={
+        rectangle,
+        rounded corners=2,
+        align=center,
+        draw=offblack,
+        fill=offwhite,
+        minimum height=1cm,
+        text width=5.8cm,
+        inner sep=4,
+        font=\small,
+        thick
+    }
+}
+
+\node[textnode, text width=12cm] (inputbox) at (0,0) {Give me the top 2 chatbots today.};
+
+\node[textnode, below=0.5cm of inputbox.south west, anchor=north west] (model1box) {
+    1. ChatGPT \\ 2. Claude (by Anthropic)
+};
+
+\node[below=0cm of model1box, font=\footnotesize] {Claude};
+
+\node[textnode, below=0.5cm of inputbox.south east, anchor=north east] (model2box) {
+    1. ChatGPT by OpenAI: Highly conversational and knowledgeable. \\
+    2. Google's Bard: Advanced and integrated with Google services.
+};  
+\node[below=0cm of model2box, font=\footnotesize] {GPT-4};
+\end{tikzpicture}
+\end{document}

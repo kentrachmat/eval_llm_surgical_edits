@@ -1,0 +1,30 @@
+\section{Related Work}
+\label{sec:related-work} 
+
+\looseness=-1 Prior works propose different {\asalong}s (\asas) to adapt \vlms into policies.
+Some works use LLMs or \vlms as zero-shot policies by prompting them to output text or code that can be executed as actions~\citep{zeng2022socratic,shah2023lm,huang2022inner,liang2023code,huang2023grounded,wu2023tidybot,silver2023generalized,wang2023voyager}.
+The \asa in this case is a given executor or low-level controller that takes text as input and outputs actions in the environment.
+Other works investigate adapting \vlms for actions, but focus on a single \asa and environment.
+For example, RT-2~\cite{brohan2023rt} uniformly discretizes continuous actions and predicts tokens corresponding to each of the action dimensions.
+RoboFlamingo~\cite{li2023vision}, Lamo~\cite{shi2023unleashing}, and LLaRP~\cite{szot2023large} use an MLP to predict an environment action from an LLM hidden state.
+GFlan~\cite{carta2023grounding} treats discrete actions as text and ranks actions by the LLM log probability to form a distribution over actions.
+At a high level, our work is distinct in that we study a variety of methods across multiple environments for learning \asas. We focus on tasks with low zero-shot VLM performance, such as low-level control or long-horizon planning tasks. 
+We summarize the differences between our investigation and prior work adapting VLMs for action in \Cref{sec:prior-work}.
+
+Investigating action representations in embodied settings is not new. 
+Some works learn representations of actions to help generalization to new actions or operating in large action spaces \cite{jain2020generalization,dulac2015deep} in the context of Reinforcement Learning (RL).
+Our study proposes \asas for tokenizing continuous actions, and other works use different types of discretization or tokenization strategies on continuous action spaces.
+\cite{shafiullah2022behavior,cui2022play} use k-means to discretize continuous actions to help learn from multimodal behavior datasets, such as from play data or data from different experts.
+VQ-BeT~\cite{lee2024behavior} finds learning a residual VQA (RVQ) codebook for continuous actions works best but does not apply this idea to \vlms.
+\ifincludecontent
+  \cite{pantazopoulos2023multitask} predicts actions as text.
+  \cite{team2024octo} learns a multi-task transformer policy and models actions with a diffusion head.
+\else
+\fi
+
+
+More broadly, prior works have adapted \vlms for modalities other than actions, such as object bounding boxes and image generation, both being continuous in nature while the latter of high dimension. For example, 
+\cite{peng2023kosmos,zhang2023llava} train \vlms to output spatial reference tokens to ground text responses in image regions.
+For image generation, \cite{sun2023generative} adapt \vlms to generate image patches;  
+\cite{yu2023scaling,aiello2023jointly} tokenize images using a VQ-VAE model and adapt \vlms to generate images by decoding these image tokens, which has inspired us to use the same learned tokenization; 
+\cite{lee2022autoregressive} uses an RVQ model ~\cite{zeghidour2021soundstream} to generate images, similarly to our best performing tokenization scheme.

@@ -1,0 +1,173 @@
+\section{Experiments}
+\label{sec:experiments}
+In this section, we first give details of the grid search method in Section~\ref{sec:implementation_detail}. We then give  the linear probing grid search results on features from Stable Diffusion in Section~\ref{sec:result_sd} and from other networks trained at scale in Section~\ref{sec:result_other}. Finally, we compare all models on the test set in Section~\ref{sec:result_compare}.
+
+
+\subsection{Implementation Details and Evaluation Metric}
+\label{sec:implementation_detail}
+
+
+\noindent {\bf Implementation Details.} 
+For each property, 
+we sample the same number of positive / negative pairs, to maintain a balanced evaluation set.
+In terms of the linear SVM, we tune the penalty parameter $C$ on the val split to find the best $C$ for each property. 
+Therefore, we are grid searching 3 parameters on the val set, namely, Timestep $t$ ranging from 1 to 1000 (only for Stable Diffusion), U-Net Layer $l$ covering the 4 downsampling and 4 upsampling layers for Stable Diffusion and Transformer Layer $l$ for other networks, and the SVM penalty parameter $C$ ranging over $0.001, 0.01, 0.1, 1, 10, 100, 1000$. The timestep is searched with 
+a stride of 20 steps, since the difference in performance 
+around the optimal value varies by less than 0.01 within 20 steps. In practice
+the $C$ parameter is always between $0.1$ and $1$, so we carry out a finer search
+over values between $0.1$ and $1.0$ in steps of $0.1$.
+ The linear SVM is solved using the \emph{libsvm} library~\citep{chang2011libsvm} with the SMO algorithm, to get the unique global optimal solution.
+Please refer to the appendix for more implementation details.
+
+
+\noindent {\bf Evaluation Metric.} 
+All protocols are binary classification, therefore, we use ROC Area Under the Curve  (AUC Score) to evaluate the performance of the linear classifier, as it is not sensitive to different decision thresholds.
+
+
+
+
+\subsection{Results for Stable Diffusion}
+\label{sec:result_sd}
+
+
+\begin{figure*}[h]
+		\centering
+		\includegraphics[height=0.17 \linewidth]{imgs/supple_unet.pdf}
+		\vspace{-2mm}
+		\caption{\textbf{(a) Nomenclature for the U-Net Layers.} We probe 4 downsampling encoder layers $E_1$-$E_4$ and 4 upsampling decoder layers $D_1$-$D_4$ of the Stable Diffusion U-Net.
+   \textbf{(b) A prediction failure for \emph{Material}.}  In this example the model does not predict that the two regions are made of the same material (fabric). 
+   \textbf{(c) A prediction failure for \emph{Occlusion}.}
+  In this example the model does not predict that the two regions belong to the same object (the sofa). 
+  }
+		\label{figure:supple_unet}
+ 		% \vspace{-2mm}
+\end{figure*}
+
+
+\begin{table}[h]
+\setlength{\tabcolsep}{2pt}
+\footnotesize
+\centering
+\tabcolsep=0.5 cm
+
+\caption{
+\textbf{SVM grid search results of Stable Diffusion features.} 
+For each property, we train the linear SVM on the training set and grid search the best combination of time step, layer, and $C$ on the validation set. The ROC AUC score (\%) is reported on the validation set using the selected combination. 
+}
+
+\begin{tabular}{lcccc}
+
+\toprule
+Property & Time Step & Layer & $C$ & Val AUC \\
+\midrule
+Same Plane & 360 & $D_3$ & 0.4 & 97.3 \\
+Perpendicular Plane & 160 & $D_3$ & 0.5 & 88.5 \\
+Material & 20 & $D_3$ & 0.5 & 81.5 \\
+Support Relation & 120 & $D_3$ & 1.0 & 92.6 \\
+Shadow & 160 & $D_3$ & 0.8 & 95.4 \\
+Occlusion & 180 & $D_3$ & 0.3 & 83.8 \\
+Depth & 60 & $D_3$ & 0.9 & 99.2 \\
+\bottomrule
+
+\end{tabular}
+
+% \vspace{-10pt}
+\label{table:grid_search}
+\end{table}
+
+The results for grid search are shown in Table~\ref{table:grid_search}.
+For Stable Diffusion U-Net Layer, 
+$D_l$ means the $l$-th layer of the U-Net decoder, \emph{i.e.,} upsampling layer, from outside to inside (right to left), 
+and we provide an illustration of the layers in Figure~\ref{figure:supple_unet}(a).
+We can make  observations: 
+First, the best time step for different properties varies, but the optimal time step is usually before 400.
+This is expected as a large time step adds too much noise, so not much information is contained about the image. 
+%
+Second, in terms of the layer, the best U-Net layer is always $D_3$ in the decoder rather than the encoder. The optimal layer is in the middle, as D1 is too close to the noise space and D4 has just started decoding. Further explorations using Stable Diffusion features for downstream tasks could thus start from the U-Net decoder layers, especially $D_3$. 
+%
+Third, in terms of the performance on the test set, we find that Stable Diffusion can understand very well about scene geometry, support relations, shadows, and depth, but it is less performant at predicting material and occlusion.
+Examples of its failure are shown in Figure~\ref{figure:supple_unet}~(b)~(c). 
+As noted in~\cite{zhan2022triocc} and~\cite{kirillov2023sam},  grouping all separated parts of an object due to occlusion
+remains challenging even for state-of-the-art detection and segmentation models. The appendix gives grid search results at all time steps and layers.
+
+
+\subsection{Results for CLIP/DINO/VQGAN Features}
+\label{sec:result_other}
+
+\begin{table*}[h]
+\setlength{\tabcolsep}{6pt}
+\footnotesize
+\centering
+\tabcolsep=0.15 cm
+
+\caption{
+\textbf{SVM grid search results of CLIP/DINO/VQGAN features.} We train the linear SVM on the training set, and grid search the best combination of ViT/Transformer layer and $C$ on the validation set. 
+The OpenCLIP and VQGAN models we use have 48 transformer layers, DINOv1 has 12 layers and DINOv2 has 40 layers. The $i$-th layer means the $i$-th transformer layer from the input side.
+}
+
+\begin{tabular}{cccccccccccc}
+
+\toprule
+ \multirow{2}*{} & \multicolumn{4}{c}{Material} & \multicolumn{4}{c}{Support Relation} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9} &  OpenCLIP & \thead{DINOv1} & \thead{DINOv2} & VQGAN &  OpenCLIP & \thead{DINOv1} & \thead{DINOv2} & VQGAN  \\
+\midrule
+ Optimal Layer & 30 & 8 & 23 & 11 & 32 & 9 & 40 & 14 \\
+ Optimal C & 0.3 & 0.2 & 0.6 & 0.3 & 0.3 & 0.3 & 0.6 & 0.4 \\
+  Val AUC & 77.5 & 77.4 & 81.3 & 65.8 & 92.0 & 91.5 & 93.6 & 85.4 \\
+\bottomrule
+
+\end{tabular}
+
+
+\label{table:other_search}
+\end{table*}
+
+In this section we show grid search results for OpenCLIP~\citep{Radford2021clip,software_openclip} pre-trained on LAION dataset~\citep{schuhmann2022laionb}, 
+DINOv1~\citep{caron2021dino} pre-trained on ImageNet dataset~\citep{deng2009imagenet}, DINOv2~\citep{oquab2023dinov2} pre-trained on LVD-142M dataset~\citep{oquab2023dinov2}, and VQGAN~\cite{esser2021taming} pre-trained on ImageNet dataset~\citep{deng2009imagenet}.
+We use the best pre-trained checkpoints available on their official GitHub -- ViT-B for DINOv1, ViT-G for OpenCLIP and DINOv2, and the 48-layer transformer checkpoint for VQGAN.
+Similar to Stable Diffusion, for each of these models, we conduct a grid search on the validation set in terms of the ViT/Transformer layer and $C$ for SVM, and use the best combination of parameters for evaluation on the test set. 
+
+Grid search results are reported in Table~\ref{table:other_search} for the tasks of material and support. It can be observed that different layers of different models are good at different properties.
+Results of other tasks are in the appendix.
+
+
+
+
+
+\subsection{Comparison of Different Features Trained at Scale}
+\label{sec:result_compare}
+
+
+\begin{table*}[h]
+\setlength{\tabcolsep}{6pt}
+\footnotesize
+\centering
+\tabcolsep=0.25 cm
+
+\caption{
+\textbf{
+Comparison of different features trained at scale.} For each property, we use the best time step, layer and $C$ found in the grid search for Stable Diffusion, and the best layer and $C$ found in the grid search for other features. The performance is the ROC  AUC on the test set, and `Random' means a random classifier. 
+}
+
+\begin{tabular}{lcccccc}
+
+\toprule
+Property & Random & OpenCLIP & DINOv1 & DINOv2 & VQGAN & Stable Diffusion \\
+\midrule
+Same Plane & 50 & 92.3 & 91.4 & 94.5 & 81.3 & \textbf{96.3} \\
+Perpendicular Plane & 50 & 71.8 & 71.3 & 82.1 & 62.0 & \textbf{86.0} \\
+Material & 50 & 78.7 & 78.8 & 83.5 & 65.5 & \textbf{83.6}  \\
+Support Relation & 50 & 90.6 & 90.8 & \textbf{92.8} & 84.1 & 92.1 \\
+Shadow & 50 & 94.9 & 92.2 & \textbf{95.8} & 89.0 & 95.4 \\
+Occlusion & 50 & 81.2 & 79.9 & 84.4 & 78.4 & \textbf{84.8} \\
+Depth & 50 & 99.2 & 97.1 & \textbf{99.7} & 91.8 & 99.6 \\
+\bottomrule
+
+\end{tabular}
+
+
+\label{table:svm_sota}
+\end{table*}
+
+We compare the state-of-the-art pre-trained large-scale vison models' representations on various downstream tasks in Table~\ref{table:svm_sota}.
+It can be observed that the Stable Diffusion and DINOv2 representations outperform OpenCLIP, DINOv1 and VQGAN for all properties, indicating the potential of utilizing Stable Diffusion and DINOv2 representations for different downstream tasks with the optimal time steps and layers found in Section~\ref{sec:result_sd} and Section~\ref{sec:result_other}. 

@@ -1,0 +1,99 @@
+\section{Results} \label{sec:results}
+There is no standard benchmark to evaluate merging approaches on models from distinct tasks, so we construct our own. We evaluate our approach in two different settings.
+% Thus, we test our method in two different settings:
+(1) A versatile test-bed: disjoint category splits of the same dataset (i.e., \textit{same dataset and different label sets}).
+(2) A very challenging setting: completely different datasets and tasks (i.e., \textit{different datasets and label sets}). 
+
+% (1) A versatile test-bed setting: disjoint category splits of the same dataset (i.e., \textit{same dataset and different label sets}).
+% (2) A very challenging setting: completely different datasets (i.e., \textit{different datasets and label sets}). 
+
+
+% There is no standard setting to evaluate merging approaches on models from distinct tasks. 
+% % Thus, we devise two types of experiments to benchmark merging approaches:
+% Thus, we devise two types of benchmarks:
+% % Thus, we devise two types of experiments to benchmark disjoint task model merging (Fig.~\ref{fig:concept_and_capabilities}):
+% (1) Merging models trained on disjoint category splits of the same dataset (i.e., \textit{same dataset and different label sets}), and (2) merging models trained on completely different datasets (i.e., \textit{different datasets and label sets}). 
+% We position the former as an easy-to-use versatile test-bed for evaluating merging methods, and the latter as a very challenging setting.
+
+% We position the former as versatile and standardized test-bed for judging the quality of arbitrary merging methods for arbitrary architectures, and the latter to showcase \name{}'s performance in realistic settings.
+
+\paragraph{Experimental Details.} 
+For each experiment where we sample multiple disjoint splits of categories, we hold one split out for hyperparameter search and report mean and standard deviation on the rest. 
+For experiments with models trained on different datasets, we subsample the validation set into a validation and test set to use for the same purpose.
+To compute correlations, we use a portion of the training set for each dataset as in \citet{li2016convergenticlr} (see Appendix~\ref{ap:data_usage}).
+For a fair comparison, we reset the batch norms for \textit{all} methods (including the original models) using the training data (following the recommendation in \citet{jordan2022repair}).
+For our method, \name{}$_\text{n/m}$ indicates that $n$ out of the $m$ layers in the network have been zipped (Sec.~\ref{sec:partial_zip}).
+Note, all our models have \textit{different initializations}.
+
+\paragraph{Evaluation.}
+For the setting with disjoint class splits of the same dataset, we evaluate performance in two ways: joint accuracy and per task accuracy. For joint accuracy, we evaluate each model over \textit{all} classes in the combined dataset. For per task accuracy, we compute the accuracy of each task individually (i.e., supposing we had task labels at runtime) and then report the average. The former is similar to a continual learning setting where we want to augment the knowledge of the model, while the latter is akin to a multi-task setting where we know which task we're using at test time.
+For the scenario where we merge models trained on different datasets, we use the per task accuracy metric, as the label spaces are not comparable.
+
+\paragraph{Baselines.} In addition to the default Weight Matching version of Git Re-Basin \cite{ainsworth2022git}, we compare to two baselines: Weight Averaging (Eq.~\ref{eq:wavg}) and Permute (Eq.~\ref{eq:rebasin}) with $\gamma = \sfrac{1}{2}$ using our framework (i.e., we set \modelc{$M_i$} and \modelc{$U_i$} such that Eq.~\ref{eq:zip} is equivalent). For Permute, we use linear sum assignment to find optimal permutations (following \citet{li2016convergenticlr}). Note that our Permute is a \textit{strong} baseline we create using our framework and is more accurate than Git Re-Basin in our settings. It's also similar to REPAIR \cite{jordan2022repair}, but without adding extra parameters to the model. Finally, with perfect merging, the merged model's outputs would be identical to the originals. Thus we include Ensemble as an \gc{upper bound} (executing and concatenating the results of both models).
+
+\input{figures/6_cifar}
+\vspace{-0.5em}
+\subsection{CIFAR-10 and CIFAR-100}
+We train 5 pairs of ResNet-20 \cite{he2015deep} from scratch with different initializations on disjoint halves of the CIFAR-10 and CIFAR-100 classes \cite{krizhevsky2009cifar}. While \name{}\ supports ``partial zipping'' to merge models with different outputs (in this case, disjoint label sets), prior methods without retraining do not. To make a fair comparison, we train these CIFAR models with a CLIP-style loss \cite{radford2021learning} using CLIP text encodings of the class names as targets. 
+This way, both models output into the same CLIP-space regardless of the category.
+% That way, both models output into the same space, despite predicting different sets of categories. 
+Note, this means the models are capable of some amount of zero-shot classification on the tasks they were not trained on.
+% , and can get better than random accuracy on tasks they were not trained on.
+
+% Thus, they get better than random accuracy on tasks they were not trained on.
+% We also experiment with VGG models in this setting, and achieve similar results to our ResNet experiments (See Appendix~\ref{ap:vgg}).
+
+\paragraph{CIFAR-10 (5+5).}
+In Tab.~\ref{tab:cifar5+5}, we merge models trained on disjoint 5 class subsets of CIFAR-10 using ResNet-20 with a $4\times$ width multiplier (denoted as ResNet-20$\times$4). In joint classification (i.e., 10-way), Git Re-Basin is unable to perform better than using either of the original models alone, while our Permute baseline performs slightly better.
+In stark contrast, our \name{}\ performs a staggering \textit{32.9\%} better than Git Re-Basin and \textit{20.7\%} better than our baseline.
+If allow the last stage of the network to remain unzipped (i.e., zip up to 13 layers), our method obtains 83.8\%, which is only 3.6\% behind an ensemble of \modela{model A} and \modelb{model B} (which is practically the upper bound for this setting).
+We also achieve similar results when merging VGG11 models in this setting (Appendix~\ref{ap:vgg}).
+
+\vspace{-0.2em}
+\paragraph{CIFAR-100 (50+50).}
+We find similar results on disjoint 50 class splits of CIFAR-100 in Tab.~\ref{tab:cifar50+50}, this time using an $8\times$ width multiplier instead. Like with CIFAR-10, Git Re-Basin fails to outperform even the unmerged models themselves in joint classification (i.e., 100-way), and this time Permute is only 1.2\% ahead. \name{}\ again \textit{significantly} outperforms prior work with +14\% accuracy over Git Re-Basin for all layers zipped, and a substantial +29.2\% if zipping 13/20 layers. At this accuracy, \name{}$_{13/20}$ is again only 3.3\% behind the ensemble for joint accuracy and 2.6\% behind for average per task accuracy, landing itself in an entirely different performance tier compared to prior work.
+
+
+
+\input{figures/8_imagenet200x5}
+\vspace{-0.5em}
+\subsection{ImageNet-1k (200+200)}
+To test our method on the \textit{much harder} setting of large-scale data, we train 5 differently initialized ResNet-50 models with cross entropy loss on disjoint 200 class subsets of ImageNet-1k \cite{deng2009imagenet}.
+To compare to prior work that doesn't support partial zipping, we initialize the models with capacity for all 1k classes, but only train each on their subset.
+
+In Tab.~\ref{tab:imagenet200x5} we show results on exhaustively merging pairs from the 5 models. To compute joint (i.e., 400-way) accuracy, we softmax over each task's classes individually (like in \citet{ahn2021ss}), and take the argmax over the combined 400 class vector. On this extremely difficult task, Git Re-Basin only obtains 3.1\% for joint accuracy (with random accuracy being 0.25\%).
+Both the Permute baseline and \name{}\ with all layers zipped perform better, but with each at 8.6\%, are still clearly lacking.
+Note that we find the same-model merging budget $\beta$ to not matter for this set of models (see Fig.~\ref{fig:variations}), which suggests that there's not a lot of redundant information \textit{within} each model 
+% for
+in
+this setting. Thus, \name{}\ chooses to merge mostly \textit{across} models instead, performing similarly to the permute baseline. We find this same trend in CIFAR with smaller models (see Fig.~\ref{fig:variations}), 
+% so this 
+and
+may be an artifact of model capacity. 
+% To that end, 
+The story changes when we increase the capacity of the merged model by partial zipping: \name{}$_{10/50}$ 
+% is able to reach 
+reaches
+close to upper bound ensemble accuracy \textit{on this extremely difficult task}, while saving on FLOPs.
+
+\vspace{-0.5em}
+\subsection{Multi-Dataset Merging}
+We now take our model merging framework one step further by merging differently initialized models trained on \textit{completely separate datasets and tasks}. We present two settings: merging multiple classification datasets and merging semantic segmentation with image classification.
+
+% in one we merge image classification models, and in the other we merge image generation models.
+% We first present a setting where we merge models trained on different image classification datasets, and second a setting where we merge several image generation models.
+
+\input{figures/9_cross_dataset}
+
+\paragraph{Image Classification Datasets.}
+% In this experiment, we take disjoint task model merging one step further by merging ResNet-50 models with different initializations trained on \textbf{four} \textit{completely separate datasets}, each with a different set of labels
+Merging ResNet-50 models trained on: Stanford Dogs \cite{khosla2011stanforddogs}, Oxford Pets \cite{parkhi2012oxfordpets}, CUB200 \cite{welinder2010cub200}, and NABirds \cite{van2015buildingNaBird}. In Tab.~\ref{tab:cross_dataset_results},
+we show the average per task accuracy from exhaustively merging each pair and the much more difficult setting of merging all four at once.
+% we show the average per task accuracy for each dataset both if we exhaustively merge each pair and also the much more difficult setting of merging all four at once. 
+We report the accuracy of our baselines by applying them up until the last layer, but we can't compare to prior work as they don't support this setting. As in all our previous experiment we merge \textit{without retraining}.
+
+For pairs of models, \name{}\ slightly outperforms our permute baseline across all tasks and performs similarly when merging all 4 models at once.
+% And for merging all 4 models at once, we perform similarly to permuting. 
+However, if we add capacity to the merged model through partial zipping, we perform up to 33\% better on merging pairs and 50\% better on merging all four models than the permute baseline. Partial zipping is a significant factor to obtain strong performance, especially with more than 2 models.
+
+\paragraph{Multiple Output Modalities.} In Appendix~\ref{appendix:semantic_segmentation}, we combine across modalities by merging the ResNet-50 backbone of a DeeplabV3 \cite{chen2017deeplabv3} segmentation model with an ImageNet-1k classification model. The resulting combined model can perform both semantic segmentation and image classification. Even with half of layers merged, \name{}\ retains good performance on both tasks.

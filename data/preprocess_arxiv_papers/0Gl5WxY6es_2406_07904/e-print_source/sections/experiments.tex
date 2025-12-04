@@ -1,0 +1,233 @@
+\begin{figure*}[t!] 
+  \centering
+  \includegraphics[width=\textwidth]{figures/diagrams/results.pdf}
+  \caption{
+    Comparing \asas for continuous and discrete action spaces across 5 environments. For continuous actions, the \rvq tokenization performs best. For discrete actions, \semlang performs best.
+    Each bar gives the average over all tasks in the environment with the full breakdown in \Cref{sec:per-task}.
+  }
+  \label{fig:vlm-disc} 
+  \label{fig:vlm-cont} 
+\end{figure*}
+
+\section{Experiments}
+\label{sec:experiments} 
+
+\subsection{Experimental Settings}
+\label{sec:exp-settings} 
+We study adapting MLLMs for action across a variety of environments with different embodiments and action spaces. All environments provide RGB visual observations and a natural language instruction specifying the goal to achieve. 
+We provide the important environment details below and defer complete details to \Cref{sec:env-details}.
+
+\textbf{CALVIN}~\cite{mees2022calvin}: This manipulation benchmark tests the ability of a tabletop robot to interact with an object to complete a natural language instruction. 
+The continuous actions specify 6DoF end-effector control and the binary gripper state. 
+The observation is a $ 200 \times 200$ RGB image from a fixed-position camera. 
+We use the $ ABC \rightarrow D$ split of the benchmark with 34 tasks, and the agent is evaluated on unseen instruction phrasings and table background.
+
+\textbf{\metaworld}~\cite{metaworld}: We use the ML-45 version of this tabletop manipulation benchmark which has 45 tasks.
+The action space is continuous control specifying 3DoF end-effector translation and the continuous gripper state.
+The observations are $ 200 \times 200 $ RGB images from a fixed camera. 
+The agent is evaluated on unseen object and robot starting states.
+
+\textbf{Habitat Pick (HabPick)}~\cite{szot2021habitat}: A mobile manipulation robot must pick up an object specified by name from a receptacle. 
+The continuous actions specify the 7DoF relative joint positions of the arm, the 2D base velocity, and the gripper state. 
+The observations are $ 336 \times 336$ RGB images from the robot's egocentric head camera.
+The instruction specifies the name of the object type to pick up.
+The evaluation distribution is on unseen houses and new arrangements of objects.
+
+\textbf{BabyAI} \cite{babyai_iclr19}: BabyAI is a grid world task where an agent navigates and interacts with objects to complete an instruction.
+The discrete action space consists of navigation and interaction actions. 
+The observation is a $ 200 \times 200$ RGB top-down view.
+We use the five tasks from \cite{carta2023grounding}, and we report generalization to instructions rephrased with synonyms. 
+
+\textbf{Language Rearrangement (LangR)}~\cite{szot2023large}: A mobile manipulation robot must rearrange objects to complete instructions like “store all the fruit in the fridge”. The discrete actions are 70 high-level skills to interact with objects and navigate.
+The observation is a $ 336 \times 336$ RGB head camera.
+Evaluation instructions test generalization to unseen houses and 10 unseen instruction datasets measuring paraphrastic robustness and behavior generalization.
+
+In all environments, we report the success rate as the fraction of episodes in which the agent completed the language instruction. 
+We use the success criteria provided by each environment. 
+We train a policy per action adapter for each environment and report the generalization performance in the main text. 
+When reporting a single success rate per environment, it is the success averaged between all evaluation episodes containing all tasks.
+We give the full per-task breakdown for results in \cref{sec:per-task}.
+\calvin, \metaworld, \habpick, and BabyAI provide expert demonstrations succeeding at the task. \calvin has $ 17.9k$ from humans, \metaworld $ 22.5k$ from a scripted policy,  \habpick $ 6.7k$ generated from an RL policy, and BabyAI $ 5k$ from a scripted policy. 
+Full details on the train and evaluation setups per environment are in \Cref{sec:env-details}.
+
+We train with supervised finetuning for \calvin, \metaworld, \habpick, and BabyAI.
+We train with reinforcement learning on \langR. 
+As described in \cref{sec:training} we train $ \approx 140M$ parameters with LoRA~\cite{hu2021lora}.
+We use the AdamW optimizer~\cite{loshchilov2017decoupled} with a learning rate of $3\mathrm{e}^{-4}$, a warmup period of $ 10 \%$ of the total number of training steps, and cosine learning rate decay to $ 0$ by the end of training. 
+For RL, we use PPO~\cite{schulman2017proximal}.
+For the learned tokenization action space adapters, we, by default, use a codebook size of 512 with 512 dimensions per codebook element.
+Complete hyperparameter and policy details are in \Cref{sec:method-details}.
+
+\begin{figure*}[t]
+  \centering
+  \begin{subfigure}{0.24\textwidth}
+    \includegraphics[width=\textwidth]{figures/vq_analysis.pdf}
+    \vspace{-15pt}
+    \caption{\# Codes: Success}
+    \label{fig:vq-analysis:dim}
+  \end{subfigure}
+  \begin{subfigure}{0.24\textwidth}
+    \includegraphics[width=\textwidth]{figures/vq_analysis_recon.pdf}
+    \vspace{-15pt}
+    \caption{\# Codes: Recon.}
+    \label{fig:rec:cbd} 
+  \end{subfigure}
+  \begin{subfigure}{0.24\textwidth}
+    \includegraphics[width=\textwidth]{figures/vq_num_cb_analysis.pdf}
+    \vspace{-15pt}
+    \caption{\# Codebooks: Success}
+    \label{fig:vq-analysis:count}
+  \end{subfigure}
+  \begin{subfigure}{0.24\textwidth}
+    \includegraphics[width=\textwidth]{figures/vq_num_cb_analysis_recon.pdf}
+    \vspace{-15pt}
+    \caption{\# Codes: Recon.}
+    \label{fig:rec:ncbs} 
+  \end{subfigure}
+  \vspace{-5pt}
+  \caption{
+    (a,b) show the effect of the number of codes in the codebook for \rvq and \vq on final policy success rate (see (a)) and reconstruction on unseen action trajectories in \metaworld (see (b)).
+    (c,d) show the effect of number of codebooks on final policy success rate (see (c)) and action reconstruction (see (d)). All metrics are computed on \metaworld.
+  }
+  \label{fig:vq-analysis} 
+\vspace{-0.5cm}
+\end{figure*}
+
+\subsection{Continuous Action Space Adapter Comparison}
+\label{sec:action-adapter}
+
+We first study adapting \vlms through \unif, \mlp, \vq, and \rvq  action space adapters for the continuous action environments \calvin, \metaworld and \habpick. 
+
+\textbf{\rvq is the best performing continuous action \asa.}
+The results in \Cref{fig:vlm-cont} show that the \rvq action adapter consistently outperforms all other \asa approaches across all environments. 
+While \mlp is the second best performing method on all tasks, except on \metaworld, \rvq outperforms it by a $12\%$ average absolute difference. 
+One hypothesized reason for this is that \mlp only learns unimodal distributions of actions, which hurts performance when learning from diverse demonstrations~\cite{lee2024behavior,shafiullah2022behavior,cui2022play}. 
+Another potential reason is the tokenization from \rvq allows the \vlm to better leverage its existing knowledge, whereas the \mlp \asa requires training a new MLP network from scratch. 
+
+\unif performs poorly on the majority of the tasks, where \rvq outperforms on average by a $ 27\%$ absolute increase. 
+A reason for this is that the \unif discretization can fail to accurately represent the continuous actions. 
+The performance of \unif is also closely related to the action dimension. In \metaworld with 4 action dimensions, \unif performs well. However, \unif suffers with the 7 action dimensions in \calvin and the 10 action dimensions in \habpick. 
+
+\rvq also outperforms \vq by a $18\%$ absolute difference averaged over all environments. 
+This is due to \vq having worse action reconstructions than \rvq.
+In \metaworld, both \rvq and \vq policies reach a similar cross-entropy loss on holdout trajectories during finetuning.
+However, on this same data, \rvq has a reconstruction mean squared error (MSE) of $ 0.005$ while \vq has a 10x higher reconstruction MSE of $ 0.05$. 
+Increasing the \vq codebook size does not close this gap.
+We vary the \vq codebook size in powers of $ 2$ from $ 2^{7}$ to $ 2^{11}$. 
+\Cref{fig:rec:cbd} shows the \vq reconstruction loss decreases with larger codebooks but does not even close the gap to the $ 2^{7}$ \rvq codebook size. 
+This poor reconstruction manifests in poor downstream policy performance as demonstrated by \Cref{fig:vq-analysis:dim} where policies trained with the \vq \asa plateau in success rate at codebook size $ 2^{9} $. 
+\vq policies even decrease in performance at codebook size $ 2^{11}$, potentially due to overfitting to the large codebook.
+
+We further characterize the performance of \rvq and \vq in \Cref{fig:breakdown} by breaking down the performance per task group in \metaworld and \calvin. The task groups, which are fully listed in \Cref{sec:task-groupings}, correspond to tasks with related required behaviors. 
+Both \rvq and \vq do similarly on ``articulated" object interactions (like opening drawers or doors).
+These tasks require less precise control since many contact points on the articulated link and broad pushing or pulling behavior can achieve the desired behavior. 
+On the other hand, \rvq outperforms \vq on ``pressing"  tasks that require pushing a button. 
+These tasks require more precise control since the agent needs to push the button all the way to a desired state.
+\vq often reaches the button but fails to press it all the way. 
+The same is also true of other precise control tasks like picking, pulling, and rotating. 
+
+A potential explanation of RVQ's success can be attributed to adaptive localization of the model's errors, similar to prior work in residual reinforcement learning~\cite{johannink2019residual} and Bellman error bases~\cite{parr2008analysis}.
+
+\textbf{A sufficient codebook size and number of codebooks are necessary for \rvq.}
+In \Cref{fig:vq-analysis:dim}, we show that \rvq policy performance improves in performance with a larger codebook size in \metaworld. 
+Notably, \rvq performs poorly at $ 29\%$ success rate with codebook size $ 16$ compared to $ 84\%$ success at codebook size $ 512$. 
+These observations also align with the codebook size decreasing reconstruction error in \Cref{fig:rec:cbd}.
+In \Cref{fig:vq-analysis:count}, we compare the effect of the number of codebooks on performance. 
+As earlier discussed with the performance of \vq, one codebook results in poor action reconstruction and, thus, bad policy performance. 
+However, increasing the number of codebooks too much to 6 also hurts performance despite decreasing reconstruction loss.
+Likewise to the finding that \unif performs poorly with larger action dimension since there are more tokens per action, increasing the number of codebooks also hurts policy learning. 
+
+\textbf{\rvq tokens transfer to new tasks}. 
+We take the model trained on the 45 \metaworld tasks and finetune it on 5 unseen tasks. We collect 50 demonstrations for per task and finetune the policy on all task data. 
+We use the same \rvq \asa trained only on data from the 45 tasks. 
+\Cref{fig:mw-adapt} shows the success rate of adapting \rvq compared to an \mlp \asa. 
+\rvq outperforms \mlp across all tasks, achieving a $ 50\%$ vs. $ 20\%$ overall success rate. 
+This demonstrates the \rvq tokens are flexible enough to be applied to new tasks.
+
+\begin{figure*}[t] 
+  \centering
+    \includegraphics[width=0.8\textwidth]{figures/breakdown.pdf}
+    \caption{
+    \rvq and \vq success per-task grouping (defined in Supp.~\ref{sec:task-groupings}) on \calvin and MetaWorld.
+    }
+    \label{fig:breakdown} 
+\vspace{-10px}
+\end{figure*}
+
+\textbf{The gains from \rvq are unique to \vlms.}
+Next, we analyze the unique interaction between the \rvq tokens and the \vlm policy. 
+While we demonstrated that the \rvq \asa performs best, is this improvement due to the \vlm being able to leverage these new tokens or the added action representation ability from the separately trained \rvq decoder? 
+To test this, we compare to two policy architectures that do not use LLMs: 
+\begin{itemize}
+[itemsep=1pt,topsep=0pt,parsep=0pt,partopsep=0pt,parsep=0pt,leftmargin=*]
+  \item \textbf{\scratch}: This is the same architecture as the \vlm-based policy, but with a smaller 300M parameter non-pretrained transformer.
+
+  \item \textbf{\rt}: This method uses a ResNet visual encoder, pretrained Flan~\cite{wei2021finetuned} language embedding and decoder transformer-based policy. The entire policy is trained from scratch. This method is inspired by RT-1~\cite{brohan2022rt}, which does not have publicly released code.
+\end{itemize}
+\Cref{table:llm-cmp} compares the effect of \mlp versus \rvq \asas on \calvin,  \metaworld and \habpick for these three policy policy architectures.
+As already established for the \vlm, \rvq is consistently better than \vq.
+However, for the same policy architecture trained from scratch, \rvq can hurt the performance over \mlp. 
+In \calvin the success drops $ -7\%$ and in \metaworld the performance drops $ -15\%$.
+This highlights that \vlm can leverage its existing knowledge about sequencing language tokens to sequencing action tokens.
+However, we find that for the smaller \rt policy network, the \rvq \asa consistently helps, which we hypothesize is because the added \rvq network and separate training help compensate for the lack of policy network capacity.
+We also note that \rvq may more consistently outperform \mlp on demonstrations that explicitly contain multimodal action sequences~\cite{lee2024behavior,shafiullah2022behavior,cui2022play}.
+
+\subsection{Discrete Action Adapter Comparison}
+\label{sec:disc-asa} 
+\begin{figure*}[b]
+  \centering
+  \begin{subfigure}{0.4\textwidth}
+    \includegraphics[width=\textwidth]{figures/ml_ft.pdf}
+    \caption{Finetuning on Holdout Tasks}
+    \label{fig:mw-adapt}
+  \end{subfigure}
+  \begin{subfigure}{0.38\textwidth}
+    \includegraphics[width=\textwidth]{figures/disc_actions.pdf}
+    \caption{
+      \langR RL.
+    }
+    \label{fig:langR-rl}
+  \end{subfigure}
+  \caption{
+    (a) Adapting to 5 holdout tasks from \metaworld ML-45 with 50 demos per task using the fixed \rvq tokenization.
+    (b) RL training curves in \langR comparing the \asas and utility of the token filter. 
+    Displayed are averages over 2 seeds with the shaded area as the standard deviation between seeds.
+    \semlang learns faster than other \asas and the token filter is crucial.
+  }
+\end{figure*}
+
+\textbf{\semlang performs the best.}
+In \Cref{fig:vlm-disc}, \semlang outperforms the next best \asa (\mlp), by $ 9\%$ on \langR and $ 8\%$ on BabyAI.
+\semlang performs especially well on tasks with explicit high-level language actions in \langR (e.g., ``pick apple'') where prior work has shown text-only LLM policies achieve non-zero success~\cite{szot2023large}. 
+\semlang also does well on the BabyAI tasks with discrete low-level actions like ``move left". 
+Additionally, \lang performs the worst in both environments, achieving $ 14\%$ lower success on \langR and $ 11 \%$ lower on BabyAI than \semlang.
+We hypothesize this is because the \vlm has to repurpose its knowledge to leverage these newly assigned action tokens, whereas a newly initialized \mlp allows extracting this knowledge from the \vlm hidden state.
+
+\textbf{\semlang enables sample efficient RL.} 
+In \Cref{fig:langR-rl}, we compare the RL training curves for the \asas in \langR.
+In addition to helping with better generalization, \semlang also enables sample efficient RL training.
+\semlang converges in training performance after just $ 20M$ training samples, whereas  \mlp requires up to $ 70M$ steps to fully converge. 
+
+\textbf{Token filter is crucial for language-based action spaces.} 
+In \Cref{fig:langR-rl}, we show the training of \semlang without the token filter, which restricts policy outputs to only valid action token sequences. 
+Without the token filter, \semlang is unable to learn in the large text action space.
+
+\begin{table*}[t!] 
+  \centering
+  \input{tables/llm_cmp.tex}
+  \caption{
+    Comparing the effect of the \rvq action space adapter on the success rate of non-LLM based policies. Red indicates \textcolor{lightred}{\rvq hurts over \mlp} and green indicates \textcolor{lightgreen}{\rvq helps over \mlp}. \rvq typically has a negative impact on the \scratch policy, and helps the smaller \rt policy.
+  }
+  \label{table:llm-cmp}
+\vspace{-0.2cm}
+\end{table*}
+\subsection{Empirical Comparison to Prior Work}
+The contributions of this work are an empirical analysis of \asas under controlled settings on various embodied environments.
+Direct comparisons to prior work are challenging due to different training algorithms, policy architectures, or assumptions about input modalities.
+Regardless, in this section, we seek to contextualize our \rvq and \semlang \vlm results against prior work.
+In \metaworld, to the best of our knowledge, \rvq at $ 84\%$ success on ML-45 sets a new state-of-the-art result, compared to $ 79\%$ from DualMind~\cite{wei2023imitation}. 
+In \calvin, \rvq at $ 72\%$ success underperforms a similar work RoboFlamingo which achieves $ 82\%$ success on the $ ABC \rightarrow D$ split. 
+However, RoboFlamingo uses a different \vlm and uses an additional gripper camera input.
+In \langR, \semlang sets a state-of-the-art result with $ 51\%$ success compared to $ 42 \%$ from LLaRP~\cite{szot2023large}.
+In BabyAI, \semlang at $ 40\%$ success rate underperforms GFlan~\cite{carta2023grounding}, which achieves $ 55\%$ success. However, we use RGB visual observations, while GFlan operates from a compact, ground truth language state description.
+In \Cref{sec:prior-work-exp}, we compare these differences in more detail.

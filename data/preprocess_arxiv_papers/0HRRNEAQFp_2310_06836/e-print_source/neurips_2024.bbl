@@ -1,0 +1,272 @@
+\begin{thebibliography}{10}
+
+\bibitem{banani2024probing}
+Mohamed~El Banani, Amit Raj, Kevis-Kokitsi Maninis, Abhishek Kar, Yuanzhen Li, Michael Rubinstein, Deqing Sun, Leonidas Guibas, Justin Johnson, and Varun Jampani.
+\newblock Probing the 3d awareness of visual foundation models.
+\newblock {\em arXiv preprint arXiv:2404.08636}, 2024.
+
+\bibitem{baranchuk2021label}
+Dmitry Baranchuk, Andrey Voynov, Ivan Rubachev, Valentin Khrulkov, and Artem Babenko.
+\newblock Label-efficient semantic segmentation with diffusion models.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2022.
+
+\bibitem{bau2019gandissect}
+David Bau, Jun-Yan Zhu, Hendrik Strobelt, Bolei Zhou, Joshua~B. Tenenbaum, William~T. Freeman, and Antonio Torralba.
+\newblock Gan dissection: Visualizing and understanding generative adversarial networks.
+\newblock In {\em Proceedings of the International Conference on Learning Representations (ICLR)}, 2019.
+
+\bibitem{bhattad2023stylegan}
+Anand Bhattad, Daniel McKee, Derek Hoiem, and DA~Forsyth.
+\newblock Stylegan knows normal, depth, albedo, and more.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{caron2021dino}
+Mathilde Caron, Hugo Touvron, Ishan Misra, Herv\'e J\'egou, Julien Mairal, Piotr Bojanowski, and Armand Joulin.
+\newblock Emerging properties in self-supervised vision transformers.
+\newblock In {\em Proceedings of the International Conference on Computer Vision (ICCV)}, 2021.
+
+\bibitem{chang2011libsvm}
+Chih-Chung Chang and Chih-Jen Lin.
+\newblock Libsvm: a library for support vector machines.
+\newblock {\em ACM Transactions on Intelligent Systems and Technology (TIST)}, 2(3):1--27, 2011.
+
+\bibitem{chefer2021transformer}
+Hila Chefer, Shir Gur, and Lior Wolf.
+\newblock Transformer interpretability beyond attention visualization.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 782--791, 2021.
+
+\bibitem{dai2017scannet}
+Angela Dai, Angel~X Chang, Manolis Savva, Maciej Halber, Thomas Funkhouser, and Matthias Nie{\ss}ner.
+\newblock Scannet: Richly-annotated 3d reconstructions of indoor scenes.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 5828--5839, 2017.
+
+\bibitem{deng2009imagenet}
+Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li~Fei-Fei.
+\newblock Imagenet: A large-scale hierarchical image database.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 248--255. Ieee, 2009.
+
+\bibitem{erhan2009visualizing}
+Dumitru Erhan, Yoshua Bengio, Aaron Courville, and Pascal Vincent.
+\newblock Visualizing higher-layer features of a deep network.
+\newblock {\em University of Montreal}, 1341(3):1, 2009.
+
+\bibitem{esser2021taming}
+Patrick Esser, Robin Rombach, and Bjorn Ommer.
+\newblock Taming transformers for high-resolution image synthesis.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 12873--12883, 2021.
+
+\bibitem{fong2019understanding}
+Ruth Fong, Mandela Patrick, and Andrea Vedaldi.
+\newblock Understanding deep networks via extremal perturbations and smooth masks.
+\newblock In {\em Proceedings of the International Conference on Computer Vision (ICCV)}, pages 2950--2958, 2019.
+
+\bibitem{fong2017interpretable}
+Ruth Fong and Andrea Vedaldi.
+\newblock Interpretable explanations of black boxes by meaningful perturbation.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 3429--3437, 2017.
+
+\bibitem{fouhey20163d}
+David~F Fouhey, Abhinav Gupta, and Andrew Zisserman.
+\newblock 3d shape attributes.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 1516--1524, 2016.
+
+\bibitem{goodwin2022zero}
+Walter Goodwin, Sagar Vaze, Ioannis Havoutis, and Ingmar Posner.
+\newblock Zero-shot category-level object pose estimation.
+\newblock In {\em European Conference on Computer Vision (ECCV)}, pages 516--532. Springer, 2022.
+
+\bibitem{he2022synthetic}
+Ruifei He, Shuyang Sun, Xin Yu, Chuhui Xue, Wenqing Zhang, Philip Torr, Song Bai, and Xiaojuan Qi.
+\newblock Is synthetic data from generative models ready for image recognition?
+\newblock In {\em The Eleventh International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{hedlin2024unsupervised}
+Eric Hedlin, Gopal Sharma, Shweta Mahajan, Hossam Isack, Abhishek Kar, Andrea Tagliasacchi, and Kwang~Moo Yi.
+\newblock Unsupervised semantic correspondence using stable diffusion.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 36, 2023.
+
+\bibitem{software_openclip}
+Gabriel Ilharco, Mitchell Wortsman, Ross Wightman, Cade Gordon, Nicholas Carlini, Rohan Taori, Achal Dave, Vaishaal Shankar, Hongseok Namkoong, John Miller, Hannaneh Hajishirzi, Ali Farhadi, and Ludwig Schmidt.
+\newblock Openclip, July 2021.
+
+\bibitem{jahanian2021generative}
+Ali Jahanian, Xavier Puig, Yonglong Tian, and Phillip Isola.
+\newblock Generative models as a data source for multiview representation learning.
+\newblock In {\em International Conference on Learning Representations (ICLR)}, 2022.
+
+\bibitem{karras2019style}
+Tero Karras, Samuli Laine, and Timo Aila.
+\newblock A style-based generator architecture for generative adversarial networks.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 4401--4410, 2019.
+
+\bibitem{ke2023repurposing}
+Bingxin Ke, Anton Obukhov, Shengyu Huang, Nando Metzger, Rodrigo~Caye Daudt, and Konrad Schindler.
+\newblock Repurposing diffusion-based image generators for monocular depth estimation.
+\newblock {\em arXiv preprint arXiv:2312.02145}, 2023.
+
+\bibitem{kirillov2023sam}
+Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander~C Berg, Wan-Yen Lo, et~al.
+\newblock Segment anything.
+\newblock {\em Proceedings of the International Conference on Computer Vision (ICCV)}, 2023.
+
+\bibitem{li2023openvocabulary}
+Ziyi Li, Qinye Zhou, Xiaoyun Zhang, Ya~Zhang, Yanfeng Wang, and Weidi Xie.
+\newblock Open-vocabulary object segmentation with diffusion models.
+\newblock In {\em Proceedings of the International Conference on Computer Vision (ICCV)}, 2023.
+
+\bibitem{liu2019planercnn}
+Chen Liu, Kihwan Kim, Jinwei Gu, Yasutaka Furukawa, and Jan Kautz.
+\newblock Planercnn: 3d plane detection and reconstruction from a single image.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 4450--4459, 2019.
+
+\bibitem{luo2023diffusion}
+Grace Luo, Lisa Dunlap, Dong~Huk Park, Aleksander Holynski, and Trevor Darrell.
+\newblock Diffusion hyperfeatures: Searching through time and space for semantic correspondence.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{mahendran2015understanding}
+Aravindh Mahendran and Andrea Vedaldi.
+\newblock Understanding deep image representations by inverting them.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 5188--5196, 2015.
+
+\bibitem{oquab2023dinov2}
+Maxime Oquab, Timoth{\'e}e Darcet, Th{\'e}o Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby, et~al.
+\newblock Dinov2: Learning robust visual features without supervision.
+\newblock {\em arXiv preprint arXiv:2304.07193}, 2023.
+
+\bibitem{patni2024ecodepth}
+Suraj Patni, Aradhye Agarwal, and Chetan Arora.
+\newblock Ecodepth: Effective conditioning of diffusion models for monocular depth estimation.
+\newblock {\em arXiv preprint arXiv:2403.18807}, 2024.
+
+\bibitem{piccinelli2023idisc}
+Luigi Piccinelli, Christos Sakaridis, and Fisher Yu.
+\newblock idisc: Internal discretization for monocular depth estimation.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 21477--21487, 2023.
+
+\bibitem{Radford2021clip}
+Alec Radford, Jong~Wook Kim, Chris Hallacy, A.~Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, Gretchen Krueger, and Ilya Sutskever.
+\newblock Learning transferable visual models from natural language supervision.
+\newblock In {\em Proceedings of the International Conference on Machine Learning (ICML)}, 2021.
+
+\bibitem{rombach2022high}
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj{\"o}rn Ommer.
+\newblock High-resolution image synthesis with latent diffusion models.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 10684--10695, 2022.
+
+\bibitem{sarkar2023shadows}
+Ayush Sarkar, Hanlin Mai, Amitabh Mahapatra, Svetlana Lazebnik, David~A Forsyth, and Anand Bhattad.
+\newblock Shadows don't lie and lines can't bend! generative models don't know projective geometry... for now.
+\newblock {\em arXiv preprint arXiv:2311.17138}, 2023.
+
+\bibitem{schuhmann2022laionb}
+Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade~W Gordon, Ross Wightman, Mehdi Cherti, Theo Coombes, Aarush Katta, Clayton Mullis, Mitchell Wortsman, Patrick Schramowski, Srivatsa~R Kundurthy, Katherine Crowson, Ludwig Schmidt, Robert Kaczmarczyk, and Jenia Jitsev.
+\newblock {LAION}-5b: An open large-scale dataset for training next generation image-text models.
+\newblock In {\em Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (NeurIPS)}, 2022.
+
+\bibitem{selvaraju2017grad}
+Ramprasaath~R Selvaraju, Michael Cogswell, Abhishek Das, Ramakrishna Vedantam, Devi Parikh, and Dhruv Batra.
+\newblock Grad-cam: Visual explanations from deep networks via gradient-based localization.
+\newblock In {\em Proceedings of the International Conference on Computer Vision (ICCV)}, pages 618--626, 2017.
+
+\bibitem{shi20223d}
+Zifan Shi, Yujun Shen, Jiapeng Zhu, Dit-Yan Yeung, and Qifeng Chen.
+\newblock 3d-aware indoor scene synthesis with depth priors.
+\newblock In {\em European Conference on Computer Vision (ECCV)}, pages 406--422. Springer, 2022.
+
+\bibitem{silberman2012indoor}
+Nathan Silberman, Derek Hoiem, Pushmeet Kohli, and Rob Fergus.
+\newblock Indoor segmentation and support inference from rgbd images.
+\newblock In {\em Computer Vision--ECCV 2012: 12th European Conference on Computer Vision (ECCV)}, pages 746--760. Springer, 2012.
+
+\bibitem{simonyan14deep}
+Karen Simonyan, Andrea Vedaldi, and Andrew Zisserman.
+\newblock Deep inside convolutional networks: Visualising image classification models and saliency maps.
+\newblock In {\em Proceedings of the International Conference on Learning Representations ({ICLR})}, 2014.
+
+\bibitem{tang2023emergent}
+Luming Tang, Menglin Jia, Qianqian Wang, Cheng~Perng Phoo, and Bharath Hariharan.
+\newblock Emergent correspondence from image diffusion.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{dmsdataset}
+Paul Upchurch and Ransen Niu.
+\newblock A dense material segmentation dataset for indoor and outdoor scene parsing.
+\newblock In {\em European Conference on Computer Vision (ECCV)}, 2022.
+
+\bibitem{Wang_2021_soba}
+Tianyu Wang, Xiaowei Hu, Chi-Wing Fu, and Pheng-Ann Heng.
+\newblock Single-stage instance shadow detection with bidirectional relation learning.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 1--11, June 2021.
+
+\bibitem{Wang_2020_soba}
+Tianyu Wang, Xiaowei Hu, Qiong Wang, Pheng-Ann Heng, and Chi-Wing Fu.
+\newblock Instance shadow detection.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, June 2020.
+
+\bibitem{wu2023datasetdm}
+Weijia Wu, Yuzhong Zhao, Hao Chen, Yuchao Gu, Rui Zhao, Yefei He, Hong Zhou, Mike~Zheng Shou, and Chunhua Shen.
+\newblock Datasetdm: Synthesizing data with perception annotations using diffusion models.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{wu2023diffumask}
+Weijia Wu, Yuzhong Zhao, Mike~Zheng Shou, Hong Zhou, and Chunhua Shen.
+\newblock Diffumask: Synthesizing images with pixel-level annotations for semantic segmentation using diffusion models.
+\newblock {\em Proceedings of the International Conference on Computer Vision (ICCV)}, 2023.
+
+\bibitem{wu2021stylespace}
+Zongze Wu, Dani Lischinski, and Eli Shechtman.
+\newblock Stylespace analysis: Disentangled controls for stylegan image generation.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 12863--12872, 2021.
+
+\bibitem{xiang2018posecnn}
+Yu~Xiang, Tanner Schmidt, Venkatraman Narayanan, and Dieter Fox.
+\newblock Posecnn: A convolutional neural network for 6d object pose estimation in cluttered scenes.
+\newblock In {\em Robotics: Science and Systems (RSS)}, 2018.
+
+\bibitem{xu2023open}
+Jiarui Xu, Sifei Liu, Arash Vahdat, Wonmin Byeon, Xiaolong Wang, and Shalini De~Mello.
+\newblock Open-vocabulary panoptic segmentation with text-to-image diffusion models.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 2955--2966, 2023.
+
+\bibitem{zeiler2014visualizing}
+Matthew~D Zeiler and Rob Fergus.
+\newblock Visualizing and understanding convolutional networks.
+\newblock In {\em 13th European Conference on Computer Vision (ECCV)}, pages 818--833. Springer, 2014.
+
+\bibitem{zhan2022triocc}
+Guanqi Zhan, Weidi Xie, and Andrew Zisserman.
+\newblock A tri-layer plugin to improve occluded detection.
+\newblock {\em British Machine Vision Conference (BMVC)}, 2022.
+
+\bibitem{zhan2023amodal}
+Guanqi Zhan, Chuanxia Zheng, Weidi Xie, and Andrew Zisserman.
+\newblock Amodal ground truth and completion in the wild.
+\newblock {\em arXiv preprint arXiv:2312.17247}, 2023.
+
+\bibitem{zhang2023atlantis}
+Fan Zhang, Shaodi You, Yu~Li, and Ying Fu.
+\newblock Atlantis: Enabling underwater depth estimation with stable diffusion.
+\newblock {\em arXiv preprint arXiv:2312.12471}, 2023.
+
+\bibitem{zhang2023tale}
+Junyi Zhang, Charles Herrmann, Junhwa Hur, Luisa~Polania Cabrera, Varun Jampani, Deqing Sun, and Ming-Hsuan Yang.
+\newblock A tale of two features: Stable diffusion complements dino for zero-shot semantic correspondence.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{zhang2022self}
+Kaifeng Zhang, Yang Fu, Shubhankar Borse, Hong Cai, Fatih Porikli, and Xiaolong Wang.
+\newblock Self-supervised geometric correspondence for category-level 6d object pose estimation in the wild.
+\newblock {\em Proceedings of the International Conference on Learning Representations (ICLR)}, 2023.
+
+\bibitem{zhao2023unleashing}
+Wenliang Zhao, Yongming Rao, Zuyan Liu, Benlin Liu, Jie Zhou, and Jiwen Lu.
+\newblock Unleashing text-to-image diffusion models for visual perception.
+\newblock In {\em Proceedings of the International Conference on Computer Vision (ICCV)}, pages 5729--5739, 2023.
+
+\bibitem{zhou2016learning}
+Bolei Zhou, Aditya Khosla, Agata Lapedriza, Aude Oliva, and Antonio Torralba.
+\newblock Learning deep features for discriminative localization.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 2921--2929, 2016.
+
+\end{thebibliography}

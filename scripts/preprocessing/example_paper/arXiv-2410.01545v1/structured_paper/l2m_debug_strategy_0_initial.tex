@@ -1,0 +1,1603 @@
+
+
+\documentclass{article} % For LaTeX2e
+%\usepackage{iclr2025_conference,times}
+\usepackage{arxiv,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+
+% --- Start content from math_commands.tex ---
+%%%%% NEW MATH DEFINITIONS %%%%%
+
+\usepackage{amsmath,amsfonts,bm}
+
+% Mark sections of captions for referring to divisions of figures
+\newcommand{\figleft}{{\em (Left)}}
+\newcommand{\figcenter}{{\em (Center)}}
+\newcommand{\figright}{{\em (Right)}}
+\newcommand{\figtop}{{\em (Top)}}
+\newcommand{\figbottom}{{\em (Bottom)}}
+\newcommand{\captiona}{{\em (a)}}
+\newcommand{\captionb}{{\em (b)}}
+\newcommand{\captionc}{{\em (c)}}
+\newcommand{\captiond}{{\em (d)}}
+
+% Highlight a newly defined term
+\newcommand{\newterm}[1]{{\bf #1}}
+
+
+% Figure reference, lower-case.
+\def\figref#1{figure~\ref{#1}}
+% Figure reference, capital. For start of sentence
+\def\Figref#1{Figure~\ref{#1}}
+\def\twofigref#1#2{figures \ref{#1} and \ref{#2}}
+\def\quadfigref#1#2#3#4{figures \ref{#1}, \ref{#2}, \ref{#3} and \ref{#4}}
+% Section reference, lower-case.
+\def\secref#1{section~\ref{#1}}
+% Section reference, capital.
+\def\Secref#1{Section~\ref{#1}}
+% Reference to two sections.
+\def\twosecrefs#1#2{sections \ref{#1} and \ref{#2}}
+% Reference to three sections.
+\def\secrefs#1#2#3{sections \ref{#1}, \ref{#2} and \ref{#3}}
+% Reference to an equation, lower-case.
+\def\eqref#1{equation~\ref{#1}}
+% Reference to an equation, upper case
+\def\Eqref#1{Equation~\ref{#1}}
+% A raw reference to an equation---avoid using if possible
+\def\plaineqref#1{\ref{#1}}
+% Reference to a chapter, lower-case.
+\def\chapref#1{chapter~\ref{#1}}
+% Reference to an equation, upper case.
+\def\Chapref#1{Chapter~\ref{#1}}
+% Reference to a range of chapters
+\def\rangechapref#1#2{chapters\ref{#1}--\ref{#2}}
+% Reference to an algorithm, lower-case.
+\def\algref#1{algorithm~\ref{#1}}
+% Reference to an algorithm, upper case.
+\def\Algref#1{Algorithm~\ref{#1}}
+\def\twoalgref#1#2{algorithms \ref{#1} and \ref{#2}}
+\def\Twoalgref#1#2{Algorithms \ref{#1} and \ref{#2}}
+% Reference to a part, lower case
+\def\partref#1{part~\ref{#1}}
+% Reference to a part, upper case
+\def\Partref#1{Part~\ref{#1}}
+\def\twopartref#1#2{parts \ref{#1} and \ref{#2}}
+
+\def\ceil#1{\lceil #1 \rceil}
+\def\floor#1{\lfloor #1 \rfloor}
+\def\1{\bm{1}}
+\newcommand{\train}{\mathcal{D}}
+\newcommand{\valid}{\mathcal{D_{\mathrm{valid}}}}
+\newcommand{\test}{\mathcal{D_{\mathrm{test}}}}
+
+\def\eps{{\epsilon}}
+
+
+% Random variables
+\def\reta{{\textnormal{$\eta$}}}
+\def\ra{{\textnormal{a}}}
+\def\rb{{\textnormal{b}}}
+\def\rc{{\textnormal{c}}}
+\def\rd{{\textnormal{d}}}
+\def\re{{\textnormal{e}}}
+\def\rf{{\textnormal{f}}}
+\def\rg{{\textnormal{g}}}
+\def\rh{{\textnormal{h}}}
+\def\ri{{\textnormal{i}}}
+\def\rj{{\textnormal{j}}}
+\def\rk{{\textnormal{k}}}
+\def\rl{{\textnormal{l}}}
+% rm is already a command, just don't name any random variables m
+\def\rn{{\textnormal{n}}}
+\def\ro{{\textnormal{o}}}
+\def\rp{{\textnormal{p}}}
+\def\rq{{\textnormal{q}}}
+\def\rr{{\textnormal{r}}}
+\def\rs{{\textnormal{s}}}
+\def\rt{{\textnormal{t}}}
+\def\ru{{\textnormal{u}}}
+\def\rv{{\textnormal{v}}}
+\def\rw{{\textnormal{w}}}
+\def\rx{{\textnormal{x}}}
+\def\ry{{\textnormal{y}}}
+\def\rz{{\textnormal{z}}}
+
+% Random vectors
+\def\rvepsilon{{\mathbf{\epsilon}}}
+\def\rvtheta{{\mathbf{\theta}}}
+\def\rva{{\mathbf{a}}}
+\def\rvb{{\mathbf{b}}}
+\def\rvc{{\mathbf{c}}}
+\def\rvd{{\mathbf{d}}}
+\def\rve{{\mathbf{e}}}
+\def\rvf{{\mathbf{f}}}
+\def\rvg{{\mathbf{g}}}
+\def\rvh{{\mathbf{h}}}
+\def\rvu{{\mathbf{i}}}
+\def\rvj{{\mathbf{j}}}
+\def\rvk{{\mathbf{k}}}
+\def\rvl{{\mathbf{l}}}
+\def\rvm{{\mathbf{m}}}
+\def\rvn{{\mathbf{n}}}
+\def\rvo{{\mathbf{o}}}
+\def\rvp{{\mathbf{p}}}
+\def\rvq{{\mathbf{q}}}
+\def\rvr{{\mathbf{r}}}
+\def\rvs{{\mathbf{s}}}
+\def\rvt{{\mathbf{t}}}
+\def\rvu{{\mathbf{u}}}
+\def\rvv{{\mathbf{v}}}
+\def\rvw{{\mathbf{w}}}
+\def\rvx{{\mathbf{x}}}
+\def\rvy{{\mathbf{y}}}
+\def\rvz{{\mathbf{z}}}
+
+% Elements of random vectors
+\def\erva{{\textnormal{a}}}
+\def\ervb{{\textnormal{b}}}
+\def\ervc{{\textnormal{c}}}
+\def\ervd{{\textnormal{d}}}
+\def\erve{{\textnormal{e}}}
+\def\ervf{{\textnormal{f}}}
+\def\ervg{{\textnormal{g}}}
+\def\ervh{{\textnormal{h}}}
+\def\ervi{{\textnormal{i}}}
+\def\ervj{{\textnormal{j}}}
+\def\ervk{{\textnormal{k}}}
+\def\ervl{{\textnormal{l}}}
+\def\ervm{{\textnormal{m}}}
+\def\ervn{{\textnormal{n}}}
+\def\ervo{{\textnormal{o}}}
+\def\ervp{{\textnormal{p}}}
+\def\ervq{{\textnormal{q}}}
+\def\ervr{{\textnormal{r}}}
+\def\ervs{{\textnormal{s}}}
+\def\ervt{{\textnormal{t}}}
+\def\ervu{{\textnormal{u}}}
+\def\ervv{{\textnormal{v}}}
+\def\ervw{{\textnormal{w}}}
+\def\ervx{{\textnormal{x}}}
+\def\ervy{{\textnormal{y}}}
+\def\ervz{{\textnormal{z}}}
+
+% Random matrices
+\def\rmA{{\mathbf{A}}}
+\def\rmB{{\mathbf{B}}}
+\def\rmC{{\mathbf{C}}}
+\def\rmD{{\mathbf{D}}}
+\def\rmE{{\mathbf{E}}}
+\def\rmF{{\mathbf{F}}}
+\def\rmG{{\mathbf{G}}}
+\def\rmH{{\mathbf{H}}}
+\def\rmI{{\mathbf{I}}}
+\def\rmJ{{\mathbf{J}}}
+\def\rmK{{\mathbf{K}}}
+\def\rmL{{\mathbf{L}}}
+\def\rmM{{\mathbf{M}}}
+\def\rmN{{\mathbf{N}}}
+\def\rmO{{\mathbf{O}}}
+\def\rmP{{\mathbf{P}}}
+\def\rmQ{{\mathbf{Q}}}
+\def\rmR{{\mathbf{R}}}
+\def\rmS{{\mathbf{S}}}
+\def\rmT{{\mathbf{T}}}
+\def\rmU{{\mathbf{U}}}
+\def\rmV{{\mathbf{V}}}
+\def\rmW{{\mathbf{W}}}
+\def\rmX{{\mathbf{X}}}
+\def\rmY{{\mathbf{Y}}}
+\def\rmZ{{\mathbf{Z}}}
+
+% Elements of random matrices
+\def\ermA{{\textnormal{A}}}
+\def\ermB{{\textnormal{B}}}
+\def\ermC{{\textnormal{C}}}
+\def\ermD{{\textnormal{D}}}
+\def\ermE{{\textnormal{E}}}
+\def\ermF{{\textnormal{F}}}
+\def\ermG{{\textnormal{G}}}
+\def\ermH{{\textnormal{H}}}
+\def\ermI{{\textnormal{I}}}
+\def\ermJ{{\textnormal{J}}}
+\def\ermK{{\textnormal{K}}}
+\def\ermL{{\textnormal{L}}}
+\def\ermM{{\textnormal{M}}}
+\def\ermN{{\textnormal{N}}}
+\def\ermO{{\textnormal{O}}}
+\def\ermP{{\textnormal{P}}}
+\def\ermQ{{\textnormal{Q}}}
+\def\ermR{{\textnormal{R}}}
+\def\ermS{{\textnormal{S}}}
+\def\ermT{{\textnormal{T}}}
+\def\ermU{{\textnormal{U}}}
+\def\ermV{{\textnormal{V}}}
+\def\ermW{{\textnormal{W}}}
+\def\ermX{{\textnormal{X}}}
+\def\ermY{{\textnormal{Y}}}
+\def\ermZ{{\textnormal{Z}}}
+
+% Vectors
+\def\vzero{{\bm{0}}}
+\def\vone{{\bm{1}}}
+\def\vmu{{\bm{\mu}}}
+\def\vtheta{{\bm{\theta}}}
+\def\va{{\bm{a}}}
+\def\vb{{\bm{b}}}
+\def\vc{{\bm{c}}}
+\def\vd{{\bm{d}}}
+\def\ve{{\bm{e}}}
+\def\vf{{\bm{f}}}
+\def\vg{{\bm{g}}}
+\def\vh{{\bm{h}}}
+\def\vi{{\bm{i}}}
+\def\vj{{\bm{j}}}
+\def\vk{{\bm{k}}}
+\def\vl{{\bm{l}}}
+\def\vm{{\bm{m}}}
+\def\vn{{\bm{n}}}
+\def\vo{{\bm{o}}}
+\def\vp{{\bm{p}}}
+\def\vq{{\bm{q}}}
+\def\vr{{\bm{r}}}
+\def\vs{{\bm{s}}}
+\def\vt{{\bm{t}}}
+\def\vu{{\bm{u}}}
+\def\vv{{\bm{v}}}
+\def\vw{{\bm{w}}}
+\def\vx{{\bm{x}}}
+\def\vy{{\bm{y}}}
+\def\vz{{\bm{z}}}
+
+% Elements of vectors
+\def\evalpha{{\alpha}}
+\def\evbeta{{\beta}}
+\def\evepsilon{{\epsilon}}
+\def\evlambda{{\lambda}}
+\def\evomega{{\omega}}
+\def\evmu{{\mu}}
+\def\evpsi{{\psi}}
+\def\evsigma{{\sigma}}
+\def\evtheta{{\theta}}
+\def\eva{{a}}
+\def\evb{{b}}
+\def\evc{{c}}
+\def\evd{{d}}
+\def\eve{{e}}
+\def\evf{{f}}
+\def\evg{{g}}
+\def\evh{{h}}
+\def\evi{{i}}
+\def\evj{{j}}
+\def\evk{{k}}
+\def\evl{{l}}
+\def\evm{{m}}
+\def\evn{{n}}
+\def\evo{{o}}
+\def\evp{{p}}
+\def\evq{{q}}
+\def\evr{{r}}
+\def\evs{{s}}
+\def\evt{{t}}
+\def\evu{{u}}
+\def\evv{{v}}
+\def\evw{{w}}
+\def\evx{{x}}
+\def\evy{{y}}
+\def\evz{{z}}
+
+% Matrix
+\def\mA{{\bm{A}}}
+\def\mB{{\bm{B}}}
+\def\mC{{\bm{C}}}
+\def\mD{{\bm{D}}}
+\def\mE{{\bm{E}}}
+\def\mF{{\bm{F}}}
+\def\mG{{\bm{G}}}
+\def\mH{{\bm{H}}}
+\def\mI{{\bm{I}}}
+\def\mJ{{\bm{J}}}
+\def\mK{{\bm{K}}}
+\def\mL{{\bm{L}}}
+\def\mM{{\bm{M}}}
+\def\mN{{\bm{N}}}
+\def\mO{{\bm{O}}}
+\def\mP{{\bm{P}}}
+\def\mQ{{\bm{Q}}}
+\def\mR{{\bm{R}}}
+\def\mS{{\bm{S}}}
+\def\mT{{\bm{T}}}
+\def\mU{{\bm{U}}}
+\def\mV{{\bm{V}}}
+\def\mW{{\bm{W}}}
+\def\mX{{\bm{X}}}
+\def\mY{{\bm{Y}}}
+\def\mZ{{\bm{Z}}}
+\def\mBeta{{\bm{\beta}}}
+\def\mPhi{{\bm{\Phi}}}
+\def\mLambda{{\bm{\Lambda}}}
+\def\mSigma{{\bm{\Sigma}}}
+
+% Tensor
+\DeclareMathAlphabet{\mathsfit}{\encodingdefault}{\sfdefault}{m}{sl}
+\SetMathAlphabet{\mathsfit}{bold}{\encodingdefault}{\sfdefault}{bx}{n}
+\newcommand{\tens}[1]{\bm{\mathsfit{#1}}}
+\def\tA{{\tens{A}}}
+\def\tB{{\tens{B}}}
+\def\tC{{\tens{C}}}
+\def\tD{{\tens{D}}}
+\def\tE{{\tens{E}}}
+\def\tF{{\tens{F}}}
+\def\tG{{\tens{G}}}
+\def\tH{{\tens{H}}}
+\def\tI{{\tens{I}}}
+\def\tJ{{\tens{J}}}
+\def\tK{{\tens{K}}}
+\def\tL{{\tens{L}}}
+\def\tM{{\tens{M}}}
+\def\tN{{\tens{N}}}
+\def\tO{{\tens{O}}}
+\def\tP{{\tens{P}}}
+\def\tQ{{\tens{Q}}}
+\def\tR{{\tens{R}}}
+\def\tS{{\tens{S}}}
+\def\tT{{\tens{T}}}
+\def\tU{{\tens{U}}}
+\def\tV{{\tens{V}}}
+\def\tW{{\tens{W}}}
+\def\tX{{\tens{X}}}
+\def\tY{{\tens{Y}}}
+\def\tZ{{\tens{Z}}}
+
+
+% Graph
+\def\gA{{\mathcal{A}}}
+\def\gB{{\mathcal{B}}}
+\def\gC{{\mathcal{C}}}
+\def\gD{{\mathcal{D}}}
+\def\gE{{\mathcal{E}}}
+\def\gF{{\mathcal{F}}}
+\def\gG{{\mathcal{G}}}
+\def\gH{{\mathcal{H}}}
+\def\gI{{\mathcal{I}}}
+\def\gJ{{\mathcal{J}}}
+\def\gK{{\mathcal{K}}}
+\def\gL{{\mathcal{L}}}
+\def\gM{{\mathcal{M}}}
+\def\gN{{\mathcal{N}}}
+\def\gO{{\mathcal{O}}}
+\def\gP{{\mathcal{P}}}
+\def\gQ{{\mathcal{Q}}}
+\def\gR{{\mathcal{R}}}
+\def\gS{{\mathcal{S}}}
+\def\gT{{\mathcal{T}}}
+\def\gU{{\mathcal{U}}}
+\def\gV{{\mathcal{V}}}
+\def\gW{{\mathcal{W}}}
+\def\gX{{\mathcal{X}}}
+\def\gY{{\mathcal{Y}}}
+\def\gZ{{\mathcal{Z}}}
+
+% Sets
+\def\sA{{\mathbb{A}}}
+\def\sB{{\mathbb{B}}}
+\def\sC{{\mathbb{C}}}
+\def\sD{{\mathbb{D}}}
+% Don't use a set called E, because this would be the same as our symbol
+% for expectation.
+\def\sF{{\mathbb{F}}}
+\def\sG{{\mathbb{G}}}
+\def\sH{{\mathbb{H}}}
+\def\sI{{\mathbb{I}}}
+\def\sJ{{\mathbb{J}}}
+\def\sK{{\mathbb{K}}}
+\def\sL{{\mathbb{L}}}
+\def\sM{{\mathbb{M}}}
+\def\sN{{\mathbb{N}}}
+\def\sO{{\mathbb{O}}}
+\def\sP{{\mathbb{P}}}
+\def\sQ{{\mathbb{Q}}}
+\def\sR{{\mathbb{R}}}
+\def\sS{{\mathbb{S}}}
+\def\sT{{\mathbb{T}}}
+\def\sU{{\mathbb{U}}}
+\def\sV{{\mathbb{V}}}
+\def\sW{{\mathbb{W}}}
+\def\sX{{\mathbb{X}}}
+\def\sY{{\mathbb{Y}}}
+\def\sZ{{\mathbb{Z}}}
+
+% Entries of a matrix
+\def\emLambda{{\Lambda}}
+\def\emA{{A}}
+\def\emB{{B}}
+\def\emC{{C}}
+\def\emD{{D}}
+\def\emE{{E}}
+\def\emF{{F}}
+\def\emG{{G}}
+\def\emH{{H}}
+\def\emI{{I}}
+\def\emJ{{J}}
+\def\emK{{K}}
+\def\emL{{L}}
+\def\emM{{M}}
+\def\emN{{N}}
+\def\emO{{O}}
+\def\emP{{P}}
+\def\emQ{{Q}}
+\def\emR{{R}}
+\def\emS{{S}}
+\def\emT{{T}}
+\def\emU{{U}}
+\def\emV{{V}}
+\def\emW{{W}}
+\def\emX{{X}}
+\def\emY{{Y}}
+\def\emZ{{Z}}
+\def\emSigma{{\Sigma}}
+
+% entries of a tensor
+% Same font as tensor, without \bm wrapper
+\newcommand{\etens}[1]{\mathsfit{#1}}
+\def\etLambda{{\etens{\Lambda}}}
+\def\etA{{\etens{A}}}
+\def\etB{{\etens{B}}}
+\def\etC{{\etens{C}}}
+\def\etD{{\etens{D}}}
+\def\etE{{\etens{E}}}
+\def\etF{{\etens{F}}}
+\def\etG{{\etens{G}}}
+\def\etH{{\etens{H}}}
+\def\etI{{\etens{I}}}
+\def\etJ{{\etens{J}}}
+\def\etK{{\etens{K}}}
+\def\etL{{\etens{L}}}
+\def\etM{{\etens{M}}}
+\def\etN{{\etens{N}}}
+\def\etO{{\etens{O}}}
+\def\etP{{\etens{P}}}
+\def\etQ{{\etens{Q}}}
+\def\etR{{\etens{R}}}
+\def\etS{{\etens{S}}}
+\def\etT{{\etens{T}}}
+\def\etU{{\etens{U}}}
+\def\etV{{\etens{V}}}
+\def\etW{{\etens{W}}}
+\def\etX{{\etens{X}}}
+\def\etY{{\etens{Y}}}
+\def\etZ{{\etens{Z}}}
+
+% The true underlying data generating distribution
+\newcommand{\pdata}{p_{\rm{data}}}
+% The empirical distribution defined by the training set
+\newcommand{\ptrain}{\hat{p}_{\rm{data}}}
+\newcommand{\Ptrain}{\hat{P}_{\rm{data}}}
+% The model distribution
+\newcommand{\pmodel}{p_{\rm{model}}}
+\newcommand{\Pmodel}{P_{\rm{model}}}
+\newcommand{\ptildemodel}{\tilde{p}_{\rm{model}}}
+% Stochastic autoencoder distributions
+\newcommand{\pencode}{p_{\rm{encoder}}}
+\newcommand{\pdecode}{p_{\rm{decoder}}}
+\newcommand{\precons}{p_{\rm{reconstruct}}}
+
+\newcommand{\laplace}{\mathrm{Laplace}} % Laplace distribution
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Ls}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\emp}{\tilde{p}}
+\newcommand{\lr}{\alpha}
+\newcommand{\reg}{\lambda}
+\newcommand{\rect}{\mathrm{rectifier}}
+\newcommand{\softmax}{\mathrm{softmax}}
+\newcommand{\sigmoid}{\sigma}
+\newcommand{\softplus}{\zeta}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\standarderror}{\mathrm{SE}}
+\newcommand{\Cov}{\mathrm{Cov}}
+% Wolfram Mathworld says $L^2$ is for function spaces and $\ell^2$ is for vectors
+% But then they seem to use $L^2$ for vectors throughout the site, and so does
+% wikipedia.
+\newcommand{\normlzero}{L^0}
+\newcommand{\normlone}{L^1}
+\newcommand{\normltwo}{L^2}
+\newcommand{\normlp}{L^p}
+\newcommand{\normmax}{L^\infty}
+
+\newcommand{\parents}{Pa} % See usage in notation.tex. Chosen to match Daphne's book.
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Tr}{Tr}
+\let\ab\allowbreak
+
+% --- End content from math_commands.tex ---
+
+
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+\usepackage{overpic}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+
+\title{Lines of Thought in Large Language Models}
+
+%\nb{I would change the title to reflect the macroscopic and statistical analysis, something like ``Statistical interpretation or LLMs token prediction''}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+\author{Rapha\"el Sarfati\\
+School of Civil and Environmental Engineering\\
+Cornell University, USA\\
+\texttt{raphael.sarfati@cornell.edu}
+\And
+Toni J.B. Liu\\
+Department of Physics\\
+Cornell University, USA\\
+\texttt{toni.liu@cornell.edu}
+\And
+Nicolas Boull\'e\\
+Department of Mathematics\\
+Imperial College London, UK\\
+\texttt{n.boulle@imperial.ac.uk}
+\And
+Christopher J. Earls \\
+Center for Applied Mathematics \\
+School of Civil and Environmental Engineering\\
+Cornell University, USA\\
+\texttt{earls@cornell.edu}
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+\newcommand{\cje}[1]{{\color{red} CJE: #1}} % Chris
+\newcommand{\tl}[1]{{\color{blue} TL: #1}} % Toni
+\newcommand{\nb}[1]{{\color{teal} NB: #1}} % Nicolas
+\newcommand{\rss}[1]{{\color{orange} RS: #1}} % Nicolas
+
+
+\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Large Language Models achieve next-token prediction by transporting a vectorized piece of text (prompt) across an accompanying embedding space under the action of successive transformer layers.
+The resulting high-dimensional trajectories realize different contextualization, or `thinking', steps, and fully determine the output probability distribution. We aim to characterize the statistical properties of ensembles of these `\emph{lines of thought}.' We observe that independent trajectories cluster along a low-dimensional, non-Euclidean manifold, and that their path can be well approximated by a stochastic equation with few parameters extracted from data.
+We find it remarkable that the vast complexity of such large models can be reduced to a much simpler form, and we reflect on implications.
+\end{abstract}
+
+
+
+\section{Introduction}
+\label{sec:intro}
+
+How does a large language model (LLM) think?
+In other words, how does it abstract the prompt \textit{``Once upon a time, a facetious''} to suggest adding, e.g., ``\textit{transformer}'', and, by repeating the operation, continue on to generate a respectable fairy tale \textit{\`{a} la} Perrault?
+What we know is by design.
+A piece of text is mapped into a set of high-dimensional vectors, which are then transported across their embedding (latent) space through successive transformer layers~\citep{vaswani2023attentionneed}, each allegedly distilling different syntactic, semantic, informational, contextual aspects of the input~\citep{valeriani2023geometryhiddenrepresentationslarge,song2024uncoveringhiddengeometrytransformers}.
+The final position is then projected onto an embedded vocabulary to create a probability distribution about what the next word should be.
+Why these vectors land where they do eludes human comprehension due to the concomitant astronomical numbers of arithmetic operations which, taken individually, do nothing, but collectively confer the emergent ability of language. 
+
+Our inability to understand the inner workings of LLMs is problematic and, perhaps, worrisome.
+While LLMs are useful to write college essays or assist with filing tax returns, they are also often capricious, disobedient, and hallucinatory~\citep{sharma2023understandingsycophancylanguagemodels,zhang2023sirenssongaiocean}. 
+%\nb{Citation here, talk about RL-alignment}
+That's because, unlike traditional `if-then' algorithms, instructions have been only loosely, abstractly, encoded in the structure of the LLM through machine learning, that is, without human intervention.
+
+In return, language models, trained primarily on textual data to generate language, have demonstrated curious abilities in many other domains (in-context learning), such as extrapolating time series~\citep{gruver2024largelanguagemodelszeroshot,liu2024llmslearngoverningprinciples}, writing music~\citep{zhou2024llmsreasonmusicevaluation}, or playing chess~\citep{ruoss2024grandmasterlevelchesssearch}. 
+Such emergent, but unpredicted, capabilities lead to questions about what other abilities LLMs may possess.
+% rather say that can't use llm yet beacuse too unpredicatble?
+% don't say too much here, see conclusion
+For these reasons, current research is attempting to break down internal processes to make LLMs more \textit{interpretable}.\footnote{And, eventually, more reliable and predictable.}
+Recent studies have notably revealed some aspects of the self-attention mechanism~\citep{vig2019visualizingattentiontransformerbasedlanguage}, patterns of neuron activation~\citep{bricken2023monosemanticity,templeton2024scaling}, signatures of `world models'\footnote{
+World models refers to evidence of (abstract) internal representations which allow LLMs an apparent understanding of patterns, relationships, and other complex concepts.
+}
+\citep{gurnee2024languagemodelsrepresentspace,marks2024geometrytruthemergentlinear}, 
+%\nb{need to explained what is meant by world model}
+geometrical relationships between concepts~\citep{jiang2024originslinearrepresentationslarge}, or proposed mathematical models of transformers~\citep{geshkovski2024emergenceclustersselfattentiondynamics}. 
+
+This work introduces an alternative approach inspired by physics, treating an LLM as a complex dynamical system.
+We investigate which large-scale, ensemble properties can be inferred experimentally without concern for the `microscopic' details.\footnote{Such as: semantic or syntactic relationships, architecture specificities, etc.} Specifically, we are interested in the trajectories, or `lines of thought' (LoT), that embedded tokens realize in the latent space when passing through successive transformer layers~\citep{aubry2024transformeralignmentlargelanguage}. 
+By splitting a large input text into $N$-token sequences, we study LoT \textit{ensemble} properties to shed light on the internal, average processes that characterize transformer transport.
+% add more about aubry 2024
+%\nb{Need more details about the approach}
+
+We find that, even though transformer layers perform $10^6 - 10^9$ individual computations, the resulting trajectories can be described with far fewer parameters.
+In particular, we first identify a low-dimensional manifold that explains most of LoT transport (see \\ef{fig:lot-3D}).
+Then, we demonstrate that trajectories can be well approximated by an average linear transformation, whose parameters are extracted from ensemble properties, along with a random component with well characterized statistics.
+Eventually, this allows us to describe trajectories as a kind of diffusive process, with a linear drift and a modified stochastic component.
+
+\paragraph{Main contributions.}
+\begin{enumerate}
+    \item We provide a framework to discover low-dimensional structures in an LLM's latent space.
+    \item We find that token trajectories cluster on a non-Euclidean, low-dimensional manifold.
+    \item We introduce a stochastic model to describe trajectory ensembles with few parameters.
+\end{enumerate}
+
+%As a first approach, we collect subsequent locations after each transformer block, without considering the details of what inside within each block.
+
+%We find that, despite the computational complexity of each transformer, token trajectories can be described, in a statistical sense, using a simple Fokker-Planck equation with exponential noise.
+
+% collective behavior
+% bird of a feather flock together
+
+% low dimensionality
+% the method is versatile and applicable elsewhere // for conclusion maybe?
+
+%where we attempt to characterize some of the algebra performed by the LLM without relating it to semantic and conceptual categorization.
+
+% like the brain
+% different layers do different things, maybe (like vision NN)
+
+% % streamline
+% Fundamentally, LLMs perform a mathematical transformation from a real matrix, representing the input prompt, onto a vector, representing the model's vocabulary: $ f: \mathbb{R}^{n \times m} \to \mathbb{R}^v $.
+% More specifically, a language input prompt is split into textual tokens, then embedded into a sequence of vectors in $L$. 
+% For a model containing L layers, the initial vectors are then transported L times into new locations in S. 
+% The final location is then projected onto the embedded vocabulary (typically after layer normalization), forming the logits which are then normalized by softmax operation.
+
+% complexity not of structre, but of parameters
+% common quest is dimensionality reduction
+% say approach is like physicist, forget details and look at ensemble. cf stat mech, complex systems
+
+% try generating gpt2 language with full dec and with only 128, 256 etc. param....
+
+\begin{figure}[htbp]
+\begin{center}
+    % Use the overpic environment to overlay labels on top of the image
+    %\begin{overpic}[width=0.9\textwidth,grid,tics=10]{fig/fig01v03.png} % Enable grid and tics for alignment
+    \begin{overpic}[width=0.9\textwidth]{fig/fig01v04.png}
+        % Place the (A) label at 10% from left and 95% from bottom
+        \put(0, 45){\colorbox{white}{\textbf{(a)}}} % Add a white background to the label
+        % Place the (B) label at 60% from left and 95% from bottom
+        \put(50, 45){\colorbox{white}{\textbf{(b)}}} % Add a white background to the label
+    \end{overpic}
+\end{center}
+\caption{
+\textbf{(a)}~Lines of thought (blue to red) for an ensemble of 1000 pseudo-sentences of 50 tokens each, projected along the first 3 singular vectors after the last layer ($t=24$).
+They appear to form a tight bundle, with limited variability around a common average path.
+\textbf{(b)}~Representation of the low-dimensional, ribbon-shaped manifold in~$\mathcal{S}$ (projected along 3 Cartesian coordinates). 
+Positions are plotted for $t=12$ (green) to $t=24$ (yellow).
+}
+\label{fig:lot-3D}
+\end{figure}
+
+
+\section{Methods}
+\label{sec:methods}
+
+This section describes our algorithm for generating and analyzing an ensemble of tokens trajectories in the latent space of LLMs.
+
+\paragraph{Language models.}
+We rely primarily on the 355M-parameter (`medium') version of the GPT-2 model~\citep{radford2019language}. 
+%implemented in Matlab~\citep{matlab_gpt2_2023}.
+It presents the core architecture of ancestral (circa 2019) LLMs: transformer-based, decoder-only.\footnote{
+Compared to current state-of-the-art models, GPT-2 medium is rather unsophisticated.
+Nevertheless, it works. 
+It produces cogent text that addresses the input prompt.
+Hence, we consider the model already contains the essence of modern LLMs and leverage its agility and transparency for scientific insight.} 
+It consists of $N_L$ = 24 transformer layers\footnote{(LayerNorm +) Self-attention then (LayerNorm +) Feed-forward, with skip connections around both.} 
+operating in a latent space~$\mathcal{S}$ of dimension $D = 1024$. 
+The vocabulary $\mathcal{V}$ contains $N_\mathcal{V} = 50257$ tokens.
+A layer normalization~\citep{ba2016layernormalization} is applied to the last latent space position before projection onto~$\mathcal{V}$ to form the logits. (This final normalization is not included in our trajectories.)
+We later extend our analysis to the Llama~2~7B~\citep{touvron2023llama2openfoundation}, Mistral~7B~v0.1~\citep{jiang2023mistral7b}, and small Llama~3.2 models (1B and 3B)~\citep{meta2024llama3_2}. 
+
+
+\paragraph{Input ensembles.}
+We study statistical properties of trajectory ensembles obtained by passing a set of input prompts through GPT-2.
+We generate inputs by tokenizing~\citep{wolf2020huggingfacestransformersstateoftheartnatural} a large text and then chopping it into `pseudo-sentences', i.e., chunks of a fixed number of tokens~$N_k$ (see \\ef{alg:trajectories}). 
+Unless otherwise noted, $N_k = 50$.
+These \emph{non-overlapping} chunks are consistent in terms of token cardinality, and possess the structure of language, but have various meanings and endings (see \\ef{app:pseudosentences}).
+The main corpus in this study comes from Henry David Thoreau's \textit{Walden}, obtained from the Gutenberg Project~\citep{gutenberg_project}.\footnote{
+The idea of using a literary piece to probe statistics of language was investigated by Markov back in 1913~\citep{Markov_2006}.
+} 
+We typically use a set of $N_s \simeq 3000 \text{--} 14000$ pseudo-sentences.
+
+
+\paragraph{Trajectory collection.}
+We form trajectories by collecting the successive vector outputs, within the latent space, after each transformer layer (\verb|hidden_states|).
+For conciseness, we identify layer number with a notional `time', $t$.
+Even though all embedded tokens of a prompt voyage across the latent space, only the vector corresponding to the last token is eventually projected onto $\mathcal{V}$ to form the logits.
+Hence, here, we only consider the trajectory of this last (or `pilot') token.
+The trajectory $\mM_k$ of sentence $k$'s pilot is the sequence of $24$ successive time positions $\{ \vx_k (1), \vx_k(2), \ldots, \vx_k(24) \}$, concatenated as a column matrix (Algorithm~\ref{alg:trajectories}).
+
+\begin{algorithm}[h]
+\caption{Trajectory generation in transformer-based model}
+\begin{algorithmic}[1]
+ALGORITHM BLOCK (caption below)
+
+\label{alg:trajectories}
+\STATE \textbf{Input:} Large text: $\text{``It was the best of times, it was the worst of times, it was the age \ldots"}$
+\STATE Tokenize text into token sequence: $[1027, 374, 263, 1267, 287, 1662, 12, \ldots]$
+\STATE Split token sequence into $n$-token pseudo-sentences:
+\[
+  s_1 = [1027, 374, 263], \quad s_2 = [1267, 287, 1662], \quad \ldots
+\]
+\FOR{each pseudo-sentence $s_i$}
+    \STATE Semantic embedding: 
+    \[
+      \mE_S = [\vv(1027), \vv(374), \vv(263)] \quad \text{for } s_1
+    \]
+    \STATE $\mE(0) = \mE_S + \mE_P$ \COMMENT{add positional embeddings $\mP$}
+    \FOR{$t = 1 \to 24$} 
+        \STATE 
+        $
+          \mE(t+1) = \text{TransformerLayer}_t (\mE(t))
+        $ \COMMENT{update embeddings through transformer layer}
+        \STATE 
+        $          \vx(t+1) = \mE(t+1)[:, \text{end}]
+        $ \COMMENT{extract last token representation}
+        \STATE 
+        $
+          \mM[:, t+1] = \vx(t+1)
+        $ \COMMENT{save trajectory array}
+    \ENDFOR
+\ENDFOR
+\STATE \textbf{Output:} Final embeddings $x(t+1)$ for all pseudo-sentences
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Latent space bases.}
+The latent space is spanned by a Cartesian basis, i.e., the orthogonal set of one-hot (unit) vectors $\mathcal{E} = \{ \ve_i \}_{i = 1 \dots D}$.\footnote{With a 1 in $i^\mathrm{th}$ position, 0 elsewhere.}
+Additionally, we will often refer to the bases $\mathcal{U}(t) = \{ \vu_i^{(t)} \}_{i = 1 \dots D}$ formed by the left-singular vectors of the singular value decomposition (SVD) of the $D\times N_\mathrm{s}$ matrix after layer~$t$: $\mM  = \mU \mathbf{\Sigma} \mV^{\top}$, with 
+$\mM_{:, k}(t) = \vx_k(t)$.
+%$\mM_{(:,N_{sentences}), k}(t) = \vx_k(t)$. 
+%\cje{I added the $N_{sentences}$, since I did not understand the notation, before...}
+Vectors $\vu_i$ are organized according to their corresponding singular values, $\sigma_i$, in descending order.
+Note that because trajectory clusters evolve over time there are 24 distinct bases. 
+
+\section{Results}
+\label{sec:results}
+
+We present and characterize results pertaining to ensembles of trajectories as they travel within the latent space~$\mathcal{S}$.
+
+\subsection{Lines of thought cluster along similar pathways}
+
+We first observe in \\ef{fig:lot-3D}a that pilot trajectories tend to cluster together, instead of producing an isotropic and homogeneous filling of~$\mathcal{S}$.
+Indeed, LoTs for different, \emph{independent} pseudo-sentences follow a common path (forming \emph{bundles}), despite individual variability. 
+Specifically, there exist directions with significant displacement relative to the spread (mean over standard deviation).
+In addition, positions at different times form distinct clusters, as shown in \\ef{fig:clustering}. 
+
+Properly visualizing these trajectories is difficult, due to the high dimensionality of $\mathcal{S}$.
+Because the Cartesian axes, $\ve_i$, are unlikely to align with trajectories meaningful directions, we seek relevant alternative bases, informed by the data.
+After each layer~$t$, we perform the singular value decomposition of the matrix formed by concatenating the $\vx_k(t)$ to obtain a basis $\mathcal{U}(t)$ aligned with the data's intrinsic directions. 
+In the following, we leverage these time-dependent singular vectors and values to investigate ensemble dynamics and low-dimensional structures.
+%We remark that these local bases are only slightly rotated across successive timepoints and that the corresponding singular values span several orders of magnitude (\\ef{fig:sv-kl}), suggesting low-dimensional curved structures.
+
+
+\subsection{Lines of thought follow a low-dimensional manifold}
+
+The fast decay of the singular value magnitudes seen in \\ef{fig:sv-kl}b suggests that LoTs may be described by a lower-dimensional subspace.
+But how many dimensions are relevant?
+Singular values relate to ensemble variance along their corresponding directions. Since the embedding space is high-dimensional, however, the curse of dimensionality looms, hence the significance of Euclidean distances crumbles.
+To circumvent this limitation, we consider a more practical metric: how close to the original output distribution on the vocabulary does a reduction in dimensionality get us?
+
+To investigate this question, we express token positions $\vx(t)$ in the singular vector basis $\mathcal{U}(t)$:
+\[
+    \vx(t) = \sum_{i=1}^K a_{i}^{(t)} \vu_i^{(t)},
+\]
+where the $\vu_i^{(t)}$'s are organized by descending order of their corresponding singular values.
+By default $K = D$, and the true output distribution $\vp^\mathcal{V}$ is obtained.
+Now, we examine what happens when, instead of passing the full basis set, we truncate it, \textit{after each layer}, to keep only the first $K < D$ principal components.
+We compare the resulting output distribution, $\mathbf{p}^\mathcal{V}_K$ to the true distribution $\mathbf{p}^\mathcal{V}$ using KL divergence $\KL ( \mathbf{p}^\mathcal{V}_K \Vert \mathbf{p}^\mathcal{V} ) $.
+In \\ef{fig:sv-kl}c, we see that most of the true distribution is recovered when keeping only about $K_0 = 256$, or $25\%$, of the principal components.
+In other words, for the purpose of next-token prediction, LoTs are quasi-256-dimensional.
+
+If these principal directions remained constant at each layer, this would imply that $75\%$ of the latent space could be discarded with no consequence.
+This seems unrealistic.
+In fact, the principal directions rotate slightly over time, as displayed in \\ef{fig:sv-kl}a.
+Eventually, between $t=1$ and $t=24$, the full Cartesian basis~$\mathcal{E}$ is necessary to express the first singular directions.
+Thus, we conclude that \textbf{lines of thoughts evolve on a low-dimensional curved manifold} of about 256 dimensions, that is contained within the full latent space (\\ef{fig:lot-3D}b).
+
+% do: check how the full output is sensitive to n at each layer...
+
+\begin{figure}[htbp]
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/fig02v03.pdf}
+        \put(0, 33){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 33){\colorbox{white}{\textbf{(b)}}} 
+        \put(70, 33){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textbf{(a)}~Angle between the first 4 singular vectors at $(t_1,t_2)$, $\arccos ( \vu_i^{(t_1)}\cdot \vu_i^{(t_2)})$, for $i= \{ 1,2,3,4\}$ (top-left, top-right, bottom-left, bottom-right, respectively).
+\textbf{(b)}~Singular values for $t = 1, \dots, 24$ (blue to red).
+Clusters stretch more and more after each layer.
+The leading singular values, $\sigma_1(t)$, have been omitted for clarity.
+\textbf{(c)}~Average (over all trajectories) KL divergence between reduced dimensionality trajectories output and true output distributions, as the dimensionality $K$ is increased. 
+The red dashes line shows the average KL divergence between unrelated distributions (baseline for dissimilar distributions).
+}
+\label{fig:sv-kl}
+\end{figure}
+
+
+\subsection{Linear approximation of trajectories}
+Examination of the singular vectors and values at each time step indicates that LoT bundles rotate and stretch smoothly after passing through each layer (\\ef{fig:sv-kl}).
+This suggests that token trajectories could be \emph{approximated} by the linear transformations described by the ensemble, and extrapolated accordingly, from an initial time $t$ to a later time $t+\tau$.
+Evidently, it is improbable that a transformer layer could be replaced by a mere linear transformation.
+We rather hypothesize that, in addition to this deterministic average path, a token's location after layer $t+\tau$ will depart from its linear approximation from $t$ by an unknown component~$\vw(t,\tau)$.\footnote{
+We emphasize that trajectories are completely deterministic; the uncertainty (or stochasticity) introduced here accounts only for the loss of information of considering the token without its prompt.}
+We propose the following model:
+\begin{equation} \label{eq:langevin-discrete}
+    \vx(t + \tau) = \mR(t+\tau) \mathbf{\Lambda}(t,\tau) \mR(t)^{\top} \vx(t) + \vw(t,\tau),
+\end{equation}
+where $\vx(t)$ is the pilot token's position \textit{in the Cartesian basis}, and $\mR, \mathbf{\Lambda}$ are rotation (orthonormal) and stretch (diagonal) matrices, respectively. 
+\\ef{eq:langevin-discrete} formalizes the idea that, to approximate $\vx(t+\tau)$, given $\vx(t)$, we first project $\vx$ in the ensemble intrinsic basis at $t$ ($\mR^{\top} \vx$), then stretch the coordinates by the amount given by $\mathbf{\Lambda}$, and finally rotate according to how much the singular directions have rotated between $t$ and $t+\tau$, $\mR(t+\tau)$ (see also \\ef{fig:extrapolation-schematic} in \\ef{app:supp-figures}). Consequently, we can express these matrices as a function of the set of singular vectors ($\mU$) and values ($\mathbf{\Sigma}$):
+\[
+    \mR(t) = \mU(t), 
+    \quad 
+    \mathbf{\Lambda}(t,\tau) = \text{diag}(\sigma_i(t+\tau)/\sigma_i(t)) = \mathbf{\Sigma}(t+\tau) \mathbf{\Sigma}^{-1}(t).
+\]
+\\ef{fig:extrapolation} shows the close agreement, at the ensemble level, between the true and extrapolated positions. This is merely a linear approximation as it is similar to assuming that LoT clusters deform like an elastic solid, where each point maintains the same vicinity. 
+The actual coordinates ought to include an additional random component~$\rvw(t,\tau)$, which \textit{a priori} depends on both $t$ and $\tau$.
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/fig-extrapolation-v07.png}
+\end{center}
+\caption{
+Extrapolated token positions~$\Tilde{\vx}^{(k)}$ (blue) from $t = \{ 12,14,16,18\}$ to $t+\tau = \{ t+1,\dots,21\}$, compared to their true positions~$\vx^{(k)}$ (gray), projected in the $( \vu_2^{(t)},\vu_3^{(t)})$ planes.
+%The two ensembles appear closely matching.
+}
+\label{fig:extrapolation}
+\end{figure}
+
+Is it possible to express $\vw$ in probabilistic terms?
+We consider the empirical residuals 
+\[
+\delta \vx(t,\tau) = \vx(t+\tau) - \Tilde{\vx}(t,\tau) 
+\]
+between true positions $\vx$ and linear approximations $\Tilde{\vx}(t,\tau) = \mU(t+\tau) \mathbf{\Lambda}(t,\tau) \mU(t)^{\top} \vx(t)$. 
+We investigate the distributions and correlations of $\delta \vx(t,\tau)$ across layer combinations $(t,t+\tau)$.
+
+From the data, \\ef{fig:delta} shows that, for all $(t,t+\tau) \in \{ 1, \dots, 23 \} \times \{ t+1, \dots, 24 \}$, the ensemble of $\delta \vx(t,\tau)$ has the following characteristics: 1)~it is Gaussian, 2)~with zero mean, 3)~and variance scaling as $\exp(t+\tau)$.
+In addition, \\ef{fig:noise-details} shows that the distribution is isotropic, with no evidence of spatial cross-correlations~. Hence, we propose:
+\begin{equation} \label{eq:noise}
+    \rw_i (t,\tau) \sim \mathcal{N}(0, \alpha e^{\lambda (t+\tau)}),
+\end{equation}
+i.e., each coordinate $\rw_i$ of $\rvw$ is a Gaussian random variable with mean zero and variance $\alpha e^{\lambda(t+\tau)}$.
+Linear fitting of the logarithm of the variance yields $\alpha \simeq 0.64$ and $\lambda \simeq 0.18$.
+Even though this formulation ignores some variability across times and dimensions, it is a useful minimal modelling form to describe the ensemble dynamics with as few parameters as possible.
+
+
+% Unlike traditional Brownian motion, $w(\tau)$ is gaussian but has a variance that increases as exp(t).
+
+\subsection{Langevin dynamics for continuous time trajectories}
+Just like the true positions $\vx(t)$, matrices $\mR$ and $\mathbf{\Lambda}$ are known (empirically) only for integers values of $t$.\footnote{That is, after each layer.}
+Can we extend \\ef{eq:langevin-discrete} to a continuous time parameter $t \in [1,24]$?
+Indeed, it is possible to \emph{interpolate} $\mR$ and $\mathbf{\Lambda}$ between their known values~\citep{AbsMahSep2008}.
+Specifically, $\mR(t)$ remains orthogonal and rotates from its endpoints; singular values can be interpolated by a spline function.
+
+In return, this allows us to interpolate trajectories between transformer layers.\footnote{
+These interpolated positions do not hold any interpretive value, but may be insightful for mathematical purposes.
+} 
+Thus, we extend \\ef{eq:langevin-discrete} to a continuous time variable $t$, and write in infinitesimal terms:
+\begin{equation} \label{eq:langevin}
+d\vx(t) = \left[ \dot{\mR}(t)\mR(t)^{\top} + \mR(t) \dot{\mS}(t) \mR(t)^{\top} \right] \vx(t)\,dt + \sqrt{\alpha \lambda \exp(\lambda t)}\, d\rvw(t),
+\end{equation} 
+where $\dot{\mS} = \text{diag}\left(\dot{\sigma_i}/\sigma_i\right)$ and $d\rvw(t)$ is a differential of a Wiener process~\citep{pavliotis2014stochastic}. 
+%\nb{Add textbook citation.} 
+We defer the mathematical derivation to \\ef{app:lengevin-derivation}.
+This equation artificially extends LoTs to continuous paths across~$\mathcal{S}$.
+It provides a stochastic approximation to any token's trajectory, at all times $t$.
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/fig_gpt2_noise_v02.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+Statistics of $\delta \vx(t,\tau)$: mean $\mu$, variance $\sigma^2$, excess kurtosis $\kappa$. 
+Brackets $\langle \dots \rangle$ denote average over directions~$\ve_i$ (see \\ef{fig:noise-schematic} for details).
+\textbf{(a)}~For all $(t,t+\tau)$, $\mu \simeq 0$ (that is, $\mu / \sigma \ll 1$).
+\textbf{(b)}~$\log(\sigma^2)$ increases linearly in time, only depends on $t+\tau$.
+\textbf{(c)}~The \emph{excess} kurtosis (kurtosis minus 3) remains close to 0, indicating Gaussianity (except in early layers).
+}
+\label{fig:delta}
+\vskip -0.2in
+\end{figure}
+
+\subsection{Fokker-Planck formulation}
+
+\\ef{eq:langevin} is a stochastic differential equation (SDE) describing individual trajectories with a random component.
+Since the noise distribution is well characterized (see \\ef{eq:noise}), we can write an equivalent formulation for the \emph{deterministic} evolution of the probability density $P(\vx,t)$ of tokens $\vx$ over time~\citep{pavliotis2014stochastic}.
+The Fokker-Planck equation\footnote{
+Also known as Kolmogorov forward equation.
+} 
+associated to \\ef{eq:langevin} reads: 
+%\nb{Cite standard textbook on Fokker-Planck here}
+\begin{equation}\label{eq:fokker-planck}
+    \frac{\partial P(\vx, t)}{\partial t} = -\nabla_{\vx} \cdot \left[ \left( \dot{\mR} \mR^{\top} + \mR \dot{\mS} \mR^{\top}  \right) \vx P(\vx, t) \right] + \frac{1}{2} \alpha \lambda e^{\lambda t} \, \nabla_{\vx}^2 P(\vx, t).
+\end{equation}
+
+% \paragraph{Summary of findings.} We observed that LoTs cluster along similar pathways, in the form of a low-dimensional, curved manifold.
+% Given a token's position after layer $t$, we can approximate its location at layer $t+\tau$ by the rotation and stretch performed by the ensemble; the error scales as $\exp(t+\tau)$.
+% By interpolating the slowly varying matrices $\mU$ and $\mathbf{\Sigma}$ at any time $t$, we can describe individual token trajectories by a continuous stochastic equation, or equivalently a deterministic equation for the ensemble distribution. 
+This equation captures trajectory ensemble dynamics in a much simpler form, and with far fewer parameters, than the computation actually performed by the transformer stack on the fully embedded prompt.
+The price paid for this simplification is a probabilistic, rather than deterministic, path for LoTs.
+We now test our model and assess the extent and limitations of our results.
+
+
+
+\section{Testing and validation}
+
+\subsection{Simulations of the stochastic model}
+We test our continuous-time model described above.
+Due to the high dimensionality of the space, numerical integration of the Fokker-Planck equation, \\ef{eq:fokker-planck}, is computationally prohibitive.
+Instead, we simulate an ensemble of trajectories based on the Langevin formulation, \\ef{eq:langevin}.
+The technical details are provided in \\ef{app:simulations}.
+
+\begin{figure}[ht]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=0.9\textwidth]{fig/fig-simulations-v03.pdf}}
+\caption{
+Simulated distributions for $t=12$, $t+\tau = \{ 12, 13, 14, 15, 16\}$, projected on 
+the $\left( \vu_1,\vu_2\right)$ plane (top row) and the $\left( \vu_3,\vu_4\right)$ plane (bottom row).
+%the singular vector at $t=14$, $\vu_i(14)$, with $i=1,2$ (top), $i=3,4$ (middle), $i = 5,6$.
+Distributions have been approximated from ensemble trajectories, 10 trajectories for each initial point. 
+Background lines indicate true distributions, thin lines on top indicate simulations. 
+}
+\label{fig:simulations}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+The results presented in \\ef{fig:simulations} show that the simulated ensembles closely reproduce the ground truth of true trajectory distributions. 
+%The discrepancy does appear to increase with increasing delay~$\tau$ (in the continuous time description). 
+We must note that \\ef{eq:langevin,eq:fokker-planck} are not path-independent; therefore, their solution depend on the value of $\mR(t)$, $\mS(t)$ at all time $t$. Since there is no `true' value for the matrices in-between layers, the output of numerical integration naturally depends on the interpolation scheme. Hence, discrepancies are to be expected. 
+%Incidentally, finding an interpolation scheme that matches true distributions closely might indicate that the shape of the underlying manifold has been recovered.
+
+\subsection{Null testing}
+We now examine trajectory patterns for \textbf{non-language inputs} and \textbf{untrained models}.
+
+\subsubsection{Gibberish}
+We generate non-language (`gibberish') pseudo-sentences by assembling $N$-token sequences of random tokens in the vocabulary, and pass them as input to GPT-2.
+The resulting trajectories also cluster around a path similar to that of language.
+However, the two ensembles, language and gibberish, are linearly separable at all layers (see \\ef{fig:null-testing} in \\ef{app:null-testing}), indicating that they travel on two distinct, yet adjacent, manifolds.
+
+\subsubsection{Untrained \& ablated models}
+We compare previous observations with the null baseline of an untrained model.
+
+First, we collect trajectories of the \textit{Walden} ensemble passing through a reinitialized version of GPT-2 (the weights have been reset to a random seed).
+We observe that while LoTs get transported away from their starting point, the trajectories follow straight, quasi-parallel paths, maintaining their vicinity (see \\ef{fig:null-testing}).
+Furthermore, the model of \\ef{eq:langevin-discrete,eq:noise} does not hold; \\ef{fig:gpt2-untrained-noise} shows that the variance of $\delta \vx$ does not follow the $\exp(t+\tau)$ scaling, and the distributions are far from Gaussian.
+
+Next, we consider an ablated model, where only layers $13$ to $24$ have been reinitialized.
+When reaching the untrained layers, the trajectories stop and merely diffuse about their $t=12$ location (\\ef{fig:null-testing}).
+
+In conclusion, upon training, the weights evolve to constitute a specific type of transport in the latent space.
+
+% paths when the weights of GPT2 are scrambled
+
+
+\subsection{Results with other models} 
+\label{sec:other-models}
+
+We repeat the same approach with a set of larger and more recent LLMs.
+We collect the trajectories of the \textit{Walden} ensemble in their respective latent spaces.
+
+\paragraph{Llama~2~7B.}
+We first investigate the Llama~2~7B model~\citep{touvron2023llama2openfoundation}.\footnote{
+Decoder-only, 32 layers, 4096 dimensions; released July 2023 by Meta AI.
+} 
+Remarkably, the pattern of GPT-2 repeats.
+Token positions at $t+\tau$ can be extrapolated from $t$ by rotation and stretch using the singular vectors and values of the ensemble.
+The residuals are distributed as those of GPT-2, with $\rw_i(t,\tau) \sim \mathcal{N}(0,\alpha e^{\lambda (t+\tau)})$, see \\ef{fig:llama2-noise}. 
+The values for the parameters $\alpha$ and $\lambda$, however, differ from those of GPT-2 (here, $\alpha \simeq -5.4, \lambda \simeq 0.27$).
+
+\paragraph{Mistral~7B.}
+Trajectories across the  Mistral~7B (v0.1) model~\citep{jiang2023mistral7b}\footnote{
+Decoder-only, 32 layers, 4096 dimensions; released September 2023 by Mistral AI.
+}
+also follow the same pattern (\\ef{fig:mistral-noise}).
+We note, however, that \\ef{eq:fokker-planck} only holds up until layer 31. 
+It seems as though the last layer is misaligned with the rest of the trajectories, as linear extrapolation produces an error that is much larger than expected.
+
+\paragraph{Llama~3.2.}
+The last layer anomaly is also apparent for Llama~3.2~1B\footnote{
+Decoder-only, 16 layers, 2048 dimensions; released September 2024 by Meta AI.
+}, both in the mean and variance of $\delta\vx(t,16)$ (see \\ef{fig:llama3.2-1B-noise}).
+However, the rest of the trajectories follows \\ef{eq:langevin-discrete}.
+The same pattern is observed for Llama~3.2~3B\footnote{
+Decoder-only, 28 layers, 3072 dimensions; released September 2024 by Meta AI.
+} in \\ef{fig:llama3.2-3B-noise}.
+
+It is noteworthy that these three recent models feature the same anomaly at the last layer.
+The reason is not immediately evident, and perhaps worth investigating further.
+In addition, we remark that all models also show deviations from predicted statistics across the very first layers (top-left corners). 
+We conjecture that these anomalies might be an effect of re-alignment or fine-tuning, as the first and last layers are the most exposed to perturbations which might not propagate deep into the stack.
+
+\section{Conclusion}
+
+
+%\subsection{Limitations}
+
+%\subsection{Implications}
+
+%\subsection{Prospects}
+% -possibility for compression?
+
+% Modern physics is often concerned about reducing the complexity of systems consisting of large number of entities and even exponentially more of interactions between them.
+% One substantial achievemtn was to be able to capture most of the system behavior using equations with a much, much smaller number of parameters.
+% Thermodynamics, fluid mechanics, Brownian motion, are some examples.
+
+% In this case, modern transformer architecture are comprised of millions, billions, and sometimes trillions weight. 
+% We show, using a simple model, that the trajectories described by tokens across the latent space can be approximated by a simple transport across a low-dimensional, curved manifold. 
+% The exact trajectory, however, departs randomly from this average behavior.
+
+% This allows us to write a Fokker-Planck equation, that is, a partial differential equation for the probability distribution of token trajectories.
+
+
+\paragraph{Summary.}
+This work began with the prospect of visualizing token trajectories in their embedding space~$\mathcal{S}$.
+The space is not only high-dimensional, but also isotropic: all coordinates are \textit{a priori} equivalent.\footnote{Unlike other types of datasets where different dimensions might have well-defined meaning, for example: temperature, pressure, wind speed, etc.} 
+Hence, we sought directions and subspaces of particular significance in shaping token trajectories\footnote{And hence defining next-token distribution outputs}, some kind of `eigenvectors' of the transformer stack.
+
+Instead of spreading chaotically, lines of thought travel along a low-dimensional manifold.
+We used this pathway to extrapolate token trajectories from a known position at $t$ to a later time, based on the geometry of the ensemble. Individual trajectories deviate from this average path by a random amount \emph{with well-defined statistics}. 
+Consequently, we could interpolate token dynamics to a continuous time in the form of a stochastic differential equation, \\ef{eq:langevin}. 
+The same ensemble behavior holds for various transformer-based pre-trained LLMs, but collapses for untrained (reinitialized) ones.
+
+This approach aims to extract important features of language model internal computation.
+Unlike much of prior research on interpretability, it is agnostic to the syntactic and semantic aspects of inputs and outputs.
+We also proposed geometrical interpretations of ensemble properties which avoid relying on euclidean metrics, as they become meaningless in high-dimensional spaces.
+
+\paragraph{Limitations.} 
+This method is limited to open-source models, as it requires extracting hidden states; fine-tuned, heavily re-aligned models might exhibit different patterns.
+%However, our experiments on several open models suggest that the findings are broadly applicable to LLMs. 
+%\nb{Talk about layer normalization not included here.}
+In addition, it would be compelling to connect the latent space with the space of output distributions, for example by investigating the relative arrangement of final positions with respect to embedded vocabulary.
+However, this is complicated by the last layer normalization which typically precedes projection onto the vocabulary.
+This normalization has computational benefits, but its mathematical handling is cumbersome: it is highly non-linear as it involves the mean and standard deviation of the input vector.
+
+
+
+\paragraph{Implications.}
+Just like molecules in a gas or birds in a flock, the complex system formed by billions of artificial neurons in interaction exhibits some simple, macroscopic properties.
+It can be described by ensemble statistics with a well defined random component.
+Previously, \citet{aubry2024transformeralignmentlargelanguage} had also uncovered specific dynamical features, notably \emph{token alignment}, in transformer stacks of a wide variety of trained models.
+
+That's not to say that reduced complexity representations are necessarily useful in practice.
+Individual trajectory variability persists, and is essential to accurately predict next tokens and continue textual inputs.
+Thus, it is not immediately apparent to us whether the low-dimensionality structures identified could lead to avenues for compressing or ablating transformers, although it might.
+
+Yet, patterns are explanatory. 
+Our concern here has been primarily to discover some of the mechanisms implicitly encoded in the weights of trained language models.
+Further investigations could extend this methodology to more thoroughly identify and characterize the dynamics of tokens.
+
+
+
+%trajectory paper.
+
+
+
+
+% \subsection{Implications}
+
+% The identification of a low-dimensional, curved manifold governing token trajectories has profound implications for our understanding of transformer models. It suggests that despite the immense complexity of millions or billions of parameters, the essential dynamics of token interactions can be captured with a significantly reduced number of parameters. This aligns with principles from modern physics, where complex systems are often described by simple, elegant equations that encapsulate the collective behavior of their constituents. Moreover, this insight opens avenues for improving model interpretability, as it provides a structured framework to analyze and visualize token interactions over time.
+
+% \subsection{Prospects}
+
+% Building on our findings, several promising directions emerge for future research. One potential avenue is the development of compression techniques that leverage the low-dimensional manifold structure to reduce model complexity without sacrificing performance. Additionally, our approach lays the groundwork for formulating a Fokker-Planck equation—a partial differential equation describing the probability distribution of token trajectories—thereby enabling more precise modeling of stochastic behaviors within transformer architectures. Further exploration could also investigate how these manifold dynamics vary across different model sizes, architectures, or training regimes, providing deeper insights into the scalability and adaptability of transformer models.
+
+% In summary, our study demonstrates that token trajectories within transformer embedding spaces are governed by underlying low-dimensional structures, offering a simplified yet powerful lens through which to understand and potentially enhance these complex models. By bridging concepts from modern physics with machine learning, we pave the way for innovative methodologies that can tackle the intricacies of large-scale neural networks.
+
+
+% \pagebreak
+% \section{Submission of conference papers to ICLR 2025}
+
+% ICLR requires electronic submissions, processed by
+% \url{https://openreview.net/}. See ICLR's website for more instructions.
+
+% If your paper is ultimately accepted, the statement {\tt
+%   {\textbackslash}iclrfinalcopy} should be inserted to adjust the
+% format to the camera ready requirements.
+
+% The format for the submissions is a variant of the NeurIPS format.
+% Please read carefully the instructions below, and follow them
+% faithfully.
+
+% \subsection{Style}
+
+% Papers to be submitted to ICLR 2025 must be prepared according to the
+% instructions presented here.
+
+% %% Please note that we have introduced automatic line number generation
+% %% into the style file for \LaTeXe. This is to help reviewers
+% %% refer to specific lines of the paper when they make their comments. Please do
+% %% NOT refer to these line numbers in your paper as they will be removed from the
+% %% style file for the final version of accepted papers.
+
+% Authors are required to use the ICLR \LaTeX{} style files obtainable at the
+% ICLR website. Please make sure you use the current files and
+% not previous versions. Tweaking the style files may be grounds for rejection.
+
+% \subsection{Retrieval of style files}
+
+% The style files for ICLR and other conference information are available online at:
+% \begin{center}
+%    \url{http://www.iclr.cc/}
+% \end{center}
+% The file \verb+iclr2025_conference.pdf+ contains these
+% instructions and illustrates the
+% various formatting requirements your ICLR paper must satisfy.
+% Submissions must be made using \LaTeX{} and the style files
+% \verb+iclr2025_conference.sty+ and \verb+iclr2025_conference.bst+ (to be used with \LaTeX{}2e). The file
+% \verb+iclr2025_conference.tex+ may be used as a ``shell'' for writing your paper. All you
+% have to do is replace the author, title, abstract, and text of the paper with
+% your own.
+
+% The formatting instructions contained in these style files are summarized in
+% sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
+
+% \section{General formatting instructions}
+% \label{gen_inst}
+
+% The text must be confined within a rectangle 5.5~inches (33~picas) wide and
+% 9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).
+% Use 10~point type with a vertical spacing of 11~points. Times New Roman is the
+% preferred typeface throughout. Paragraphs are separated by 1/2~line space,
+% with no indentation.
+
+% Paper title is 17~point, in small caps and left-aligned.
+% All pages should start at 1~inch (6~picas) from the top of the page.
+
+% Authors' names are
+% set in boldface, and each name is placed above its corresponding
+% address. The lead author's name is to be listed first, and
+% the co-authors' names are set to follow. Authors sharing the
+% same address can be on the same line.
+
+% Please pay special attention to the instructions in section \ref{others}
+% regarding figures, tables, acknowledgments, and references.
+
+
+% There will be a strict upper limit of 10 pages for the main text of the initial submission, with unlimited additional pages for citations. 
+
+
+
+
+%\subsubsection*{Data availability}
+%Code and data will be publicly available on GitHub upon acceptance.
+
+\ificlrfinal
+%\subsubsection*{Author Contributions}
+% If you'd like to, you may include  a section for author contributions as is done
+% in many journals. This is optional and at the discretion of the authors.
+
+\subsubsection*{Acknowledgments}
+This work was supported by the SciAI Center, and funded by the Office of Naval Research (ONR), under Grant Numbers N00014-23-1-2729 and N00014-23-1-2716.
+
+
+\fi
+
+
+\section*{References}
+
+\begin{thebibliography}{}
+\bibitem{AbsMahSep2008} P.-A. Absil, R.~Mahony, and R.~Sepulchre \newblock \emph{Optimization Algorithms on Matrix Manifolds} \newblock Princeton University Press, Princeton, NJ, 2008. \newblock ISBN 978-0-691-13298-3. \newblock \textbf{Abstract:} Many problems in the sciences and engineering can be rephrased as optimization problems on matrix search spaces endowed with a so-called manifold structure. This book shows how to exploit the special structure of such problems to develop efficient numerical algorithms. It places careful emphasis on both the numerical formulation of the algorithm and its differential geometric abstraction--illustrating how good algorithms draw equally from the insights of differential geometry, optimization, and numerical analysis. Two more theoretical chapters provide readers with the background in differential geometry necessary to algorithmic development. In the other chapters, several well-known optimization methods such as steepest descent and conjugate gradients are generalized to abstract manifolds. The book provides a generic development of each of these methods, building upon the material of the geometric chapters. It then guides readers through the calculations that turn these geometrically formulated methods into concrete numerical algorithms. The state-of-the-art algorithms given as examples are competitive with the best existing algorithms for a selection of eigenspace problems in numerical linear algebra. Optimization Algorithms on Matrix Manifolds offers techniques with broad applications in linear algebra, signal processing, data mining, computer vision, and statistical analysis. It can serve as a graduate-level textbook and will be of interest to applied mathematicians, engineers, and computer scientists. \newblock (@AbsMahSep2008)
+
+\bibitem{aubry2024transformeralignmentlargelanguage} Murdock Aubry, Haoming Meng, Anton Sugolov, and Vardan Papyan \newblock {Transformer Alignment in Large Language Models} \newblock \emph{arXiv preprint arXiv:2407.07810}, 2024. \newblock \textbf{Abstract:} Large Language Models (LLMs) have made significant strides in natural language processing, and a precise understanding of the internal mechanisms driving their success is essential. In this work, we analyze the trajectories of token embeddings as they pass through transformer blocks, linearizing the system along these trajectories through their Jacobian matrices. By examining the relationships between these block Jacobians, we uncover the phenomenon of \textbackslash\{\}textbf\{transformer block coupling\} in a multitude of LLMs, characterized by the coupling of their top singular vectors across tokens and depth. Our findings reveal that coupling \textbackslash\{\}textit\{positively correlates\} with model performance, and that this relationship is stronger than with other hyperparameters such as parameter count, model depth, and embedding dimension. We further investigate how these properties emerge during training, observing a progressive development of coupling, increased linearity, and layer-wise exponential growth in token trajectories. Additionally, experiments with Vision Transformers (ViTs) corroborate the emergence of coupling and its relationship with generalization, reinforcing our findings in LLMs. Collectively, these insights offer a novel perspective on token interactions in transformers, opening new directions for studying their mechanisms as well as improving training and generalization. \newblock (@aubry2024transformeralignmentlargelanguage)
+
+\bibitem{ba2016layernormalization} Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E. Hinton \newblock Layer normalization \newblock \emph{arXiv preprint arXiv:1607.06450}, 2016. \newblock \textbf{Abstract:} Training state-of-the-art, deep neural networks is computationally expensive. One way to reduce the training time is to normalize the activities of the neurons. A recently introduced technique called batch normalization uses the distribution of the summed input to a neuron over a mini-batch of training cases to compute a mean and variance which are then used to normalize the summed input to that neuron on each training case. This significantly reduces the training time in feed-forward neural networks. However, the effect of batch normalization is dependent on the mini-batch size and it is not obvious how to apply it to recurrent neural networks. In this paper, we transpose batch normalization into layer normalization by computing the mean and variance used for normalization from all of the summed inputs to the neurons in a layer on a single training case. Like batch normalization, we also give each neuron its own adaptive bias and gain which are applied after the normalization but before the non-linearity. Unlike batch normalization, layer normalization performs exactly the same computation at training and test times. It is also straightforward to apply to recurrent neural networks by computing the normalization statistics separately at each time step. Layer normalization is very effective at stabilizing the hidden state dynamics in recurrent networks. Empirically, we show that layer normalization can substantially reduce the training time compared with previously published techniques. \newblock (@ba2016layernormalization)
+
+\bibitem{bricken2023monosemanticity} Trenton Bricken, Adly Templeton, Joshua Batson, Brian Chen, Adam Jermyn, Tom Conerly, Nick Turner, Cem Anil, Carson Denison, Amanda Askell, Robert Lasenby, Yifan Wu, Shauna Kravec, Nicholas Schiefer, Tim Maxwell, Nicholas Joseph, Zac Hatfield-Dodds, Alex Tamkin, Karina Nguyen, Brayden McLean, Josiah~E Burke, Tristan Hume, Shan Carter, Tom Henighan, and Christopher Olah \newblock Towards monosemanticity: Decomposing language models with dictionary learning \newblock \emph{Transformer Circuits Thread}, 2023. \newblock \url{https://transformer-circuits.pub/2023/monosemantic-features/index.html}. \newblock \textbf{Abstract:} Understanding the internal computations of large language models (LLMs) is crucial for aligning them with human values and preventing undesirable behaviors like toxic content generation. However, mechanistic interpretability is hindered by polysemanticity -- where individual neurons respond to multiple, unrelated concepts. While Sparse Autoencoders (SAEs) have attempted to disentangle these features through sparse dictionary learning, they have compromised LLM performance due to reliance on post-hoc reconstruction loss. To address this issue, we introduce Mixture of Monosemantic Experts for Transformers (Monet) architecture, which incorporates sparse dictionary learning directly into end-to-end Mixture-of-Experts pretraining. Our novel expert decomposition method enables scaling the expert count to 262,144 per layer while total parameters scale proportionally to the square root of the number of experts. Our analyses demonstrate mutual exclusivity of knowledge across experts and showcase the parametric knowledge encapsulated within individual experts. Moreover, Monet allows knowledge manipulation over domains, languages, and toxicity mitigation without degrading general performance. Our pursuit of transparent LLMs highlights the potential of scaling expert counts to enhance mechanistic interpretability and directly resect the internal knowledge to fundamentally adjust model behavior. The source code and pretrained checkpoints are available at https://github.com/dmis-lab/Monet. \newblock (@bricken2023monosemanticity)
+
+\bibitem{geshkovski2024emergenceclustersselfattentiondynamics} Borjan Geshkovski, Cyril Letrouit, Yury Polyanskiy, and Philippe Rigollet \newblock The emergence of clusters in self-attention dynamics \newblock In \emph{Advances in Neural Information Processing Systems}, volume~36, 2024. \newblock \textbf{Abstract:} Viewing Transformers as interacting particle systems, we describe the geometry of learned representations when the weights are not time dependent. We show that particles, representing tokens, tend to cluster toward particular limiting objects as time tends to infinity. Cluster locations are determined by the initial tokens, confirming context-awareness of representations learned by Transformers. Using techniques from dynamical systems and partial differential equations, we show that the type of limiting object that emerges depends on the spectrum of the value matrix. Additionally, in the one-dimensional case we prove that the self-attention matrix converges to a low-rank Boolean matrix. The combination of these results mathematically confirms the empirical observation made by Vaswani et al. [VSP'17] that leaders appear in a sequence of tokens when processed by Transformers. \newblock (@geshkovski2024emergenceclustersselfattentiondynamics)
+
+\bibitem{gruver2024largelanguagemodelszeroshot} Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew~G Wilson \newblock Large language models are zero-shot time series forecasters \newblock In \emph{Advances in Neural Information Processing Systems}, volume~36, 2024. \newblock \textbf{Abstract:} By encoding time series as a string of numerical digits, we can frame time series forecasting as next-token prediction in text. Developing this approach, we find that large language models (LLMs) such as GPT-3 and LLaMA-2 can surprisingly zero-shot extrapolate time series at a level comparable to or exceeding the performance of purpose-built time series models trained on the downstream tasks. To facilitate this performance, we propose procedures for effectively tokenizing time series data and converting discrete distributions over tokens into highly flexible densities over continuous values. We argue the success of LLMs for time series stems from their ability to naturally represent multimodal distributions, in conjunction with biases for simplicity, and repetition, which align with the salient features in many time series, such as repeated seasonal trends. We also show how LLMs can naturally handle missing data without imputation through non-numerical text, accommodate textual side information, and answer questions to help explain predictions. While we find that increasing model size generally improves performance on time series, we show GPT-4 can perform worse than GPT-3 because of how it tokenizes numbers, and poor uncertainty calibration, which is likely the result of alignment interventions such as RLHF. \newblock (@gruver2024largelanguagemodelszeroshot)
+
+\bibitem{gurnee2024languagemodelsrepresentspace} Wes Gurnee and Max Tegmark \newblock Language models represent space and time \newblock \emph{arXiv preprint arXiv:2310.02207}, 2023. \newblock \textbf{Abstract:} The capabilities of large language models (LLMs) have sparked debate over whether such systems just learn an enormous collection of superficial statistics or a set of more coherent and grounded representations that reflect the real world. We find evidence for the latter by analyzing the learned representations of three spatial datasets (world, US, NYC places) and three temporal datasets (historical figures, artworks, news headlines) in the Llama-2 family of models. We discover that LLMs learn linear representations of space and time across multiple scales. These representations are robust to prompting variations and unified across different entity types (e.g. cities and landmarks). In addition, we identify individual "space neurons" and "time neurons" that reliably encode spatial and temporal coordinates. While further investigation is needed, our results suggest modern LLMs learn rich spatiotemporal representations of the real world and possess basic ingredients of a world model. \newblock (@gurnee2024languagemodelsrepresentspace)
+
+\bibitem{jiang2023mistral7b} Albert~Q Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, et~al \newblock {Mistral 7B} \newblock \emph{arXiv preprint arXiv:2310.06825}, 2023. \newblock \textbf{Abstract:} We introduce Mistral 7B v0.1, a 7-billion-parameter language model engineered for superior performance and efficiency. Mistral 7B outperforms Llama 2 13B across all evaluated benchmarks, and Llama 1 34B in reasoning, mathematics, and code generation. Our model leverages grouped-query attention (GQA) for faster inference, coupled with sliding window attention (SWA) to effectively handle sequences of arbitrary length with a reduced inference cost. We also provide a model fine-tuned to follow instructions, Mistral 7B -- Instruct, that surpasses the Llama 2 13B -- Chat model both on human and automated benchmarks. Our models are released under the Apache 2.0 license. \newblock (@jiang2023mistral7b)
+
+\bibitem{jiang2024originslinearrepresentationslarge} Yibo Jiang, Goutham Rajendran, Pradeep Ravikumar, Bryon Aragam, and Victor Veitch \newblock On the origins of linear representations in large language models \newblock \emph{arXiv preprint arXiv:2403.03867}, 2024. \newblock \textbf{Abstract:} Recent works have argued that high-level semantic concepts are encoded "linearly" in the representation space of large language models. In this work, we study the origins of such linear representations. To that end, we introduce a simple latent variable model to abstract and formalize the concept dynamics of the next token prediction. We use this formalism to show that the next token prediction objective (softmax with cross-entropy) and the implicit bias of gradient descent together promote the linear representation of concepts. Experiments show that linear representations emerge when learning from data matching the latent variable model, confirming that this simple structure already suffices to yield linear representations. We additionally confirm some predictions of the theory using the LLaMA-2 large language model, giving evidence that the simplified model yields generalizable insights. \newblock (@jiang2024originslinearrepresentationslarge)
+
+\bibitem{liu2024llmslearngoverningprinciples} Toni~JB Liu, Nicolas Boull{\'e}, Rapha{\"e}l Sarfati, and Christopher~J Earls \newblock {LLMs learn governing principles of dynamical systems, revealing an in-context neural scaling law} \newblock \emph{arXiv preprint arXiv:2402.00795}, 2024. \newblock \textbf{Abstract:} Pretrained large language models (LLMs) are surprisingly effective at performing zero-shot tasks, including time-series forecasting. However, understanding the mechanisms behind such capabilities remains highly challenging due to the complexity of the models. We study LLMs' ability to extrapolate the behavior of dynamical systems whose evolution is governed by principles of physical interest. Our results show that LLaMA 2, a language model trained primarily on texts, achieves accurate predictions of dynamical system time series without fine-tuning or prompt engineering. Moreover, the accuracy of the learned physical rules increases with the length of the input context window, revealing an in-context version of neural scaling law. Along the way, we present a flexible and efficient algorithm for extracting probability density functions of multi-digit numbers directly from LLMs. \newblock (@liu2024llmslearngoverningprinciples)
+
+\bibitem{Markov_2006} A.~A. Markov \newblock An example of statistical investigation of the text eugene onegin concerning the connection of samples in chains \newblock \emph{Science in Context}, 19\penalty0 (4):\penalty0 591–600, 2006. \newblock \doi{10.1017/S0269889706001074}. \newblock (@Markov\_2006)
+
+\bibitem{marks2024geometrytruthemergentlinear} Samuel Marks and Max Tegmark \newblock {The geometry of truth: Emergent linear structure in large language model representations of true/false datasets} \newblock \emph{arXiv preprint arXiv:2310.06824}, 2023. \newblock \textbf{Abstract:} Large Language Models (LLMs) have impressive capabilities, but are prone to outputting falsehoods. Recent work has developed techniques for inferring whether a LLM is telling the truth by training probes on the LLM's internal activations. However, this line of work is controversial, with some authors pointing out failures of these probes to generalize in basic ways, among other conceptual issues. In this work, we use high-quality datasets of simple true/false statements to study in detail the structure of LLM representations of truth, drawing on three lines of evidence: 1. Visualizations of LLM true/false statement representations, which reveal clear linear structure. 2. Transfer experiments in which probes trained on one dataset generalize to different datasets. 3. Causal evidence obtained by surgically intervening in a LLM's forward pass, causing it to treat false statements as true and vice versa. Overall, we present evidence that at sufficient scale, LLMs linearly represent the truth or falsehood of factual statements. We also show that simple difference-in-mean probes generalize as well as other probing techniques while identifying directions which are more causally implicated in model outputs. \newblock (@marks2024geometrytruthemergentlinear)
+
+\bibitem{meta2024llama3_2} MetaAI \newblock Llama 3.2 model card \newblock \url{https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD.md}, 2024. \newblock Accessed: 2024-09-25. \newblock \textbf{Abstract:} Language models (LMs) are no longer restricted to ML community, and instruction-tuned LMs have led to a rise in autonomous AI agents. As the accessibility of LMs grows, it is imperative that an understanding of their capabilities, intended usage, and development cycle also improves. Model cards are a popular practice for documenting detailed information about an ML model. To automate model card generation, we introduce a dataset of 500 question-answer pairs for 25 ML models that cover crucial aspects of the model, such as its training configurations, datasets, biases, architecture details, and training resources. We employ annotators to extract the answers from the original paper. Further, we explore the capabilities of LMs in generating model cards by answering questions. Our initial experiments with ChatGPT-3.5, LLaMa, and Galactica showcase a significant gap in the understanding of research papers by these aforementioned LMs as well as generating factual textual responses. We posit that our dataset can be used to train models to automate the generation of model cards from paper text and reduce human effort in the model card curation process. The complete dataset is available on https://osf.io/hqt7p/?view\_only=3b9114e3904c4443bcd9f5c270158d37 \newblock (@meta2024llama3\_2)
+
+\bibitem{pavliotis2014stochastic} Grigorios~A Pavliotis \newblock \emph{Stochastic processes and applications}, volume~60 \newblock Springer, 2014. \newblock \textbf{Abstract:} This volume contains the contributions to a conference that is among the most important meetings in financial mathematics. Serving as a bridge between probabilists in Japan (called the Ito School and known for its highly sophisticated mathematics) and mathematical finance and financial engineering, the conference elicits the very highest quality papers in the field of financial mathematics. \newblock (@pavliotis2014stochastic)
+
+\bibitem{PRAVEEN2023115971} Harshwardhan Praveen, Nicolas Boullé, and Christopher Earls \newblock Principled interpolation of green’s functions learned from data \newblock \emph{Comput. Methods Appl. Mech. Eng.}, 409:\penalty0 115971, 2023. \newblock \textbf{Abstract:} Recent advances in diffusion models have demonstrated their remarkable ability to capture complex image distributions, but the geometric properties of the learned data manifold remain poorly understood. We address this gap by introducing a score-based Riemannian metric that leverages the Stein score function from diffusion models to characterize the intrinsic geometry of the data manifold without requiring explicit parameterization. Our approach defines a metric tensor in the ambient space that stretches distances perpendicular to the manifold while preserving them along tangential directions, effectively creating a geometry where geodesics naturally follow the manifold's contours. We develop efficient algorithms for computing these geodesics and demonstrate their utility for both interpolation between data points and extrapolation beyond the observed data distribution. Through experiments on synthetic data with known geometry, Rotated MNIST, and complex natural images via Stable Diffusion, we show that our score-based geodesics capture meaningful transformations that respect the underlying data distribution. Our method consistently outperforms baseline approaches on perceptual metrics (LPIPS) and distribution-level metrics (FID, KID), producing smoother, more realistic image transitions. These results reveal the implicit geometric structure learned by diffusion models and provide a principled way to navigate the manifold of natural images through the lens of Riemannian geometry. \newblock (@PRAVEEN2023115971)
+
+\bibitem{gutenberg_project} {Project Gutenberg} \newblock {Project Gutenberg} \newblock \url{https://www.gutenberg.org/about/}, 2024. \newblock Accessed: 2024-09-07. \newblock \textbf{Abstract:} Project Gutenberg is lauded as one of the earliest digitisation initiatives, a mythology that Michael Hart, its founder perpetuated through to his death in 2011. In this Element, the author re-examines the extant historical evidence to challenge some of Hart's bolder claims and resituates the significance of Project Gutenberg in relation to broader trends in online document delivery and digitisation in the latter half of the twentieth century, especially in the World Wide Web's first decade (the 1990s). Through this re-appraisal, the author instead suggests that Hart's Project is significant as an example of what Millicent Weber has termed a “digital publishing collective” whereby a group of volunteers engage in producing content and that process is as meaningful as the final product. \newblock (@gutenberg\_project)
+
+\bibitem{radford2019language} Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et~al \newblock Language models are unsupervised multitask learners \newblock \emph{OpenAI blog}, 1\penalty0 (8):\penalty0 9, 2019. \newblock \textbf{Abstract:} While large language models (LLMs) have revolutionized natural language processing with their task-agnostic capabilities, visual generation tasks such as image translation, style transfer, and character customization still rely heavily on supervised, task-specific datasets. In this work, we introduce Group Diffusion Transformers (GDTs), a novel framework that unifies diverse visual generation tasks by redefining them as a group generation problem. In this approach, a set of related images is generated simultaneously, optionally conditioned on a subset of the group. GDTs build upon diffusion transformers with minimal architectural modifications by concatenating self-attention tokens across images. This allows the model to implicitly capture cross-image relationships (e.g., identities, styles, layouts, surroundings, and color schemes) through caption-based correlations. Our design enables scalable, unsupervised, and task-agnostic pretraining using extensive collections of image groups sourced from multimodal internet articles, image galleries, and video frames. We evaluate GDTs on a comprehensive benchmark featuring over 200 instructions across 30 distinct visual generation tasks, including picture book creation, font design, style transfer, sketching, colorization, drawing sequence generation, and character customization. Our models achieve competitive zero-shot performance without any additional fine-tuning or gradient updates. Furthermore, ablation studies confirm the effectiveness of key components such as data scaling, group size, and model design. These results demonstrate the potential of GDTs as scalable, general-purpose visual generation systems. \newblock (@radford2019language)
+
+\bibitem{ruoss2024grandmasterlevelchesssearch} Anian Ruoss, Grégoire Delétang, Sourabh Medapati, Jordi Grau-Moya, Li~Kevin Wenliang, Elliot Catt, John Reid, and Tim Genewein \newblock Grandmaster-level chess without search \newblock 2024. \newblock URL \url{https://arxiv.org/abs/2402.04494}. \newblock \textbf{Abstract:} This paper uses chess, a landmark planning problem in AI, to assess transformers' performance on a planning task where memorization is futile \$\textbackslash\{\}unicode\{x2013\}\$ even at a large scale. To this end, we release ChessBench, a large-scale benchmark dataset of 10 million chess games with legal move and value annotations (15 billion data points) provided by Stockfish 16, the state-of-the-art chess engine. We train transformers with up to 270 million parameters on ChessBench via supervised learning and perform extensive ablations to assess the impact of dataset size, model size, architecture type, and different prediction targets (state-values, action-values, and behavioral cloning). Our largest models learn to predict action-values for novel boards quite accurately, implying highly non-trivial generalization. Despite performing no explicit search, our resulting chess policy solves challenging chess puzzles and achieves a surprisingly strong Lichess blitz Elo of 2895 against humans (grandmaster level). We also compare to Leela Chess Zero and AlphaZero (trained without supervision via self-play) with and without search. We show that, although a remarkably good approximation of Stockfish's search-based algorithm can be distilled into large-scale transformers via supervised learning, perfect distillation is still beyond reach, thus making ChessBench well-suited for future research. \newblock (@ruoss2024grandmasterlevelchesssearch)
+
+\bibitem{sharma2023understandingsycophancylanguagemodels} Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell, Samuel~R. Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott~R. Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse, Oliver Rausch, Nicholas Schiefer, Da~Yan, Miranda Zhang, and Ethan Perez \newblock Towards understanding sycophancy in language models \newblock 2023. \newblock URL \url{https://arxiv.org/abs/2310.13548}. \newblock \textbf{Abstract:} Human feedback is commonly utilized to finetune AI assistants. But human feedback may also encourage model responses that match user beliefs over truthful ones, a behaviour known as sycophancy. We investigate the prevalence of sycophancy in models whose finetuning procedure made use of human feedback, and the potential role of human preference judgments in such behavior. We first demonstrate that five state-of-the-art AI assistants consistently exhibit sycophancy across four varied free-form text-generation tasks. To understand if human preferences drive this broadly observed behavior, we analyze existing human preference data. We find that when a response matches a user's views, it is more likely to be preferred. Moreover, both humans and preference models (PMs) prefer convincingly-written sycophantic responses over correct ones a non-negligible fraction of the time. Optimizing model outputs against PMs also sometimes sacrifices truthfulness in favor of sycophancy. Overall, our results indicate that sycophancy is a general behavior of state-of-the-art AI assistants, likely driven in part by human preference judgments favoring sycophantic responses. \newblock (@sharma2023understandingsycophancylanguagemodels)
+
+\bibitem{song2024uncoveringhiddengeometrytransformers} Jiajun Song and Yiqiao Zhong \newblock Uncovering hidden geometry in transformers via disentangling position and context 2024. \newblock URL \url{https://arxiv.org/abs/2310.04861}. \newblock \textbf{Abstract:} Transformers are widely used to extract semantic meanings from input tokens, yet they usually operate as black-box models. In this paper, we present a simple yet informative decomposition of hidden states (or embeddings) of trained transformers into interpretable components. For any layer, embedding vectors of input sequence samples are represented by a tensor \$\textbackslash\{\}boldsymbol\{h\} \textbackslash\{\}in \textbackslash\{\}mathbb\{R\}\textasciicircum{}\{C \textbackslash\{\}times T \textbackslash\{\}times d\}\$. Given embedding vector \$\textbackslash\{\}boldsymbol\{h\}\_\{c,t\} \textbackslash\{\}in \textbackslash\{\}mathbb\{R\}\textasciicircum{}d\$ at sequence position \$t \textbackslash\{\}le T\$ in a sequence (or context) \$c \textbackslash\{\}le C\$, extracting the mean effects yields the decomposition \textbackslash\{\}[ \textbackslash\{\}boldsymbol\{h\}\_\{c,t\} = \textbackslash\{\}boldsymbol\{\textbackslash\{\}mu\} + \textbackslash\{\}mathbf\{pos\}\_t + \textbackslash\{\}mathbf\{ctx\}\_c + \textbackslash\{\}mathbf\{resid\}\_\{c,t\} \textbackslash\{\}] where \$\textbackslash\{\}boldsymbol\{\textbackslash\{\}mu\}\$ is the global mean vector, \$\textbackslash\{\}mathbf\{pos\}\_t\$ and \$\textbackslash\{\}mathbf\{ctx\}\_c\$ are the mean vectors across contexts and across positions respectively, and \$\textbackslash\{\}mathbf\{resid\}\_\{c,t\}\$ is the residual vector. For popular transformer architectures and diverse text datasets, empirically we find pervasive mathematical structure: (1) \$(\textbackslash\{\}mathbf\{pos\}\_t)\_\{t\}\$ forms a low-dimensional, continuous, and often spiral shape across layers, (2) \$(\textbackslash\{\}mathbf\{ctx\}\_c)\_c\$ shows clear cluster structure that falls into context topics, and (3) \$(\textbackslash\{\}mathbf\{pos\}\_t)\_\{t\}\$ and \$(\textbackslash\{\}mathbf\{ctx\}\_c)\_c\$ are mutually nearly orthogonal. We argue that smoothness is pervasive and beneficial to transformers trained on languages, and our decomposition leads to improved model interpretability. \newblock (@song2024uncoveringhiddengeometrytransformers)
+
+\bibitem{templeton2024scaling} Adly Templeton, Tom Conerly, Jonathan Marcus, Jack Lindsey, Trenton Bricken, Brian Chen, Adam Pearce, Craig Citro, Emmanuel Ameisen, Andy Jones, Hoagy Cunningham, Nicholas~L Turner, Callum McDougall, Monte MacDiarmid, C.~Daniel Freeman, Theodore~R. Sumers, Edward Rees, Joshua Batson, Adam Jermyn, Shan Carter, Chris Olah, and Tom Henighan \newblock Scaling monosemanticity: Extracting interpretable features from claude 3 sonnet \newblock \emph{Transformer Circuits Thread}, 2024. \newblock URL \url{https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html}. \newblock (@templeton2024scaling)
+
+\bibitem{touvron2023llama2openfoundation} Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, et~al \newblock Llama 2: Open foundation and fine-tuned chat models \newblock \emph{arXiv preprint arXiv:2307.09288}, 2023. \newblock \textbf{Abstract:} In this work, we develop and release Llama 2, a collection of pretrained and fine-tuned large language models (LLMs) ranging in scale from 7 billion to 70 billion parameters. Our fine-tuned LLMs, called Llama 2-Chat, are optimized for dialogue use cases. Our models outperform open-source chat models on most benchmarks we tested, and based on our human evaluations for helpfulness and safety, may be a suitable substitute for closed-source models. We provide a detailed description of our approach to fine-tuning and safety improvements of Llama 2-Chat in order to enable the community to build on our work and contribute to the responsible development of LLMs. \newblock (@touvron2023llama2openfoundation)
+
+\bibitem{valeriani2023geometryhiddenrepresentationslarge} Lucrezia Valeriani, Diego Doimo, Francesca Cuturello, Alessandro Laio, Alessio Ansuini, and Alberto Cazzaniga \newblock The geometry of hidden representations of large transformer models 2023. \newblock URL \url{https://arxiv.org/abs/2302.00294}. \newblock \textbf{Abstract:} Large transformers are powerful architectures used for self-supervised data analysis across various data types, including protein sequences, images, and text. In these models, the semantic structure of the dataset emerges from a sequence of transformations between one representation and the next. We characterize the geometric and statistical properties of these representations and how they change as we move through the layers. By analyzing the intrinsic dimension (ID) and neighbor composition, we find that the representations evolve similarly in transformers trained on protein language tasks and image reconstruction tasks. In the first layers, the data manifold expands, becoming high-dimensional, and then contracts significantly in the intermediate layers. In the last part of the model, the ID remains approximately constant or forms a second shallow peak. We show that the semantic information of the dataset is better expressed at the end of the first peak, and this phenomenon can be observed across many models trained on diverse datasets. Based on our findings, we point out an explicit strategy to identify, without supervision, the layers that maximize semantic content: representations at intermediate layers corresponding to a relative minimum of the ID profile are more suitable for downstream learning tasks. \newblock (@valeriani2023geometryhiddenrepresentationslarge)
+
+\bibitem{JMLR:v9:vandermaaten08a} Laurens van~der Maaten and Geoffrey Hinton \newblock Visualizing data using t-sne \newblock \emph{Journal of Machine Learning Research}, 9\penalty0 (86):\penalty0 2579--2605, 2008. \newblock URL \url{http://jmlr.org/papers/v9/vandermaaten08a.html}. \newblock (@JMLR:v9:vandermaaten08a)
+
+\bibitem{vaswani2023attentionneed} Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan~N Gomez, \L~ukasz Kaiser, and Illia Polosukhin \newblock {Attention is All you Need} \newblock In \emph{Advances in Neural Information Processing Systems}, volume~30, 2017. \newblock \textbf{Abstract:} The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data. \newblock (@vaswani2023attentionneed)
+
+\bibitem{vig2019visualizingattentiontransformerbasedlanguage} Jesse Vig \newblock Visualizing attention in transformer-based language representation models 2019. \newblock URL \url{https://arxiv.org/abs/1904.02679}. \newblock \textbf{Abstract:} We present an open-source tool for visualizing multi-head self-attention in Transformer-based language representation models. The tool extends earlier work by visualizing attention at three levels of granularity: the attention-head level, the model level, and the neuron level. We describe how each of these views can help to interpret the model, and we demonstrate the tool on the BERT model and the OpenAI GPT-2 model. We also present three use cases for analyzing GPT-2: detecting model bias, identifying recurring patterns, and linking neurons to model behavior. \newblock (@vig2019visualizingattentiontransformerbasedlanguage)
+
+\bibitem{wolf2020huggingfacestransformersstateoftheartnatural} Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu, Canwen Xu, Teven~Le Scao, Sylvain Gugger, Mariama Drame, Quentin Lhoest, and Alexander~M. Rush \newblock Huggingface's transformers: State-of-the-art natural language processing \newblock 2020. \newblock URL \url{https://arxiv.org/abs/1910.03771}. \newblock \textbf{Abstract:} Recent progress in natural language processing has been driven by advances in both model architecture and model pretraining. Transformer architectures have facilitated building higher-capacity models and pretraining has made it possible to effectively utilize this capacity for a wide variety of tasks. \textbackslash\{\}textit\{Transformers\} is an open-source library with the goal of opening up these advances to the wider machine learning community. The library consists of carefully engineered state-of-the art Transformer architectures under a unified API. Backing this library is a curated collection of pretrained models made by and available for the community. \textbackslash\{\}textit\{Transformers\} is designed to be extensible by researchers, simple for practitioners, and fast and robust in industrial deployments. The library is available at \textbackslash\{\}url\{https://github.com/huggingface/transformers\}. \newblock (@wolf2020huggingfacestransformersstateoftheartnatural)
+
+\bibitem{zhang2023sirenssongaiocean} Yue Zhang, Yafu Li, Leyang Cui, Deng Cai, Lemao Liu, Tingchen Fu, Xinting Huang, Enbo Zhao, Yu~Zhang, Yulong Chen, Longyue Wang, Anh~Tuan Luu, Wei Bi, Freda Shi, and Shuming Shi \newblock Siren's song in the ai ocean: A survey on hallucination in large language models 2023. \newblock URL \url{https://arxiv.org/abs/2309.01219}. \newblock \textbf{Abstract:} While large language models (LLMs) have demonstrated remarkable capabilities across a range of downstream tasks, a significant concern revolves around their propensity to exhibit hallucinations: LLMs occasionally generate content that diverges from the user input, contradicts previously generated context, or misaligns with established world knowledge. This phenomenon poses a substantial challenge to the reliability of LLMs in real-world scenarios. In this paper, we survey recent efforts on the detection, explanation, and mitigation of hallucination, with an emphasis on the unique challenges posed by LLMs. We present taxonomies of the LLM hallucination phenomena and evaluation benchmarks, analyze existing approaches aiming at mitigating LLM hallucination, and discuss potential directions for future research. \newblock (@zhang2023sirenssongaiocean)
+
+\bibitem{zhou2024llmsreasonmusicevaluation} Ziya Zhou, Yuhang Wu, Zhiyue Wu, Xinyue Zhang, Ruibin Yuan, Yinghao Ma, Lu~Wang, Emmanouil Benetos, Wei Xue, and Yike Guo \newblock Can llms "reason" in music? an evaluation of llms' capability of music understanding and generation \newblock 2024. \newblock URL \url{https://arxiv.org/abs/2407.21531}. \newblock \textbf{Abstract:} Symbolic Music, akin to language, can be encoded in discrete symbols. Recent research has extended the application of large language models (LLMs) such as GPT-4 and Llama2 to the symbolic music domain including understanding and generation. Yet scant research explores the details of how these LLMs perform on advanced music understanding and conditioned generation, especially from the multi-step reasoning perspective, which is a critical aspect in the conditioned, editable, and interactive human-computer co-creation process. This study conducts a thorough investigation of LLMs' capability and limitations in symbolic music processing. We identify that current LLMs exhibit poor performance in song-level multi-step music reasoning, and typically fail to leverage learned music knowledge when addressing complex musical tasks. An analysis of LLMs' responses highlights distinctly their pros and cons. Our findings suggest achieving advanced musical capability is not intrinsically obtained by LLMs, and future research should focus more on bridging the gap between music knowledge and reasoning, to improve the co-creation experience for musicians. \newblock (@zhou2024llmsreasonmusicevaluation)
+\end{thebibliography}
+
+\clearpage
+
+\appendix
+\textbf{\LARGE Appendix}
+
+\section{Additional methods and derivations}
+
+\subsection{Pseudo-sentences}
+\label{app:pseudosentences}
+Random sample of 10-token pseudo-sentences (non-consecutive) extracted from \textit{Walden}.
+Similar chunks, but of 50 tokens, were passed through GPT2 to form trajectories.
+\begin{verbatim}
+| not been made by my townsmen concerning my mode
+| to pardon me if I undertake to answer some of
+| writer, first or last, a simple and sincere
+| would fain say something, not so much concerning
+| Brahmins sitting exposed to four fires and looking
+| more incredible and astonishing than the scenes which I daily
+| and farming tools; for these are more easily acquired
+|. How many a poor immortal soul have I met
+| into the soil for compost. By a seeming fate
+| as Raleigh rhymes it in his sonorous way
+|il, are too clumsy and tremble too much
+| the bloom on fruits, can be preserved only by
+\end{verbatim}
+
+\subsection{Langevin equation derivation}
+\label{app:lengevin-derivation}
+Starting from
+\begin{equation*}
+   \vx(t+\tau) = \mR(t+\tau) \mathbf{\Lambda}(t, \tau) \mR(t) \vx(t) + \vw(t, \tau),
+\end{equation*}
+with $\Lambda(t,\tau) = \mathbf{\Sigma}(t+\tau) \mathbf{\Sigma}^{-1}(t)$, and assuming now that $t, \tau$ are variables in $\R$, as $\tau$ goes to 0 we can approximate:
+
+\begin{equation*}
+\mR(t+\tau) \approx \mR(t) + \tau \dot{\mR}(t)    
+\end{equation*}
+and
+\begin{equation*}
+    \mathbf{\Sigma}(t + \tau) \approx \mathbf{\Sigma}(t) + \tau \dot{\mathbf{\Sigma}(t)},
+\end{equation*}
+leading to:
+\begin{equation*}
+    \mathbf{\Lambda}(t, \tau) \approx \left( \mathbf{\Sigma}(t) + \tau \dot{\mathbf{\Sigma}}(t) \right) \mathbf{\Sigma}^{-1}(t) = \mI + \tau \mathbf{\Sigma}^{-1}(t) \dot{\mathbf{\Sigma}}(t).
+\end{equation*}
+
+Hence:
+\begin{align*}
+     \mR(t+\tau) \mathbf{\Lambda}(t, \tau) \mR(t)^{\top} &\approx 
+     \left( \mR(t) + \tau \dot{\mR}(t) \right) \left( \mI + \tau \dot{\mathbf{\Sigma}}(t) \mathbf{\Sigma}^{-1}(t) \right) \mR(t)^{\top} \\
+     &\approx \mI + \tau \left( \dot{\mR}(t) \mR(t)^{\top} + \mR(t) \dot{\mS}(t) \mR(t)^{\top} \right),
+\end{align*}
+given that $\mR\mR^{\top} = \mI$ and with $\mS(t) = \text{diag}\left(\ln{\sigma_i(t)}\right)$ and thus $\dot{\mS}(t) = \text{diag}(\dot{\sigma}_i/\sigma_i)$.
+
+The variance of the noise term is given by:
+\begin{equation*}
+    \text{var} = \alpha \exp(\lambda(t+\tau)) \approx \alpha \exp(\lambda t) (1 + \lambda \tau).
+\end{equation*}
+
+The increment of variance over time  $\tau$ is:
+\begin{equation*}
+    \delta[\text{var}] = \alpha \lambda \exp(\lambda t) \tau.
+\end{equation*}
+This means the noise term can be expressed as:
+\begin{equation*}
+    \vw (t, \tau) = \sqrt{\alpha \lambda \exp(\lambda t) \tau} \cdot \vec{\eta},
+\end{equation*}
+where $\vec{\eta}$ is a vector of standard Gaussian random variables.
+
+Putting everything together:
+\begin{equation*}
+    \vx (t + \tau) - \vx (t) = \tau \left( \dot{\mR}(t) \mR(t)^{\top} + \mR(t) \dot{\mS}(t) \mR(t)^{\top} \right) \vx (t) + \sqrt{\alpha \lambda \exp(\lambda t) \tau} \, \mathbf{\eta} (t).
+\end{equation*}
+And finally:
+\begin{equation*}
+    d\vx (t) = \left( \dot{\mR}(t) \mR(t)^{\top} + \mR(t) \dot{\mS}(t) \mR(t)^{\top} \right) \vx(t) dt + \sqrt{\alpha \lambda \exp(\lambda t)} \, d\vw(t),
+\end{equation*}
+with $d\vw(t)$ a Wiener process.
+
+\subsection{Numerical integration}
+\label{app:simulations}
+
+Numerical integration of~\\ef{eq:langevin} requires to interpolate the singular vectors and values, and their derivatives, at non-integer times.
+
+Interpolation of (scalar) singular values is straightforward. 
+We use a polynomial interpolation scheme for each value, and compute the corresponding polynomial derivative.
+This yields $\dot{\sigma_i}(t)/\sigma_i(t)$ for every coordinate $i$ at any time $t \in [1, 24]$, and hence $\dot{\mS}(t)$.
+
+Interpolating sets of orthogonal vectors presents significant challenges. A rigorous approach involves performing the interpolation within the compact Stiefel manifold, followed by a reprojection onto the horizontal space~\cite{PRAVEEN2023115971}. However, this method is computationally expensive and can introduce discontinuities, which are problematic for numerical integration. To address these issues, we used an approximation based on the matrix logarithm, which simplifies the process while maintaining an acceptable level of accuracy. 
+To interpolate between $\mU_1$ and $\mU_2$ at $t_1, t_2$, we compute the relative rotation matrix $\mR = \mU_1^{\top} \mU_2$ and interpolate using
+\begin{equation}
+    \mU(t) = \mU_1 \exp_\mathrm{M}(\alpha \ln_\mathrm{M}{\mR}).
+\end{equation}
+where $\alpha = (t-t_1)/(t_2-t_1)$ and with $\ln_\mathrm{M}, \exp_\mathrm{M}$ denoting the matrix logarithm and exponential, respectively.\footnote{
+$\exp_\mathrm{M} (\mA) = \sum \mA^k/k!$ and $\ln_M$ is the inverse function: $\ln_\mathrm{M} \left[ \exp_\mathrm{M} (\mA)\right] = \mI$.
+}
+This also yields the derivative $\dot{\mU}(t) = \left[ \mU \ln_M{\mR} \right] /(t_2 - t_1)$.
+Indeed:
+\begin{equation*}
+    \dot{\mU} = \mU_1 \cdot \frac{d}{dt} \exp \left( \alpha(t) \ln{\mR} \right)
+    = \mU_1 \dot{\alpha} \ln{\mR} \exp{\alpha(t) \ln{\mR}}
+    = \dot{\alpha} \mU \ln{\mR}.
+\end{equation*}
+
+
+\section{Supplementary figures and schematics}
+\label{app:supp-figures}
+
+\subsection{Trajectory clustering}
+\label{app:traj-clustering}
+
+In \\ef{fig:clustering}, we show evidence of trajectory clustering in the latent space.
+In particular, all pilot tokens get transported away from the origin (or their starting point) by a comparable amount, resulting in narrow distributions along the first singular direction.
+Another signature of clustering is the fact that token positions at different times form distinct clusters, as showed by low-dimensional t-SNE representation~\citep{JMLR:v9:vandermaaten08a}.
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[scale=1]{fig/figS-clustering.pdf}}
+\caption{
+(Left)~Distributions along the first singular vector at different times. 
+(Right)~Low-dimensional (t-SNE) visualization of the clustering of tokens, notably across different times. Same color legend.
+}
+\label{fig:clustering}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+\subsection{Trajectory extrapolation}
+\label{app:traj-extrapolation}
+In \\ef{fig:extrapolation-schematic}, we provide a schematic to explain the reasoning behind \\ef{eq:langevin-discrete}.
+\emph{If} the cluster rotated and stretched like a solid, the position of a point $\vx'$ at $t'$ could be inferred \emph{exactly} from it position $\vx$ at $t$, using the formula outlined.
+However, unsurprisingly, the token ensemble does not maintain its topology and the points move around the clusters, requiring the stochastic term $\rvw$ injected in \\ef{eq:langevin-discrete}.
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig/fig_extrapolation_schematic.pdf}}
+\caption{
+Extrapolation between $t$ and $t'$. 
+The extrapolated location $\vx'$ corresponds to the rotated and stretched position of $\vx$.
+Given that $\vec{u} = \mR \vec{e}$, $\vec{u}' = \mR' \vec{e}$ and $\mR^{-1} = \mR^{\top}$, we have $\vec{e} = \mR^{\top} \vec{u} = \mR'^{\top} \vec{u}'$ and thus $\vec{u}' = \mR' \mR^{\top} \vec{u}$.
+}
+\label{fig:extrapolation-schematic}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+
+\subsection{Noise statistics}
+\label{app:noise-stat}
+\\ef{fig:noise-details} provides additional details pertaining to the distribution of residuals $\delta_x$. 
+Since they are many dimensions and time points, it gives only representative snapshots.
+It intends to substantiate the results that:
+\begin{itemize}
+    \item the $\delta \vx$ are Gaussian (\\ef{fig:noise-details}A);
+    \item the variance is exponential in $(t+\tau)$, with no dependency on $t$ (\\ef{fig:noise-details}B);
+    \item all components $\delta x_i$ of $\delta \vx$ have the same distribution (\\ef{fig:noise-details}C), i.e., isotropy;
+    \item there are no spatial cross-correlations, i.e. $\langle \delta x_i \delta x_j \rangle = \delta_{ij}$ (Dirac function) (\\ef{fig:noise-details}D).
+\end{itemize} 
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig/figS_noise_details_v01.pdf}}
+\caption{
+Statistics of $\delta \mathbf{x}$.
+(A)~Empirical PDF of $\delta x_{42}(10,t+\tau)$, with $t+\tau = 12, 14, 16$.
+The curves appear Gaussian.
+(B)~Variance of $\delta x_i$ for $i = 1 \dots 8$, for $t = 4,8,12,16$ and $t+\tau > t$.
+(C)~Empirical PDF of $\delta x_i (12, 14)$ for $i=1 \dots 1024$. The curves are similar for almost all coordinates.
+(D)~Cross correlations of $\delta x_i$ and $\delta x_j$.
+}
+\label{fig:noise-details}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+
+\subsection{Details on noise aggregated statistics (\\ef{fig:delta})}
+
+\\ef{fig:noise-schematic} explains how the noise plots such as~\\ef{fig:delta} are created.
+We use ensemble averages $\langle \dots \rangle$ of the \emph{absolute values} for $|\mu_i|, |\kappa_i|$ since we are interested in the average \emph{distances} from 0.
+%The ensemble of residuals $\delta \vx$ across two time points $t$ and $t+\tau$ form a distribution along each coordinate.
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig/figS-noise-schematic-v03.pdf}}
+\caption{
+Schematic to explain the noise figures such as \\ef{fig:delta}.
+Each square represents a summary statistics.
+Specifically, the square at $(t,t+\tau)$ represents the distribution of $\{ \delta \vx^{(k)}(t,t+\tau) \}_k$, with $k$ indexing individual tokens.
+The $\delta \vx$ along each coordinate $i$ form a distribution, from which one can extract the corresponding $\mu_i, \sigma_i, \kappa_i$ (mean, variance, kurtosis). 
+These 1D moments are then averaged along all coordinates $i$ ($\langle \mu_i \rangle_i$, etc.), forming the value displayed in the square.
+}
+\label{fig:noise-schematic}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+
+\subsection{Null testing}
+\label{app:null-testing}
+\\ef{fig:null-testing} shows the trajectories of language vs gibberish, as well as the linear separability of the two ensemble.
+It also shows trajectories for an untrained GPT-2 shell, and a model with only the last 12 layers reinitialized.
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig/figS_null_testing_v01.png}}
+\caption{
+(Top-left)~Trajectories of non-language (red) vs language (black), plotted in the same axes (10-token pseudo-sentences).
+(Top-right)~Accuracy of linear separability between language and non-language for each layer. Obtained by training a Perceptron (train/test: 0.7/0.3; 14000 trajectories).
+(Bottom-left)~Trajectories in the untrained GPT-2 model. They are transported in straight lines.
+(Bottom-right)~Trajectories in the mixed model. After being transported by trained layers 1-12, the trajectories stop. Layers 13-24 with random weights do not transport tokens any further.
+}
+\label{fig:null-testing}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+% \begin{figure}[htbp]
+% \vskip 0.2in
+% \begin{center}
+% \centerline{\includegraphics[width=0.8\columnwidth]{fig/figS-histogram.png}}
+% \caption{
+% Statistics of $\delta \mathbf{x}$ with $t=12$.
+% }
+% \label{fig:low-dim}
+% \end{center}
+% \vskip -0.2in
+% \end{figure}
+
+% \begin{figure}[htbp]
+% \vskip 0.2in
+% \begin{center}
+% \centerline{\includegraphics[width=0.8\columnwidth]{fig/figS-var.png}}
+% \caption{
+% Variance $\sigma^2$ along $\ve^{(i)}$ for $i = \{1,2,\dots,8\}$, and for $t = \{4,8,12,16 \}$.
+% It is apparent that $\sigma^2 \sim \exp(t+\tau)$.
+% }
+% \label{fig:low-dim}
+% \end{center}
+% \vskip -0.2in
+% \end{figure}
+
+\subsection{Results with other models}
+\label{app:llama}
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/figS_gpt2u_noise_v01.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textsc{GPT-2 untrained}.
+The averaged excess kurtoses $\langle \vert \kappa \vert \rangle$ fall in the 1\text{--}1.5 range, indicating strong non-gaussianity. 
+The variance does not scale solely with $t+\tau$.
+% “Leptokurtic” or “Platykurtic”
+}
+\label{fig:gpt2-untrained-noise}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/figS_llama27B_noise_v01.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textsc{Llama~2~7B}: noise statistics, $\delta\vx(t,t+\tau) = \vx(t+\tau) - \Tilde{\vx}(t,\tau)$, averaged $\langle \cdots \rangle$ over all Cartesian dimensions, for 1000 trajectories (50-token chunks).
+\textbf{(a)}~Mean over standard deviation.
+\textbf{(b)}~Logarithm of variance.
+\textbf{(c)}~ Excess kurtosis (0 means Gaussian).
+}
+\label{fig:llama2-noise}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/figS_mistral_noise_v01.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textsc{Mistral~7B~v0.1}. 
+The last layer (32) appears to have an anomalously large variance.
+}
+\label{fig:mistral-noise}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/figS_llama321B_noise_v01.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textsc{Llama~3.2~1B}. 
+This small model all present an out-of-distribution last layer.
+}
+\label{fig:llama3.2-1B-noise}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[htbp]
+\vskip 0.2in
+\begin{center}
+    \begin{overpic}[width=\textwidth]{fig/figS_llama323B_noise_v01.pdf}
+        \put(-1, 34.5){\colorbox{white}{\textbf{(a)}}} 
+        \put(33, 34.5){\colorbox{white}{\textbf{(b)}}} 
+        \put(67, 34.5){\colorbox{white}{\textbf{(c)}}}
+    \end{overpic}
+\end{center}
+\caption{
+\textsc{Llama~3.2~3B}. The last layer anomaly is also present.
+}
+\label{fig:llama3.2-3B-noise}
+\vskip -0.2in
+\end{figure}
+
+
+\end{document}

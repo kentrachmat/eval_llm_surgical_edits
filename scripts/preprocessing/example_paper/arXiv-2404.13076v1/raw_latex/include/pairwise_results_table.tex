@@ -1,0 +1,54 @@
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|cccc}
+                                           & \multicolumn{2}{c}{XSUM} & \multicolumn{2}{c}{CNN}\\ 
+        Evaluator Model                    & Self-Recognition & Self-Preference & Self-Recognition & Self-Preference \\
+        \hline
+        & \multicolumn{4}{c}{\textbf{No Fine-Tuning}} \\
+        GPT-4                              & 0.672       & 0.705       & 0.747       & 0.912       \\
+        GPT-3.5                            & 0.535       & 0.582       & 0.481       & 0.431       \\
+        Llama-2-7b                         & 0.514       & 0.511       & 0.505       & 0.505       \\
+        \multicolumn{5}{c}{} \\
+        \multicolumn{1}{c}{} & \multicolumn{4}{c}{\textbf{GPT-3.5 Fine-Tuning Runs on XSUM (In-Domain)}} \\
+        Self-Rec (2 examples)              & 0.631       & 0.618       & 0.453       & 0.376       \\
+        Self-Rec (10 examples)             & 0.674       & 0.657       & 0.489       & 0.421       \\
+        Self-Rec (500)                     & 0.896       & 0.898       & 0.738       & 0.75        \\
+        Always 1                           & 0.5         & 0.5         & 0.5         & 0.5         \\
+        Random                             & 0.5         & 0.5         & 0.5         & 0.5         \\
+        Readability                        & 0.405       & 0.399       & 0.505       & 0.531       \\
+        Length                             & 0.572       & 0.567       & 0.474       & 0.427       \\
+        Vowel count                        & 0.6         & 0.598       & 0.416       & 0.326       \\
+        \multicolumn{5}{c}{} \\
+        \multicolumn{1}{c}{} & \multicolumn{4}{c}{\textbf{GPT-3.5 Fine-Tuning Runs on CNN (Out-of-Domain)}} \\
+        Self-Rec (2)                       & 0.62        & 0.587       & 0.497       & 0.423       \\
+        Self-Rec (10)                      & 0.649       & 0.627       & 0.587       & 0.487       \\
+        Self-Rec (500)                     & 0.764       & 0.787       & 0.959       & 0.97        \\
+        Always 1                           & 0.5         & 0.5         & 0.5         & 0.5         \\
+        Random                             & 0.5         & 0.5         & 0.5         & 0.501       \\
+        Readability                        & 0.45        & 0.416       & 0.617       & 0.629       \\
+        Length                             & 0.574       & 0.572       & 0.169       & 0.188       \\
+        Vowel count                        & 0.608       & 0.586       & 0.176       & 0.171       \\
+        \multicolumn{5}{c}{} \\
+        \multicolumn{1}{c}{} & \multicolumn{4}{c}{\textbf{Llama-2-7b Fine-Tuning Runs on XSUM (In-Domain)}} \\
+        Self-Rec (2)                       & 0.592       & 0.743       & 0.799       & 0.905       \\
+        Self-Rec (10)                      & 0.526       & 0.665       & 0.681       & 0.81        \\
+        Self-Rec (500)                     & 0.454       & 0.485       & 0.793       & 0.788       \\
+        Always 1                           & 0.5         & 0.5         & 0.5         & 0.5         \\
+        Random                             & 0.543       & 0.648       & 0.618       & 0.753       \\
+        Readability                        & 0.558       & 0.709       & 0.675       & 0.794       \\
+        Length                             & 0.342       & 0.483       & 0.535       & 0.804       \\
+        Vowel count                        & 0.481       & 0.576       & 0.781       & 0.903       \\
+        \multicolumn{5}{c}{} \\
+        \multicolumn{1}{c}{} & \multicolumn{4}{c}{\textbf{Llama-2-7b Fine-Tuning Runs on CNN (Out-of-Domain)}} \\
+        Self-Rec (2)                       & 0.357       & 0.502       & 0.567       & 0.703       \\
+        Self-Rec (10)                      & 0.519       & 0.656       & 0.665       & 0.825       \\
+        Self-Rec (500)                     & 0.556       & 0.434       & 0.592       & 0.5         \\
+        Always 1                           & 0.5         & 0.5         & 0.949       & 0.933       \\
+        Random                             & 0.673       & 0.676       & 0.638       & 0.654       \\
+        Readability                        & 0.501       & 0.464       & 0.495       & 0.489       \\
+        Length                             & 0.489       & 0.487       & 0.548       & 0.541       \\
+        Vowel count                        & 0.58        & 0.581       & 0.571       & 0.581       \\
+    \end{tabular}
+    \caption{Pairwise results (self-recognition and self-preference scores) on the XSUM and CNN datasets.}
+    \label{table:pairwise_results}
+\end{table}

@@ -1,0 +1,331 @@
+\begin{figure*}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/model_diagram.pdf}  % Use one of the provided example images
+  \caption{\textbf{Illustration of the DeNetDM framework}: In Stage 1, an ensemble of shallow and deep branches produces outputs linearly combined and trained as a product of experts. The cross-entropy loss with depth modulation aids in separating biases and identifying target attributes. In Stage 2, we further introduce a target branch with the desired architecture, which also requires debiasing. This phase exclusively focuses on refining the target branch's feature extractor ($\phi_{t}$) and classifier head ($f_{t}$) while leveraging knowledge from the initial stages.}
+  \label{fig:block_diagram}
+\end{figure*}
+
+\section{Debiasing by Network Depth Modulation}
+\label{sec:DenetDM}
+First, we theoretically justify that the deeper models are more inclined to learn spurious correlations compared to shallow networks, as discussed in \cref{sec:theory}. We then provide empirical evidence to support our theoretical claims by utilizing feature decodability, detailed in \cref{sec:linear_decodability_analysis}. Based on these, we introduce DeNetDM, a debiasing approach centered on network depth modulation.
+% We propose DeNetDM, a debiasing approach based on network depth modulation, inspired by the findings discussed in \cref{sec:linear_decodability_analysis}. 
+Our training process comprises two stages: initially, a deep and shallow network pair is trained using a training paradigm that originates from
+% we train a pair of deep and shallow networks using a 
+Products of Experts \citep{Hinton:02}, yielding both biased and debiased models, which is detailed in \cref{sec:poe_training}.
+Subsequently, recognizing the limitations of the shallow debiased model in capturing core feature complexities due to its depth, we proceed to train a target debiased model, ensuring it possesses the same or higher depth compared to the deep biased model. This phase leverages information acquired from the biased and debiased models in the previous step, as elaborated in \cref{sec:target_debiased_training}. An illustration of DeNetDM is provided in \cref{fig:block_diagram}.
+
+% \abhra{
+\myparagraph{Notations:}
+% We operate on a dataset $X$, where $\eta$ fraction of the data points, denoted with $X_a$, are bias-aligned and the remaining $(1 - \eta)$ points, denoted with $X_c$, are bias conflicting.
+We operate on a dataset $X$, where a fraction of the data points, denoted with $X_a$, are bias-aligned and the remaining points, denoted with $X_c$, are bias conflicting.
+% Let $\phi_n: X \to \mathbb{R}^n$ \anjan{should be $\mathbb{R}$}
+% \anjan{I would change one of the $n$s, also in the later sections we are using $\phi_b$ and $\phi_d$ to respectively denote biased and debiased branches, I think an alternative notation would be useful}
+% be an encoder of depth $n$ \change{(\ie, $\texttt{depth}(\phi)=n$)} that produces an embedding $z \in \mathbb{R}^n$ for an input $x \in X$.
+Let $\phi: X \to \mathbb{R}^n$ be an encoder that produces an embedding $z \in \mathbb{R}^n$ for an input $x \in X$.
+We denote the effective rank \citep{roy2007effrank} of a matrix $A$ as $\rho(A)$, which gives us a continuous notion of the size of the span (rank) of $A$, a quantity that is maximized under equally distributed singular values, and minimized when a single singular value dominates over the rest \citep{huh2023simplicitybias}. Let $B$ and $C$ be the set of bias and core attributes respectively, both with strictly positive ranks, defining bases that are orthogonal to each other, \ie, $B \perp C$. A summary of notations is provided in \cref{sec:notations}.
+% }
+
+% \abhra{
+\subsection{Simplicity Bias and Spurious Correlations}
+% }
+
+\label{sec:theory}
+
+% \abhra{
+% We start by showing that bias-conflicting data points are inherently difficult to learn than those that are bias-aligned. This leads us to a formal understanding of the relationship between the depth $n$ of an encoder $\phi_n$ \anjan{please make the depth notation consistent with sec. 3.3} and the nature of the subset of $X$ (bias-aligned or bias-conflicting) that it learns with lower generalization error.
+% This leads us to understanding of the relationship between the depth of a neural encoder and the nature of the subset of $X$ (bias-aligned or bias-conflicting) that it learns with lower generalization error.
+Debiasing with network depth modulation requires understanding how the depth of a neural network affects its learning of bias-aligned or bias-conflicting subsets of $X$ with lower generalization error.
+These results finally let us build up to our finding that deeper networks are more susceptible to learning spurious features over their shallower counterparts. All proofs are deferred to \cref{sec:proofs}.
+% }
+
+% \abhra{
+\begin{definition}[Stability]
+    A partitioning $X = X_1 \cup X_2... \cup X_m$ of a sample set $X$ is stable \textit{wrt.} an attribute $\omega$ when:
+    \begin{equation*}
+        P(X_i^\omega) = P(X^\omega); \forall i \in [1, m],
+    \end{equation*}
+    % where $S^\omega$ is the subspace of the sample set $S$ corresponding to the attribute $\omega$, and $P(\cdot)$ is the associated probability distribution.
+    where $X^\omega$ and $X_i^\omega$ are the respective subspaces of $X$ and $X_i$ corresponding to the attribute $\omega$, and $P(\cdot)$ is the associated probability distribution.
+\end{definition}
+% }
+
+% \abhra{
+% In other words, the distribution of $\omega$ in each of the partitions $X_i$ is an invariant under the partitioning operation, and hence, is the same as the distribution of the full sample set $X$.
+For example, if $\omega$ follows a uniform distribution in $X$, a stable partitioning would ensure that each of the partitions $X_i$ also have $\omega$ distributed uniformly.
+Stability ensures that a partitioning does not introduce sampling bias into any of the partitions \textit{wrt.} a particular attribute.
+% }
+
+% \anjan{is it possible to provide a toy example to guide the readers better understand the above definition?}
+
+% \abhra{
+\begin{theorem}[Partition Rank]
+    % % Let $\beta_a$ and $\beta_c$ be the respective variances in the core attributes in $X_a$ and $X_c$ respectively.
+    % Let $C$ be the random variable corresponding to the core attributes in $X$.
+    % When the partitioning $X = X_a \cup X_c$ is stable \textit{wrt.} $C$, the effective rank of the bias-aligned partition is strictly lower than the effective rank of the bias-conflicting partition, \ie,
+    % \begin{equation*}
+    %     \erank{X_a} < \erank{X_c}
+    % \end{equation*}
+    When the partitioning $X = X_a \cup X_c$ is stable \textit{wrt.} $C$, the rank of the bias-aligned partition is upper-bounded by the rank of the bias-conflicting partition, \ie,
+    \begin{equation*}
+        \operatorname{rank}(X_a) \leq \operatorname{rank}(X_c)
+    \end{equation*}    
+    
+    \label{thm:pr}
+\end{theorem}
+% }
+% \abhra{
+\textit{Intuition}:
+    The theorem assumes a stable partitioning of the sample set X. It implies that, in both the bias-aligned and conflicting subsets, the distribution of the core attributes are equal to that of the original sample set, \ie, $P(X_a^C) = P(X_c^C) = P(X^C)$. Under this condition, the only component in either of the subsets that determines the subset's rank should be the bias attributes, assuming (without loss of generality) that the attribute space is made up of only the core and the bias attributes. The proof proceeds by establishing that the rank of the bias attributes is lower in the bias-aligned points (resulting from the lack of intra-class variation due to spurious correlation with the class label) than in the bias-conflicting points. 
+% }
+
+% \abhra{
+% \textit{Proof Sketch}:
+%     The theorem assumes a stable partitioning of the sample set X, \ie, in both the bias-aligned and conflicting subsets, the distribution of the core attributes are equal to that of the original sample set, \ie,
+%     \begin{equation*}
+%         P(X_a^C) = P(X_c^C) = P(X^C)
+%     \end{equation*}
+%     Under this condition, the only component in either of the subsets that determines the subset's rank should be the bias attributes, assuming (without loss of generality) that the attribute space is made up of only the core and the bias attributes. Now, within $X_a$, the variance of the bias attributes is very low by definition, since they all consistently exhibit the same bias. This in turn leads to a low effective rank of the subspace $X_a^B$.  On the other hand, for $X_c$, again by definition, the bias attributes do not occur consistently due to the bias-conflicting nature of the subset, which leads to a higher overall variance, and consequently, a higher effective rank of the subspace $X_c^B$. As argued before, under the core attribute stability assumption, since the effective rank is solely determined by the bias attribute subspace, the effective rank of the bias-aligned partition is lower than that of the one that is bias-conflicting.
+% }
+
+% \abhra{
+\begin{theorem}[Depth-Rank Duality]
+    \label{thm:drd}
+    % If two attributes $A_1$ and $A_2$ are equally likely to lead to the same solution to ERM, a deeper network is more likely to choose the one with a lower rank.
+    % Let $\mathcal{A} = \{ A_0, A_1, A_2, ..., A_n \}$ be a set if attributes, where the attribute with the lowest effective rank is $A_{min}$, and all of which equally minimize the empirical risk $\operatorname{\mathcal{L}}(f(\phi(X)), Y)$, where $f(\cdot)$ is a classifier head. If the effective rank of the representation space of $\phi$ is no greater than $A_{min}$, then SGD is more likely to yield a parameterization of $\phi$ that uses $A_{min}$ as the solution, by solving the following optimization problem:
+    % \begin{equation*}
+    %     \min_{\phi} \operatorname{\mathcal{L}}(f(\phi(X)), Y) + \norm{ \phi(X) - \min_{A \in \mathcal{A}} \rho(A)}_2,
+    % \end{equation*}
+    % where $\norm{\cdot}_2$ is the $l^2$-norm.
+    % 
+    %  Let $\mathcal{A} = \{ A_0, A_1, ..., A_n \}$ be an ordered set if attributes of X with increasing effective ranks, \ie, $\erank{A_0} < \erank{A_1} < ... < \erank{A_n}$, and all of which equally minimize the empirical risk $\operatorname{\mathcal{L}}(f(\phi(X)), Y)$, where $f(\cdot)$ is a classifier head. If the effective rank of the representation space of $\phi$ is no greater than $A_{min}$, then SGD is more likely to yield a parameterization of $\phi$ that uses $A_{min}$ as the solution, by solving the following optimization problem:
+    % \begin{equation*}
+    %     \min_{\phi} \operatorname{\mathcal{L}}(f(\phi(X)), Y) + \norm{ \sum_{i} \phi_i(X) - \left (    \mathcal{A} \setminus \bigcup\limits_{j=n}^{n-j} \mathcal{A}_j  \right ) }_2,
+    % \end{equation*}
+    % where $\phi_i(\cdot)$ is the output of the network at depth $i$, the union is upper-bound exclusive, and $\norm{\cdot}_2$ is the $l^2$-norm.
+    % 
+    % Let $\mathcal{A} = \{ A_0, A_1, ..., A_n \}$ be an ordered set of attributes of X with increasing effective ranks, \ie, $\erank{A_0} < \erank{A_1} < ... < \erank{A_n}$, and all of which equally minimize the empirical risk $\operatorname{\mathcal{L}}(f(\phi(X)), Y)$, where $f(\cdot)$ is a classifier head.
+    % 
+    % 
+    % 
+    % Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    % such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    % % and all of which equally minimize the empirical risk $\operatorname{\mathcal{L}}(f(\phi(X)), Y)$, where $f(\cdot)$ is a classifier head.
+    % Then, across the depth of the encoder $\phi$, SGD yields a parameterization that optimizes the following objective:
+    % \begin{equation*}
+    % \min_{\phi, f} \operatorname{\mathcal{L}}(f(\phi(X)), Y) + \norm{ \sum_{i} \phi[i](X) - \Omega_i(\mathcal{A}) \odot \mathcal{A} }_2,
+    % \end{equation*}
+    % \anjan{please check the second part in the above equation, I have changed $\phi_i(X)$ to $\phi[i](X)$} where $\mathcal{L}(\cdot)$ is the empirical risk, $f(\cdot)$ is a classifier head, $\phi[i](\cdot)$ is the output of the encoder $\phi$ (optimized end-to-end) at depth $i$, $\norm{\cdot}_2$ is the $l^2$-norm, $\odot$ is the element-wise product, and $\Omega_i(\mathcal{A})$ is a probability distribution over the elements $A \in \mathcal{A}$, where the corresponding probability masses are given by:
+    % \begin{equation}
+    %     \Pr(A) = \frac{\erank{A}^{-i}}{\sum\limits_{j} \erank{A}^{-j}},
+    %     \label{eqn:pos}
+    % \end{equation}
+    % which gives the probability of survival of an attribute $A$ at depth $i$, where the sum in the denominator is over the entire depth of $\phi$.
+    Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    Then, across the depth of the encoder $\phi$, SGD yields a parameterization that optimizes the following objective:
+    \begin{equation}
+    \underbrace{\min_{\phi, f} \operatorname{\mathcal{L}}(f(\phi(X)), Y)}_\text{ERM} + \min_{\phi} \sum_d \norm{ \phi[d](\Tilde{X}) - \Omega^d \odot \mathcal{A}}_2,
+    \label{eqn:drd_opt}
+    \end{equation}
+    where 
+    $\mathcal{L}(\cdot, \cdot)$ is the empirical risk, $f(\cdot)$ is a classifier head, $\phi[i](\cdot)$ is the output of the encoder $\phi$ (optimized end-to-end) at depth $d$, $\norm{\cdot}_2$ is the $l^2$-norm, $\odot$ is the element-wise product,
+    % 
+    $\Tilde{X}$ is the $l_2$-normalized version of $X$,
+    $\Omega^d = [\mathbbm{1}_{\pi_1(d)}; \mathbbm{1}_{\pi_2(d)}; ...; \mathbbm{1}_{\pi_n(d)}]$,
+    $\mathbbm{1}_\pi$ is a random binary function that outputs $1$ with a probability $\pi$, and $\pi_i(d)$ is the propagation probability of $A_i$ at depth $d$ bounded as:
+    % \begin{equation}
+    %     \pi_i(d) = \mathcal{O}(\erank{\phi[d]}^{-1} r_i^{-d}),
+    %     \label{eqn:pos}
+    % \end{equation}
+    \begin{equation}
+        \pi_i(d) = \mathcal{O}\left( \erank{\phi[d]} \, r_i^{-d} \right),
+        \label{eqn:pos}
+    \end{equation}
+    where $\erank{\phi[d]}$ is the effective rank of the $\phi[d]$ representation space, and $r_i = \operatorname{rank}(A_i)$.
+\end{theorem}
+% }
+
+% \abhra{
+\textit{Intuition}:
+    For a set of attributes, all of which equally minimize the training loss, \cref{thm:drd} describes the strategy adopted by SGD to parameterize a neural encoder, for capturing the above set of attributes. At a given depth $d$ of the encoder $\phi$ (represented as $\phi[d]$), each attribute $A_i \in \mathcal{A}$ gets encoded in the representation space of $\phi[d]$ according to its corresponding probability mass $\pi_i(d)$.
+    According to \cref{eqn:pos}, the probability of survival of all attributes decrease with increasing depth. However, the probability of survival of an attribute with a higher rank drops faster with increasing depth than that of one with a lower rank, prioritizing the usage of lower rank attributes at greater depths. In other words, the depth of a network acts as an implicit regularizer in the attribute rank space. 
+    % }
+    
+    % \abhra{
+    As an example, say, a neural network $\phi$ of depth $d$ (denoted as $\phi[d]$) has $3K$ available dimensions, and of depth $D > d$, $\phi[D]$ has $K$ available dimensions (the rank reduction with increasing depth stemming from the simplicity bias \citep{huh2023simplicitybias, wang2024implicit}). Say the attribute space it has to learn from is composed of two attributes: (1) $A_0$, with a rank of $K$, and (2) $A_1$, with a rank of $K+i$, where $1 \leq i \leq K$, where both $A_0$ and $A_1$ are equal minimizers of the empirical risk. So, according to \cref{thm:drd}, at $\phi[d]$, the encoder has no constraint over the number of attributes it can accommodate, since $3K \geq 2K + i$. However, at depth $D$,
+    % \anjan{are you meaning depth or output at depth $D$? please adjust the notation, also check the next $\phi_D$ at the end of this paragraph, I think it should be $\phi[D]$},
+    $\phi[D]$ can only choose an attribute with $K$ dimensions. Since both $A_0$ and $A_1$ result in the same solution for ERM (Empirical Risk Minimization), SGD would parameterize $\phi[D]$ to capture $A_0$ with a higher probability. 
+    % \abhra{All comments in this paragraph are now addressed.}
+    % }
+
+% % \abhra{
+% \begin{theorem}[Decodability Conservation]
+%     Let $C$ and $B$ be the random variables corresponding to the core and the bias attributes respectively in $X$. If $\erank{X^B} < \erank{X^C}$, then for a trained network $\phi$ of any given depth $ > 0$:
+%     \begin{equation*}
+%         % \int\limits_{m}^{\infty}\operatorname{\mathcal{D}} \left( \phi_n(X), Y^C \right) + \operatorname{\mathcal{D}} \left( \phi_n(X), Y^B \right) dn = K
+%         \operatorname{\mathcal{D}} \left( \phi(X), Y^C \right) + \operatorname{\mathcal{D}} \left( \phi(X), Y^B \right) = K
+%     \end{equation*}
+%     where $\operatorname{\mathcal{D}}(\cdot, Y^C)$ and $\operatorname{\mathcal{D}}(\cdot, Y^B)$ are the linear decodabilities \anjan{before this point, we should have some notion of decodabilities, otherwise things are not meaningful} of the core and bias attributes respectively,
+%     % , $m$ is a minimum depth corresponding to the optimal decodability of the core attributes, \ie,
+%     % \begin{equation*}
+%     %     m = \argmax_{n}[\operatorname{\mathcal{D}} \left( \phi_0(X), Y^C \right), \operatorname{\mathcal{D}} \left( \phi_1(X), Y^C \right),..., \operatorname{\mathcal{D}} \left( \phi_\infty(X), Y^C \right)]
+%     % \end{equation*}
+%     and $K$ is a constant.
+%     \label{thm:conservation}
+% \end{theorem}
+% % }
+% % \anjan{$m$ is also used in Definition 1 for a different purpose}
+
+% % Proof strategy: Add a lemma to show that the linear decodability of core attributes is a monotonically decreasing function of depth, and that of the bias attributes is monotonically increasing. This would also help justify the lower limit of the integral.
+
+% % \abhra{
+% \textit{Intuition:}
+%     The above is a form of conservation law for the performance of a network on the bias and core attributes as we vary the depth. At shallower depths, a network performs poorly on the biased attributes, but is good at learning the core attributes, relative to its deeper counterparts. This behavior gets reversed (in a continuous fashion) with increasing depth, thereby keeping the sum of the accuracies on the individual attribute sets at a constant value.
+%     % Note that the integral arises out of a continuity assumption on the depth-space of the encoder $\phi_n$ \citep{chen2018neuralode, Queiruga2020ContinuousinDepthNN}. In the discrete case, the integral will change into a summation and the theorem will still hold. The integral is introduced only to show that the result generalizes to the continuous case as well.
+%     % }
+
+%     % \abhra{
+%     % The proof of the theorem is based on the properties of the conditional mutual information of the core attributes given the bias attributes $H(C \mid B)$, and insights from Deep Information Propagation \citep{schoenholz2017deepinfoprop}.
+%     % Deep Information Propagation puts fundamental limits to the depth of a random network beyond which information can propagate. It stems from the fact that with increasing depths, a fraction of the dimensions required to represent the attributes will get randomized / eliminated. So, an attribute that requires a larger set of dimensions to be represented, \ie, with a higher effective rank, has a higher likelihood of getting eliminated down the depth, and hence should only be more decodable during the earlier layers. The converse argument holds for an attribute with lower effective rank. This leads to our central result that the linear decodability of core attributes $\operatorname{\mathcal{D}} \left( \phi_n(X), Y^C \right)$ is a monotonically \emph{decreasing} function of the depth $n$, and that of the bias attributes $\operatorname{\mathcal{D}} \left( \phi_n(X), Y^B \right)$ is a monotonically \emph{increasing} function of depth.
+%     % }
+    
+% %     \abhra{
+% %     The conditional entropy of the core attributes $H(C \mid B) = 0$ for the bias aligned partition, and for the bias conflicting partition, $H(C \mid B) = H(C) > 0$. A deep network learns from the $X_a$ partition due to \cref{thm:pr} and the fact that deeper networks are more likely to learn low-rank solutions. As $H(C \mid B) = 0$ for $X_a$, a deep network will learn $B$ to minimize the ERM objective. However, this is not possible for a shallow network as it learns from $X_b$, again due to \cref{thm:pr} and the fact that the depth of the network is inversely proportional to the rank of the solutions learned. So, the shallow branch can only minimize ERM by directly minimizing $H(C)$, \ie, by learning the core attributes.
+% %     }
+
+% %     \abhra{
+% %     It is known that SGD intrinsically not only avoids rank underestimation, as it does not fit the training data, but also avoids rank overestimation since the probabilities associated with jumping back from a lower rank to a higher rank solution is 0 \cite{wang2024implicit}. Given the finiteness of the effective rank of the training data and the results from \cite{wang2024implicit} mentioned above, we additionally conjecture that the monotonicity property holds only up to a certain finite depth, beyond which it plateaus as the lowest rank manifold that minimizes ERM is reached.
+% % }
+
+% % \abhra{
+% \begin{conjecture}
+%     Let $\mathcal{A}$ be the continuous attribute space of $X$ with an associated measure $\erank{\cdot}$ that defines an order on the elements of $a \in \mathcal{A}$ based on their effective rank $\erank{a}$. Then, the linear decodability of $\mathcal{A}$ is related to the depth of the encoder $\phi$ by the following conservation law:
+%     \begin{equation*}
+%         % \int\limits_{n=m}^{\infty} \int\limits_{a \in \mathcal{A}} \operatorname{\mathcal{D}} \left( \phi_n(X), Y^a \right) da \; dn = K
+%         \int\limits_{a \in \mathcal{A}} \operatorname{\mathcal{D}} \left( \phi(X), Y^a \right) \; da = K,
+%     \end{equation*}
+% \end{conjecture}
+% % }
+
+% % \abhra{
+% The above conjecture extends \cref{thm:conservation} to continuous attribute spaces. We believe that the conservation law will also hold when it is possible to smoothly interpolate across attributes, possibly under some smoothness conditions over the attribute space. We do not believe that the finiteness of the attribute space would be a necessity for this conjecture to be true, but do believe that continuity and smoothness would be. In general, the proof should boil down to the following: $\forall a \in \mathcal{A}; \exists a' \in \mathcal{A} \mid \erank{a'} < \erank{a}$ and:
+% \begin{equation*}
+%         % \int\limits_{m}^{\infty} \operatorname{\mathcal{D}} \left( \phi_n(X), Y^a \right) + \operatorname{\mathcal{D}} \left( \phi_n(X), Y^{a'} \right) dn = K
+%         \operatorname{\mathcal{D}} \left( \phi(X), Y^a \right) + \operatorname{\mathcal{D}} \left( \phi(X), Y^{a'} \right) = K
+% \end{equation*}
+% In other words, for every attribute $a$ in the attribute space $\mathcal{A}$, there exists a lower rank complementary attribute $a'$ also in $\mathcal{A}$, for which \cref{thm:conservation} holds.
+% However, the complete proof of the conjecture is beyond the scope of this work. We leave it open to be proved or disproved in future exploratory research, as its truth does not affect the main findings of our paper.
+% % }
+
+\begin{figure}[!t]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/linear_decodability_plot.pdf}
+        \caption{Linear Decodability vs. Network Depth}
+        % Variation of linear decodability of features with an increase in network depth shows a clear decreasing trend.}
+        \label{fig:linear_decodability_untrained}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/training_dynamics_erm.pdf}
+        \caption{Linear Decodability vs. Training Iterations}
+        % Training dynamics measured in terms of linear decodability of features on MLPs of different depths trained using ERM.}
+        \label{fig:training_dynamics_erm}
+    \end{subfigure}
+    \caption{\textbf{Exploring the effect of depth modulation:} (a) illustrates how the linear decodability of features decreases as neural network depth increases, while (b) dives into the training dynamics of MLPs with varying depths under ERM.}
+    \label{fig:depth_effect}
+\end{figure}
+
+\subsection{Effect of Depth Modulation}
+\label{sec:linear_decodability_analysis}
+\cref{thm:drd} establishes a relationship between the depth of a network and the nature of the features it learns in terms of its rank. To empirically validate this, we probe MLPs of depths 3, 4, and 5, using the feature decodability technique proposed by \cite{NEURIPS2020_71e9c662}, to uncover the types of features that get encoded in them.  We use the Colored MNIST dataset \cite{NEURIPS2020_eddc3427} (CMNIST), where digit identity (core attribute) is spuriously correlated with color (bias attribute). We experiment with the decodability of the digit identity and color attributes in the CMNIST dataset. Additional information on the computation of feature decodability can be found in \cref{sec:feature_decodability}. We regard digit identity to have a higher rank than that of color, due to its higher representational complexity / information content in terms of the number of bits required for storage, a notion also confirmed in the experiements of \cite{NEURIPS2020_71e9c662}. We start by looking at the decodabilities at random initialization of the networks, and interestingly observe in \cref{{fig:linear_decodability_untrained}} that the decodabilities of both attributes decrease with increasing depth, but that of digit identity drops faster than color. Since at random initialization, there is no notion of empirical risk, the $\min \mathcal{L}(\cdot, \cdot)$ term in \cref{thm:drd} is cancelled out. Thus, the observation aligns with our prediction of the second term in $\norm{\cdot}_2$ of \cref{thm:drd} that the higher the rank of a feature, the less likely it is to get encoded in the later layers, the theoretically predicted behavior specifically for random networks being discussed in \cref{cor:random_drd}. We then proceed to investigating how feature decodability evolves during the early stages of Empirical Risk Minimization (ERM) training across the networks of varying depths, \ie, under the presence of $\min \mathcal{L}(\cdot, \cdot)$, the results of which are summarized in \cref{fig:training_dynamics_erm}. We perform similar linear decodability analysis on C-CIFAR10 dataset and the observations are presented in \cref{supp_sec:decodability_cifar}.
+
+As observed in \cref{fig:training_dynamics_erm}, the initial phases of training for both networks emphasize color attribute (since bias is easy to learn), leading to notable improvements in color decodability for both models. Also, as training progresses, the 3-layer model exhibits higher digit decodability compared to the 5-layer model. Hence, the difference in decodability between color and digit attributes becomes more pronounced in the 5-layer compared to the 3-layer MLP.
+This again confirms the prediction of our \cref{thm:drd} that when two attributes equally minimize the empirical risk, a deeper network is more likely to select the one with a lower rank, while a shallower network will try to accommodate as much of both as possible. Based on these observations, the deep models may prefer bias attributes, while shallow models focus on core attributes when tasked with capturing distinct information.
+
+This prompts us to explore whether similar behavior can be induced in models of equal depth. In this scenario, both models, undergoing ERM training, may exhibit a similar trend, with the disparity in decodability between biased and core attributes becoming nearly identical in both models due to same depth.  Consequently, when compelling each model to learn distinct information, they may capture biased or core attributes, or even divide attribute information between them, leading to a loss of control over the bias identification process. We also present empirical evidence in \cref{tab:effect-depth-difference} to support these claims. Therefore, using models of different depths introduces an inductive bias suitable for the bias identification process.
+
+\subsection{Stage1: Segregation of Bias \& Core Attributes}
+\label{sec:poe_training}
+
+% In this section, we explain the training procedure to obtain the \textbf{b}iased and \textbf{d}ebiased classifier for an $M$ class classification problem, \abhra{based on our theoretical findings in \cref{thm:pr,thm:drd}}.
+\cref{thm:pr} predicts that bias-aligned points lie on a lower-rank manifold than bias conflicting points. \cref{thm:drd} predicts that as we go deeper into a neural network, the likelihood that a higher rank feature, that equally minimizes the empirical risk as that of other lower rank features, is retained, decays exponentially with depth. Based on this, we present a training procedure to obtain the \textbf{b}iased and \textbf{d}ebiased classifier for an $M$ class classification problem.
+Let $\phi_b$ and $\phi_d$ denote the parameters of the feature extractors associated with the deep and shallow branches, where $\depth(\phi_b) > \depth(\phi_d)$. We use $f$ to represent the classifier head shared by $\phi_b$ and $\phi_d$. Here, $f$, $\phi_b$ and $\phi_d$ are trainable parameters. Considering an image-label pair $(x, y)$, the objective function is expressed as:
+%
+\begin{equation}
+  \mathcal{L}_{\text{CE}}(\hat{p}, y) = -\sum_{c=1}^M y_c \log(\hat{p}_c) \label{eq:cross_entropy_stage1}
+\end{equation}
+where $\hat{p} = \softmax\left(f(\alpha_b \phi_b(x) + \alpha_d \phi_d(x))\right)$. If we set $\alpha_b = \alpha_d = 1$ throughout the training process, we get:
+\begin{equation}
+  \hat{p} = \softmax\left(f\left(\phi_b(x) + \phi_d(x)\right)\right)
+  \label{eq: p_stage1}
+\end{equation}
+%
+% where $\alpha_b$ and $\alpha_d$ are set to 1 throughout the training process. 
+To evaluate the performance of an individual expert, we assign a value of 1 to the corresponding $\alpha$ while setting the other $\alpha$ equal to 0.
+
+Our training methodology is derived from the Products of Experts technique \citep{Hinton:02} where multiple experts are combined to make a final prediction, and each expert contributes to the prediction with a weight. However, in our approach, the role of the experts is assumed by $\phi_b$ and $\phi_d$, whose features are combined through weighted contributions. The conjunction of features is then passed to the shared classifier to generate predictions. We provide a detailed proof elucidating the derivation of \cref{eq: p_stage1} through the Product of Experts in \cref{sec:poe_proof} of the Appendix.
+Due to the architectural constraints we imposed by modulating their capacities, the deep expert tends to prioritize the learning of bias attribute, while the shallow expert is inclined towards the core attribute. The model leverages the strengths of both experts to effectively learn from their combined knowledge. We investigate the training dynamics in \cref{subsec: training dynamics analysis}. 
+
+\subsection{Stage2 : Training the Target Debiased Model}
+\label{sec:target_debiased_training}
+
+The initial phase effectively separates the bias and core attributes into deep and shallow branches, respectively. However, relying solely on the debiased shallow branch may not be practical, as it might not capture the complex features representing the core attributes, given the less depth of the shallow model. This limitation does not apply to the deep biased model. To tackle this challenge, we introduce a target branch with the desired architecture for debiasing.
+
+Let $\phi_{t}$ be the parameters of the feature extractor associated with the target branch and $f_{t}$ be the classifier head whose weights are initialized using the weights of $f$. During this phase, our training is exclusively focused on $\phi_{t}$ and $f_{t}$. We freeze $\phi_b$ and $\phi_d$ since we leverage these models to only extract the necessary knowledge for debiasing the target branch. To capture information orthogonal to $\phi_b$, we employ the same training approach described in \cref{sec:poe_training}, where $\phi_b$ and $\phi_{t}$ serve as the experts. The objective function can be written as:
+%
+\begin{equation*}
+    \mathcal{L}_t(\hat{p}, y) = -\sum_{c=1}^My_c\log(\hat{p}_c)
+\end{equation*}
+%
+where
+\begin{minipage}{0.94\textwidth}
+    \begin{equation}
+        \hat{p} = \softmax(f_t(\beta_b \phi_b(x) \\
+                + \beta_t \phi_t(x)))
+    \label{eq:poe_target}
+    \end{equation}    
+\end{minipage}
+
+%
+The training and evaluation of the experts follow the procedure described in \cref{sec:poe_training}, with the key difference being that in this phase, only a single expert, $\phi_t$, which is the target branch and classifier $f_t$, undergoes updates. 
+
+We further leverage the knowledge pertaining to the core attributes, which is encapsulated in $\phi_d$, by transferring this knowledge to the target branch $\phi_t$ through knowledge distillation. Here, $\phi_t$ acts as the student, whereas $\phi_d$ corresponds to the teacher. We set $\beta_b=0$ and $\beta_t=1$ in \cref{eq:poe_target} to obtain the predictions of the student $\phi_t$. Therefore, the distillation loss is given by :
+%
+\begin{equation}
+     \label{eq:L}
+    \mathcal{L}_\text{dist}(\hat{p}_t, \hat{p}_{s}) = -\sum_{c=1}^M \hat{p}_{t_c} \log(\hat{p}_{s_c})
+\end{equation}
+%
+where
+\begin{minipage}{0.46\textwidth}
+  \begin{equation}
+    \hat{p}_s = \softmax\left(\frac{f_t(\phi_t(x))}{\tau}\right) \label{eq:ps}
+  \end{equation}
+\end{minipage}
+\begin{minipage}{0.46\textwidth}
+  \begin{equation}
+    \hat{p}_t = \softmax\left(\frac{f(\phi_{d}(x))}{\tau}\right) \label{eq:pt}
+  \end{equation}
+\end{minipage}
+
+
+% \begin{equation*}
+%     \mathcal{L}_\text{dist}(\hat{p}_t, \hat{p}_{s}) = -\sum_{c=1}^M \hat{p}_{t_c} \log(\hat{p}_{s_c})
+% \end{equation*}
+% %
+% where,
+% %
+% \begin{align}
+%     \hat{p}_s & = \softmax\left(\frac{f_t(\phi_t(x))}{\tau}\right) \label{eq:ps} \\
+%     \hat{p}_t & = \softmax\left(\frac{f(\phi_{d}(x))}{\tau}\right) \label{eq:pt}
+% \end{align}
+% Here, $\tau$ is the temperature which is a hyperparameter. Consequently, the complete loss function is given by :
+% %
+% \begin{equation}
+% \mathcal{L} = \mathcal{L}_t + \lambda \mathcal{L}_\text{dist}
+% \label{eq:stage2_loss}
+% \end{equation}
+%
+where $\lambda$ is a hyperparameter chosen from the interval $[0, 1]$.  The pseudocode for the entire training process of DeNetDM is provided in \cref{supp_sec:pseudocode}.
+

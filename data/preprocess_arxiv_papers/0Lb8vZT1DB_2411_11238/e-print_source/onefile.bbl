@@ -1,0 +1,220 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DKK{\etalchar{+}}21b}
+
+\bibitem[ABHU15]{AwasthiBHU15}
+P.~Awasthi, M.~F. Balcan, N.~Haghtalab, and R.~Urner.
+\newblock Efficient learning of linear separators under bounded noise.
+\newblock In {\em Proceedings of The 28th Conference on Learning Theory, {COLT} 2015}, pages 167--190, 2015.
+
+\bibitem[ABL17]{ABL17}
+P.~Awasthi, M.~F. Balcan, and P.~M. Long.
+\newblock The power of localization for efficiently learning linear separators with noise.
+\newblock {\em J. {ACM}}, 63(6):50:1--50:27, 2017.
+
+\bibitem[Bog98]{Bog:98}
+V.~Bogachev.
+\newblock {\em Gaussian measures}.
+\newblock Mathematical surveys and monographs, vol. 62, 1998.
+
+\bibitem[DGJ{\etalchar{+}}09]{DGJ+09}
+I.~Diakonikolas, P.~Gopalan, R.~Jaiswal, R.~Servedio, and E.~Viola.
+\newblock Bounded independence fools halfspaces.
+\newblock In {\em Proc.\ 50th IEEE Symposium on Foundations of Computer Science (FOCS)}, pages 171--180, 2009.
+
+\bibitem[DJ19]{DJ19}
+A.~Durgin and B.~Juba.
+\newblock Hardness of improper one-sided learning of conjunctions for all uniformly falsifiable csps.
+\newblock In {\em Algorithmic Learning Theory, {ALT}}, volume~98 of {\em Proceedings of Machine Learning Research}, pages 369--382, 2019.
+
+\bibitem[DKK{\etalchar{+}}20]{DKKTZ20}
+I.~Diakonikolas, D.~M. Kane, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock A polynomial time algorithm for learning halfspaces with {T}sybakov noise.
+\newblock {\em arXiv}, 2020.
+
+\bibitem[DKK{\etalchar{+}}21a]{DKKTZ21}
+I.~Diakonikolas, D.~M. Kane, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Agnostic proper learning of halfspaces under gaussian marginals.
+\newblock In {\em Proceedings of The 34th Conference on Learning Theory, {COLT}}, 2021.
+
+\bibitem[DKK{\etalchar{+}}21b]{DKKTZ21b}
+I.~Diakonikolas, D.~M. Kane, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Efficiently learning halfspaces with {T}sybakov noise.
+\newblock {\em STOC}, 2021.
+
+\bibitem[DKK{\etalchar{+}}22]{Diakonikolas2022b}
+I.~Diakonikolas, D.~M. Kane, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Learning general halfspaces with general {M}assart noise under the gaussian distribution.
+\newblock In {\em {STOC} '22: 54th Annual {ACM} {SIGACT} Symposium on Theory of Computing, Rome, Italy, June 20 - 24, 2022}, pages 874--885. {ACM}, 2022.
+
+\bibitem[DKN10]{DKN10}
+I.~Diakonikolas, D.~M. Kane, and J.~Nelson.
+\newblock Bounded independence fools degree-$2$ threshold functions.
+\newblock In {\em FOCS}, pages 11--20, 2010.
+
+\bibitem[DKPZ21]{DKPZ21}
+I.~Diakonikolas, D.~M. Kane, T.~Pittas, and N.~Zarifis.
+\newblock The optimality of polynomial regression for agnostic learning under gaussian marginals.
+\newblock In {\em Proceedings of The 34th Conference on Learning Theory, {COLT}}, 2021.
+
+\bibitem[DKR23]{Diakonikolas2023}
+I.~Diakonikolas, D.~M. Kane, and L.~Ren.
+\newblock Near-optimal cryptographic hardness of agnostically learning halfspaces and relu regression under gaussian marginals.
+\newblock In {\em International Conference on Machine Learning, {ICML}}, volume 202 of {\em Proceedings of Machine Learning Research}, pages 7922--7938, 2023.
+
+\bibitem[DKRS23]{DKRS23}
+I.~Diakonikolas, D.~Kane, L.~Ren, and Y.~Sun.
+\newblock {SQ} lower bounds for non-gaussian component analysis with weaker assumptions.
+\newblock In {\em Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023, NeurIPS 2023}, 2023.
+
+\bibitem[DKS17]{DKS17-sq}
+I.~Diakonikolas, D.~M. Kane, and A.~Stewart.
+\newblock Statistical query lower bounds for robust estimation of high-dimensional gaussians and gaussian mixtures.
+\newblock In {\em 2017 IEEE 58th Annual Symposium on Foundations of Computer Science (FOCS)}, pages 73--84, 2017.
+
+\bibitem[DKS18]{DKS18a}
+I.~Diakonikolas, D.~M. Kane, and A.~Stewart.
+\newblock Learning geometric concepts with nasty noise.
+\newblock In {\em Proceedings of the 50th Annual {ACM} {SIGACT} Symposium on Theory of Computing, {STOC} 2018}, pages 1061--1073, 2018.
+
+\bibitem[DKTZ20a]{DKTZ20}
+I.~Diakonikolas, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Learning halfspaces with {M}assart noise under structured distributions.
+\newblock In {\em Conference on Learning Theory, {COLT}}, 2020.
+
+\bibitem[DKTZ20b]{DKTZ20b}
+I.~Diakonikolas, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Learning halfspaces with {T}sybakov noise.
+\newblock {\em arXiv}, 2020.
+
+\bibitem[DKTZ20c]{DKTZ20c}
+I.~Diakonikolas, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Non-convex {SGD} learns halfspaces with adversarial label noise.
+\newblock In {\em Advances in Neural Information Processing Systems, {NeurIPS}}, 2020.
+
+\bibitem[DKTZ22]{DKTZ22}
+I.~Diakonikolas, V.~Kontonis, C.~Tzamos, and N.~Zarifis.
+\newblock Learning general halfspaces with adversarial label noise via online gradient descent.
+\newblock In {\em International Conference on Machine Learning, {ICML} 2022}, volume 162 of {\em Proceedings of Machine Learning Research}, pages 5118--5141. {PMLR}, 2022.
+
+\bibitem[DKZ20]{DKZ20}
+I.~Diakonikolas, D.~M. Kane, and N.~Zarifis.
+\newblock Near-optimal {SQ} lower bounds for agnostically learning halfspaces and {ReLUs} under {G}aussian marginals.
+\newblock In {\em Advances in Neural Information Processing Systems, {NeurIPS}}, 2020.
+
+\bibitem[Dom99]{Dom99}
+P.~M. Domingos.
+\newblock Metacost: {A} general method for making classifiers cost-sensitive.
+\newblock In {\em Proceedings of the Fifth {ACM} {SIGKDD} International Conference on Knowledge Discovery and Data Mining}, pages 155--164, 1999.
+
+\bibitem[Elk01]{elk01}
+C.~Elkan.
+\newblock The foundations of cost-sensitive learning.
+\newblock In {\em Proceedings of the Seventeenth International Joint Conference on Artificial Intelligence, {IJCAI}}, pages 973--978, 2001.
+
+\bibitem[Fan68]{Fan68}
+K.~Fan.
+\newblock On infinite systems of linear inequalities.
+\newblock {\em Journal of Mathematical Analysis and Applications}, 21(3):475 -- 478, 1968.
+
+\bibitem[FGR{\etalchar{+}}17]{FeldmanGRVX17}
+V.~Feldman, E.~Grigorescu, L.~Reyzin, S.~Vempala, and Y.~Xiao.
+\newblock Statistical algorithms and a lower bound for detecting planted cliques.
+\newblock {\em J. {ACM}}, 64(2):8:1--8:37, 2017.
+
+\bibitem[FS97]{FS97}
+Y.~Freund and R.~E. Schapire.
+\newblock A decision-theoretic generalization of on-line learning and an application to boosting.
+\newblock {\em Journal of computer and system sciences}, 55(1):119--139, 1997.
+
+\bibitem[GGK20]{GGK20}
+S.~Goel, A.~Gollakota, and A.~R. Klivans.
+\newblock Statistical-query lower bounds via functional gradients.
+\newblock In {\em Advances in Neural Information Processing Systems, {NeurIPS}}, 2020.
+
+\bibitem[GKKM20]{GKKM20}
+S.~Goldwasser, A.~T. Kalai, Y.~Kalai, and O.~Montasser.
+\newblock Beyond perturbations: Learning guarantees with arbitrary adversarial test examples.
+\newblock In {\em Advances in Neural Information Processing Systems, NeurIPS}, 2020.
+
+\bibitem[GKKT17]{GKKT17}
+S.~Goel, V.~Kanade, A.~R. Klivans, and J.~Thaler.
+\newblock Reliably learning the relu in polynomial time.
+\newblock In {\em Proceedings of the 30th Conference on Learning Theory, {COLT} 2017}, volume~65 of {\em Proceedings of Machine Learning Research}, pages 1004--1042, 2017.
+
+\bibitem[Hau92]{Haussler:92}
+D.~Haussler.
+\newblock {Decision theoretic generalizations of the PAC model for neural net and other learning applications}.
+\newblock {\em Information and Computation}, 100:78--150, 1992.
+
+\bibitem[KK21]{KK21}
+A.~T. Kalai and V.~Kanade.
+\newblock Efficient learning with arbitrary covariate shift.
+\newblock In {\em Algorithmic Learning Theory, 2021}, volume 132 of {\em Proceedings of Machine Learning Research}, pages 850--864, 2021.
+
+\bibitem[KKM12]{KKM2012}
+A.~T. Kalai, V.~Kanade, and Y.~Mansour.
+\newblock Reliable agnostic learning.
+\newblock {\em J. Comput. Syst. Sci.}, 78(5):1481--1495, 2012.
+
+\bibitem[KKMS08]{KKMS:08}
+A.~Kalai, A.~Klivans, Y.~Mansour, and R.~Servedio.
+\newblock Agnostically learning halfspaces.
+\newblock {\em SIAM Journal on Computing}, 37(6):1777--1805, 2008.
+\newblock Special issue for FOCS~2005.
+
+\bibitem[KLS09]{KLS:09jmlr}
+A.~Klivans, P.~Long, and R.~Servedio.
+\newblock {Learning Halfspaces with Malicious Noise}.
+\newblock {\em Journal of Machine Learning Research}, 10:2715--2740, 2009.
+
+\bibitem[KOS08]{KOS:08}
+A.~Klivans, R.~O'Donnell, and R.~Servedio.
+\newblock Learning geometric concepts via {G}aussian surface area.
+\newblock In {\em Proc.\ 49th IEEE Symposium on Foundations of Computer Science (FOCS)}, pages 541--550, Philadelphia, Pennsylvania, 2008.
+
+\bibitem[KSS94]{KSS:94}
+M.~Kearns, R.~Schapire, and L.~Sellie.
+\newblock {Toward Efficient Agnostic Learning}.
+\newblock {\em Machine Learning}, 17(2/3):115--141, 1994.
+
+\bibitem[KT14]{KT14}
+V.~Kanade and J.~Thaler.
+\newblock Distribution-independent reliable learning.
+\newblock In {\em Proceedings of The 27th Conference on Learning Theory, {COLT}}, volume~35 of {\em {JMLR} Workshop and Conference Proceedings}, pages 3--24, 2014.
+
+\bibitem[MT94]{MT:94}
+W.~Maass and G.~Turan.
+\newblock How fast can a threshold gate learn?
+\newblock In S.~Hanson, G.~Drastal, and R.~Rivest, editors, {\em Computational Learning Theory and Natural Learning Systems}, pages 381--414. MIT Press, 1994.
+
+\bibitem[Nel73]{nelson1973free}
+E.~Nelson.
+\newblock The free markoff field.
+\newblock {\em Journal of Functional Analysis}, 12(2):211--227, 1973.
+
+\bibitem[NP33]{NP33}
+J.~Neyman and E.~S. Pearson.
+\newblock On the problem of the most efficient tests for statistical hypotheses.
+\newblock {\em Trans. R. So. Lond. Ser. A Contain. Pap. Math. Phys. Character}, 231:281--337, 1933.
+
+\bibitem[Ros58]{Ros58}
+F.~Rosenblatt.
+\newblock The {P}erceptron: a probabilistic model for information storage and organization in the brain.
+\newblock {\em Psychological Review}, 65:386--407, 1958.
+
+\bibitem[Tie23]{Tiegel2022}
+S.~Tiegel.
+\newblock Hardness of agnostically learning halfspaces from worst-case lattice problems.
+\newblock In {\em The Thirty Sixth Annual Conference on Learning Theory, {COLT}}, volume 195 of {\em Proceedings of Machine Learning Research}, pages 3029--3064, 2023.
+
+\bibitem[Vap98]{Vap98}
+V.~Vapnik.
+\newblock {\em Statistical learning theory}.
+\newblock Wiley, 1998.
+
+\bibitem[ZSA20]{ZSA20}
+C.~Zhang, J.~Shen, and P.~Awasthi.
+\newblock Efficient active learning of sparse halfspaces with arbitrary bounded noise.
+\newblock In {\em Advances in Neural Information Processing Systems, {NeurIPS}}, 2020.
+
+\end{thebibliography}

@@ -1,0 +1,38 @@
+
+\section{Related Work}
+
+
+\subsection{Exploration of Pre-trained Models}
+
+Building on the success of large-scale vision networks, there has been significant interest from the community to understand what has been learned by these complex models.
+On discriminative models, for example, \cite{zeiler2014visualizing,mahendran2015understanding} 
+propose inverse reconstruction to directly visualize the acquired semantic information in various layers of a trained classification network; 
+\cite{zhou2016learning,fong2017interpretable,fong2019understanding} demonstrate that scene classification networks have remarkable localization ability despite being trained on only image-level labels;
+and \cite{erhan2009visualizing,simonyan14deep, selvaraju2017grad} use the gradients of any target concept, flowing into the final convolutional layer to produce a saliency map highlighting important regions in the image for predicting the concept.
+In the more recent literature, \cite{chefer2021transformer} explores what has been learned in the powerful transformer model by visualizing the attention map.
+On generative models, researchers have mainly investigated what has been learned in GANs, for example, GAN dissection~\citep{bau2019gandissect} presents an analytic framework to visualize and understand GANs at the unit-, object-, and scene-level;
+\cite{wu2021stylespace} analyse the latent style space of StyleGANs~\citep{karras2019style}.
+The most recent work~\citep{sarkar2023shadows} studies the 3D geometric relations in generated images, such as vanishing points and shadows, and notes that the errors made can be used to discriminate real from generated images.
+There is concurrent work~\cite{banani2024probing} exploring the capability of predicting depth, surface normal and geometric correspondence for visual foundation models. In contrast to their work, we have studied a wider range of properties, covering both 3D geometric properties and 3D physical properties. Additionally, we have proposed a simple, general, yet efficient protocol for any property and any model and have investigated the performance of different time steps and layers of models for different properties.
+
+
+\subsection{Exploitation of Pre-trained Models}
+
+Apart from understanding the representation in pre-trained models, 
+there has been a recent trend for exploiting models trained at large scale, to tackle a series of downstream tasks.
+For example, 
+leveraging generative models for data augmentation in recognition tasks~\citep{jahanian2021generative,he2022synthetic}, 
+utilising large vision models for semantic segmentation~\citep{baranchuk2021label,xu2023open},  
+open-vocabulary segmentation~\citep{li2023openvocabulary},
+depth map estimation~\citep{shi20223d,zhao2023unleashing,ke2023repurposing,zhang2023atlantis,patni2024ecodepth}, correspondence estimation~\cite{oquab2023dinov2,zhang2023tale,tang2023emergent,luo2023diffusion,hedlin2024unsupervised} and pose estimation~\cite{zhang2022self,goodwin2022zero}.
+More recently, \cite{bhattad2023stylegan} searched for intrinsic offsets in a pre-trained StyleGAN for a range of downstream tasks, predicting normal maps, depth maps, segmentations, albedo maps, and shading. In contrast to these works, we focus on exploring 3D physical understanding built into large models trained \emph{without} 3D supervision.
+
+
+
+\subsection{3D Physical Scene Understanding} 
+
+There have been works studying different 3D physical properties for scene understanding, including shadows~\citep{Wang_2020_soba,Wang_2021_soba}, material~\citep{dmsdataset}, occlusion~\citep{zhan2022triocc}, 
+scene geometry~\citep{liu2019planercnn}, support relations~\citep{silberman2012indoor}
+and depth~\citep{silberman2012indoor}.
+However, these works focus on one or two physical properties, and most of them require training a model for the property in a supervised manner. 
+In contrast, we use a single model to predict multiple properties, and do not train the features. 

@@ -1,0 +1,31 @@
+\section{\textbf{Related work}}
+% \vspace{-0.5\baselineskip}
+In this section, we briefly review prior research works on identifying and mitigating the issue of plasticity loss, as well as on the high RR dilemma that persistently plagues off-policy RL algorithms for more efficient applications.
+Further discussions on related studies can be found in \Appendix~\ref{Appendix: Extended Related Work}.
+
+\textbf{Plasticity Loss.}~~
+Recent studies have increasingly highlighted a major limitation in neural networks where their learning capabilities suffer catastrophic degradation after training on non-stationary objectives~\citep{dormant_neuron, Plasticity_Injection}.
+Different from supervised learning, the non-stationarity of data streams and optimization objectives is inherent in the RL paradigm, necessitating the confrontation of this issues, which has been recognized by several terms, including primacy bias~\citep{primacy_bias}, dormant neuron phenomenon~\citep{dormant_neuron}, implicit under-parameterization~\citep{implicit_under-parameterization}, capacity loss~\citep{capacity_loss}, and more broadly, plasticity loss~\citep{understanding_plasticity, Regenerative_Regularization}.
+Agents lacking plasticity struggle to learn from new experiences, leading to extreme sample inefficiency or even entirely ineffective training.
+
+The most straightforward strategy to tackle this problem is to re-initialize a part of the network to regain rejuvenated plasticity~\citep{primacy_bias,breaking_RR_barrier,BBF}.
+However, periodic \textit{Reset}~\citep{primacy_bias} may cause sudden performance drops, impacting exploration and requiring extensive gradient updates to recover.
+To circumvent this drawback, \textit{ReDo}~\citep{dormant_neuron} selectively resets the dormant neurons, while \textit{Plasticity Injection}~\citep{Plasticity_Injection} introduces a new initialized network for learning and freezes the current one as residual blocks.
+Another line of research emphasizes incorporating explicit regularization or altering the network architecture to mitigate plasticity loss.
+For example, \cite{Regenerative_Regularization}~introduces \textit{L2-Init} to regularize the network's weights back to their initial parameters, while \cite{plasticity_loss_CRL}~employs \textit{Concatenated ReLU}~\citep{shang2016understanding} to guarantee a non-zero gradient.
+Although existing methods have made progress in mitigating plasticity loss, the intricate effects of various dimensions in the DRL framework on plasticity are poorly understood.
+In this paper, we aim to further explore the roles of data, modules, and training stages to provide a comprehensive insight into plasticity.
+
+\textbf{High RR Dilemma.}~~
+Experience replay, central to off-policy DRL algorithms, greatly improves the sample efficiency by allowing multiple reuses of data for training rather than immediate discarding after collection~\citep{fedus2020revisiting}.
+Given the trial-and-error nature of DRL, agents alternate between interacting with the environment to collect new experiences and updating parameters based on transitions sampled from the replay buffer.
+The number of agent updates per environment step is usually called replay ratio (RR)~\citep{fedus2020revisiting, breaking_RR_barrier} or update-to-data (UTD) ratio~\citep{REDQ, smith2022walk}.
+While it's intuitive to increase the RR as a strategy to improve sample efficiency, doing so naively can lead to adverse effects~\citep{Regulating_Overfitting, SMR}.
+Recent studies have increasingly recognized plasticity loss as the primary culprit behind the high RR dilemma~\citep{dormant_neuron, primacy_bias, Plasticity_Injection}.
+Within a non-stationary objective, an increased update frequency results in more severe plasticity loss.
+% Furthermore, \cite{breaking_RR_barrier} demonstrates that partial or complete resetting of the agent's parameters can achieve higher favorable RR values, further confirming plasticity loss as the primary culprit.
+Currently, the most effective method to tackle this dilemma is to continually reset the agent's parameters when setting a high RR value~\citep{breaking_RR_barrier}.
+Our investigation offers a novel perspective on addressing this long-standing issue.
+Firstly, we identify that the impact of plasticity loss varies across training stages, implying a need for dynamic RR adjustment.
+Concurrently, we determine the critic's plasticity as crucial for model capability, proposing its level as a basis for RR adjustment.
+Drawing from these insights, we introduce \textit{Adaptive RR}, a universal method that both mitigates early catastrophic plasticity loss and harnesses the potential of high RR in improving sample efficiency.

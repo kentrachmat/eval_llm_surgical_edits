@@ -1,0 +1,306 @@
+\section{Experiment}
+
+
+\begin{figure*}
+\centering
+% \includegraphics[scale=0.35,bb=550 0 580 390]{images/vis_main.pdf}
+\includegraphics[width=\linewidth]{images/vis_main.pdf}
+\caption{Diveristy and quality of meshes that \modelname{} can represent. The results include both novel instances from ShapeNet training categories (top left), instances from ShapeNet unseen categories (bottom left), and real shapes from the Thingi dataset (right). We visualize the shapes with surface normal to better show their geometry. Please see the appendix for comparisons with ground-truth.}
+\vspace{-0.1in}
+\label{Figure:Main:Result:Figure}
+\end{figure*}
+
+This section presents an experimental evaluation of \modelname{}. We begin with the experimental setup and then present the results and ablations.
+
+\noindent\textbf{Implementation Deatils.}
+We use latent code of size $125$ for all cells. The MLP is composed of 5 layers where the first 4 layers are linear layers and the last layer is quadratic. The hidden channel size is $128$. We use the voxel grid size of $32\times 32\times 32$. During training, we use 12 shapes for each batch.
+For each shape, we sample $3000$ voxels that intersect with the surface of the shape (with return). We sample $24$ points for each cell for training, and each point is sampled within 1.5 times the radius of the voxel to ensure boundary consistency between cells. 
+We use the Adam optimizer~\cite{DBLP:journals/corr/KingmaB14} with learning rates $5e-4$, $1e-3$, and $1e-3$ for the MLP, coordinate fields, and latent codes. We train with $150000$ iterations and reduce the learning rates by half for every $20000$ iteration.
+During inference, we use a learning rate of $5e-4$ for $800$ iterations.
+Reconstructed meshes are obtained by performing Marching Cubes with a $128$ resolution by default. We use the quaternion representation for the rotation matrix of the coordinate frames. We train on $4$ GPUs with $24$GB memory for 1 day.
+
+%To optimize the coordinate frames, we use quaternion to represent its rotation.
+
+
+\noindent\textbf{Training and testing data.}
+We train \modelname{} on 1000 shape instances sample from ShapeNet~\cite{chang2015shapenet} of chairs, planes, tables, lamps, and sofas (200 instances for each category). We test \modelname{} with three test sets for comprehensive analysis of \modelname{}: i) 250 novel instances from the 5 training ShapeNet categories; ii) 250 novel instances from 10 unseen ShapeNet categories; iii) 24 meshes from the Thingi dataset~\cite{zhou2016thingi10k}, which captures real scenes. 
+The test set i) checks how \modelname{} fits the training distribution.
+Test sets ii) and iii) are used to test the generalization capability of \modelname{} on novel shapes that observe different structures with training shapes.
+
+\noindent\textbf{Baseline Approaches}
+We compare our \modelname{} with three types of methods: \textit{generalizable methods}, which use a single MLP to represent multiple shapes; \textit{shape-specific methods}, which train an MLP for each testing shape. Generally, the latter genre demonstrates a better performance as the MLP model can be trained to overfit a single testing shape. Both the two types of methods performs shape auto-decoding. Besides, we also report results for a state-of-the-art shape auto-encoding method. We note that it is a reference method while the result is not directly comparable.
+
+Note that \modelname{} is a generalizable method for shape auto-decoding. We include more details for baselines as follows.
+\begin{itemize}
+    %\vspace{-0.05in}
+    \item \textbf{DeepSDF}~\cite{DBLP:conf/cvpr/ParkFSNL19} is a generalizable shape auto-decoding method using a global latent code to represent one shape.
+    %\vspace{-0.05in}
+    \item \textbf{DeepLS}~\cite{DBLP:conf/eccv/ChabraLISSLN20} is a generalizable shape auto-decoding method using local-based representations. DeepLS is a direct comparable baseline.
+    %\vspace{-0.05in}
+    \item \textbf{NGLOD}~\cite{takikawa2021nglod} is a shape-specific method for shape auto-decoding. It achieves state-of-the-art performance. For a fair comparison with \modelname{}, we use the level of detail as 3, keeping the number of parameters of the latent codes in the same magnitude as our \modelname{}.
+    %\vspace{-0.05in}
+    \item \textbf{3DS2VS}~\cite{zhang20233dshape2vecset} is a generalizable shape auto-encoding method. It employs transformers to predict the shape latent code, rather than getting it by optimization (shape auto-decoding). The input is on-surface point clouds.
+\end{itemize}
+
+We train DeepSDF, DeepLS, and \modelname{} using the same dataset for fair comparisons. NGLOD is trained on each test shape. All methods receive the same inputs during inference.
+
+\noindent\textbf{Evaluation Metrics}
+We report the mesh reconstruction error as the chamfer$-L_2$ distance between the reconstructed and ground-truth meshes. We sample 30000 points to compute the chamfer distances. The meshes are normalized into a unit scale.
+
+\begin{figure*}[t]
+    \tiny
+    \centering
+    \tablestyle{5pt}{1.1}
+    \begin{minipage}[t]{0.54\linewidth}
+    \captionsetup{type=table}
+    \setlength\tabcolsep{5pt}
+    \vspace{-1.25in}
+    \caption{\small{Shape errors on novel instances of the ShapeNet training categories. We report chamfer distance ($10^{-4}$) and highlight the best.}} 
+    \vspace{-0.05in}
+    \label{table: main}
+    \resizebox{1.0\textwidth}{!}{
+    \begin{tabular}{l|ccccc|c}
+    \hline
+    & \multicolumn{6}{c}{\textit{Novel Instances of Seen Shape Category}} \\
+     & chair & lamp & plane & sofa & table & mean\\ \shline
+     3DS2VS & 9.11 & 10.9 & 1.68 & 8.76 & 13.7 & 8.85\\
+     DeepSDF & 5.69 & 15.1 & 7.51 & 4.08 & 6.64 & 7.84\\
+     DeepLS &  7.70 & 6.57 & 0.83 & 2.54 & 2.18 & 3.91\\
+     \modelname{} (ours) & \tablefirst \textbf{2.35} & \tablefirst \textbf{3.13} & \tablefirst \textbf{0.80} & \tablefirst \textbf{2.44} & \tablefirst \textbf{1.41} & \tablefirst \textbf{2.05}\\
+    \hline
+    \end{tabular}
+    }
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.42\linewidth}
+     \centering
+    \includegraphics[scale=0.4,bb=170 0 200 390]{images/size_err_plot.png}
+    \vspace{-0.10in}
+    \caption{\small{Trade-off between accuracy and model size ( notified by the radius of circles). } 
+    }
+    \label{fig: tradeoff}
+    \end{minipage}
+\vspace{-0.1in}
+\end{figure*}
+
+% \begin{table}[t]
+%     \centering
+%     %\tablestyle{6pt}{1.1}
+%     % \vspace{-05in}
+%     %\scriptsize
+%     \setlength\tabcolsep{5.8pt}
+%     % \vspace{-1in}
+%     \begin{tabular}{l|ccccc|c}
+%     \hline
+%     & \multicolumn{6}{c}{\textit{Novel Instances of Seen Shape Category}} \\
+%      & chair & lamp & plane & sofa & table & mean\\ \shline
+%      3DS2VS & 9.11 & 10.9 & 1.68 & 8.76 & 13.7 & 8.85\\
+%      DeepSDF & 5.69 & 15.1 & 7.51 & 4.08 & 6.64 & 7.84\\
+%      DeepLS &  7.70 & 6.57 & 0.83 & 2.54 & 2.18 & 3.91\\
+%      \modelname{} (ours) & \tablefirst \textbf{2.35} & \tablefirst \textbf{3.13} & \tablefirst \textbf{0.80} & \tablefirst \textbf{2.44} & \tablefirst \textbf{1.41} & \tablefirst \textbf{2.05}\\
+%     \hline
+%     \end{tabular}
+%     \caption{\small{Shape errors on novel instances of the ShapeNet training categories. We report chamfer distance ($10^{-4}$) and highlight the best. }}
+%     \vspace{-0.3in}
+%     \label{table:shapenet_seen}
+% \end{table}
+
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.5\linewidth]{images/size_err_plot.png}
+% \vspace{-0.15in}
+% \caption{\small{Comparison with DeepLS using different latent code sizes. The size of the circles represents the number of parameters of the MLP. The shape error is chamfer distance ($10^{-4}$).}}
+% \vspace{-0.15in}
+% \label{fig: err_size_curve}    
+% \end{figure}
+
+\begin{figure*}
+% \includegraphics[scale=0.44,bb=-30 0 0 270]{images/vis_compare.pdf}
+\includegraphics[width=\linewidth]{images/vis_compare.pdf}
+\vspace{-0.05in}
+\caption{\small{Comparison with prior works. (Left) Results of generalizable methods, where our \modelname{} demonstrates better capability for modeling geometry details. (Right) Compare with the per-shape-based method NGLOD. We note that NGLOD is a shape-specific method that overfits one MLP on one testing shape.}}
+\vspace{-0.1in}
+\label{fig: comparison}    
+\end{figure*}
+
+\begin{table*}[t]
+    \centering
+    \tablestyle{6.2pt}{1.2}
+    \setlength\tabcolsep{5.4pt}
+    % \vspace{-1in}
+    \caption{\small{Shape errors on instances of the ShapeNet novel categories. We evaluate the chamfer distance ($10^{-4}$). }}
+    \begin{tabular}{l|cccccccccc|c}
+    \hline
+    & \multicolumn{11}{c}{\textit{Unseen Shape Category}} \\
+     & cabinet & car & phone & bus & guitar & clock & bottle & mug & washer & rifle & mean\\ \shline
+     3DS2VS & 16.4 & 12.7 & 21.9 & 24.1 & 2.4 & 10.5 & 10.6 & 9.3 & 26.7 & 25.3 & 16.0 \\
+     DeepSDF & 12.3 & 6.87 & 6.92 & 18.4 & 11.8 & 10.6 & 4.54 & 10.83 & 6.17 & 15.7 & 10.4\\
+     DeepLS & 9.74 & 5.77 & 2.09 & 7.22 & \tablefirst \textbf{0.63} & 4.30 & 12.7 & 7.28 & 18.8 & 4.13 & 7.27\\
+     \modelname{} (ours) & \tablefirst \textbf{4.19} & \tablefirst \textbf{3.09} & \tablefirst \textbf{1.86} & \tablefirst \textbf{3.66} & 1.23 & \tablefirst \textbf{3.57} & \tablefirst \textbf{4.48} & \tablefirst \textbf{2.58} & \tablefirst \textbf{4.23} & \tablefirst \textbf{2.88} & \tablefirst \textbf{3.18}\\
+    \hline
+    \end{tabular}
+    \vspace{-0.1in}
+    \label{table:shapenet_unseen}
+\end{table*}
+
+% \begin{table}%{l}{5cm}
+%     % \centering - commented out as wraptable environments are typically aligned by the {l}{5cm} parameters
+%     \tablestyle{6pt}{1.1}
+%     \caption{\small Results on Thingi meshes. We evaluate the chamfer distance ($10^{-4}$) with a marching cube resolution of 256. Note that \textit{NGLOD is trained on each test shape}, while \modelname{} uses a shared MLP for all shapes as a generalizable method.}
+%     \begin{tabular}{l|cc}
+%     \hline
+%     & \multicolumn{2}{c}{\textit{Unseen Real Scans}} \\
+%      & Generalizable & Shape Error  \\ \shline
+%      NGLOD & \xmark & \textbf{1.04}  \\
+%      \modelname{} (ours) & \cmark & 1.87\\
+%     \hline
+%     \end{tabular}
+%     \label{table:scene}
+% \end{table}
+
+
+% \begin{table}[t]
+%     \centering
+%     \tablestyle{5pt}{1.1}
+%     \scriptsize
+%     \resizebox{0.5\linewidth}{!}{
+%     \begin{tabular}{cccccc|c}
+%     \hline
+%      & \multicolumn{2}{c}{\textit{Coord. Field (CF)}} &  & \multicolumn{2}{c|}{\textit{MLP Settings}} & \multirow{2}{*}{Error}\\
+     
+%      \arrayrulecolor{gray}
+%     \cline{2-3}
+%      \arrayrulecolor{black} 
+
+%      \arrayrulecolor{gray}
+%     \cline{5-6}
+%      \arrayrulecolor{black} 
+     
+%      & Use CF & Geo-Aware Init. & & \# Linear & \# Quad. & \\ \shline
+%      (0) & \xmark & \xmark & & 5 & \xmark & 3.91 \\
+%      \arrayrulecolor{gray}
+%      \cline{1-7}
+%      \arrayrulecolor{black}
+    
+%      \multirow{2}{*}{(1)} & \cmark & \xmark & & 5 & \xmark & 3.45\\
+%      & \cmark & \cmark & & 5 & \xmark & 2.33\\
+%      \arrayrulecolor{gray}
+%      \cline{1-7}
+%      \arrayrulecolor{black}
+     
+%      \multirow{2}{*}{(2)} & \xmark & \xmark & & 5 & 1 & 3.01\\
+%       & \xmark & \xmark & & 6 & \xmark & 3.70\\
+%       \arrayrulecolor{gray}
+%       \cline{1-7}
+%       \arrayrulecolor{black}
+     
+%      (3) & \cmark & \cmark & & 5 & 1 & \textbf{2.05}\\
+%     \hline
+%     \end{tabular}
+%     }
+%     \caption{\small{Ablation evaluation results. (0) Base performance; (1) Ablation of coordinate field and its initialization methods; (2) Ablation of using quadratic MLP; (3) Full performance. We use resolution 128 to get reconstructed meshes.}}
+%     \vspace{-0.2in}
+%     \label{table:ablation}
+% \end{table}
+
+
+\begin{figure*}[t]
+    \tiny
+    \centering
+    \tablestyle{5pt}{1.1}
+    \begin{minipage}[t]{0.48\linewidth}
+    \captionsetup{type=table}
+    \setlength\tabcolsep{5pt}
+    \vspace{0.2in}
+    \caption{\small Results on Thingi meshes. We evaluate the chamfer distance ($10^{-4}$) with a marching cube resolution of 256. Note that \textit{NGLOD is trained on each test shape}, while \modelname{} uses a shared MLP for all shapes as a generalizable method.} 
+    \vspace{-0.05in}
+    \resizebox{1.0\textwidth}{!}{
+    \begin{tabular}{l|ccc}
+    \hline
+    & \multicolumn{3}{c}{\textit{Unseen Thingi Shapes}} \\
+     & Generalizable & Total MLP Size & Shape Error  \\ \shline
+     NGLOD & \xmark & 24 $\times$0.2MB & \textbf{1.04}  \\
+     DeepSDF & \cmark & 0.2MB & 3.68 \\
+     \modelname{} (ours) & \cmark & 0.2MB & 1.87\\
+    \hline
+    \end{tabular}
+    \label{table:scene}
+    }
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\linewidth}
+     \captionsetup{type=table}
+    \setlength\tabcolsep{5pt}
+    \caption{\small{Ablation study of (0) Base performance; (1) coordinate field and its initialization methods; (2) using quadratic MLP; (3) full performance. We use resolution 128 to get reconstructed meshes.}}
+    \vspace{-0.05in}
+    \resizebox{1.0\textwidth}{!}{
+    \begin{tabular}{cccccc|c}
+    \hline
+     & \multicolumn{2}{c}{\textit{Coord. Field (CF)}} &  & \multicolumn{2}{c|}{\textit{MLP Settings}} & \multirow{2}{*}{Error}\\
+     
+     \arrayrulecolor{gray}
+    \cline{2-3}
+     \arrayrulecolor{black} 
+
+     \arrayrulecolor{gray}
+    \cline{5-6}
+     \arrayrulecolor{black} 
+     
+     & Use CF & Geo-Aware Init. & & \# Linear & \# Quad. & \\ \shline
+     (0) & \xmark & \xmark & & 5 & \xmark & 3.91 \\
+     \arrayrulecolor{gray}
+     \cline{1-7}
+     \arrayrulecolor{black}
+    
+     \multirow{2}{*}{(1)} & \cmark & \xmark & & 5 & \xmark & 3.45\\
+     & \cmark & \cmark & & 5 & \xmark & 2.33\\
+     \arrayrulecolor{gray}
+     \cline{1-7}
+     \arrayrulecolor{black}
+     
+     \multirow{2}{*}{(2)} & \xmark & \xmark & & 5 & 1 & 3.01\\
+      & \xmark & \xmark & & 6 & \xmark & 3.70\\
+      \arrayrulecolor{gray}
+      \cline{1-7}
+      \arrayrulecolor{black}
+     
+     (3) & \cmark & \cmark & & 5 & 1 & \textbf{2.05}\\
+    \hline
+    \end{tabular}
+    \label{table:ablation} 
+    }
+    \end{minipage}
+\vspace{-0.1in}
+\end{figure*}
+
+
+\subsection{Experimental Results}
+\label{Subsec:Experimental:Results}
+\noindent\textbf{Qualitative Results.} As shown in Fig.~\ref{Figure:Main:Result:Figure}, \modelname{} demonstrates strong surface representation capability. The details of geometry are maintained well. The results on out-of-distribution shapes from unseen categories are comparable to the training categories.
+
+\noindent\textbf{Perfomance on Training Categories.}
+As shown in Table~\ref{table: main}, \modelname{} outperforms baselines by a large margin. In detail, the average chamfer distance of \modelname{} is $1.86$ ($48\%$ relatively) smaller than the best baseline DeepLS. Moreover, we provide a more detailed comparison with DeepLS, as shown in Fig.~\ref{fig: tradeoff}. We observe that \modelname{} is consistently better than DeepLS with different latent code and MLP size. Specifically, \modelname{} with latent code size 48 achieves slightly better performance compared with DeepLS with latent code size 128. Note that the number of MLP parameters for the former is about $15\%$ for the latter.
+
+\noindent\textbf{Perfomance on Unseen Categories.}
+We compare \modelname{} with previous generalizable methods on ShapeNet unseen categories and the state-of-the-art per-shape-based method on the challenging real scans. We provide visualization results in Fig.~\ref{fig: comparison}.
+
+\begin{itemize}
+    \vspace{-0.05in}
+    \item \textit{ShapeNet Unseen Categories.} As shown in Table~\ref{table:shapenet_unseen}, \modelname{} achieves better generalization on 9 out of 10 novel shape categories. We also observe that the performance gap between \modelname{} and prior works is larger in the unseen categories, showing the strong generalization capability of \modelname{}.
+    \vspace{-0.05in}
+    \item \textit{Thingi Real Shapes.} As shown in Table~\ref{table:scene}, \modelname{} achieves comparable results with NGLOD. We note that NGLOD is a per-shape-based method, which trains a model for each shape and performs better naturally. In contrast, \modelname{} is trained on ShapeNet shapes.
+\end{itemize}
+
+
+\subsection{Ablation Study}
+\label{Subsec:Ablation:Study}
+
+As shown in Table~\ref{table:ablation}, we experiment with \modelname{} variants to validate the effectiveness of our coordinate field and MLP designs. 
+
+\paragraph{Coordinate Field and Initialization.} As shown in Table~\ref{table:ablation} (1), using coordinate fields with different initialization strategies can both reduce the shape error. In detail, when using axis-aligned coordinate field initialization, where all coordinate frames are initialized as the world frame, the shape error reduced slightly from $3.91$ to $3.45$. The result demonstrates the difficulty of optimizing coordinate frames. In contrast, when using geometry-aware initialization, i.e., initializing local frames with estimated normal and tangent directions of local shapes, the shape error is reduced to $2.33$, observing a $40\%$ improvement.
+
+
+\paragraph{MLP Design.}
+As shown in Table~\ref{table:ablation} (2), using a quadratic layer as the last layer of the MLP observes a $0.9$ ($23\%$ relatively) reduction of shape error. As the use of the quadratic layer introduces additional parameters, we compare it with a variant for a fair comparison. In detail, we compare it with a linear MLP with an additional layer (6 layers in total), where the two MLPs have the same amount of parameters because the output channel size of the last layer is 1. The result shows that increasing the number of linear layers can only reduce the shape error slightly.
+
+Moreover, Table~\ref{table:ablation} (3) demonstrates the combination of the two introduced techniques can jointly reduce the shape error.

@@ -1,0 +1,150 @@
+\relax 
+\Newlabel{labelAccepted}{1}
+\citation{Vaswani2017}
+\citation{Bubeck2023,Wei2023,Wei2022}
+\citation{Yuan2023}
+\citation{Vaswani2017}
+\citation{Karpathy2022}
+\Newlabel{1}{a}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{}\protected@file@percent }
+\citation{Yuan2023}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The main contributions of this work.}}{2}{}\protected@file@percent }
+\newlabel{table:InvestigationSteps}{{1}{2}{}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related works}{2}{}\protected@file@percent }
+\newlabel{sec:RelatedWorks}{{2}{2}{}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}LM and LLM capabilities on arithmetic tasks}{2}{}\protected@file@percent }
+\citation{Liu2023}
+\citation{Wei2023}
+\citation{Nogueira2021}
+\citation{Muffo2023}
+\citation{Lee2023}
+\citation{Lee2023}
+\citation{Rauker2023}
+\citation{Belinkov2022}
+\citation{Hewitt2019}
+\citation{White2021}
+\citation{Elazar2021}
+\citation{Elazar2021}
+\citation{Lasri2022}
+\citation{Elhage2021}
+\citation{Geiger2021}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Interpretability techniques}{3}{}\protected@file@percent }
+\citation{Stolfo2023}
+\citation{Nanda2023}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Interpretability of arithmetic reasoning with LMs}{4}{}\protected@file@percent }
+\newlabel{subsec:MechanisticInterpretability}{{2.3}{4}{}{subsection.2.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Experiment design}{4}{}\protected@file@percent }
+\newlabel{sec:ExperimentDesign}{{3}{4}{}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}The tasks}{4}{}\protected@file@percent }
+\newlabel{subsec:TheTasks}{{3.1}{4}{}{subsection.3.1}{}}
+\citation{Vaswani2017}
+\citation{Karpathy2022}
+\citation{Nanda2023}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The architecture}{5}{}\protected@file@percent }
+\newlabel{subsec:TheArchitecture}{{3.2}{5}{}{subsection.3.2}{}}
+\citation{Nogueira2021}
+\citation{Lee2023}
+\citation{Muffo2023}
+\citation{Lee2023}
+\citation{Liu2023}
+\citation{Kaplan2020}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Details of the LM model used in our experiments. The total number of learnable parameters is just 701K, which is several orders of magnitudes smaller than recent billion-parameters LLMs.}}{6}{}\protected@file@percent }
+\newlabel{table:LMDetails}{{2}{6}{}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{6}{}\protected@file@percent }
+\newlabel{sec:Results}{{4}{6}{}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Learning addition and multiplication}{6}{}\protected@file@percent }
+\newlabel{subsec:LearningAdditionAndMultiplication}{{4.1}{6}{}{subsection.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Sequence accuracy. From the left: addition and multiplication. Results are averaged over five runs. Note that, training and validation curves are almost overlapped. At the end of training the Mean Absolute Error (MAE) on the validation set, between the real and generated operation results, is 0 and 1.3 for addition and multiplication, respectively.}}{7}{}\protected@file@percent }
+\newlabel{figure:AddMulSeqAccuracies}{{1}{7}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Control experiment: random output}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Sequence accuracy using random output in the training set. Results are averaged over five runs.}}{7}{}\protected@file@percent }
+\newlabel{figure:RandSeqAccuracies}{{2}{7}{}{figure.2}{}}
+\citation{Lee2023}
+\citation{Wallace2019}
+\citation{Naik2019}
+\citation{Sundararaman2020}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}The computational approach}{8}{}\protected@file@percent }
+\newlabel{subsec:ComputationalApproach}{{4.3}{8}{}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Interpolation vs extrapolation}{8}{}\protected@file@percent }
+\newlabel{subsec:InterpolationVsExtrapolation}{{4.4}{8}{}{subsection.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Sequence accuracy on Random, $VS_t$, and $VS_v$ validation subsets for addition (left) and multiplication (right). Results are averaged over five runs. $VS_t$ reaches 100\% accuracy on additions (the same of Random split) and 97.5\% accuracy on multiplication (just 1.4\% less than random split); $VS_v$ reaches 93.7\% on addition and 94.3\% on multiplication (6.3\% and 4.6\% less than Random split, respectively).}}{9}{}\protected@file@percent }
+\newlabel{figure:VStVSvSeqAccuracy}{{3}{9}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Looking at internal representations}{9}{}\protected@file@percent }
+\newlabel{subsec:LookingAtInternalRepresentations}{{4.5}{9}{}{subsection.4.5}{}}
+\citation{Schober2018}
+\citation{Elazar2021}
+\citation{Liu2018}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pearson correlation between ordered sets of distances for addition (a) and multiplication (b). Each cell denotes the correlation between the two ordered set of distances specified in the corresponding row and column. Note that since for addition in this experiment the output value is always twice the input, the correlation values (blue and green cells) are the same for $d_{in,\_}$ and $d_{out,\_}$ block of values. Graphs (c) and (d) show the correlations of output distances $d_{out,t}$ (at token level - blue curves) and $d_{out,v}$ (at value level - orange curves) with the embedding distances $d_{dec_i}$ across the 6 decoder layers for addition and multiplication, respectively.}}{11}{}\protected@file@percent }
+\newlabel{figure:PearsonCorrelation}{{4}{11}{}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Ablation study}{11}{}\protected@file@percent }
+\newlabel{sec:AblationStudy}{{5}{11}{}{section.5}{}}
+\citation{Lee2023}
+\citation{Nanda2023}
+\citation{Stolfo2023}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Epochs necessary to reach 95\% accuracy on the validation set. A dash is used when 95\% accuracy is not achieved in 1K epochs: in such case the accuracy reached is reported within brackets.}}{12}{}\protected@file@percent }
+\newlabel{table:AblationStudy}{{3}{12}{}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion and conclusions}{12}{}\protected@file@percent }
+\newlabel{sec:Conclusions}{{6}{12}{}{section.6}{}}
+\citation{Feng2023,Keskar2017}
+\@writefile{toc}{\let\numberline\tmptocnumberline}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~A}Addition input-output discontinuities}{13}{}\protected@file@percent }
+\newlabel{sec:AppendixA}{{Appendix~A}{13}{}{section.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.4}{\ignorespaces Addition input-output discontinuities.}}{13}{}\protected@file@percent }
+\newlabel{table:AdditionDiscontinuities}{{A.4}{13}{}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~B}Binary addition and multiplication}{13}{}\protected@file@percent }
+\newlabel{sec:AppendixB}{{Appendix~B}{13}{}{section.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {B.5}{\ignorespaces Two-output 3-bit truth table for binary addition.}}{14}{}\protected@file@percent }
+\newlabel{table:TwoOutputTruthTableForAddition}{{B.5}{14}{}{table.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {B.5}{\ignorespaces Example of 4-digit binary multiplication. The sum can be performed incrementally with a two-operand adder.}}{14}{}\protected@file@percent }
+\newlabel{figure:ExampleMultiplication}{{B.5}{14}{}{figure.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~C}Learning a regressor under predict-next–token training}{14}{}\protected@file@percent }
+\newlabel{sec:AppendixC}{{Appendix~C}{14}{}{section.3}{}}
+\citation{Nogueira2021,Lee2023}
+\citation{Lee2023}
+\citation{Elazar2021}
+\citation{Ravfogel2020}
+\citation{Ravfogel2020}
+\@writefile{lof}{\contentsline {figure}{\numberline {C.6}{\ignorespaces Sequence accuracy on validation set for reverse (default in this work) and plain order of the input and output representations. From left to right: addition and multiplication.}}{15}{}\protected@file@percent }
+\newlabel{figure:PlainRevBitsSeqAccuracies}{{C.6}{15}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~D}Amnesic probing results}{15}{}\protected@file@percent }
+\newlabel{sec:AppendixD}{{Appendix~D}{15}{}{section.4}{}}
+\citation{Elazar2021}
+\citation{Karpathy2022}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~E}NanoGPT - a decoder-only LM}{16}{}\protected@file@percent }
+\newlabel{sec:AppendixE}{{Appendix~E}{16}{}{section.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {E.6}{\ignorespaces Details of the nanoGPT model.}}{16}{}\protected@file@percent }
+\newlabel{table:NanoGPTDetails}{{E.6}{16}{}{table.6}{}}
+\bibcite{Belinkov2022}{{1}{2022}{{Belinkov}}{{}}}
+\bibcite{Bubeck2023}{{2}{2023}{{Bubeck et al.}}{{}}}
+\bibcite{Elazar2021}{{3}{2021}{{Elazar et al.}}{{}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.7}{\ignorespaces Sequence accuracy of the nanoGPT model (refer to Section \ref {subsec:LearningAdditionAndMultiplication} for more details). From the left: addition and multiplication. Results are averaged over five runs. Note that, training and validation curves are almost overlapped.}}{17}{}\protected@file@percent }
+\newlabel{figure:NanoGPTAddMulSeqAccuracies}{{E.7}{17}{}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.8}{\ignorespaces Sequence accuracy of the nanoGPT model on Random, $VS_t$, and $VS_v$ validation subsets for addition (left) and multiplication (right). Results are averaged over five runs.}}{17}{}\protected@file@percent }
+\newlabel{figure:NanoGPTVStVSvSeqAccuracy}{{E.8}{17}{}{figure.8}{}}
+\bibcite{Elhage2021}{{4}{2021}{{Elhage et al.}}{{}}}
+\bibcite{Feng2023}{{5}{2023}{{Feng et al.}}{{}}}
+\bibcite{Geiger2021}{{6}{2021}{{Geiger et al.}}{{}}}
+\bibcite{Hewitt2019}{{7}{2019}{{Hewitt and Manning}}{{}}}
+\bibcite{Kaplan2020}{{8}{2020}{{Kaplan et al.}}{{}}}
+\bibcite{Karpathy2022}{{9}{2022}{{Karpathy}}{{}}}
+\bibcite{Keskar2017}{{10}{2017}{{Keskar et al.}}{{}}}
+\bibcite{Lasri2022}{{11}{2022}{{Lasri et al.}}{{}}}
+\bibcite{Lee2023}{{12}{2023}{{Lee et al.}}{{}}}
+\bibcite{Liu2023}{{13}{2023}{{Liu and Low}}{{}}}
+\bibcite{Liu2018}{{14}{2018}{{Liu et al.}}{{}}}
+\bibcite{Muffo2023}{{15}{2023}{{Muffo et al.}}{{}}}
+\bibcite{Naik2019}{{16}{2019}{{Naik et al.}}{{}}}
+\bibcite{Nanda2023}{{17}{2023}{{Nanda et al.}}{{}}}
+\bibcite{Nogueira2021}{{18}{2021}{{Nogueira et al.}}{{}}}
+\bibcite{Rauker2023}{{19}{2023}{{Rauker et al.}}{{}}}
+\bibcite{Ravfogel2020}{{20}{2020}{{Ravfogel et al.}}{{}}}
+\bibcite{Schober2018}{{21}{2018}{{Schober et al.}}{{}}}
+\bibcite{Stolfo2023}{{22}{2023}{{Stolfo et al.}}{{}}}
+\bibcite{Sundararaman2020}{{23}{2020}{{Sundararaman et al.}}{{}}}
+\bibcite{Vaswani2017}{{24}{2017}{{Vaswani et al.}}{{}}}
+\bibcite{Wallace2019}{{25}{2019}{{Wallace et al.}}{{}}}
+\bibcite{Wei2022}{{26}{2022}{{Wei et al.}}{{}}}
+\bibcite{Wei2023}{{27}{2023}{{Wei et al.}}{{}}}
+\bibcite{White2021}{{28}{2021}{{White et al.}}{{}}}
+\bibcite{Yuan2023}{{29}{2023}{{Yuan et al.}}{{}}}
+\gdef \@abspage@last{19}

@@ -1,0 +1,296 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{sohn2016improved,oord2018representation}
+\citation{dayan1993improving}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  \textbf  {TD InfoNCE} is a nonparametric version of the successor representation. {\em  (Top)}\, The distances between learned representations indicate the probability of transitioning to the next state and a set of randomly-sampled states. {\em  (Bottom)}\, We update these representations so they assign high likelihood to \emph  {(a)} the next state and \emph  {(b)} states likely to be visited after the next state. See Sec.~\ref {sec:method} for details.}}{1}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:method}{{1}{1}{\footnotesize \textbf {TD InfoNCE} is a nonparametric version of the successor representation. \figtop \, The distances between learned representations indicate the probability of transitioning to the next state and a set of randomly-sampled states. \figbottom \, We update these representations so they assign high likelihood to \emph {(a)} the next state and \emph {(b)} states likely to be visited after the next state. See Sec.~\ref {sec:method} for details}{figure.caption.1}{}}
+\citation{ding2019goal,ghosh2020learning,gupta2020relay,emmons2021rvs,lynch2020learning,oh2018self,sun2019policy}
+\citation{andrychowicz2017hindsight,nachum2018data,chane2021goal}
+\citation{pertsch2020long,fang2022planning,fang2023generalization,eysenbach2019search,nair2019hierarchical,gupta2020relay}
+\citation{pmlr-v202-wang23al,tian2020model,nair2020goal,durugkar2021adversarial}
+\citation{ma2022vip,shah2022rapid,zheng2023stabilizing}
+\citation{eysenbach2020c,eysenbach2022contrastive,blier2021learning}
+\citation{chopra2005learning,schroff2015facenet,sohn2016improved,oh2016deep,wang2020understanding,oord2018representation,tschannen2019mutual,weinberger2009distance,he2022masked,radford2021learning,chen2020simple,tian2020contrastive,gao2021simcse}
+\citation{grill2020bootstrap}
+\citation{ma2018noise}
+\citation{chen2020simple,tian2020contrastive,henaff2020data,wu2018unsupervised}
+\citation{logeswaran2018efficient,jia2021scaling,radford2021learning}
+\citation{nair2022r3m,sermanet2018time}
+\citation{linsker1988self,poole2019variational}
+\citation{gutmann2010noise,ma2018noise,tsai2020neural,arora2019theoretical}
+\citation{wang2020understanding}
+\citation{laskin2020curl,laskin2020reinforcement,hansen2022bisimulation,choi2021variational,nair2020contextual,nair2018visual}
+\citation{ma2022vip,durugkar2021adversarial,eysenbach2020c,eysenbach2022contrastive}
+\citation{dayan1993improving,barreto2017successor,barreto2019option,blier2021learning}
+\citation{watkins1992q,fu2019diagnosing,mnih2015human}
+\citation{janner2020gamma,barreto2017successor,touati2021learning,blier2021learning}
+\citation{eysenbach2022contrastive,eysenbach2020c,touati2021learning}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:prior-work}{{2}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Goal-conditioned reinforcement learning.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contrastive representation learning.}{2}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Temporal difference learning and successor representation.}{2}{section*.4}\protected@file@percent }
+\citation{sohn2016improved,jozefowicz2016exploring,oord2018representation,henaff2020data}
+\citation{gutmann2010noise,ma2018noise}
+\citation{eysenbach2022contrastive,wang2020understanding,touati2021learning}
+\citation{poole2019variational,ma2018noise,oord2018representation}
+\citation{ho2016generative,zhang2020gradientdice,eysenbach2020c,eysenbach2022contrastive,zheng2023stabilizing}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Preliminaries}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contrastive representation via InfoNCE.}{3}{section*.5}\protected@file@percent }
+\newlabel{eq:infonce}{{1}{3}{Contrastive representation via InfoNCE}{equation.1}{}}
+\newlabel{eq:arbitrary-func-est}{{2}{3}{Contrastive representation via InfoNCE}{equation.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reinforcement learning and goal-conditioned RL.}{3}{section*.6}\protected@file@percent }
+\citation{dayan1993improving}
+\citation{eysenbach2020c,rudner2021outcome}
+\citation{eysenbach2022contrastive}
+\citation{eysenbach2022contrastive,eysenbach2020c}
+\citation{dayan1993improving}
+\citation{mazoure2022contrastive}
+\citation{eysenbach2022contrastive}
+\citation{precup2000eligibility,precup2001off}
+\citation{sutton2018reinforcement}
+\citation{eysenbach2020c}
+\newlabel{eq:discounted-state-occupancy-measure}{{3}{4}{Reinforcement learning and goal-conditioned RL}{equation.3}{}}
+\newlabel{eq:discounted-state-occupancy-measure-recurrence}{{4}{4}{Reinforcement learning and goal-conditioned RL}{equation.4}{}}
+\newlabel{eq:policy-obj}{{5}{4}{Reinforcement learning and goal-conditioned RL}{equation.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Contrastive RL and C-Learning.}{4}{section*.7}\protected@file@percent }
+\newlabel{eq:mc-infonce}{{6}{4}{Contrastive RL and C-Learning}{equation.6}{}}
+\newlabel{eq:opt-critic}{{7}{4}{Contrastive RL and C-Learning}{equation.7}{}}
+\citation{watkins1992q,fu2019diagnosing}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Temporal Difference InfoNCE}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{subsec:td-infonce}{{3.2}{5}{Temporal Difference InfoNCE}{subsection.3.2}{}}
+\newlabel{eq:importance-weight}{{9}{5}{Temporal Difference InfoNCE}{equation.9}{}}
+\newlabel{eq:td-infonce}{{10}{5}{Temporal Difference InfoNCE}{equation.10}{}}
+\citation{eysenbach2020c}
+\citation{eysenbach2022contrastive}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Temporal Difference InfoNCE. We use $\mathcal  {CE}$ to denote the cross entropy loss, taken across the rows of a matrix of logits and labels. We use $F$ as a matrix of logits, where $F[i, j] = \phi (s_t^{(i)}, a_t^{(i)}, g^{(i)})^{\top } \psi (s_{t+}^{(j)})$. See Appendix~\ref {appendix:implementation} for details.}}{6}{figure.caption.9}\protected@file@percent }
+\newlabel{alg:td-infonce}{{1}{6}{Temporal Difference InfoNCE. We use $\CE $ to denote the cross entropy loss, taken across the rows of a matrix of logits and labels. We use $F$ as a matrix of logits, where $F[i, j] = \phi (s_t^{(i)}, a_t^{(i)}, g^{(i)})^{\top } \psi (s_{t+}^{(j)})$. See Appendix~\ref {appendix:implementation} for details}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Convergence and connections.}{6}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Goal-conditioned Policy Learning}{6}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:alg}{{3.3}{6}{Goal-conditioned Policy Learning}{subsection.3.3}{}}
+\newlabel{eq:actor-loss}{{11}{6}{Goal-conditioned Policy Learning}{equation.11}{}}
+\citation{plappert2018multi}
+\citation{pmlr-v202-wang23al}
+\citation{eysenbach2022contrastive}
+\citation{eysenbach2022contrastive}
+\citation{ding2019goal,emmons2021rvs,ghosh2020learning,lynch2020learning,sun2019policy,srivastava2019training}
+\citation{andrychowicz2017hindsight,levy2018learning,riedmiller2018learning,schaul2015universal}
+\citation{plappert2018multi}
+\citation{plappert2018multi}
+\newlabel{fig:online-eval-bar}{{2a}{7}{\footnotesize Fetch robotics benchmark from~\citep {plappert2018multi}}{figure.caption.10}{}}
+\newlabel{sub@fig:online-eval-bar}{{a}{7}{\footnotesize Fetch robotics benchmark from~\citep {plappert2018multi}}{figure.caption.10}{}}
+\newlabel{fig:online-eval-stochastic-bar}{{2b}{7}{\footnotesize Stochastic tasks}{figure.caption.10}{}}
+\newlabel{sub@fig:online-eval-stochastic-bar}{{b}{7}{\footnotesize Stochastic tasks}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  \textbf  {Evaluation on online GCRL benchmarks.} {\em  (Left)}\, TD InfoNCE performs similarly to or outperforms all baselines on both state-based and image-based tasks. {\em  (Right)}\, On stochastic versions of the state-based tasks, TD InfoNCE outperforms the strongest baseline (QRL). Appendix Fig.~\ref {fig:online-eval} shows the learning curves. }}{7}{figure.caption.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{7}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{7}{Experiments}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Comparing to Prior Goal-conditioned RL methods}{7}{subsection.4.1}\protected@file@percent }
+\citation{fu2020d4rl}
+\citation{eysenbach2022contrastive}
+\citation{dayan1993improving}
+\citation{sutton2018reinforcement}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  Evaluation on offline D4RL AntMaze benchmarks.}}{8}{table.caption.11}\protected@file@percent }
+\newlabel{tab:offline-eval}{{1}{8}{\footnotesize Evaluation on offline D4RL AntMaze benchmarks}{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces  \relax \fontsize  {9}{10pt}\selectfont  \textbf  { Estimating the discounted state occupancy measure in a tabular setting.} {\em  (Left)}~Temporal difference methods have lower errors than the Monte Carlo method. Also note that our TD InfoNCE converges as fast as the best baseline (successor representation). {\em  (Right)}~TD InfoNCE is more data efficient than other methods. Using a dataset of size 10M, TD InfoNCE achieves an error rate $25\%$ lower than the best baseline; TD InfoNCE also matches the performance of C-learning with $130\times $ less data. }}{8}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:discounted-state-occupancy-measure-est-errs}{{3}{8}{\footnotesize \textbf { Estimating the discounted state occupancy measure in a tabular setting.} \figleft ~Temporal difference methods have lower errors than the Monte Carlo method. Also note that our TD InfoNCE converges as fast as the best baseline (successor representation). \figright ~TD InfoNCE is more data efficient than other methods. Using a dataset of size 10M, TD InfoNCE achieves an error rate $25\%$ lower than the best baseline; TD InfoNCE also matches the performance of C-learning with $130\times $ less data}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Evaluation on Offline Goal Reaching}{8}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Accuracy of the estimated discounted state occupancy measure}{8}{subsection.4.3}\protected@file@percent }
+\newlabel{subsec:critic-pred-acc}{{4.3}{8}{Accuracy of the estimated discounted state occupancy measure}{subsection.4.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  \textbf  {Stitching trajectories in a dataset.} The behavioral policy collects ``Z" style trajectories. Unlike the Monte Carlo method (contrastive RL) , our TD InfoNCE successfully ``stitches'' these trajectories together, navigating between pairs of (start \textcolor {Red}{{\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 54}}, goal \textcolor {OliveGreen}{{\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 72}}) states unseen in the training trajectories. Appendix Fig.~\ref {fig:stitching-property-more} shows additional examples. }}{9}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:stitching-property}{{4}{9}{\footnotesize \textbf {Stitching trajectories in a dataset.} The behavioral policy collects ``Z" style trajectories. Unlike the Monte Carlo method (contrastive RL) , our TD InfoNCE successfully ``stitches'' these trajectories together, navigating between pairs of (start \textcolor {Red}{\heavyxmark }, goal \textcolor {OliveGreen}{\starmark }) states unseen in the training trajectories. Appendix Fig.~\ref {fig:stitching-property-more} shows additional examples}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  \textbf  {Searching for shortcuts in skewed datasets.}~\emph  {(Left)} Conditioned on different initial states \textcolor {Red}{{\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 54}} and goals \textcolor {OliveGreen}{{\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 72}}, we collect datasets with $95\%$ long paths (dark) and $5\%$ short paths (light).~\emph  {(Center)} TD InfoNCE infers the shortest path, \emph  {(Right)} while contrastive RL fails to find this path. Appendix Fig.~\ref {fig:searching-shortcut-more} shows additional examples.}}{9}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:searching-shotcut}{{5}{9}{\footnotesize \textbf {Searching for shortcuts in skewed datasets.}~\emph {(Left)} Conditioned on different initial states \textcolor {Red}{\heavyxmark } and goals \textcolor {OliveGreen}{\starmark }, we collect datasets with $95\%$ long paths (dark) and $5\%$ short paths (light).~\emph {(Center)} TD InfoNCE infers the shortest path, \emph {(Right)} while contrastive RL fails to find this path. Appendix Fig.~\ref {fig:searching-shortcut-more} shows additional examples}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Does TD InfoNCE enable off-policy reasoning?}{9}{subsection.4.4}\protected@file@percent }
+\newlabel{subsec:off-policy-reasoning}{{4.4}{9}{Does TD InfoNCE enable off-policy reasoning?}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{9}{section.5}\protected@file@percent }
+\newlabel{sec:conclusion}{{5}{9}{Conclusion}{section.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Limitations.}{9}{section*.14}\protected@file@percent }
+\bibcite{agarwal2019reinforcement}{{1}{2019}{{Agarwal et~al.}}{{Agarwal, Jiang, Kakade, and Sun}}}
+\bibcite{andrychowicz2017hindsight}{{2}{2017}{{Andrychowicz et~al.}}{{Andrychowicz, Wolski, Ray, Schneider, Fong, Welinder, McGrew, Tobin, Pieter~Abbeel, and Zaremba}}}
+\bibcite{arora2019theoretical}{{3}{2019}{{Arora et~al.}}{{Arora, Khandeparkar, Khodak, Plevrakis, and Saunshi}}}
+\bibcite{barreto2017successor}{{4}{2017}{{Barreto et~al.}}{{Barreto, Dabney, Munos, Hunt, Schaul, van Hasselt, and Silver}}}
+\bibcite{barreto2019option}{{5}{2019}{{Barreto et~al.}}{{Barreto, Borsa, Hou, Comanici, Ayg{\"u}n, Hamel, Toyama, Mourad, Silver, Precup, et~al.}}}
+\bibcite{bertsekas1995neuro}{{6}{1995}{{Bertsekas \& Tsitsiklis}}{{Bertsekas and Tsitsiklis}}}
+\bibcite{blier2021learning}{{7}{2021}{{Blier et~al.}}{{Blier, Tallec, and Ollivier}}}
+\bibcite{bradbury2018jax}{{8}{2018}{{Bradbury et~al.}}{{Bradbury, Frostig, Hawkins, Johnson, Leary, Maclaurin, Necula, Paszke, VanderPlas, Wanderman-Milne, et~al.}}}
+\bibcite{campos2020explore}{{9}{2020}{{Campos et~al.}}{{Campos, Trott, Xiong, Socher, Gir{\'o}-i Nieto, and Torres}}}
+\bibcite{chane2021goal}{{10}{2021}{{Chane-Sane et~al.}}{{Chane-Sane, Schmid, and Laptev}}}
+\bibcite{chen2021decision}{{11}{2021}{{Chen et~al.}}{{Chen, Lu, Rajeswaran, Lee, Grover, Laskin, Abbeel, Srinivas, and Mordatch}}}
+\bibcite{chen2020simple}{{12}{2020}{{Chen et~al.}}{{Chen, Kornblith, Norouzi, and Hinton}}}
+\bibcite{choi2021variational}{{13}{2021}{{Choi et~al.}}{{Choi, Sharma, Lee, Levine, and Gu}}}
+\bibcite{chopra2005learning}{{14}{2005}{{Chopra et~al.}}{{Chopra, Hadsell, and LeCun}}}
+\bibcite{dayan1993improving}{{15}{1993}{{Dayan}}{{}}}
+\bibcite{ding2019goal}{{16}{2019}{{Ding et~al.}}{{Ding, Florensa, Abbeel, and Phielipp}}}
+\@writefile{toc}{\contentsline {paragraph}{Acknowledgements}{10}{section*.15}\protected@file@percent }
+\bibcite{dubi1979interpretation}{{17}{1979}{{Dubi \& Horowitz}}{{Dubi and Horowitz}}}
+\bibcite{durugkar2021adversarial}{{18}{2021}{{Durugkar et~al.}}{{Durugkar, Tec, Niekum, and Stone}}}
+\bibcite{emmons2021rvs}{{19}{2021}{{Emmons et~al.}}{{Emmons, Eysenbach, Kostrikov, and Levine}}}
+\bibcite{ernst2005tree}{{20}{2005}{{Ernst et~al.}}{{Ernst, Geurts, and Wehenkel}}}
+\bibcite{eysenbach2018diversity}{{21}{2018}{{Eysenbach et~al.}}{{Eysenbach, Gupta, Ibarz, and Levine}}}
+\bibcite{eysenbach2019search}{{22}{2019}{{Eysenbach et~al.}}{{Eysenbach, Salakhutdinov, and Levine}}}
+\bibcite{eysenbach2020c}{{23}{2020}{{Eysenbach et~al.}}{{Eysenbach, Salakhutdinov, and Levine}}}
+\bibcite{eysenbach2022contrastive}{{24}{2022}{{Eysenbach et~al.}}{{Eysenbach, Zhang, Levine, and Salakhutdinov}}}
+\bibcite{fang2022planning}{{25}{2022}{{Fang et~al.}}{{Fang, Yin, Nair, and Levine}}}
+\bibcite{fang2023generalization}{{26}{2023}{{Fang et~al.}}{{Fang, Yin, Nair, Walke, Yan, and Levine}}}
+\bibcite{fu2019diagnosing}{{27}{2019}{{Fu et~al.}}{{Fu, Kumar, Soh, and Levine}}}
+\bibcite{fu2020d4rl}{{28}{2020}{{Fu et~al.}}{{Fu, Kumar, Nachum, Tucker, and Levine}}}
+\bibcite{fujimoto2021minimalist}{{29}{2021}{{Fujimoto \& Gu}}{{Fujimoto and Gu}}}
+\bibcite{gao2021simcse}{{30}{2021}{{Gao et~al.}}{{Gao, Yao, and Chen}}}
+\bibcite{gershman2018successor}{{31}{2018}{{Gershman}}{{}}}
+\bibcite{ghosh2020learning}{{32}{2020}{{Ghosh et~al.}}{{Ghosh, Gupta, Reddy, Fu, Devin, Eysenbach, and Levine}}}
+\bibcite{giles2015multilevel}{{33}{2015}{{Giles}}{{}}}
+\bibcite{gregor2016variational}{{34}{2016}{{Gregor et~al.}}{{Gregor, Rezende, and Wierstra}}}
+\bibcite{grill2020bootstrap}{{35}{2020}{{Grill et~al.}}{{Grill, Strub, Altch{\'e}, Tallec, Richemond, Buchatskaya, Doersch, Avila~Pires, Guo, Gheshlaghi~Azar, et~al.}}}
+\bibcite{gupta2020relay}{{36}{2020}{{Gupta et~al.}}{{Gupta, Kumar, Lynch, Levine, and Hausman}}}
+\bibcite{gutmann2010noise}{{37}{2010}{{Gutmann \& Hyv{\"a}rinen}}{{Gutmann and Hyv{\"a}rinen}}}
+\bibcite{hammersley1956conditional}{{38}{1956}{{Hammersley}}{{}}}
+\bibcite{hansen2022bisimulation}{{39}{2022}{{Hansen-Estruch et~al.}}{{Hansen-Estruch, Zhang, Nair, Yin, and Levine}}}
+\bibcite{he2022masked}{{40}{2022}{{He et~al.}}{{He, Chen, Xie, Li, Doll{\'a}r, and Girshick}}}
+\bibcite{henaff2020data}{{41}{2020}{{Henaff}}{{}}}
+\bibcite{ho2016generative}{{42}{2016}{{Ho \& Ermon}}{{Ho and Ermon}}}
+\bibcite{janner2020gamma}{{43}{2020}{{Janner et~al.}}{{Janner, Mordatch, and Levine}}}
+\bibcite{jia2021scaling}{{44}{2021}{{Jia et~al.}}{{Jia, Yang, Xia, Chen, Parekh, Pham, Le, Sung, Li, and Duerig}}}
+\bibcite{jozefowicz2016exploring}{{45}{2016}{{Jozefowicz et~al.}}{{Jozefowicz, Vinyals, Schuster, Shazeer, and Wu}}}
+\bibcite{kostrikov2021offline}{{46}{2021}{{Kostrikov et~al.}}{{Kostrikov, Nair, and Levine}}}
+\bibcite{kumar2019stabilizing}{{47}{2019}{{Kumar et~al.}}{{Kumar, Fu, Soh, Tucker, and Levine}}}
+\bibcite{kumar2020conservative}{{48}{2020}{{Kumar et~al.}}{{Kumar, Zhou, Tucker, and Levine}}}
+\bibcite{laskin2020curl}{{49}{2020{a}}{{Laskin et~al.}}{{Laskin, Srinivas, and Abbeel}}}
+\bibcite{laskin2020reinforcement}{{50}{2020{b}}{{Laskin et~al.}}{{Laskin, Lee, Stooke, Pinto, Abbeel, and Srinivas}}}
+\bibcite{levy2018learning}{{51}{2018}{{Levy et~al.}}{{Levy, Konidaris, Platt, and Saenko}}}
+\bibcite{linsker1988self}{{52}{1988}{{Linsker}}{{}}}
+\bibcite{logeswaran2018efficient}{{53}{2018}{{Logeswaran \& Lee}}{{Logeswaran and Lee}}}
+\bibcite{lynch2020learning}{{54}{2020}{{Lynch et~al.}}{{Lynch, Khansari, Xiao, Kumar, Tompson, Levine, and Sermanet}}}
+\bibcite{ma2022vip}{{55}{2022}{{Ma et~al.}}{{Ma, Sodhani, Jayaraman, Bastani, Kumar, and Zhang}}}
+\bibcite{ma2018noise}{{56}{2018}{{Ma \& Collins}}{{Ma and Collins}}}
+\bibcite{mazoure2022contrastive}{{57}{2022}{{Mazoure et~al.}}{{Mazoure, Eysenbach, Nachum, and Tompson}}}
+\bibcite{mnih2015human}{{58}{2015}{{Mnih et~al.}}{{Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare, Graves, Riedmiller, Fidjeland, Ostrovski, et~al.}}}
+\bibcite{nachum2018data}{{59}{2018}{{Nachum et~al.}}{{Nachum, Gu, Lee, and Levine}}}
+\bibcite{nair2020contextual}{{60}{2020{a}}{{Nair et~al.}}{{Nair, Bahl, Khazatsky, Pong, Berseth, and Levine}}}
+\bibcite{nair2018visual}{{61}{2018}{{Nair et~al.}}{{Nair, Pong, Dalal, Bahl, Lin, and Levine}}}
+\bibcite{nair2019hierarchical}{{62}{2019}{{Nair \& Finn}}{{Nair and Finn}}}
+\bibcite{nair2020goal}{{63}{2020{b}}{{Nair et~al.}}{{Nair, Savarese, and Finn}}}
+\bibcite{nair2022r3m}{{64}{2022}{{Nair et~al.}}{{Nair, Rajeswaran, Kumar, Finn, and Gupta}}}
+\bibcite{oh2018self}{{65}{2018}{{Oh et~al.}}{{Oh, Guo, Singh, and Lee}}}
+\bibcite{oh2016deep}{{66}{2016}{{Oh~Song et~al.}}{{Oh~Song, Xiang, Jegelka, and Savarese}}}
+\bibcite{oord2018representation}{{67}{2018}{{Oord et~al.}}{{Oord, Li, and Vinyals}}}
+\bibcite{pertsch2020long}{{68}{2020}{{Pertsch et~al.}}{{Pertsch, Rybkin, Ebert, Zhou, Jayaraman, Finn, and Levine}}}
+\bibcite{plappert2018multi}{{69}{2018}{{Plappert et~al.}}{{Plappert, Andrychowicz, Ray, McGrew, Baker, Powell, Schneider, Tobin, Chociej, Welinder, et~al.}}}
+\bibcite{poole2019variational}{{70}{2019}{{Poole et~al.}}{{Poole, Ozair, Van Den~Oord, Alemi, and Tucker}}}
+\bibcite{precup2000eligibility}{{71}{2000}{{Precup et~al.}}{{Precup, Sutton, and Singh}}}
+\bibcite{precup2001off}{{72}{2001}{{Precup et~al.}}{{Precup, Sutton, and Dasgupta}}}
+\bibcite{radford2021learning}{{73}{2021}{{Radford et~al.}}{{Radford, Kim, Hallacy, Ramesh, Goh, Agarwal, Sastry, Askell, Mishkin, Clark, et~al.}}}
+\bibcite{rainforth2018nesting}{{74}{2018}{{Rainforth et~al.}}{{Rainforth, Cornish, Yang, Warrington, and Wood}}}
+\bibcite{riedmiller2018learning}{{75}{2018}{{Riedmiller et~al.}}{{Riedmiller, Hafner, Lampe, Neunert, Degrave, Wiele, Mnih, Heess, and Springenberg}}}
+\bibcite{rudner2021outcome}{{76}{2021}{{Rudner et~al.}}{{Rudner, Pong, McAllister, Gal, and Levine}}}
+\bibcite{schaul2015universal}{{77}{2015}{{Schaul et~al.}}{{Schaul, Horgan, Gregor, and Silver}}}
+\bibcite{schroff2015facenet}{{78}{2015}{{Schroff et~al.}}{{Schroff, Kalenichenko, and Philbin}}}
+\bibcite{sermanet2018time}{{79}{2018}{{Sermanet et~al.}}{{Sermanet, Lynch, Chebotar, Hsu, Jang, Schaal, Levine, and Brain}}}
+\bibcite{shah2022rapid}{{80}{2022}{{Shah et~al.}}{{Shah, Eysenbach, Rhinehart, and Levine}}}
+\bibcite{sohn2016improved}{{81}{2016}{{Sohn}}{{}}}
+\bibcite{srivastava2019training}{{82}{2019}{{Srivastava et~al.}}{{Srivastava, Shyam, Mutz, Ja{\'s}kowski, and Schmidhuber}}}
+\bibcite{sun2019policy}{{83}{2019}{{Sun et~al.}}{{Sun, Li, Liu, Zhou, and Lin}}}
+\bibcite{sutton2018reinforcement}{{84}{2018}{{Sutton \& Barto}}{{Sutton and Barto}}}
+\bibcite{tian2020model}{{85}{2020{a}}{{Tian et~al.}}{{Tian, Nair, Ebert, Dasari, Eysenbach, Finn, and Levine}}}
+\bibcite{tian2020contrastive}{{86}{2020{b}}{{Tian et~al.}}{{Tian, Krishnan, and Isola}}}
+\bibcite{touati2021learning}{{87}{2021}{{Touati \& Ollivier}}{{Touati and Ollivier}}}
+\bibcite{tsai2020neural}{{88}{2020}{{Tsai et~al.}}{{Tsai, Zhao, Yamada, Morency, and Salakhutdinov}}}
+\bibcite{tschannen2019mutual}{{89}{2019}{{Tschannen et~al.}}{{Tschannen, Djolonga, Rubenstein, Gelly, and Lucic}}}
+\bibcite{wang2020understanding}{{90}{2020}{{Wang \& Isola}}{{Wang and Isola}}}
+\bibcite{pmlr-v202-wang23al}{{91}{2023}{{Wang et~al.}}{{Wang, Torralba, Isola, and Zhang}}}
+\bibcite{warde2018unsupervised}{{92}{2018}{{Warde-Farley et~al.}}{{Warde-Farley, Van~de Wiele, Kulkarni, Ionescu, Hansen, and Mnih}}}
+\bibcite{watkins1992q}{{93}{1992}{{Watkins \& Dayan}}{{Watkins and Dayan}}}
+\bibcite{weinberger2009distance}{{94}{2009}{{Weinberger \& Saul}}{{Weinberger and Saul}}}
+\bibcite{wu2018unsupervised}{{95}{2018}{{Wu et~al.}}{{Wu, Xiong, Yu, and Lin}}}
+\bibcite{zhang2020gradientdice}{{96}{2020}{{Zhang et~al.}}{{Zhang, Liu, and Whiteson}}}
+\bibcite{zheng2023stabilizing}{{97}{2023}{{Zheng et~al.}}{{Zheng, Eysenbach, Walke, Yin, Fang, Salakhutdinov, and Levine}}}
+\citation{fu2019diagnosing,ernst2005tree,bertsekas1995neuro}
+\citation{rainforth2018nesting,giles2015multilevel}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Theoretical Analysis}{16}{appendix.A}\protected@file@percent }
+\newlabel{appendix:theoretical-analysis}{{A}{16}{Theoretical Analysis}{appendix.A}{}}
+\@writefile{toc}{\contentsline {paragraph}{Definition of the classifier.}{16}{section*.17}\protected@file@percent }
+\newlabel{eq:classifier}{{12}{16}{Definition of the classifier}{equation.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{A variant of TD InfoNCE.}{16}{section*.18}\protected@file@percent }
+\newlabel{eq:td-infonce-expectation-ce}{{13}{16}{A variant of TD InfoNCE}{equation.13}{}}
+\newlabel{eq:td-infonce-update}{{14}{16}{A variant of TD InfoNCE}{equation.14}{}}
+\citation{sutton2018reinforcement,agarwal2019reinforcement}
+\citation{eysenbach2020c}
+\citation{poole2019variational}
+\citation{eysenbach2018diversity,campos2020explore,warde2018unsupervised,gregor2016variational}
+\citation{choi2021variational}
+\citation{dayan1993improving}
+\citation{gershman2018successor}
+\citation{barreto2017successor,touati2021learning}
+\@writefile{toc}{\contentsline {paragraph}{InfoNCE Bellman operator.}{17}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Proof of convergence.}{17}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Connection with mutual information and skill learning.}{17}{appendix.B}\protected@file@percent }
+\newlabel{appendix:mi}{{B}{17}{Connection with mutual information and skill learning}{appendix.B}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Connection with Successor Representations}{17}{appendix.C}\protected@file@percent }
+\newlabel{appendix:sr}{{C}{17}{Connection with Successor Representations}{appendix.C}{}}
+\citation{mazoure2022contrastive}
+\newlabel{eq:sr}{{16}{18}{Connection with Successor Representations}{equation.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Experimental Details}{18}{appendix.D}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}The Complete Algorithm for Goal-Conditioned RL}{18}{subsection.D.1}\protected@file@percent }
+\newlabel{appendix:implementation}{{D.1}{18}{The Complete Algorithm for Goal-Conditioned RL}{subsection.D.1}{}}
+\newlabel{eq:ce-negative}{{17}{18}{The Complete Algorithm for Goal-Conditioned RL}{equation.17}{}}
+\citation{eysenbach2022contrastive,pmlr-v202-wang23al}
+\citation{fujimoto2021minimalist,kumar2020conservative,kumar2019stabilizing}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces  \textbf  {Evaluation on online GCRL benchmarks.} TD InfoNCE matches or outperforms all baselines on both state-based and image-based tasks.}}{19}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:online-eval}{{6}{19}{\textbf {Evaluation on online GCRL benchmarks.} TD InfoNCE matches or outperforms all baselines on both state-based and image-based tasks}{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces We also compare different methods using the minimum distance of the gripper or the object to the goal over an episode. Note that a lower minimum distance indicates a better performance. TD InfoNCE achieves competitive minimum distances on online GCRL benchmarks.}}{19}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:online-eval-dist}{{7}{19}{We also compare different methods using the minimum distance of the gripper or the object to the goal over an episode. Note that a lower minimum distance indicates a better performance. TD InfoNCE achieves competitive minimum distances on online GCRL benchmarks}{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Online Goal-conditioned RL Experiments}{19}{subsection.D.2}\protected@file@percent }
+\citation{pmlr-v202-wang23al}
+\citation{eysenbach2022contrastive}
+\citation{emmons2021rvs}
+\citation{chen2021decision}
+\citation{fujimoto2021minimalist}
+\citation{kostrikov2021offline}
+\citation{eysenbach2022contrastive}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \textbf  {Stitching trajectories in a dataset.} We show additional (start, goal) pairs for the experiment in Fig.~\ref {fig:stitching-property}. }}{20}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:stitching-property-more}{{8}{20}{\textbf {Stitching trajectories in a dataset.} We show additional (start, goal) pairs for the experiment in Fig.~\ref {fig:stitching-property}}{figure.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Offline Goal-conditioned RL Experiments}{20}{subsection.D.3}\protected@file@percent }
+\newlabel{appendix:offline-details}{{D.3}{20}{Offline Goal-conditioned RL Experiments}{subsection.D.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Off-Policy Reasoning Experiments}{20}{subsection.D.4}\protected@file@percent }
+\newlabel{appendix:off-policy}{{D.4}{20}{Off-Policy Reasoning Experiments}{subsection.D.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Stitching trajectories.}{20}{section*.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \textbf  {Searching for shortcuts in skewed datasets.} We show additional (start, goal) pairs for the experiment in Fig.~\ref {fig:searching-shotcut}.}}{21}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:searching-shortcut-more}{{9}{21}{\textbf {Searching for shortcuts in skewed datasets.} We show additional (start, goal) pairs for the experiment in Fig.~\ref {fig:searching-shotcut}}{figure.caption.25}{}}
+\citation{bradbury2018jax}
+\citation{eysenbach2022contrastive}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  Hyperparameters for TD InfoNCE.}}{22}{table.caption.27}\protected@file@percent }
+\newlabel{tab:hparams}{{2}{22}{\footnotesize Hyperparameters for TD InfoNCE}{table.caption.27}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  Changes to hyperparameters for offline RL experiments. (Table~\ref {tab:offline-eval})}}{22}{table.caption.28}\protected@file@percent }
+\newlabel{tab:hparams-offline}{{3}{22}{\footnotesize Changes to hyperparameters for offline RL experiments. (Table~\ref {tab:offline-eval})}{table.caption.28}{}}
+\@writefile{toc}{\contentsline {paragraph}{Searching for shortcuts.}{22}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.5}Implementations and Hyperparameters}{22}{subsection.D.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {E}Additional Experiments}{22}{appendix.E}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Hyperparameter Ablations}{22}{subsection.E.1}\protected@file@percent }
+\newlabel{appendix:hyperparam-ablation}{{E.1}{22}{Hyperparameter Ablations}{subsection.E.1}{}}
+\citation{gutmann2010noise}
+\citation{dubi1979interpretation,hammersley1956conditional}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces  \textbf  {Hyperparameter ablation.} We conduct ablations to study the effect of different hyperparamters listed in Table~\ref {tab:hparams} and the discout factor $\gamma $ on state-based \texttt  {push} and \texttt  {slide}. }}{23}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:hyperparam-ablation}{{10}{23}{\textbf {Hyperparameter ablation.} We conduct ablations to study the effect of different hyperparamters listed in Table~\ref {tab:hparams} and the discout factor $\gamma $ on state-based \texttt {push} and \texttt {slide}}{figure.caption.29}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Predicting the discounted state occupancy measure}{23}{subsection.E.2}\protected@file@percent }
+\newlabel{appendix:critic-pred-acc-full}{{E.2}{23}{Predicting the discounted state occupancy measure}{subsection.E.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}Understanding the Differences between TD InfoNCE and C-Learning}{23}{subsection.E.3}\protected@file@percent }
+\newlabel{appendix:td-infonce-vs-c-learning}{{E.3}{23}{Understanding the Differences between TD InfoNCE and C-Learning}{subsection.E.3}{}}
+\citation{wang2020understanding,arora2019theoretical}
+\citation{zheng2023stabilizing}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces \relax \fontsize  {9}{10pt}\selectfont  Errors of discounted state occupancy measure estimation in a tabular setting.}}{24}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:discounted-state-occupancy-measure-est-errs-full}{{11}{24}{\footnotesize Errors of discounted state occupancy measure estimation in a tabular setting}{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Differences between TD InfoNCE and C-Learning.}}{24}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:td-infonce-vs-c-learning}{{12}{24}{Differences between TD InfoNCE and C-Learning}{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces \textbf  {Visualizing representation interpolation.} Using spherical interpolation of representations {\em  (Left)}~or linear interpolation of softmax features {\em  (Right)}, TD InfoNCE learns representations that capture not only the content of states, but also the causal relationships. }}{24}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:latent-interp}{{13}{24}{\textbf {Visualizing representation interpolation.} Using spherical interpolation of representations \figleft ~or linear interpolation of softmax features \figright , TD InfoNCE learns representations that capture not only the content of states, but also the causal relationships}{figure.caption.31}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.4}Representation Interpolation}{24}{subsection.E.4}\protected@file@percent }
+\newlabel{appendix:latent-interp}{{E.4}{24}{Representation Interpolation}{subsection.E.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Parametric interpolation.}{25}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Non-parametric interpolation.}{25}{section*.33}\protected@file@percent }
+\gdef \@abspage@last{25}

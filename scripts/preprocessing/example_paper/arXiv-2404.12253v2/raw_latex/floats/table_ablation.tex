@@ -1,0 +1,40 @@
+\begin{table}[h]
+\small
+\centering
+\begin{minipage}{.5\linewidth}
+\centering
+
+\begin{tabular}{ccccc|c}
+\toprule
+\texttt{AB} & \prm{} & \texttt{FR}-\orm{} & \texttt{SM} & \texttt{LG-\#Rollout} & Acc \cr
+\midrule
+$\times$ & $\times$ & $\times$ & $\times$ & $\times$ & 79.5 \\
+$\checkmark$ & $\times$ & $\times$ & $\times$ & $\times$ & 84.9 \\
+$\checkmark$ & $\checkmark$ & $\times$ & $\times$ & $\times$ & 85.9 \\
+$\checkmark$ & $\checkmark$ & $\checkmark$ & $\times$ & $\times$ & 86.5 \\
+$\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\times$ & 87.0 \\
+$\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 88.9 \\
+\bottomrule
+\end{tabular}
+\vspace{2mm}
+\caption*{(a) Ablation study on GSM8K}
+% \caption{First Table: Ablation study on GSM8K test set.}
+\end{minipage}%
+\begin{minipage}{.5\linewidth}
+\centering
+
+\begin{tabular}{cc|cc}
+\toprule
+\texttt{TA}-\orm{} & \texttt{Option}  & \texttt{Acc} & \texttt{\#Rollout} \cr
+\midrule
+$\times$ & $\times$ & 38.8 & 201 \\
+$\checkmark$ & $\times$ & 44.1 & 198 \\
+$\checkmark$ & $\checkmark$ & 45.4 & 148 \\
+\bottomrule
+\end{tabular}
+\vspace{2mm}
+\caption*{(b) Ablation study on MATH}
+\end{minipage}
+\caption{\textbf{(a)}: Ablation studies on the GSM8K test set of various components of \emcts{}, including adaptive branching, \prm{}, fast-rollout with \orm{}, state merge, and large number of rollouts. \textbf{(b)}: Ablation studies of the impacts of tool-augmented \orm{} and option-level formulation  on MATH.}
+\label{table:ablation}
+\end{table}

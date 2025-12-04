@@ -1,0 +1,431 @@
+\subsection{Notations}
+\label{sec:notations}
+\begin{itemize}[leftmargin=*]
+    \item $B$: Bias attributes
+    \item $C$: Core attributes
+    \item $X, Y$: Sample set (X: Inputs, Y: Labels)
+    \item $X_a$: Bias-aligned points
+    \item $X_b$: Bias-conflicting points
+    \item $\phi$: Encoder
+    \item $\phi[d]$: Encoder at depth $d$
+    \item $\erank{\phi[d]}$: Effective rank of an encoder at depth $d$
+    \item $\pi_i(d)$: Propagation probability of an attribute (indexed $i$) at depth $d$
+    \item $\Omega^d$: Propagation probability distribution of an attribute set at layer $d$ of a neural network
+    \item $\operatorname{rank}(\cdot)$: Rank of matrix
+    \item $\operatorname{dim}(\cdot)$: Dimensionality of a tensor / space
+    \item $\varepsilon$: Knock-off probability when transitioning from depth $d$ to $d + 1$
+\end{itemize}
+
+\subsection{Proofs}
+\label{sec:proofs}
+
+\textbf{\cref{thm:pr}} (Partition Rank):
+    % Let $C$ be the random variable corresponding to the core attributes in $X$.
+    % When the partitioning $X = X_a \cup X_c$ is stable \textit{wrt.} $C$, the effective rank of the bias-aligned partition is strictly lower than the effective rank of the bias-conflicting partition, \ie,
+    % \begin{equation*}
+    %     \erank{X_a} < \erank{X_c}
+    % \end{equation*}
+    % Let $C$ be the random variable corresponding to the core attributes in $X$.
+    When the partitioning $X = X_a \cup X_c$ is stable \textit{wrt.} $C$, the rank of the bias-aligned partition is upper-bounded by the rank of the bias-conflicting partition, \ie,
+    \begin{equation*}
+        \operatorname{rank}(X_a) \leq \operatorname{rank}(X_c)
+    \end{equation*}
+
+\begin{proof}
+    The theorem assumes a stable partitioning of the sample set X, \ie, in both the bias-aligned and conflicting subsets, the distribution of the core attributes are equal to that of the original sample set, \ie,
+    \begin{equation*}
+        P(X_a^C) = P(X_c^C) = P(X^C)
+    \end{equation*}
+    Under this condition, the only component in either of the subsets that determines the subset's rank should be the bias attributes, under the simplifying assumption (without loss of generality) that the attribute space is made up of only the core and the bias attributes.
+
+    % For the bias aligned partition $X_a$, all the data points within a class have the same value for the bias attribute $B$, since it is spuriously correlated with the class label. 
+    % So $B$ within a class collapses to a single scalar. Extending this across classes, $B$ over the set of all classes would map to a single vector of dimension $K$, where $K$ is the number of classes. 
+    % % Assuming $\operatorname{rank}(C) > K$, the rank of $X_a$ is given by:
+    % % Since $\operatorname{rank}(C) \geq 1$, we have:
+    % Therefore, since the whole of $B$ in $X_a$ can be represented by a single vector orthogonal to the basis of $C$, the rank of $X_a$ is given by:
+    % Assuming $\operatorname{rank}(C) > K$, the rank of $X_a$ is given by:
+    % Since $\operatorname{rank}(C) \geq 1$, we have:
+    % Therefore, since the whole of $B$ in $X_a$ can be represented by a single vector orthogonal to the basis of $C$, the rank of $X_a$ is given by:
+
+    For the bias aligned partition $X_a$, all the data points within a class have very low variance within the set of values for the bias attribute $B$, since it is spuriously correlated with the class label.
+    So, $B$ within a class collapses to a much lower dimensional manifold $b \subseteq B$, such that $\operatorname{rank}(b) \leq \operatorname{dim}(B)$. Extending this across classes, without loss of generality, assuming that the number of classes is higher than the variance in $B$ among the bias aligned samples, \ie, $\operatorname{rank}(b)$, $B$ over the set of all classes in $X_a$ would map to a manifold of dimensionality $\operatorname{rank}(b)$.
+    Therefore, since the whole of $B$ in $X_a$ can be represented by a manifold of dimensionality $\operatorname{rank}(b)$ orthogonal to the basis of $C$, the rank of $X_a$ is given by:
+    % \begin{equation*}
+    %     \operatorname{rank}(X_a) = \operatorname{rank}(C) + 1
+    % \end{equation*}
+    \begin{equation*}
+        \operatorname{rank}(X_a) = \operatorname{rank}(C) + \operatorname{rank}(b)
+    \end{equation*}
+
+    For the bias conflicting partition, since there is no correlation between the class labels and $B$, within each class, the bias attributes would require a $\operatorname{dim}(B)$ dimensional subspace independent of $C$, to be represented, since $B \perp C$. This implies that the rank of the bias conflicting points would be:
+    \begin{equation*}
+        \operatorname{rank}(X_c) = \operatorname{rank}(C) + \operatorname{dim}(B),
+    \end{equation*}
+
+    % As the global rank of $B$ in $X$ is strictly positive, $\operatorname{dim}(B) \geq 1$, which ultimately implies that $\operatorname{rank}(X_a) \leq \operatorname{rank}(X_c)$.
+    Since we know that $b \subseteq B$, which leads to $\operatorname{rank}(b) \leq \operatorname{dim}(B)$, it is ultimately implied that $\operatorname{rank}(X_a) \leq \operatorname{rank}(X_c)$.
+    
+    This completes the proof of the theorem.
+\end{proof}
+
+% \begin{proof}
+%     % The theorem assumes a stable partitioning of the sample set X, \ie, in both the bias-aligned and conflicting subsets, the distribution of the core attributes are equal to that of the original sample set, \ie,
+%     % \begin{equation*}
+%     %     P(X_a^C) = P(X_c^C) = P(X^C)
+%     % \end{equation*}
+%     % Under this condition, the only component in either of the subsets that determines the subset's rank should be the bias attributes, assuming (without loss of generality) that the attribute space is made up of only the core and the bias attributes. Now, within $X_a$, the variance of the bias attributes is very low by definition, since they all consistently exhibit the same bias. This in turn leads to a low effective rank of the subspace $X_a^B$.  On the other hand, for $X_c$, again by definition, the bias attributes do not occur consistently due to the bias-conflicting nature of the subset, which leads to a higher overall variance, and consequently, a higher effective rank of the subspace $X_c^B$. As argued before, under the core attribute stability assumption, since the effective rank is solely determined by the bias attribute subspace, the effective rank of the bias-aligned partition is lower than that of the one that is bias-conflicting.
+
+%     % The effective rank of an $n \times m$ matrix is defined as:
+%     % \begin{equation*}
+%     %     \rho(A) = -\sum_{i=1}^{\min(n, m)}  \Bar{\gamma_i} \log(\Bar{\gamma_i}),
+%     % \end{equation*}
+%     % where $\Bar{\gamma_i} = \gamma_i / \sum_j \gamma_j$ are the normlized singular values. Note the consequence of the singular values used in the computation of $\rho(\cdot)$ being normalized. It results in $\rho(A)$ specifically quantifying how balanced the spread of $A$ is across each dimension; in other words, the entropy of the singular values of $A$. The more balanced the spread, and the more the number of dimensions that $A$ spreads across, the higher its effective rank.
+
+%     % For the bias aligned partition, all the data points within a class have the same value for the bias attribute $B$, since it is spuriously correlated with the class label. So $B$ within a class collapses to a single scalar. Extending this across classes, $B$ over the set of all classes would map to a single vector of dimension $K$, where $K$ is the number of classes. Assuming $\operatorname{rank}(C) > K$, the rank of $X_a$ is given by:
+%     % \begin{equation*}
+%     %     \operatorname{rank}(X_a) = \operatorname{rank}(C) + 1
+%     % \end{equation*}
+
+%     % For the bias conflicting partition, since there is no correlation between the class labels and $B$, within each class, the bias attributes would require a $\operatorname{dim}(B)$ dimensional subspace to be represented. This implies that the rank of the bias conflicting points would be:
+%     % \begin{equation*}
+%     %     \operatorname{rank}(X_c) = \operatorname{rank}(C) + \operatorname{dim}(B)
+%     % \end{equation*}
+
+%     % Since $\operatorname{dim}(B) > 1$, $\operatorname{rank}(X_c) > \operatorname{rank}(X_a)$. Now, since the number of singular values is equal to the rank of the original matrix, $X_c$ will have a greater number of singular values than $X_a$. As discussed above, since the effective rank is computed over the normalized singular values, which measures the spread of a matrix $A$ across its bases:
+%     % \begin{align*}
+%     %     \rho(X_c) &= \Bar{\gamma_1^c} \log(\Bar{\gamma_1^c}) + \Bar{\gamma_2^c} \log(\Bar{\gamma_2^c}) + ... + \Bar{\gamma_n^c} \log(\Bar{\gamma_n^c}) + \Bar{\gamma_1^b} \log(\Bar{\gamma_1^b}) + \Bar{\gamma_2^b} \log(\Bar{\gamma_2^b}) + ... + \Bar{\gamma_n^b} \log(\Bar{\gamma_n^b})
+%     % \end{align*}
+
+%     % Now, the degree of spread of $X^B_a$ and $X^B_c$ are determined by their covariances. Along $pp$ and $qq$, both have an equal spread. However, the variance of $\Sigma_a = 0$ in the $pq$ and $qp$ directions, while that of $\Sigma_c > 0$. This leads to a higher effective number of dimensions across which $\Sigma_c$ is spread thereby leading to a higher entropy in the singular values and consequently:
+%     % \begin{equation*}
+%     %     \rho(X_a) < \rho(X_c)
+%     % \end{equation*}
+    
+%     % Within each class, the bias features take up a constant value, thereby exhibiting zero intra-class variance, and zero intra-class covariance with the core features. However, this is not the case for the bias conflicting points, as they follow an uniform distribution. Their respective covariance matrices are thus given by:
+%     % \begin{equation*}
+%     %     \Sigma_a = \begin{pmatrix}
+%     %         \sigma^2_{pp} & 0 \\
+%     %         0 & 0
+%     %     \end{pmatrix}; \;\;\;\;
+%     %     \Sigma_c = \begin{pmatrix}
+%     %         \sigma^2_{pp} & \sigma^2_{pq} \\
+%     %         \sigma^2_{qp} & \sigma^2_{qq}
+%     %     \end{pmatrix}
+%     % \end{equation*}
+
+%     % Therefore, the $\operatorname{rank}(\Sigma_c) > \operatorname{rank}(\Sigma_a)$.
+%     % % 
+%     % % Now, the volume of the space spanned by $\Sigma_a$ should be greater than that spanned by $\Sigma_c$ since:
+%     % % \begin{equation*}
+%     % %     \operatorname{det}(\Sigma_c) > \operatorname{det}(\Sigma_a)
+%     % % \end{equation*}
+%     % % This implies that the magnitude of the singular values of $\Sigma_c$ would also be greater than those of $\Sigma_a$.
+%     % Since $\Sigma_c$ has non-zero variance in the $p$ and $q$ directions, the number of singular values of $\Sigma_c$ is more than that of $\Sigma_a$. Let the set of singluar values of $\Sigma_a$ and $\Sigma_c$ respectively be $[\Bar{\gamma_p^a}]$ and $[\Bar{\gamma_p^c, \gamma_p^c}]$.
+%     % \begin{align*}
+%     %     \rho(X_c) &= \Bar{\gamma_p^c} \log(\Bar{\gamma_p^c}) + \Bar{\gamma_q^c} \log(\Bar{\gamma_q^c}); \;\; \rho(X_c) = \Bar{\gamma_p^a} \log(\Bar{\gamma_p^a}) \\
+%     %     &\implies \rho(X_c) > \rho(X_a)
+%     % \end{align*}
+
+
+%     % This completes the proof of the theorem.
+%     % 
+%     % 
+%     % 
+% \end{proof}
+
+
+
+% \abhra{
+% \myparagraph{\cref{thm:conservation}(Decodability Conservation):}
+%     Let $C$ and $B$ be the random variables corresponding to the core and the bias attributes respectively in $X$. If $\erank{X^B} < \erank{X^C}$, then for a trained network $\phi_n$ of any given depth $n > 0$:
+%     \begin{equation*}
+%         % \int\limits_{m}^{\infty}\operatorname{\mathcal{D}} \left( \phi_n(X), Y^C \right) + \operatorname{\mathcal{D}} \left( \phi_n(X), Y^B \right) dn = K
+%         \operatorname{\mathcal{D}} \left( \phi_n(X), Y^C \right) + \operatorname{\mathcal{D}} \left( \phi_n(X), Y^B \right) = K
+%     \end{equation*}
+%     where $\operatorname{\mathcal{D}}(\cdot, Y^C)$ and $\operatorname{\mathcal{D}}(\cdot, Y^B)$ are the linear decodabilities of the core and bias attributes respectively,
+%     % , $m$ is a minimum depth corresponding to the optimal decodability of the core attributes, \ie,
+%     % \begin{equation*}
+%     %     m = \argmax_{n}[\operatorname{\mathcal{D}} \left( \phi_0(X), Y^C \right), \operatorname{\mathcal{D}} \left( \phi_1(X), Y^C \right),..., \operatorname{\mathcal{D}} \left( \phi_\infty(X), Y^C \right)]
+%     % \end{equation*}
+%     and $K$ is a constant.
+% }
+
+% % Proof strategy: Add a lemma to show that the linear decodability of core attributes is a monotonically decreasing function of depth, and that of the bias attributes is monotonically increasing. This would also help justify the lower limit of the integral.
+
+% \abhra{
+% \textit{Proof Sketch:}
+%     The above is a form of conservation law for the performance of a network on the bias and core attributes as we vary the depth. At shallower depths, a network performs poorly on the biased attributes, but is good at learning the core attributes, relative to its deeper counterparts. This behavior gets reversed (in a continuous fashion) with increasing depth, thereby keeping the sum of the accuracies on the individual attribute sets at a constant value.
+%     % Note that the integral arises out of a continuity assumption on the depth-space of the encoder $\phi_n$ \citep{chen2018neuralode, Queiruga2020ContinuousinDepthNN}. In the discrete case, the integral will change into a summation and the theorem will still hold. The integral is introduced only to show that the result generalizes to the continuous case as well.
+%     }
+
+%     \abhra{
+%     The proof of the theorem is based on the properties of the conditional mutual information of the core attributes given the bias attributes $H(C \mid B)$, and insights from Deep Information Propagation \citep{schoenholz2017deepinfoprop}.
+%     Deep Information Propagation puts fundamental limits to the depth of a random network beyond which information can propagate. It stems from the fact that with increasing depths, a fraction of the dimensions required to represent the attributes will get randomized / eliminated. So, an attribute that requires a larger set of dimensions to be represented, \ie, with a higher effective rank, has a higher likelihood of getting eliminated down the depth, and hence should only be more decodable during the earlier layers. The converse argument holds for an attribute with lower effective rank. This leads to our central result that the linear decodability of core attributes $\operatorname{\mathcal{D}} \left( \phi_n(X), Y^C \right)$ is a monotonically \emph{decreasing} function of the depth $n$, and that of the bias attributes $\operatorname{\mathcal{D}} \left( \phi_n(X), Y^B \right)$ is a monotonically \emph{increasing} function of depth.
+%     }
+    
+%     \abhra{
+%     The conditional entropy of the core attributes $H(C \mid B) = 0$ for the bias aligned partition, and for the bias conflicting partition, $H(C \mid B) = H(C) > 0$. A deep network learns from the $X_a$ partition due to \cref{thm:pr} and the fact that deeper networks are more likely to learn low-rank solutions. As $H(C \mid B) = 0$ for $X_a$, a deep network will learn $B$ to minimize the ERM objective. However, this is not possible for a shallow network as it learns from $X_b$, again due to \cref{thm:pr} and the fact that the depth of the network is inversely proportional to the rank of the solutions learned. So, the shallow branch can only minimize ERM by directly minimizing $H(C)$, \ie, by learning the core attributes.
+%     }
+
+%     \abhra{
+%     It is known that SGD intrinsically not only avoids rank underestimation, as it does not fit the training data, but also avoids rank overestimation since the probabilities associated with jumping back from a lower rank to a higher rank solution is 0 \cite{wang2024implicit}. Given the finiteness of the effective rank of the training data and the results from \cite{wang2024implicit} mentioned above, we additionally conjecture that the monotonicity property holds only up to a certain finite depth, beyond which it plateaus as the lowest rank manifold that minimizes ERM is reached.
+% }
+
+\begin{lemma}
+    \label{lemma:prop_prob_depth}
+    Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    % Then, at any given depth $d$ of a neural network, the probability of propagation $\pi_i(d)$ of an attribute $A_i$ is inversely proportional to the effective rank $\erank{\phi[d]}$ of the network at that depth, \ie,
+    % \begin{equation*}
+    %    \pi_i(d) = \mathcal{O} \left( \rho(\phi[d])^{-1} \right)
+    % \end{equation*}
+    Then, at any given depth $d$ of a neural network, the probability of propagation $\pi_i(d)$ of an attribute $A_i$ is directly proportional to the effective rank $\erank{\phi[d]}$ of the network at that depth, \ie,
+    \begin{equation*}
+       \pi_i(d) = \mathcal{O} \left( \rho(\phi[d]) \right)
+    \end{equation*}
+\end{lemma}
+
+\begin{proof}
+    Let the total rank of $\mathcal{A}$ be $R$. Consider some reference attribute $A \in \mathcal{A}$ with rank $r$. According to the results on the low rank simplicity bias \citep{huh2023simplicitybias, wang2024implicit} and deep information propagation \citep{schoenholz2017deepinfoprop}, after propagation through each layer, $\varepsilon R$ of the bases would be knocked off, resulting in a pruned version of $\mathcal{A}$. The total number of ways in which $\mathcal{A}$ can be pruned is given by
+    $\begin{pmatrix} R \\ \varepsilon R \end{pmatrix}$. Also, the number of ways that $A$ features in that pruning is given by $\begin{pmatrix}
+        \varepsilon R \\
+        r
+    \end{pmatrix}$.
+    Thus, the probability of $A$ being knocked-off in layer-1 of $\phi$ is given by:
+    \begin{equation*}
+    %     \begin{pmatrix} R \\ \varepsilon R \end{pmatrix} /
+    %     \begin{pmatrix}
+    %     \varepsilon R \\
+    %     r
+    % \end{pmatrix}
+        \begin{pmatrix} \varepsilon R \\ r \end{pmatrix} /
+        \begin{pmatrix} R \\ \varepsilon R \end{pmatrix}
+    = \frac{r!}{(\varepsilon R - r)! R! (1 - \varepsilon) R!}
+    \end{equation*}
+    Therefore, probability of survival at layer $d$:
+    \begin{equation}
+        \pi_i(d) = \left( 1 - \frac{r!}{\underbrace{(\varepsilon R - r)}_{a}! R! \underbrace{(1 - \varepsilon) R}_{b}!} \right)^d
+        \label{eqn:prop_prob}
+    \end{equation}
+    Therefore, the probability of survival $\pi_i(d)$ of any attribute $A_i$ at depth $d$ increases exponentially with increasing rank $r$ of $A_i$, and decreases exponentially with the knock-off rate $\varepsilon$.
+    $a$ is the part of the knocked-off basis not in $A_i$. $b$ is the part of the complete basis of $\mathcal{A}$ not affected by the first knock-off at layer 1.
+    Thus, at depth $d$, $b^{d}$
+    indicates the size of the subspace of $\mathcal{A}$ that survives at depth $d$, therefore being proportional to the effective rank of $\phi[d]$. Based on this, the effective rank at depth $d$ can be written as:
+    % \begin{equation*}
+    %     \rho(\phi[d]) = \mathcal{O}((1 - \varepsilon)^d R),
+    % \end{equation*}
+    % \begin{equation*}
+    %     \rho(\phi[d]) = \mathcal{O}((1 - \varepsilon)^{-d} R^{-d}) = \pi_i(d),
+    % \end{equation*}
+    \begin{equation*}
+        \pi_i(d) \propto (1 - \varepsilon)^{d} R^{d} = \mathcal{O}((1 - \varepsilon)^{d} R^{d}) = \mathcal{O}\left( \rho(\phi[d]) \right),
+    \end{equation*}
+    % Finally, we can write the probability of survival of $A_i$ at layer $d$ in terms of the effective rank as:
+    % % \begin{align*}
+    % %     \pi_i(d) &= \left( 1 - \frac{r!}{a! R! \erank{\phi[1]}!} \right)^d \\
+    % %     &\implies \pi_i(d) \propto \left( \frac{1}{\rho(\phi[1])} \right)^d \\
+    % %     &\implies \pi_i(d) \propto \frac{1}{\rho(\phi[d])}
+    % % \end{align*}
+    % % \begin{align*}
+    % %     \pi_i(d) = \mathcal{O} \left( \frac{1}{(1 - \varepsilon)^d R} \right) = \mathcal{O} \left( \rho(\phi[d])^{-1} \right)
+    % % \end{align*}
+    % % \begin{align*}
+    % %     \pi_i(d) = \mathcal{O} \left( \frac{1}{(1 - \varepsilon)^d R} \right) = \mathcal{O} \left( \rho(\phi[d]) \right)
+    % % \end{align*}
+    % \begin{align*}
+    %     \pi_i(d) = \mathcal{O} \left( \frac{1}{(1 - \varepsilon)^d R^d} \right) = \mathcal{O} \left( \rho(\phi[d]) \right)
+    % \end{align*}
+    This completes the proof of the lemma.
+\end{proof}
+
+\begin{lemma}
+    \label{lemma:prop_prob_rank}
+    Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    Then, at any given layer $d$ of a neural network, the propagation probability of an attribute decreases with rank, \ie,
+    \begin{equation*}
+        \pi_{1}(d) \geq \pi_2(d) \geq ... \geq \pi_n(d),
+    \end{equation*}
+    at a rate that is polynomial in the attribute rank, with degree equal to the depth, \ie,
+    \begin{equation*}
+        \frac{\pi_{i + 1}(d)}{\pi_i(d)} = \mathcal{O}(r^{-d})
+    \end{equation*}
+\end{lemma}
+
+\begin{proof}
+    Continuing from \cref{eqn:prop_prob}, we have the propagation probability of $A_i$ at depth $d$ as:
+    \begin{equation*}
+        \pi_i(d) = \left( 1 - \frac{r!}{\underbrace{(\varepsilon R - r)}_{a}! R! \underbrace{(1 - \varepsilon) R}_{b}!} \right)^d
+    \end{equation*}
+    Note that when $r$ increases, \ie, for a higher rank attribute, it leads to a drop in $a$, and in a subsequent exponential decrease in $\pi_i(d)$ as follows:
+    \begin{align*}
+        \pi_{i+k}(d) &= \left( 1 - \frac{(r + k)!}{(\varepsilon R - (r + k))! R! (1 - \varepsilon) R!} \right)^d \\
+        & \implies \frac{\pi_{i+k}(d)}{\pi_i(d)} \leq 1 \\
+        &\implies \pi_{i+k}(d) \leq \pi_i(d) \\
+        &\implies \pi_{1}(d) \geq \pi_2(d) \geq ... \geq \pi_n(d),
+    \end{align*}
+    which proves the first part of the lemma.
+    
+    Now, taking the ratio of the propagation probabilities of attributes with rank $(i + k)$ and $i$ at depth $d$, we get:
+    \begin{equation*}
+        \frac{\pi_{i + k}(d)}{\pi_i(d)} = \mathcal{O} \left( \frac{(r+k)^d}{r^d} \right) = \mathcal{O} \left( \left( \frac{r+k}{r} \right)^d \right) = \mathcal{O}\left( \left( 1 + \frac{k}{r} \right)^d \right)
+        = \mathcal{O}(k^d r^{-d})
+    \end{equation*}
+    For propagation on to the next layer, $k = 1$. We thus have:
+    \begin{equation*}
+        \frac{\pi_{i + 1}(d)}{\pi_i(d)} = \mathcal{O}(r^{-d})
+    \end{equation*}
+    This completes the proof of the lemma.
+\end{proof}
+
+\textbf{\cref{thm:drd}} (Depth-Rank Duality):
+    Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    Then, across the depth of the encoder $\phi$, SGD yields a parameterization that optimizes the following objective:
+    \begin{equation*}
+        \underbrace{\min_{\phi, f} \operatorname{\mathcal{L}}(f(\phi(X)), Y)}_\text{ERM} + \min_{\phi} \sum_d \norm{ \phi[d](\Tilde{X}) - \Omega^d \odot \mathcal{A}}_2,
+        % \label{eqn:drd_opt}
+    \end{equation*}
+    where 
+    $\mathcal{L}(\cdot, \cdot)$ is the empirical risk, $f(\cdot)$ is a classifier head, $\phi[i](\cdot)$ is the output of the encoder $\phi$ (optimized end-to-end) at depth $d$, $\norm{\cdot}_2$ is the $l^2$-norm, $\odot$ is the element-wise product,
+    % 
+    $\Tilde{X}$ is the $l_2$-normalized version of $X$,
+    $\Omega^d = [\mathbbm{1}_{\pi_1(d)}; \mathbbm{1}_{\pi_2(d)}; ...; \mathbbm{1}_{\pi_n(d)}]$,
+    $\mathbbm{1}_\pi$ is a random binary function that outputs $1$ with a probability $\pi$, and $\pi_i(d)$ is the propagation probability of $A_i$ at depth $d$ bounded as:
+    % \begin{equation}
+    %     \pi_i(d) = \mathcal{O}(\erank{\phi[d]}^{-1} r_i^{-d}),
+    %     % \label{eqn:pos}
+    % \end{equation}
+    \begin{equation*}
+        \pi_i(d) = \mathcal{O}\left( \erank{\phi[d]} r_i^{-d} \right),
+        % \label{eqn:pos}
+    \end{equation*}
+    where $\erank{\phi[d]}$ is the effective rank of the $\phi[d]$ representation space, and $r_i = \operatorname{rank}(A_i)$.
+
+\begin{proof}
+    Since all $A \in \mathcal{A}$ are equally informative about the label Y, they all equally minimize $\mathcal{L}(\cdot, \cdot)$. Thus, the representations learned by $\phi$ are solely determined by the second term in the summation of \cref{eqn:drd_opt}. This means that the SGD must employ a selection mechanism to choose from the $\mathcal{A}$ that optimally utilizes the available parameters in $\mathcal{A}$.
+    
+    If $\phi[d]$ has sufficiently many parameters to accommodate all of $\mathcal{A}$, SGD should have no reason to discard any of them. However, a number of works that analyze the representational properties of DNNs have found that as we go deeper into a network, the effective number of dimensions available for encoding information, formally known as the effective rank and denoted as $\erank{\phi[d]}$ (effective rank of $\phi$ at depth $d$), decreases \citep{huh2023simplicitybias, wang2024implicit}. This characteristic is also known as the simplicity bias of DNNs. Given the simplicity bias, SGD must learn a parameterization for $\phi$ that optimally selects from $\mathcal{A}$ when the effective rank at a particular layer is lower than $\operatorname{rank}(\mathcal{A})$. In order to stay at the minimum of $\mathcal{L}(\cdot, \cdot)$, $\phi$ must rely on the complete basis of at least one attribute, as only partially learning an attribute would cause deviation from the minimum. So every attribute that is retained for prediction, has to be retained fully. Given this condition, the optimum choice for SGD under constrained effective ranks is thus, to choose $A \in \mathcal{A}$ in increasing order of effective ranks. In other words, the $A_0$ has the highest likelihood of getting chosen, followed by $A_1$, then $A_2$, and so on.
+    
+    \cref{lemma:prop_prob_depth} and \cref{lemma:prop_prob_rank} provide bounds for the quantification of the associated probabilities at a given depth, for an attribute of a given rank. Combining them, we get the propagation probability of $A_i$ at depth $d$ as:
+    % \begin{equation*}
+    %     \pi_i(d) = \mathcal{O}(\erank{\phi[d]}^{-1} r_i^{-d}),
+    % \end{equation*}
+    \begin{equation*}
+        \pi_i(d) = \mathcal{O}(\erank{\phi[d]} r_i^{-d}),
+    \end{equation*}
+    where $r_i$ is the rank of $A_i$. We denote the distribution of $\pi$ for an attribute across a network as $\Omega_i$. Without loss of generality, assuming the retention of all attributes at depth $d-1$, we get the forward pass output at depth $d$ as:
+    \begin{equation*}
+        \phi[d](X) = \gamma ( W_d \cdot \phi[d-1](X) ),
+    \end{equation*}
+    where $W_d$ is the weight matrix at layer $d$ and gamma is a non-linearity. Under the most general setting where the elimination of attributes comes only with a decrease in the effective rank and not in the reduction in the dimensionality of the weight matrix, applying \cref{lemma:prop_prob_depth,lemma:prop_prob_rank} we obtain the survival probability of the basis corresponding to all $A \in \mathcal{A}$ in $W$ as:
+    \begin{align*}
+        W^d &= [\mathbbm{1}_{\pi_0(d)} W^d_0; \mathbbm{1}_{\pi_1(d)} W^d_1; ...; \mathbbm{1}_{\pi_n(d)} W^d_n] \\
+        \implies W^d \cdot X' &= [\mathbbm{1}_{\pi_0(d)} W^d_0 A_0; \mathbbm{1}_{\pi_1(d)} W^d_1 A_1; ...; \mathbbm{1}_{\pi_n(d)} W^d_n A_n] \\
+        &= \Omega^d \odot \mathcal{A} \cdot W
+    \end{align*}
+    where $\mathbbm{1}_\pi$ is a random binary function that outputs $1$ with a probability $\pi$, $\Omega^d = [\mathbbm{1}_{\pi_1(d)}; \mathbbm{1}_{\pi_2(d)}; ...; \mathbbm{1}_{\pi_n(d)}]$ , and $X' = \phi[d-1](X)$. To keep $\mathcal{L}$ at a minimum, $W^d$ must correctly activate for the informative features in $x'$, for which it must maximize $\Omega^d \odot \mathcal{A} \cdot W^d$. Now, $\Omega^d \odot \mathcal{A} \cdot W^d$ is maximized when $W^d = \Omega^d \odot \mathcal{A}$. Thus, the optimal strategy for SGD is to parameterize $W^d$ such that it captures the attributes in $\mathcal{A}$ according to the distribution $\Omega^d$. Over the full depth, the optimization objective would then be:
+    \begin{equation*}
+        \max_{\phi} \sum_d \Omega^d \odot \mathcal{A} \cdot \phi[d](X) \equiv \min_{\phi} \sum_d \norm{ \phi[d](\Tilde{X}) - \Omega^d \odot \mathcal{A}}_2 
+    \end{equation*}
+    where $\Tilde{X}$ is the $l_2$-normalized version of $X$, and the equivalence comes from the equivalence of maximizing the dot product and minimizing the $l_2$-distance of the normalized samples \citep{wiki2024metrics}.
+    
+    This completes the proof of the theorem.
+\end{proof}
+
+
+
+%     Let $\eta^l_i$ \anjan{if possible, use a different symbol other than $\eta$ because $\eta$ is also used in Sec. 3, however, this is a minor} be the fraction \anjan{can we write $0 < \eta^l_i < 1$? if so, please write it} of the features in $W_i^l$ responsible \change{for} encoding $A_i$.
+%     Let $\varepsilon$ be the knock-off probability when transitioning from $W^l$ to $W^{l+1}$, which is $\geq 0$ based on prior results on the simplicity bias \citep{huh2023simplicitybias, wang2024implicit}. Then,
+%     \begin{equation*}
+%         \varepsilon W^l = [\varepsilon W^l_0; \varepsilon W^l_0; ...; \varepsilon W^l_0],
+%     \end{equation*}
+%     since basis knock-off is a distributive operation that equally affects all subspaces. This distributive nature stems from the fact that all $A \in \mathcal{A}$ are equally informative about the label. Assuming any distribution other than uniform, of $\varepsilon$ over the subspaces of $W$, would imply preference of one attribute over another, which any network that learns by minimizing the empirical risk has no reason to do. Now,
+%     \begin{equation*}
+%         \operatorname{dim}(W_1^l) = \operatorname{dim}(W^l_2) = ... = \operatorname{dim}(W^l_n) = \operatorname{dim}(W),
+%     \end{equation*}
+%     since all of them are derived from the same matrix $W$.
+%      Therefore, the probability that the basis for $A_i$ in $W^l_i$ survives is:
+%      \begin{equation*}
+%          \varepsilon (1 - \eta^l_i) W_i,
+%      \end{equation*}
+%      which can also be interpreted as the probability of the fraction of $W_i$ not responsible for encoding $A_i$ being knocked off. Note that for survival of $A_i$ at layer $l$, $\eta^l_i \geq \operatorname{rank}(A_i)$.
+
+%      The propagation probabilities of attribute $A_i$ up to depth $d$, denoted as $\Pr_{i}(l)$, are thus given by:
+%      \begin{equation*}
+%          \varepsilon (1 - \eta^1_i) \to \varepsilon^2 (1 - \eta^1_i) (1 - \eta^2_i) \to ... \to \varepsilon^d \prod\limits_{l=1}^{d} (1 - \eta^l_i)
+%      \end{equation*}
+%      The effective rank fraction at layer $l$ can be partitioned as follows across attributes:
+%      \begin{equation*}
+%          \eta^l = \eta^l_0 + \eta^l_1 + ... + \eta^l_n
+%      \end{equation*}
+%      Since $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$ is assumed in the statement of the theorem, we have:
+%      \begin{align*}
+%          &\eta^l_0 < \eta^l_1 < ... < \eta^l_n \\
+%          \implies &\varepsilon^d \prod\limits_{l=1}^{d} (1 - \eta^l_1) > \varepsilon^d \prod\limits_{l=1}^{d} (1 - \eta^l_2) > ... > \varepsilon^d \prod\limits_{l=1}^{d} (1 - \eta^l_n),
+%      \end{align*}
+%      % \anjan{please double check above inequality, in case of $0 < \eta^l_i < 1$, the inequality should be in other direction, because $\epsilon \ge 0$}
+%      implying that $\Pr_i(l)$ is a decreasing function of depth.
+%      The retention factor of $A_i$ at layer $l$ is thus given by:
+%      \begin{equation*}
+%          \frac{\varepsilon^d \prod\limits_{l=1}^{d} (1 - \eta^l_n)}{\operatorname{rank}(A_i)}
+%      \end{equation*}
+%     Assuming that the first layer $\phi[1]$ has sufficiently many dimensions to accommodate all attributes $A \in \mathcal{A}$:
+%     \begin{equation*}
+%         \eta^0 = \operatorname{rank}(A_0) + \operatorname{rank}(A_1) + ... + \operatorname{rank}(A_n)
+%     \end{equation*}
+%     Extending this to $\eta^0_i$, the propagation probability $\pi_i(l)$ is given by:
+%     \begin{align*}
+%         \pi_i(l) = \varepsilon^d (1 - \eta^0_i)
+%         = \varepsilon^d (1 - \frac{\operatorname{rank}(A_i)}{\sum\limits_{j}\operatorname{rank}(A_j)})
+%     \end{align*}
+%     As depth increases, all attributes decay exponentially in the knock-off rate $\varepsilon$. However, for any given depth $d$, with a multiplicative increase in relative rank from $r$ to $\delta r$, where $\delta > 1$, the change in propagation probability is given by:
+%     \begin{equation*}
+%         \frac{\pi_{\delta r} (l)}{\pi_r (l)} = \frac{\varepsilon^d(1 - \delta r)}{\varepsilon^d(1 - r)} = \frac{1 - \delta r}{1 - r}
+%     \end{equation*}
+%     where $\pi_r$ and $\pi_{\delta r}$ are the reference attributes with rank $r$ and $\delta r$ respectively, and the relative rank $r$ for the reference attribute $A_r$ is given by:
+%     \begin{equation*}
+%         r = \frac{\operatorname{rank}(A_r)}{\sum\limits_{j}\operatorname{rank}(A_j)}
+%     \end{equation*}
+%     Note that $r < 1$ and $\delta > 1$. Therefore,
+%     \begin{align*}
+%         \delta r > r &\implies 1 - \delta r < 1 - r \implies \frac{1 - \delta r}{1 - r} < 1 \\
+%         &\implies \frac{\pi_{\delta r} (l)}{\pi_r (l)} < 1 \implies \pi_{\delta r} (l) < \pi_r (l)
+%     \end{align*}
+%     Therefore, at any given layer, the propagation probability of a higher rank attribute is strictly lower than that of a lower rank attribute.
+% \end{proof}
+
+
+
+
+\begin{corollary}
+    \label{cor:random_drd}
+    Let $\mathcal{A} = [ A_0, A_1, ..., A_n ]$ be the attribute subspace of $X$ with increasing ranks, \ie, $\operatorname{rank}(A_0) < \operatorname{rank}(A_1) < ... < \operatorname{rank}(A_n)$,
+    such that every $A \in \mathcal{A}$ is maximally and equally informative of the label $Y$, \ie, $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$.
+    Then, across the depth of a randomly initialized encoder $\phi$, the output of $\phi$ at depth $d$ follows the propagation distribution $\Omega^d$ of the attribute space $\mathcal{A}$ as:
+    \begin{equation}
+    \phi[d](\Tilde{X}) \propto \Omega^d \odot \mathcal{A},
+    \end{equation}
+    where 
+    $\phi[i](\cdot)$ is the output of the encoder $\phi$ at depth $d$, $\odot$ is the element-wise product,
+    % 
+    $\Tilde{X}$ is the $l_2$-normalized version of $X$,
+    $\Omega^d = [\mathbbm{1}_{\pi_1(d)}; \mathbbm{1}_{\pi_2(d)}; ...; \mathbbm{1}_{\pi_n(d)}]$,
+    $\mathbbm{1}_\pi$ is a random binary function that outputs $1$ with a probability $\pi$, and $\pi_i(d)$ is the probability of propagation of $A_i$ of rank $r_i$ at depth $d$ bounded as:
+    % \begin{equation}
+    %     \pi_i(d) = \mathcal{O}(\erank{\phi[d]}^{-1} r_i^{-d}),
+    % \end{equation}
+    \begin{equation}
+        \pi_i(d) = \mathcal{O}\left( \erank{\phi[d]} r_i^{-d} \right),
+    \end{equation}
+\end{corollary}
+
+\textit{Discussion}:
+    Let $\mathbb{L}$ be the space of all empirical risks $\{ \mathcal{L}_1, \mathcal{L}_2, ...\}$ over $X$. According to the No Free Lunch theorem \citep{wolpert98NoFreeLunch}, if an attribute minimizes some $\mathcal{L}_i \in \mathbb{L}$, there exists another $\mathcal{L}_j \in \mathbb{L}$ which it maximizes. So, if we consider the probability of survival of attributes in a randomly initialized network, we need to marginalize the ERM part of \cref{eqn:drd_opt}
+    across the entirety of $\mathbb{L}$. Assuming an unbiased random initialization scheme, the distribution associated with $\mathbb{L}$ would be uniform (because no concrete form of empirical risk is defined, we can consider all functions $\mathcal{L} \in \mathbb{L}$ to be equally likely, under the unbiased initialization assumption) as follows:
+    \begin{equation*}
+        \int\limits_{\mathcal{L} \in \mathbb{L}} \operatorname{\mathcal{L}}(f(\phi(X))) \Pr(\mathcal{L}) \; d\mathcal{L},
+    \end{equation*}
+    where $\Pr(\mathcal{L})$ is the probability associated with the function $\mathcal{L} \in \mathbb{L}$, which can be assumed to be uniform, as argued before. Then, due to the No Free Lunch Theorem \citep{wolpert98NoFreeLunch}, the expected informativeness of all attributes in $X$ is the same, satisfying the $I(A_0, Y) = I(A_1, Y) = ... = I(A_n, Y)$ criterion in the theorem, where the nature of $Y$ is determined by the specific choice of $\mathcal{L}$.
+    % 
+    The remainder of the reasoning for $\phi[d](\Tilde{X}) \propto \Omega^d \odot \mathcal{A}$ is the same as the proof for $\min_{\phi} \sum_d \norm{ \phi[d](\Tilde{X}) - \Omega^d \odot \mathcal{A}}_2$ in \cref{thm:drd}.

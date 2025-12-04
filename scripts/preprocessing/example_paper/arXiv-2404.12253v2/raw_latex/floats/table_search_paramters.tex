@@ -1,0 +1,28 @@
+
+\renewcommand{\arraystretch}{1.0}
+\begin{table*}[!t]
+\centering
+		\begin{tabular}{lc|cc|cc}
+			\toprule
+			\multirow{2}{*}{Method}  &&  \multicolumn{2}{c}{GSM8K} & \multicolumn{2}{c}{MATH} \cr
+   \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+
+    & & \texttt{Small} & \texttt{Large} & \texttt{Small} & \texttt{Large} \cr
+   
+   \midrule
+   $c$    && 1.0 & 1.5  & 1.0 & 1.0 \\
+   $\alpha$    && 1.0 & 1.0  & 1.0 & 1.0 \\
+   $c_\text{max}(0)$    && 60 & 60  & 60 & 60 \\
+   $c_\text{max}(t)$ where $t>0$   && 10 & 10  & 10 & 10 \\
+   $c_\text{min}(0)$    && 10 & 40  & 10 & 20 \\
+   $c_\text{min}(t)$ where $t>0$    && 2 & 2  & 3 & 3 \\
+   % Termination    && new line & new line  & termination func & termination func \\
+			\bottomrule  
+		\end{tabular}
+
+ \caption{Parameters for MCTS. The Small/Large means small \#rollout and small \#rollout }
+	\label{tab:search_param}
+ 
+\end{table*}
+
+% We set the MCTS parameters as follows: in GSM8K, $c=1$ for the small scale (\texttt{\#rollout}) and $1.5$ for the large scale, with $\alpha=1$. For $t=0$, $c_\text{min}(0)=10$ for the small scale and $40$ for the large scale, while for the rest of $t$, $c_\text{min}(t)=2$. We also set $c_\text{max}(0) = 10$ for the small scale and $40$ for the large scale, and for the remaining $t$, $c_\text{max}(t)=10$. The termination condition is based on sentence termination. In MATH, the parameters are $c=1$, $\alpha=1$, and for $t=0$, $c_\text{min}(0)=10$ for the small scale and $20$ for the large scale, while for the rest of $t$, $c_\text{min}(t)=3$. We set $c_\text{max}(0) = 10$ for the small scale and $20$ for the large scale, and for the remaining $t$, $c_\text{max}(t)=10$. The termination function is rule-based, checking if there are any formulations or calculations in the sentence. If there are, the option is terminated; otherwise, the option continues to extend.

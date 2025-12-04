@@ -1,0 +1,150 @@
+\subsection{Model}
+\label{sec:model}
+\begin{figure}[h]
+% \vspace{-1em}
+\centering
+\resizebox{0.55\linewidth}{!}{
+\input{figures/model}
+}
+\caption{\textit{Left}: Overview of Latent Plan Transformer (LPT). $z\in\mathbb{R}^d$ is the latent vector. The prior distribution of $z$ is a neural transformation of $z_0$, i.e., $z = U_\alpha(z_0)$, $z_0 \sim {\cal N}(0, I_d)$. Given $z$, $\tau$ and $y$ are independent. $p_\beta(\tau|z)$ is the trajectory generator. $p_\gamma(y|z)$ is the return predictor.  \textit{Right}: Illustration of trajectory generator $p_\beta(\tau|z)$. }
+\label{fig:LPT}
+\end{figure}  
+
+Given a variable-length trajectory $\tau$, $z \in \mathbb{R}^d$ is a vector that represents $\tau$ in the latent space. $y \in \mathbb{R}$ is the return of the trajectory. The joint distribution of the trajectory and its return is defined as $p(\tau,y)$.
+
+The latent trajectory variable $z$, conceptualized as a plan, is posited to decouple the autoregressive policy and return estimation.
+From a statistical standpoint, with $z$ given, we assume that $\tau$ and $y$ are conditionally independent, positioning $z$ as the information bottleneck. 
+Under this assumption, the Latent Plan Transformer (LPT) can be defined as,
+\begin{align}
+p_{\theta}(\tau, y, z) &= p_{\alpha}(z) p_\beta(\tau|z) p_\gamma(y|z),
+\label{eq:joint}
+\end{align}
+where $\theta = (\alpha, \beta, \gamma)$. 
+LPT approximates the data distribution $p_\mathrm{data}(\tau, y)$ using the marginal distribution $p_\theta(\tau, y) = \int p_\theta(\tau, y, z) dz$. It also establishes a generation process,
+\begin{align}
+z \sim p_{\alpha}(z), \quad [\tau|z] \sim p_\beta(\tau|z), \quad [y|z] \sim p_\gamma(y|z).
+\end{align}
+
+The prior model $p_{\alpha}(z)$ is an implicit generator, defined as a learnable neural transformation of an isotropic Gaussian, $z = U_\alpha(z_0)$ and $z_0\sim \mathcal{N}(0,I_d)$.
+$U_\alpha(\cdot)$ is an expressive neural network, such as the UNet~\citep{ronneberger2015u}. This approach is inspired by, yet contrasts with~\citet{pang2020learning}, wherein the latent space prior is modeled as an Energy-based Model (EBM) \citep{xie2016theory}. While EBM offers explicit unnormalized density, its sampling process is complex. Conversely, our model provides an implicit density with simpler sampling.
+
+The trajectory generator $p_{\beta}(\tau|z)$ is a conditional autoregressive model with finite context $K$, $p_\beta(\tau|z) = \prod_{t=1}^H p_\beta(\tau_{(t)}|\tau_{(t-K)}, ..., \tau_{(t-1)}, z)$
+where $\tau_{(t)}=(s_t, a_t)$. It can be parameterized by a causal Transformer with parameter $\beta$, similar to Decision Transformer~\citep{chen2021decision}. Specifically, the latent variable $z$ is included in trajectory generation using cross-attention, as shown in~\cref{fig:LPT} and controls each step of the autoregressive trajectory generation as $p_\beta(a_t|s_{t-K:t},a_{t-K:t-1}, z)$. The action is assumed to follow a single-mode Gaussian distribution, i.e. $a_t\sim \mathcal{N}(g_\beta(s_{t-K:t},a_{t-K:t-1}, z), I_{|A|})$. 
+
+The return predictor is a non-linear regression on the latent trajectory variable $z$, modeled as $p_{\gamma}(y|z) = \mathcal{N}(r_\gamma(z), \sigma^2)$.
+It directly predicts the final return from the latent variable $z$.
+The function $r_\gamma(z)$ is a small multi-layer perceptron (MLP) that estimates $y$ based on $z$. The variance $\sigma^2$, is treated as the hyper-parameter in our setting. 
+
+\subsection{Offline Learning}
+\label{sec:offline_learning}
+
+With a set of offline training examples $\{(\tau_i, y_i)\}_{i=1}^n$, we aim to learn Latent Plan Transformer (LPT) through maximum likelihood estimation (MLE). The log-likelihood function is defined as $L( \theta) = \sum_{i=1}^{n} \log p_\theta(\tau_i, y_i)$.
+The joint probability of the trajectory and final return is
+\begin{align}
+   p_\theta(\tau, y) = \int p_{\beta}(\tau|z = U_\alpha(z_0)) p_{\gamma}(y| z = U_\alpha(z_0)) p_0(z_0) dz_0,
+\end{align}
+where $p_0(z_0)={\cal N}(0, I_d)$.
+The learning gradient of log-likelihood can be calculated according to
+\begin{align} 
+\begin{split}
+    \nabla_\theta  \log p_\theta(\tau, y)&=
+    \E_{p_\theta(z_0|\tau, y)} [\nabla_\theta\log p_\beta(\tau|U_\alpha(z_0)) + \nabla_\theta\log p_\gamma(y|U_\alpha(z_0))].  
+\label{eq:grad}
+\end{split}
+\end{align}
+The full derivation of the learning method is in~\cref{appen:model}.
+Let $\delta_\alpha, \delta_\beta, \delta_\gamma$ represent the expected gradients of $L(\theta)$ with respect to the model parameters $\alpha,\beta,\gamma$, respectively. The learning gradients for each component are formulated as follows.
+
+For the prior model $p_\alpha(z)$,
+\begin{align} 
+% \label{eq:alpha}
+  \delta_\alpha(\tau, y) &= \E_{p_\theta(z_0|\tau, y)} [\nabla_\alpha(\log p_\beta(\tau|z=U_\alpha(z_0))+ \nabla_\alpha\log p_\gamma(y|z=U_\alpha(z_0))]. \nonumber
+\end{align}
+For the trajectory generator,
+\begin{align} 
+% \label{eq:beta}
+  \delta_\beta(\tau, y) = \E_{p_\theta(z_0|\tau, y)} [\nabla_\beta \log p_{\beta}(\tau|z=U_\alpha(z_0))], \nonumber
+\end{align} 
+For the return predictor,
+\begin{align} 
+% \label{eq:gamma}
+  \delta_\gamma(\tau, y) = \E_{p_\theta(z_0|\tau, y)} [\nabla_\gamma \log p_{\gamma}(y|z=U_\alpha(z_0))]. \nonumber
+\end{align} 
+
+Estimating these expectations requires Markov Chain Monte Carlo~(MCMC) sampling of the posterior distribution $p_\theta(z_0|\tau,y)$. We use the Langevin dynamics~\citep{neal2011mcmc} for MCMC sampling, iterating as follows for a target distribution $\pi(z)$:
+\begin{align} 
+z^{k+1} = z^k + s \nabla_z \log \pi(z^k) + \sqrt{2s} \epsilon^k, 
+ \label{eq:Langevin}
+\end{align}
+where $k$ indexes the time step of the Langevin dynamics, $s$ is the step size, and $\epsilon^k \sim {\mathcal N}(0, I_d)$ is the Gaussian white noise. Here, $\pi(z)$ is instantiated as the posterior distribution $p_\theta(z_0|\tau, y)$. We have $p_\theta(z_0|\tau, y)\propto p_0(z_0)p_\gamma(y|z)p_\beta(\tau|z)$, where $z=U_\alpha(z_0)$, such that the gradient is
+\begin{align}
+% \label{eq:p_z_ty}
+    \nabla_{z_0} \log p_\theta(z_0|\tau, y) 
+    =\nabla_{z_0}\underbrace{\log p_0(z_0)}_{\text{prior}}+\nabla_{z_0}\underbrace{\log p_\gamma(y|z)}_{\text{return prediction}}+\underbrace{\sum\nolimits_{t=1}^H\nabla_{z_0}\log p_\beta(\tau_{(t)}|\tau_{(t-K:t-1)},z)}_{\text{aggregating finite-context sub-trajectories}}. \nonumber
+\end{align}
+This demonstrates that the posterior inference of $z$ is an explicit process of optimizing a plan given its likelihood. In the presence of a finite context, $p_\beta(\tau|z)$ parametrized with Transformer can only account for sub-trajectories with a maximum length of $K$. The latent variable $z$ serves as an abstraction that integrates information from both the final return and sub-trajectories using gradients.
+
+The sampling process starts by initializing $z_0^{k=0}$ from a standard normal distribution ${\mathcal N}(0, I_d)$. We then apply $N$ steps of Langevin dynamics (e.g., $N=15$) to approximate the posterior distribution, making our learning algorithm an approximate MLE. For a theoretical understanding of this noise-initialized finite-step MCMC, see \citet{pang2020learning,nijkamp2020learning2,XieZXL023}. 
+However, for large horizons (e.g.,$H$=1000), this method becomes slow and memory-intensive. To mitigate this, we adopt the persistent Markov Chain (PMC)~\citep{tieleman2008training,xie2016theory,han2017abp}, which amortizes sampling across training iterations. During training, $z_0^{k=0}$ is initialized from the previous iteration and the number of updates is reduced to $N=2$ steps. See~\cref{appen:training} for training and architecture details.
+
+\subsection{Planning as Inference}
+\label{sec:inference}
+The MLE learning of LPT gives us an agent that can plan. During testing, we first infer the latent $z_0$ given the desired return $y$ using Bayes' rule,
+\begin{align}
+    z_0\sim p_\theta(z_0|y) \propto p_0(z_0)p_\gamma(y|z=U_\alpha(z_0)).
+\label{eq:p_z0_y}
+\end{align}
+This posterior sampling is achieved using Langevin dynamics similar to the training process. Specifically, we replace the target distribution in~\cref{eq:Langevin} with $p_\theta(z_0|y)$ and run MCMC for a fixed number of steps. Sampling from $p_\theta(z_0|y)$ eliminates the need for expensive back-propagation through the trajectory generator $p_\beta(\tau|z)$. 
+
+This posterior sampling of $p(z_0|y)$ is an explicit process that iteratively refines the latent plan $z$, increasing its likelihood given the desired final return. It aligns with our intuition that planning is an inference process. This inferred $z$, fixed ahead of the policy execution, effectively serves as a plan. At each step, the agent consults this plan to generate actions conditioned on the current state and recent history, $a_t \sim p_\beta(a_t|s_{t-K:t-1},a_{t-K:t-1}, z=U_\alpha(z_0)).$
+
+Once a decision is made, the environment's (possibly non-Markovian) transition $s_{t+1}\sim p(s_{t+1}|a_t, s_{t})$ emits the next state. This sequential decision-making process iterates the sampling of $s_t$ and $a_t$ until termination at the horizon.
+
+\paragraph{Exploitation-inclined Inference (EI)}
+Inspired by the classifier guidance (CG)~\citep{dhariwal2021diffusion,ho2022classifier} in conditional diffusion models, we introduce a guidance weight $w$ to the original posterior in \cref{eq:p_z0_y} 
+\begin{align}
+\label{eq:cg}
+\Tilde{p}_\theta(z_0|y)\propto p_0(z_0)p_\gamma(y|z)^w, z=U_\alpha(z_0),
+\end{align}
+which has the score $\nabla_{z_0} \log \Tilde{p}_\theta(z_0|y)=\nabla_{z_0}{\log p_0(z_0)}+w\nabla_{z_0}{\log p_\gamma(y|z)}$.
+This guidance weight $w$ controls the interpolation between exploration and exploitation. When $w=1$, the sampled plans collectively represent the posterior density and account for Bayesian uncertainty, resulting in a provably efficient exploration scheme~\citep{osband2017posterior}. When $w>1$, the sampled plans are more concentrated around the modes of the posterior distribution, which are plans more likely to the agent. The larger the value of $w$, the more confident the agent becomes, and the stronger the inclination towards exploitation.
+
+An overview of the algorithms for both offline learning and inference can be found in the following.
+
+\begin{algorithm}[h]
+\caption{Offline learning}
+\label{algo:learning}
+\begin{algorithmic}
+    \STATE {\bfseries Input:} Learning iterations~$T$, initial parameters~$\theta_0 = (\alpha_0, \beta_0, \gamma_0)$, offline training samples~$\mathcal{D}=\{\tau_i, y_i\}_{i=1}^n$, posterior sampling step size $s$, the number of steps $N$, and the learning rate $\eta_0,\eta_1,\eta_2$.
+    \STATE {\bfseries Output:} $\theta_T$
+    \FOR{$t=1$ {\bfseries to} $T$}
+    \STATE{1.\textbf{Posterior sampling}}: 
+    For each $(\tau_i, y_i)$, sample $z_0 \sim {p}_{\theta_t}(z_0|\tau_i, y_i)$ using~\cref{eq:Langevin} with $N$ steps and step-size $s$, where the target distribution $\pi$ is  ${p}_{\theta_t}(z_0|\tau_i, y_i)$. 
+    \STATE{2.\textbf{Learn prior model} $p_\alpha(z)$, \textbf{trajectory generator} $p_\beta(\tau|z)$ and \textbf{return predictor} $p_\gamma(y|z)$}: \\
+    $\alpha_{t+1} = \alpha_t + \eta_0 \frac1n\sum_i\delta_\alpha(\tau_i,y_i)$;
+    $\beta_{t+1} = \beta_t + \eta_1 \frac{1}{n} \sum_{i}\delta_\beta(\tau_i,y_i)$;
+    $\gamma_{t+1} = \gamma_t + \eta_2 \frac{1}{n} \sum_{i}\delta_\gamma(\tau_i,y_i)$ as in~\cref{sec:offline_learning}.
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+% \vspace{-1em}
+\begin{algorithm}[h]
+\caption{Planning as inference}
+\label{algo:online}
+\begin{algorithmic}
+    \STATE {\bfseries Input:} Expected return $y$, a trained model on offline dataset $\theta$, posterior sampling step size $s$ and the number of steps $N$, Horizon $H$ and an evaluation environment.
+    \STATE {\bfseries Output:} Trajectory $\tau$
+    % \STATE \textit{\texttt{//Posterior sampling}} 
+    \IF{Exploitation-inclined Inference (EI)}
+    \STATE{Sample $z_0\sim \Tilde{p}_\theta(z_0|y)$ as in~\cref{eq:cg} using~\cref{eq:Langevin} with $N$ steps and step size $s$, where the target distribution $\pi$ is replaced by $\Tilde{p}_\theta(z_0|y)\propto p_0(z_0)p_\gamma(y|z=U_\alpha(z_0))^w$ and $z=U_\alpha(z_0)$.}
+    \ELSE
+    \STATE{Sample $z_0\sim p_\theta(z_0|y)$ as in~\cref{eq:p_z0_y} using~\cref{eq:Langevin} with $N$ steps and step size $s$, where $\pi$ is replaced by $p_\theta(z_0|y)\propto p_0(z_0)p_\gamma(y|z=U_\alpha(z_0))$ and $z=U_\alpha(z_0)$.}
+    \ENDIF
+    % \STATE{\textit{{Sample trajectory}}}
+    \WHILE{current time step $t \le H$}
+    \STATE Sample $a_t$ using trajectory generator as $a_t \sim p_\beta(a_t|s_{t-K:t-1},a_{t-K:t-1}, z=U_\alpha(z_0))$. \\Once a decision is made, the environment's transition $s_{t+1}\sim p(s_{t+1}|a_t, s_{t})$ emits the next state.\\
+    \ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+

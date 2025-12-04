@@ -1,0 +1,160 @@
+\section{\modelname{}}
+In this section, we introduce details of \modelname{}, including its representation (Sec.~\ref{sec: representation}), MLP architecture (Sec.~\ref{sec: MLP}), and its learning scheme (Sec.~\ref{sec: loss}).
+
+
+\subsection{\modelname{} Representation}
+\label{sec: representation}
+As shown in Fig.~\ref{Fig:Overview}, \modelname{} is based on a \textit{hierarchical} representation, with coarse and fine-grained geometry. At the coarse level, it represents a shape with voxels. In detail, for a shape $\mathbf{S}$, it divides the space that contains the shape into $V\times V\times V$ non-overlapping voxel grids, where $V$ is the resolution of the voxel grids. A subset of voxels that intersect with the shape surface will be valid. 
+
+At the fine-grained level, for each valid voxel $v$, we use an implicit representation to encode the geometry details for the local surface inside the voxel. Specifically, we use MLP-based neural SDFs. Each voxel $v$ has a latent code $z_v$ representing the local geometry and we use the MLP $g^{\theta}$ to decode the SDF values. For a point $\bs{x}$, its SDF value contributed by the voxel $v$ is
+\begin{equation}
+f(\bs{x},v) = g^{\theta}(\bs{x}_v, \bs{z}_v), \qquad \bs{x}_v = (\bs{n}_v, \bs{t}_v, \bs{n}_v\times \bs{t}_v)^T(\bs{x} - \bs{o}_v),
+\end{equation}
+where $(\bs{o}_{v},\bs{n}_v, \bs{t}_{v})$ parameterize the coordinate frame of voxel $v$. Ideally, $\bs{o}_{v}$, $\bs{n}_v$ and $\bs{t}_{v}$ are the origin, normal direction, and tangent direction of the local surface, respectively. 
+
+Intuitively, for decoding the SDF value, we transform the point from the world coordinate system to the shared coordinate system for all local surfaces. $\bs{o}_{v}$ forms the translation between the two coordinate system, and $(\bs{n}_v, \bs{t}_{v})$ form the rotation.
+
+
+The final SDF value at $\bs{x}$ is then given by
+\begin{equation}
+f(\bs{x}) = \frac{\sum_{v\in \set{V}} w(\bs{x}, v) f(\bs{x},v)}{\sum_{v\in \set{V}} w(\bs{x}, v)} ,\label{Eq:Implicit:Surf}  
+\end{equation}
+where $\set{V}$ is the set of all valid voxels, $w(\bs{x},v)$ is the weight assigned for the voxel $v$ with regard to point $\bs{x}$. In practice, we use $w(\bs{x}, v) = 1$ if $\bs{x} \in v$, and $w(\bs{x}, v) = 0$ otherwise. Finally, the surface of a 3D shape is defined as the union set of local surfaces in its valid voxels $\set{V}$.
+
+
+\begin{figure*}[t]
+\centering
+% \includegraphics[scale=0.37,bb=530 0 560 290]{images/overview.pdf}
+\includegraphics[width=\linewidth]{images/overview.pdf}
+\caption{\small{\textbf{Overview of \modelname{}}. \modelname{} represents a shape using a hybrid representation of voxels/cells and local implicit functions. (Left) For preparing the data for training the MLP-based local implicit functions, we split the training shapes into local shapes and initialize their coordinate frames using PCA. (Right) During training, a point will be transformed to the aligned coordinate of all local shapes using the coordinate frame. The MLP takes the transformed point and the latent code of the local shape to predict its SDF value. During testing, we fix the MLP, optimizing the latent codes and coordinate fields of valid cells.}}
+\label{Fig:Overview}
+\end{figure*}
+
+
+
+\subsection{\modelname{} MLP Architecture}
+\label{sec: MLP}
+
+Following the common practice of MLP, we define 
+$$
+g^{\theta}(\bs{x},\bs{z}) = g_L^{\theta_L}\circ \phi \circ \bs{g}_{L-1}^{\theta_{L-1}}\circ \phi \cdots \circ \phi \circ \bs{g}_{1}^{\theta_1}(\bs{x},\bs{z}) 
+$$
+where $\bs{g}_{l}^{\theta_l}:\R^{m_{l-1}}\rightarrow  \R^{m_{l}}$ is a layer with trainable parameters $\theta_l$, and where $\phi$ is an activation function. Denote $\bs{z}_l$ as the output in layer $l$, i.e., $\bs{z}_0 = (\bs{x};\bs{z})$. A common strategy is to set each $\bs{g}_l^{\theta_l}$ as a linear function, i.e., 
+\begin{equation}
+\bs{g}_l^{\theta_l}(\bs{z}_{l-1}) = A_l\bs{z}_{l-1} + \bs{b}_l,
+\label{Eq:Linear:Layer}
+\end{equation}
+where $\theta_l = (A_l,\bs{b}_l)$. Furthermore, $\phi$ is chosen as the ReLU layer, i.e., $\phi(\bs{z}_l) = \max(\bs{z}_l,\bs{0})$ where the $\max$ operator is applied element-wise. This strategy is widely used in prior works~\cite{DBLP:conf/cvpr/ParkFSNL19,DBLP:conf/cvpr/ChenZ19}. 
+
+However, in Sec.~\ref{sec: motivation_quadratic_mlp}, we demonstrate the SDF function has non-negligible quadratic components locally and its incompatibility with MLPs with linear layers and ReLU activation. 
+Therefore, instead, we model the quadratic components with quadratic layers. We let the top $k$ layers of $g^{\theta}$ to be quadratic functions, where $k\geq 1$. The quadratic layer can be formulated as 
+\begin{equation}
+\bs{g}_l^{\theta_l}(\bs{z}_{l-1}) = \bs{z}_{l-1}^T T_l \bs{z}_{l-1} + A_l\bs{z}_{l-1} + \bs{b}_l
+\label{Eq:Quad:Layer}
+\end{equation}
+where $T_l \in \R^{m_{l-1}\times m_l\times m_{l-1}}$ is a tensor, and $\theta_l = (T_l,A_l,\bs{b}_l)$.
+
+
+We can understand the trade-offs between the use of linear layers (Eq.~\ref{Eq:Linear:Layer}) and the quadratic layers (Eq.~\ref{Eq:Quad:Layer}) as follows. With the same latent dimensions $m_l$, the quadratic layers have many more parameters than the linear layers. Therefore, with the same network size, we have to use fewer layers or smaller latent dimensions for quadratic layers. This will limit the capability of the network instead. In practice, setting $k=1$ leads to the best performance. 
+
+
+\subsection{\modelname{} Learning Scheme}
+\label{sec: loss}
+
+\noindent\textbf{Problem Setup.} Following DeepSDF-series, we perform \textbf{shape auto-decoding}~\cite{DBLP:conf/cvpr/ParkFSNL19, DBLP:conf/eccv/ChabraLISSLN20}. The task assesses the capability of models to fit/represent given shapes. During both training and inference, the input is points sampled freely in space with their ground-truth SDF values. The output is the neural SDF.
+Additionally, we notify that the task is different from shape reconstruction from point cloud inputs, which is studied in ~\cite{zhang20233dshape2vecset}.
+
+Moreover, \modelname{} is a \textbf{generalizable} shape representation. It is trained on a curated dataset with multiple shapes. Once trained, the MLP can be used to represent or decode the SDF of any incoming shapes. We note the setting of generalizable shape representation is \textbf{different from overfitting a shape}, where an MLP is specialized for each shape.
+
+
+\noindent\textbf{Training and Inference.}
+We follow the protocol of the shape auto-decoding task~\cite{DBLP:conf/cvpr/ParkFSNL19, DBLP:conf/eccv/ChabraLISSLN20}.
+We train \modelname{} with a set of shapes denoted as $\set{S} = \{S_i, 1\leq i \leq n\}$. For each shape, we perform voxelization (Sec.~\ref{sec: representation}) and train \modelname{} with valid local shapes. We denote the set of valid local shapes of shape $S_i$ as $\set{V}_i$. Following~\cite{DBLP:conf/cvpr/ParkFSNL19,DBLP:conf/nips/SitzmannMBLW20, DBLP:conf/eccv/ChabraLISSLN20}, we collect a set of point samples $\set{P}_{v} = (\bs{p}^j, d^j)$ in the neighborhood of each voxel $v\in \set{V}_i$, where $\bs{p}^j$ and $d^j$ denote the position of the sample and the SDF value of $\bs{p}^j$. The point samples are sampled in free space and are not necessary to be on-surface points. For each local shape in voxel $v$, we associate it with a latent code $\bs{z}_v$ and the coordinate frame $(\bs{o}_v, \bs{n}_v, \bs{t}_v)$. Then the training objective can be formulated as 
+\begin{align}
+\argmin\limits_{\theta,\{\bs{o}_v,\bs{n}_v,\bs{t}_v,\bs{z}_v|v\in \set{V}_i\}} & \sum\limits_{i=1}^{n}\sum\limits_{v\in \set{V}_i}\sum\limits_{(\bs{p}^j,d^j)\in \set{P}_v} \vert\vert g^{\theta}(\bs{p}^j_v,\bs{z}_v)-d^j\vert\vert_1 ,
+\label{Eq:Training:Loss}
+\end{align}
+where 
+$
+\bs{p}^j_v = (\bs{n}_v, \bs{t}_v, \bs{n}_v\times \bs{t}_v)^T(\bs{p}^j - \bs{o}_v).
+$
+In this step, we jointly optimize the MLP, the latent codes, and the coordinate field for all training shapes. Intuitively, it trains the MLP to represent training shapes and optimize the compatibility between the MLP, latent codes and the coordinate fields.
+
+During inference, we freeze the MLP $g^{\theta}$. We optimize the latent code and the coordinate field for a single target shape at one time. It is formulated as
+\begin{equation}
+\argmin\limits_{\{\bs{z}_v,\bs{o}_v,\bs{n}_v,\bs{t}_v \vert v \in \set{V} \} }\sum\limits_{v \in \set{V}} \sum\limits_{(\bs{p}^j,\bs{n}^j)\in \set{P}_v} \vert\vert g^{\theta}(\bs{p}^j_v,\bs{z}_v) - d^j \vert\vert_1 %+\lambda \|\frac{\nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j,\bs{z}_c)}{\|\nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j,\bs{z}_c)\|}-\bs{n}_j\|^2 \Big)
+\label{Eq:CF:SDF:Inference}   
+\end{equation}
+
+\noindent\textbf{Shape Consistency at Boundary of Voxels.} If we sample the points $\set{P}_{v}$ within each voxel $v$, Eq.~\ref{Eq:Training:Loss} and Eq.~\ref{Eq:CF:SDF:Inference} optimize the local geometry within each voxel independently. This may lead the non-smooth and inconsistency surface at the boundary of voxels. To solve this, we follow ~\cite{DBLP:conf/eccv/ChabraLISSLN20} to expand receptive field of each voxel by sampling points from their neighbouring voxels.
+
+ 
+\noindent\textbf{Coordinate Field Initialization.}
+Eq.~\ref{Eq:Training:Loss} has many unwanted local minima, especially for optimizing the coordinate field. 
+Thus, a good initialization of the coordinate fields ensures the compactness of local shape at early stage of training, and facilitates the learning of MLP.
+Motivated by the analysis in Sec.~\ref{sec: difficaulty}, we use estimated normal and tangent directions to initialize the coordinate fields. In detail, we compute the derivatives of SDF values at these point samples and perform PCA to get them. Besides, $\bs{o}_c$ is initialized as the center of the cell. We find that this initialization is important to reduce errors (Sec.~\ref{Subsec:Ablation:Study}).
+
+
+% We solve (\ref{Eq:Training:Loss}) by alternating optimization. Starting from the coordinate frames initialized above, we fix them to optimize $\theta$ and $\{\bs{z}_c\}$. This step uses ADAM~\cite{DBLP:journals/corr/KingmaB14} and trains one epoch. After that, we fix $\theta$ and $\{\bs{z}_c\}$ and optimize $(\bs{o}_c, \bs{n}_c, \bs{t}_c)$. This can be solved for each cell $c$ in isolation. Denote the rotation $R_c = (\bs{n}_c, \bs{t}_c,\bs{n}_c\times \bs{t}_c)$. We apply Gauss-Newton optimization to solve
+% \begin{align}
+% \min_{\bs{o}_c, R_c} \sum\limits_{(\bs{p}_j, d_j)\in \set{P}_c} & \big(g^{\theta}(R_c^T(p_j-\bs{o}_j), \bs{z}_c)-d_j\big)^2.
+% \label{Eq:Coordinate:Frame:Opt}
+% \end{align}
+% To this end, we consider the linear approximations $R_c = (I_3+ \bs{v}_{c}\times)R_c^{c} $ and $\bs{o}_c = \bs{o}^{c}+\overline{\bs{v}}_c$. The linear approximation of the first term in (\ref{Eq:Coordinate:Frame:Opt}) with respect to $\bs{v}_c,\overline{\bs{v}}_c$ is given by
+% \begin{align}
+% & g^{\theta}(R_c^T(p_j-\bs{o}_j), \bs{z}_c)-d_j \nonumber \\
+% \approx  & (g^{\theta}(\hat{\bs{p}}_j^c, \bs{z}_c)-d_j - \nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j^c, \bs{z}_c) {R_c^{c}}^T \big((\bs{v}_c\times )\bs{p}_j +\overline{\bs{v}}_c\big)
+% \label{Eq:Linear:Approx:1}    
+% \end{align}
+% where $\hat{\bs{p}}_j^c = {R_c^{c}}^T(p_j-\bs{o}_j^c)$. %The linear approximation of the second term in (\ref{Eq:Coordinate:Frame:Opt}) with respect to $\bs{v}_c,\overline{\bs{v}}_c$ is given by
+% %\begin{align}
+% %& \frac{\nabla g^{\theta}(R_c^T(p_j-\bs{o}_j),\bs{z}_c)}{\|\nabla g^{\theta}(R_c^T(p_j-\bs{o}_j),\bs{z}_c)\|}-\bs{n}_j \approx\frac{\hat{\bs{g}}_j^c}{\|\hat{\bs{g}}_j^c\|} -\bs{n}_j \nonumber \\
+% %  & -  \frac{1}{\|\hat{\bs{g}}_j^c\|}\big(I_3 - \frac{\hat{\bs{g}}_j^c}{\|\hat{\bs{g}}_j^c\|}{\frac{\hat{\bs{g}}_j^c}{\|\hat{\bs{g}}_j^c\|}}^T\big)\nabla^2_{\bs{x}\bs{x}} g^{\theta}(\hat{\bs{p}}_j^c,\bs{z}_c){R_c^{c}}^T \big((\bs{v}_c\times )\bs{p}_j +\overline{\bs{v}}_c\big)
+% %\label{Eq:Linear:Approx:2}    
+% %\end{align}
+% where $\hat{\bs{g}}_j^c = \nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j^c,\bs{z}_c)$. Substituting (\ref{Eq:Linear:Approx:1}) into (\ref{Eq:Coordinate:Frame:Opt}), we arrive at a quadratic optimization problem in $\bs{v}_c$ and $\overline{\bs{v}}_c$, where the optimal solution $\bs{v}_c^{\star}$ and $\overline{\bs{v}}_c^{\star}$ can be obtained by solving a linear system. We then update $R_c = \exp(\alpha \bs{v}_c\times )R_c^c$ and $\bs{o}_c = \bs{o}_c^c + \alpha \overline{\bs{v}}_c$, where the step size $\alpha$ is determined by the Armijo–Goldstein condition.
+
+%Note that the idea of transforming a point in the local coordinate system before fitting it to an MLP is orthogonal to the use of different encoding schemes. As shown in Figure~\ref{CFSDF:vs:DeepLS}(Left), we can see that under the standard MLP encoding scheme, \modelname{} captures local geometric details better than DeepLS~\cite{DBLP:conf/eccv/ChabraLISSLN20} on surfaces with non-repeating shape details. On the other hand, under the positional encoding MLP scheme, \modelname{} captures repeating patterns better than DeepLS (See Figure~\ref{CFSDF:vs:DeepLS}(Right)). This is expected, as both repeating and non-repeating patterns are compressive under suitable coordinate frames. 
+
+% \subsection{\modelname{} Inference}
+% \label{Subsec:CF:SDF:Inference}
+
+% \modelname{} inference is similar to \modelname{} training. Given an input point set $\{\bs{p}^j, d^j\}$ representing a testing shape, we determine the set of intersecting cells $\set{C}$ based on their SDF values. With $\set{Q}_c = \{\bs{p}^j\}$ we denote the adjacent input points of the cell $c\in \set{C}$. We then solve the following optimization problem to optimize the latent codes $\bs{z}_c$ and the coordinate field $(\bs{o}_c,\bs{n}_c,\bs{t}_c)$ of $c$:
+% \begin{equation}
+% \min\limits_{\{\bs{z}_c,\bs{o}_c,\bs{n}_c,\bs{t}_c \vert c \in \set{C} \} }\sum\limits_{c \in \set{C}} \sum\limits_{(\bs{p}_j,\bs{n}_j)\in \set{Q}_c} \vert\vert g^{\theta}(\bs{p}^j_c,\bs{z}_c) - d^j \vert\vert_1 %+\lambda \|\frac{\nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j,\bs{z}_c)}{\|\nabla_{\bs{x}} g^{\theta}(\hat{\bs{p}}_j,\bs{z}_c)\|}-\bs{n}_j\|^2 \Big)
+% \label{Eq:CF:SDF:Training}   
+% \end{equation}
+% During inference, we use a fixed MLP.
+% Again, we initialize $\bs{o}_c$, $\bs{n}_c$, and $\bs{t}_c$ in the same way of training.
+
+
+% by performing PCA on $\set{Q}_c$ and apply alternating minimization to optimize $\bs{z}_c$ and $(\bs{o}_c,\bs{n}_c,\bs{t}_c)$. We perform the optimization for all valid cells of each shape.
+
+%The local module takes the output of the global module, i.e., for each $c$, the occupancy flag $o_{c}^{\theta}(\bs{z})$, the coordinate frame parameterized by  $\bs{c}_{c}^{\theta}(\bs{z}),\bs{n}_c^{\theta}(\bs{z}), \bs{t}_{c}^{\theta}(\bs{z})$, and the latent feature $\bs{f}_c^{\theta}(\bs{z})$, as input and outputs an implicit surface defined as $g^{\theta, \psi}(\bs{x},\bs{z}) = 0$. To this end, we first define the local transformation $T_c^{\theta}$ associated with each cell $c$:
+%\begin{equation}
+%T_c^{\theta}(\bs{x},\bs{z}):= \big(\bs{n}_c^{\theta}(\bs{z}),\bs{t}_{c}^{\theta}(\bs{z}),\bs{n}_c^{\theta}(\bs{z})\times \bs{t}_{c}^{\theta}(\bs{z})\big)^T\big(\bs{x} - \bs{c}_{c}^{\theta}(\bs{z})\big)
+%\label{Eq:Cell:Transformation}    
+%\end{equation}
+
+%Let $c_{\bs{x}}$ be the cell that a 3D point $\bs{x}$ resides in. We define 
+%\begin{equation}
+%g^{\theta, \psi}(\bs{x},\bs{z}) = \left\{
+%\begin{array}{cc}
+%h_{l}^{\psi}(T_c^{\theta}(\bs{x},\bs{z})) & o_{c_{\bs{x}}}^{\theta}(\bs{z}) \geq \epsilon %\\
+%\delta & \textup{otherwise}
+%\end{array}
+%\right.\
+%\label{Eq:}
+%\end{equation}
+%where $h_{l}^{\psi}(\bs{x})$ is a local MLP that decodes the signed-distance value $\bs{x}$ in the local coordinate system. We apply the idea of positional encoding to design $h_{l}^{\psi}$ which captures geometric details better. $\delta > 0$ and $\epsilon\in [0,1]$ are hyper-parameters. 
+
+
+
+
+%Besides the latent code $\bs{z}_i$, the key idea of HGAGen is to introduce a local coordinate frame $(\bs{o}_i, \bs{n}_i,\bs{t}_i)$ associated with each $\set{V}_i$. Here $\bs{o}_i$ denotes the coordinate origin; $\bs{n}_i\in \set{S}^2$ is the normal direction; $\bs{t}_i\in \set{S}^2$ is one tangent direction. With this setup, we modify $T_i$ as 
+%$$
+%T_i(\bs{x}_j):= (\bs{n}_i,\bs{t}_i,\bs{t}_i\times \bs{n}_i)^T(\bs{x}_j-\bs{o}_i).
+%$$
+%Note that in this case, similar to $\bs{z}_i$, $\bs{o}_i,\bs{n}_i,\bs{t}_i$ are optimized as latent variables of $\set{V}_i$.
+
+%As shown in Figure~\ref{HGAGen:vs:DeepLS}, HGAGen outperforms DeepLS significantly in terms of encoding local geometrically details under the comparable MLP complexities. This shows the great benefits of introducing the coordinate field to decode shape geometries. 

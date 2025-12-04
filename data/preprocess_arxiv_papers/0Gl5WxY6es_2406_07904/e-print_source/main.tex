@@ -1,0 +1,155 @@
+\documentclass{article}
+
+
+\PassOptionsToPackage{numbers, sort&compress}{natbib}
+
+
+
+
+
+
+\usepackage[final]{neurips_2024}
+
+\newif\ifincludecontent
+
+
+
+
+\usepackage[utf8]{inputenc} %
+\usepackage[T1]{fontenc}    %
+\usepackage{xcolor}         %
+\definecolor{citecolor}{HTML}{2779af}
+\definecolor{linkcolor}{HTML}{c0392b}
+\usepackage[pagebackref=false,breaklinks=true,colorlinks,bookmarks=false,citecolor=citecolor,linkcolor=linkcolor]{hyperref}
+\usepackage{url}            %
+\usepackage{booktabs}       %
+\usepackage{amsfonts}       %
+\usepackage{nicefrac}       %
+\usepackage{microtype}      %
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{enumitem}
+
+\usepackage[capitalize]{cleveref}
+
+\usepackage{todonotes}
+\usepackage{xspace}
+\usepackage{colortbl}
+\usepackage{subcaption}
+\usepackage{bbm}
+\usepackage{pifont}
+\usepackage{wrapfig}
+
+\definecolor{lightred}{rgb}{1, 0.6, 0.6}
+\definecolor{lightgreen}{rgb}{0.4, 0.8, 0.4}
+\definecolor{mediumdarkred}{rgb}{0.8, 0.0, 0.0}
+
+\newcommand{\greencheck}{{\color{green}\ding{51}}}
+\newcommand{\redx}{{\color{red}\ding{55}}}
+
+
+\newcommand{\asz}[1]{}
+\newcommand{\rdh}[1]{}
+\newcommand{\plan}[1]{}
+\newcommand{\bogdan}[1]{}
+\newcommand{\harsh}[1]{}
+\newcommand{\zkn}[1]{}
+
+
+\newcommand{\pzero}{\textcolor{mediumdarkred}{P0:}\xspace}
+\newcommand{\pone}{\textcolor{lightred}{P1:}\xspace}
+
+\newcolumntype{P}[1]{>{\centering\arraybackslash}m{#1}}
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+\definecolor{lightgray}{gray}{0.95}
+\definecolor{lightblue}{RGB}{180,255,180}
+\definecolor{Envdisc}{RGB}{100, 149, 237} %
+\definecolor{Envcont}{RGB}{205, 92, 92} %
+\definecolor{lightgray}{gray}{0.95}
+
+\newcommand{\Method}{Action Multimodal LLM\xspace}
+\newcommand{\method}{AMLM\xspace}
+\newcommand{\vlms}{MLLMs\xspace}
+\newcommand{\Vlms}{multimodal LLMs\xspace}
+
+\newcommand{\asalong}{Action Space Adapter\xspace}
+\newcommand{\asa}{ASA\xspace}
+\newcommand{\asas}{ASAs\xspace}
+\newcommand{\rvq}{RVQ\xspace}
+\newcommand{\vq}{VQ\xspace}
+\newcommand{\mlp}{Pred\xspace}
+\newcommand{\unif}{Uniform\xspace}
+\newcommand{\semlang}{SemLang\xspace}
+\newcommand{\lang}{Lang\xspace}
+\newcommand{\nosemlang}{Lang\xspace}
+\newcommand{\compnosemlang}{CompLang\xspace}
+\newcommand{\taskcount}{114\xspace}
+
+\newcommand{\llama}{LLaMA\xspace}
+\newcommand{\llava}{LLaVA\xspace}
+\newcommand{\vlm}{MLLM\xspace}
+\newcommand{\rt}{RT-Inspired\xspace}
+\newcommand{\scratch}{Scratch\xspace}
+
+\newcommand{\calvin}{CALVIN\xspace}
+\newcommand{\metaworld}{Meta-World\xspace}
+\newcommand{\habpick}{HabPick\xspace}
+\newcommand{\Habpick}{Habitat Pick\xspace}
+\newcommand{\langR}{Language Rearrangement\xspace}
+\newcommand{\LangR}{Language Rearrangement\xspace}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+
+
+\title{Grounding Multimodal Large Language Models \\ in Actions}
+
+
+
+
+\author{
+    Andrew Szot$^{1,2}$ \quad
+    Bogdan Mazoure$^1$ \quad
+    Harsh Agrawal$^1$ \quad
+    Devon Hjelm$^{1,3}$ \\
+    \textbf{Zsolt Kira$^2$} \quad
+    \textbf{Alexander Toshev$^1$} \quad \\
+    $^1$ Apple, $^2$ Georgia Tech, $^3$ Mila \\
+    \textit{a.szot@apple.com, toshev@apple.com}
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+\input{sections/abstract}
+\input{sections/intro}
+\input{sections/related_work}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/conclusion}
+
+{\small
+\bibliographystyle{unsrtnat}
+\setlength{\bibsep}{0pt}
+\bibliography{main}
+}
+
+\newpage
+\appendix
+\input{supp/prior_work}
+\input{supp/exps}
+\ifincludecontent
+  \input{sections/checklist}
+\fi
+
+
+
+
+\end{document}

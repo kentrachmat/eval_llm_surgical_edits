@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<h1>
+AlphaLLM: An Imagination-Searching-Criticizing Framework for the Self-Improvement of LLMs
+</h1>
+
+<h1>
+Abstract
+</h1>
+<p>
+</p>
+
+<h1>
+Introduction 
+</h1>
+<p>
+LLMs, trained on trillions of tokens with billions of parameters have shown unparalleled capabilities in a wide range of natural language processing tasks. Nevertheless, they continue to face challenges in scenarios requiring complex reasoning and strategic planning. While advanced prompting approaches such as Chain, Tree, Graph-of-Thought, it remains essential to fine-tune LLMs using a substantial volume of high-quality, supervised data to fundamentally improve the model performance. This methodology is inherently limited by the scope and quality of data that humans can provide.
+</p>
+<p>
+Considering these challenges, the concept of self-correction and self-learning have been proposed as promising solutions. Within these framework, LLMs typically operate by employing two main strategies: 1) they continuously refine their responses based on the feedback of their past responses, and 2) they extensively sample responses then learn from preferences judged by itself as reward models with PPO or DPO. However, it remains a matter of ongoing research whether LLMs can effectively critique their own outputs to either enhance response quality or apply a scalar reward to indicate the quality of responses, especially in contexts demanding intricate planning and reasoning. On the other hand, advanced search algorithms such as MCTS, combined with reinforcement learning, have enabled models to learn from self-play and achieve human parity or even surpass human performance in complex tasks such as the game of Go. This naturally raises a question: is it viable to leverage the strengths of MCTS alongside LLMs to inaugurate a novel paradigm of self-improving? More precisely, could the assimilation of MCTS empower LLMs to more effectively explore better responses, guided by strategic signals, and subsequently optimize these responses to enhance overall performance?
+</p>
+<p>
+To answer this question, we begin with a systematic examination of AlphaGo, identifying three critical aspects for its success: ( ) The large volume of data, including self-play data. ( ) The use of tree search, which facilitates the exploration of potential moves through statistical sampling of the large search space. ( ) Accurate and unambiguous environment feedback; the direct and accurate feedback (win or loss) provided by the game of Go offers a clear and unequivocal learning signal. The integration of MCTS with LLMs for self-improvement has several challenges: ( ) Limited Data: High-quality annotated data for LLMs is generally scarce. Furthermore, how to construct of synthetic data for LLMs training, similar to AlphaGo’s self-play data, remains unclear. ( ) Search Efficiency: The vast number of potential token combinations in natural language tasks results in an exponentially large search space, posing a significant challenge to the efficiency of MCTS. ( ) Imperfect Feedback: In contrast to the clear win/loss feedback in Go, feedback in natural language tasks is often subjective and nuanced, without a straightforward measure of success.
+</p>
+
+<div>
+<span id="fig:framework">
+</span>
+<img src="fig:framework.jpeg"/>
+<p>
+Figure fig:framework: Imagination-Searching-Criticizing self-improvement loop: Imagination component synthesizes prompts as new learning examples, with MCTS searching better trajectories guided by signals from critics for policy improving.
+</p>
+</div>
+
+<p>
+In this paper, we introduce <span class="smallcaps">AlphaLLM</span>, an imagination-searching-criticizing framework designed for the self-improvement of LLMs. <span class="smallcaps">AlphaLLM</span> consists of three key components, as illustrated in Figure 
+<a href="#fig:framework">
+fig:framework
+</a>. First, an imagination component is designed to synthesize prompts, alleviating the issues of data scarcity. Second, we propose <em>ηMcts</em> tailored for efficient searching in language tasks. Particularly, it has been show that planning at multiple levels of temporal abstraction is critical for RL problems with a long horizon and large action space. As such, we propose formulating the text generation process as options over a Markov Decision Process (MDP) problem, where each option represents the generation of a collection of tokens for a specific subtask, similar to the concept of chains in chain-of-thought prompting. This formulation improves search efficiency by substantially reducing the search depth. Additionally, we propose the use of state merge and adaptive branching factors to further enhance search efficiency by balancing the trade-off between search width and depth. Lastly, since accurate feedback is crucial to the success of MCTS, we introduce a trio of critic models to guide <em>ηMcts</em>, including a value function for estimating expected rewards, a process reward model for assessing node correctness, and an outcome reward model for evaluating the overall trajectory. For complex tasks with which LLMs struggle assessing such as arithmetic computation and code execution, to ensure the accuracy of feedback, we augment the critics with the capacity to make dynamic decisions on which tools to use, when to use them, and how to use them effectively. After <em>ηMcts</em> stage, we collect the trajectory with the largest reward from the critic models as the training examples to improve LLMs.
+</p>
+<p>
+The experimental results on mathematical reasoning tasks demonstrate that <span class="smallcaps">AlphaLLM</span> can efficiently search for better responses and use them to improve LLMs’ performance, forming an effective self-improving loop. Notably, based on Llama-2-70b and WizardMath-70B-V1.0, <span class="smallcaps">AlphaLLM</span> can improve its performance from 57.8 to 92.0 on GSM8K and from 20.7 to 51.0 on MATH, performing comparably to GPT-4.
+</p>
+
+<h1>
+Related work
+</h1>
+<p>
+<strong>Search with LLM</strong>
+</p>
+<p>
+Effective search strategy has been shown crucial for tasks that involve complex reasoning and planning, such as go and math reasoning. For math reasoning tasks, various search methods have been studied. One direction of research designed beam search with dynamic pruning, where beam items of low quality are pruned. Another line of work maintains a tree or a graph that represents the current progress of solving the input question where potential branches are iteratively expanded. Both our approach and are based on the MCTS algorithm, while one main difference is how to define a search step: fix a search step to be either a token or a sentence, while our approach is more flexible on deciding steps. We have also carefully designed the MCTS process, incorporating multiple critique signals to guide the search more effectively and introducing adaptive search parameters for improved state exploration. As the result, our approach achieves much better performances.
+</p>
+<p>
+<strong>LLM Self-improving</strong>
+</p>
+<p>
+Being a key to the success of scalable oversight, self-improving for LLM aims to align the LLM to human preference and values mainly using the supervision from the knowledge inside the LLM. One crucial part of self-improving is how to obtain reliable signal of critique to distinguish between good responses from the LLM and bad ones. Initial work first asks the LLM to generate input queries of diverse tasks and the corresponding outputs. They then rely on hand-crafted heuristic rules to filter out redundant or low-quality data pairs (e.g. the query is too long or too short). Since it is non-trivial to compose effective heuristic rule, later work proposes a few general principles or judging criteria and ask the LLM itself to evaluate the quality its responses based on these guidance, hoping that LLMs can automatically designate these principles into each data point to better guide data filtering. However, this requires LLMs to have strong abilities to apply these principles for each specific case and make correct judgements. Different from previous work, we propose to leverage the supervision from MCTS for LLM self-improvement: taking the outputs of MCTS to continue train the LLM. This is because the outputs from MCTS are usually in much better quality then standard nucleus sampling, and the large gap ensure that the LLM can self improve.
+</p>
+
+<h1>
+Formal setting
+</h1>
+<p>
+<!-- Content taken from # Preliminaries and # AlphaLLM (including subsections) combined verbatim -->
+</p>
+
+<p>
+<strong># Preliminaries</strong>
+</p>
+
+<p>
+<span style="font-weight:bold;">Problem Formulation</span>
+</p>
+<p>
+In this paper, we consider a LLM characterized by probability <em>p</em><sub>θ</sub> and denoted as policy <em>π</em><sub>θ</sub>. It takes a sequence x = [x<sub>1</sub>, ⋯, x<sub>n</sub>] as input, which is typically referred as prompt, to generate the response y = [y<sub>1</sub>, ⋯, y<sub>m</sub>]. In the context of LLMs, each x<sub>i</sub> and y<sub>i</sub> represents a token from a pre-defined vocabulary. The policy <em>π</em><sub>θ</sub> operates in an autoregressive manner, where each token is generated sequentially, relying solely on the context provided by the previously generated tokens. The policy therefore constitutes a Markov process in which the conditional probability distribution p<sub>θ</sub>(y|x) can be decomposed and expressed with the chain rule as 
+$ p_{\theta}(\mathbf{y}|\mathbf{x}) = \prod_{i=1}^{m} p_{\theta}(y_i|\mathbf{x}, \mathbf{y}_{<i}) $.
+</p>
+<p>
+With this property, the text generation task can be formulated as an Markov Decision Process (MDP) problem consisting of (<em>S</em>, <em>A</em>, <em>T</em>, <em>R</em>, <em>γ</em>) in which, s<sub>t</sub> ∈ <em>S</em> represents the context information of current trajectory, i.e., current status of the generation process, e.g., a partial response to a prompt; a<sub>t</sub> ∈ <em>A</em> denotes a single action or sampled token from the vocabulary, leading to a transition to a new state s<sub>t+1</sub>, by concatenating s<sub>t</sub> and a<sub>t</sub>; r<sub>t</sub> = <em>R</em>(s<sub>t</sub>, a<sub>t</sub>) manifest the evaluation of the generation to the prompt, reflecting the desirability or preferences of each state-action pair.
+</p>
+<p>
+This MDP framework sets the stage for applying Reinforcement Learning (RL) methods to optimize the policy <em>π</em><sub>θ</sub> aiming to maximize the expected cumulative reward <em>R</em>. Base on these setups, we describe the self-improving problem. Given a LLM <em>π</em><sub>θ</sub> and an initial dataset D<sup>0</sup>, which consists of N expert-generated prompt-response pairs { (x<sub>i</sub><sup>0</sup>, y<sub>i</sub><sup>0</sup>) | i ∈ [ N ] }, the goal of self-improving is to iteratively refine <em>π</em><sub>θ</sub> to maximize the reward. The refinement process includes learning from synthesized prompts and corresponding responses. These responses are obtained using an advanced search algorithm that navigates the space of possible responses to maximize the expected reward. The detailed process is described in Algorithm 
+<a href="#algo:self_improving">
+algo:self_improving
+</a> in Appendix. The primary challenges in forming an effective self-improving loop lie in synthesizing suitable prompts, efficiently searching over a vast action space, and obtaining precise feedback, which will be discussed in §4.
+</p>
+
+<p>
+<span style="font-weight:bold;">Monte Carlo Tree Search</span>
+</p>
+<p>
+MCTS is a sampling-based search algorithm for policy optimization in decision-making problems. It would iteratively build a search tree, by repeating four phases: selection, expansion, evaluation, and backpropagation. In the selection phase, it would recursively select the children from the root node by Upper Confidence Bound (UCB), 
+$$
+UCB(i)=w_i + C \sqrt{2 \ln{\frac{N_i}{n_i}}},
+$$
+where n<sub>i</sub> and N<sub>i</sub> are the visit counts for the node i and its parent respectively, C represents a hyperparameter balancing exploration and exploitation, and the w<sub>i</sub> is the average value of all descendant nodes of i.
+</p>
+
+<p>
+<strong># AlphaLLM</strong>
+</p>
+<p>
+<span style="font-weight:bold;">Overview</span>
+</p>
+<p>
+The architecture of <span class="smallcaps">AlphaLLM</span> is depicted in Figure 
+<a href="#fig:framework">
+fig:framework
+</a>, comprising three key components. Firstly, the imagination component is tasked with synthesizing prompts as learning examples. Secondly, an efficient search component, named <em>ηMcts</em>, is proposed to search high-quality trajectories for optimizing the policy. Lastly, the search process is guided by critics specifically designed to provide reliable signals.
+</p>
+<p>
+<span style="font-weight:bold;">Data Synthesizing</span>
+</p>
+<p>
+Let D<sup>0</sup> = { (x<sub>i</sub>, y<sub>i</sub>) | i ∈ [N] } denote the initial dataset consisting of N expert-generated prompt-response pairs. The data synthesizing process aims to expand this dataset by generating a set of synthesized prompts D<sup>1</sup> = { (x<sub>i</sub><sup>1</sup>, ⋯) | i ∈ [N] }. The generation of each synthesized prompt x<sub>i</sub><sup>1</sup> can be mathematically described as a transformation g applied to one or more examples from D<sup>0</sup>, 
+x<sub>i</sub><sup>1</sup> = g(x<sub>i1</sub><sup>0</sup>, ⋯, x<sub>im</sub><sup>0</sup>, π<sup>0</sup>)
+where x<sub>i1</sub><sup>0</sup>, ⋯, x<sub>im</sub><sup>0</sup> are selected examples from D<sup>0</sup>. The transformation function g controls the synthesis process, which can be a learnable function, manually defined heuristic rules, a strong LLM or the policy model itself π<sup>0</sup> equipped with data synthesis instructions. The data synthesizing process aims to enrich the diversity and complexity presented for the training of the policy model. Among various strategies, such as Self-instruct, Evol-instruct, we opt for a method akin to that described in .
+</p>
+<p>
+<span style="font-weight:bold;">ηMcts</span>
+</p>
+<p>
+<strong>Option-level MCTS</strong>
+</p>
+<p>
+When applying MCTS to LLMs, it is natural to perform token-level search, where each token is considered as an action. However, the substantial vocabulary size typical of LLMs presents a significant challenge i.e., conducting a deep search in such a vast space becomes increasingly complex as the search space expands exponentially. To mitigate this, some efforts proposed a sentence-level search, treating each sentence or step as a search node. While this method reduces the search space, it might compromise the flexibility and effectiveness of applying MCTS to LLMs, which is particularly true for tasks where subtle variations in token can dramatically impact the outcome, or where a more comprehensive search beyond a sentence is necessary.
+</p>
+<p>
+Inspired by , we use the term option as a search node and propose option-level MCTS where each option represents a sequence of tokens, which can range from multiple tokens to several sentences. A comparisons of different levels search is listed in the text table. Mathematically, an option o = ⟨ℐ, π, β⟩, where ℐ ⊆ S is a set of initial states for the option; π: S × A → [0, 1] is a policy to generate actions, which in our case is a LLM; and β: S<sup>+</sup> → [0, 1] is the termination function. Starting from a state s<sub>t</sub>, we can choose all the options for which s<sub>t</sub> ∈ ℐ. Once an option is chosen, the policy π will generate actions for several steps until the option terminates according to the termination function β. The option-level MCTS consists of stages including selection, expansion, simulation, and backpropagation. The option-level formulation offers more flexibility compared to the sentence-level, as a new line can be treated as a special case of the termination function. Additional detailed steps of the option-level MCTS can be found in Appendix (7.2).
+</p>
+<p>
+<strong>Importance-Based Adaptive Branching</strong>
+</p>
+<p>
+In previous works related to option/sentence level tree search, it was a common practice to assume that each node in the tree has the same predefined width, i.e., branching factor. This assumption was due to the fact that unlike token-level MCTS with a limited action space, the sample space at the option-level is exceedingly large, with an unlimited number of token combinations. As a result, it was necessary to set a predefined maximum width for each node. However, this predefined branching factor is hard to set, as an improper choice can lead to a search tree that is either too shallow or too thin, resulting in an inefficient exploration of the search space.
+</p>
+<p>
+To quantify the error induced by the branching factor limit, we defined the branching error E<sub>ϕ</sub>(t). For a node t with a branching factor of m<sub>t</sub>, it aims to use the m<sub>t</sub> child options o<sub>t</sub><sup>i</sup> ∼ D<sub>t</sub><sup>children</sup> (where i ∈ {1, …, m<sub>t</sub>}) to represent all possible options. Consequently, for a legal option o<sub>t</sub><sup>j</sup> ∼ π(s<sub>t</sub>) from the option space, we can calculate the minimal value difference between it and the m<sub>t</sub> existing options, which captures the error associated with representing other possible options using the m<sub>t</sub> available options. It can be formulated as 
+E<sub>ϕ</sub>(t) = [ min<sub>o<sub>t</sub><sup>i</sup></sub> |v<sub>ϕ</sub><sup>π</sup>([s<sub>t</sub>, o<sub>t</sub><sup>j</sup>]) − v<sub>ϕ</sub><sup>π</sup>([s<sub>t</sub>, o<sub>t</sub><sup>i</sup>])| ].
+Here we define the importance of node s<sub>t</sub> as I(s<sub>t</sub>) = max<sub>o<sub>t</sub><sup>i</sup></sub> |v<sub>ϕ</sub><sup>π</sup>([s<sub>t</sub>, o<sub>t</sub><sup>i</sup>]) − v<sub>ϕ</sub><sup>π</sup>(s<sub>t</sub>)|. For simplicity, we assume that the value of the children nodes are uniformly distributed (a detailed analysis of the Gaussian distribution can be found in Appendix (7.4)). Under this assumption, we show in Appendix (7.3) that 
+E<sub>ϕ</sub>(t) ≤ I(s<sub>t</sub>) / (m<sub>t</sub>−1).
+While E<sub>ϕ</sub> is less than some ϵ, we aim to use a smaller total number of nodes for efficiency.
+</p>
+<p>
+<strong>Theorem 1</strong>. The optimal branching factor m<sub>t</sub> in a tree search is set such that m<sub>t</sub>−1 is proportional to the node importance I(s<sub>t</sub>), under the condition 
+I(s<sub>t</sub>) / (m<sub>t</sub>−1) ≤ ϵ.
+</p>
+<p>
+A similar concept has also been proposed in. Intuitively, I(s<sub>t</sub>) captures the maximum value deviation from the current state. When this value is small, there is no need to explore further on this node, as there will not be a significant difference by rolling out on this node. Conversely, if the value is large, it is worth trying different children. We set the number of children allowed for a node n(s<sub>t</sub>) (after extracting 1) to be linear with this importance, using a factor α. In practice, to avoid extreme cases of large variance of I(s<sub>t</sub>) in the early stage, we bound the number of children by depth-dependent constants c<sub>min</sub>(t) and c<sub>max</sub>(t). 
+n(s<sub>t</sub>) = max(c<sub>min</sub>(t), min(⌊αI(s<sub>t</sub>)⌋+1, c<sub>max</sub>(t))).
+</p>
+<p>
+<strong>State Merge</strong>
+</p>
+<p>
+With n(s<sub>t</sub>) determined, another issue is that options under the same node may be very similar, leading to many unnecessary sub-trees. Since we cannot directly control the o<sub>t</sub> ∼ π(s<sub>t</sub>), one strategy to mitigate this issue is to utilize the concept of move groups. By merging similar nodes into the same group, we can increase the diversity among groups, thereby covering a larger problem space with limited search rollouts and making the search process more efficient.
+</p>
+<p>
+Here, we adapt the definition of node predicate p<sub>vM</sub> from and to represent whether two nodes are extremely similar. In practice, each time we generate a new option from the policy, we use heuristic functions as p<sub>vM</sub> to check its similarity with all existing groups. The heuristic function can either be a faster rule-based measurement (e.g., edit distance) or a model-based method (e.g., prompting a language model). Based on this, we decide whether to merge this option with a previous one or create a new group.
+</p>
+<p>
+<strong>Fast Rollout with Specialized LM</strong>
+</p>
+<p>
+The simulation operation which employs a rollout policy to project future trajectories from a given state, is crucial for an effective MCTS. This process significantly improves the efficiency of exploration and exploitation, and enhances the accuracy of reward estimation. Estimations made at the end of trajectories tend to have lower bias but higher variance; thus, simulating multiple possible trajectories yields low-bias, low-variance estimates, enabling a more informed and effective search process. Ideally, π<sub>θ</sub> would serve as the rollout policy, yet its computational demands render it impractical for the rapid simulations required by MCTS. To address this challenge, we propose the use of a smaller, specialized LM as the fast rollout policy π<sup>fast</sup>. Given a state s<sub>t</sub>, the fast rollout policy π<sup>fast</sup> efficiently continues generation until it reaches a termination condition, denoted as π<sup>fast</sup>(s<sub>t</sub>).
+</p>
+<p>
+<span style="font-weight:bold;">Critic</span>
+</p>
+<p>
+In <span class="smallcaps">AlphaLLM</span>, we design three types of critic models to guide the search process.
+</p>
+<p>
+<strong>Value Function</strong>
+</p>
+<p>
+The value function, denoted as v<sup>π</sup>(s), represents the expected return starting from state s and following policy π thereafter, given by 
+v<sup>π</sup>(s) = 𝔼<sub>τ ∼ π</sub>[R(τ) | s<sub>0</sub> = s]
+where R(τ) represents the discounted return of trajectory τ. To train a parameterized value function v<sub>ϕ</sub><sup>π</sup>(s), given the prompts D = { (x<sub>i</sub>, ⋯) | i ∈ [N] }, for each prompt x<sub>i</sub>, we generate multiple trajectories τ<sub>i</sub><sup>j</sup> = {x<sub>i</sub>, o<sub>i1</sub><sup>j</sup>, o<sub>i2</sub><sup>j</sup>, ⋯, o<sub>iT</sub><sup>j</sup>} by following policy π for J times. A final reward r<sub>i</sub><sup>j</sup> is assigned to indicate whether τ<sub>i</sub><sup>j</sup> aligns with y<sub>i</sub>—for example, rewarding trajectories that contain correct answers in mathematical tasks or closely follow instructions as ground truth. We then construct a dataset D<sub>value</sub> = { (s<sub>it</sub><sup>j</sup>, v<sub>it</sub><sup>j</sup>) | i ∈ [N], t ∈ [T], j ∈ [J] } where s<sub>it</sub><sup>j</sup> = [x<sub>i</sub>⋅o<sub><i &lt; t</sub><sup>j</sup>] and v<sub>it</sub><sup>j</sup> = r<sub>i</sub><sup>j</sup>. The value function v<sub>ϕ</sub><sup>π</sup> is optimized by minimizing the mean squared error: 
+ℒ<sub>ϕ</sub> = −𝔼<sub>(s, v) ∼ D<sub>value</sub></sub>[ ( v<sub>ϕ</sub><sup>π</sup>(s) − v )<sup>2</sup> ].
+Similar to related work, v<sub>ϕ</sub><sup>π</sup> is a LLM with an MLP layer on top to output a scalar on each token, using the scalar prediction at the last token of each state as the value.
+</p>
+<p>
+<strong>PRM</strong>
+</p>
+<p>
+The value function often struggles with credit assignment problem and its learning could be inefficient due to delayed and sparse rewards. Therefore, we propose to incorporate PRM that introduces process supervision for direct option assessment. PRM generates intrinsic rewards to encourage explorations of advantageous options, effectively mitigating issues of reward sparsity by providing immediate, action-specific rewards. Given a state s<sub>t</sub> and an option o<sub>t</sub> at time t, the PRM aims to predict the immediate reward r<sub>t</sub><sup>PRM</sup> that results from taking option o<sub>t</sub> in state s<sub>t</sub>. Formally, the PRM is a function R(s<sub>t</sub>, o<sub>t</sub>) → r<sub>t</sub><sup>PRM</sup>. While PRM ideally requires quality labels for each state, due to the high cost and time involved in obtaining these, MC estimation with prefix sampling is used as a proxy, which aligns with the objective of the value function. Instead of adding a MLP layer on top of the policy model for outputting a scalar reward, we formulate PRM as a text generation task to best leverage LLM’s intrinsic knowledge for assessing the quality of an option. We adapt the dataset constructed for the value function as D<sub>PRM</sub> = { (s<sub>it</sub>, o<sub>t</sub>, r<sub>t</sub><sup>PRM</sup>) | i ∈ [N], t ∈ [T] } where r<sub>t</sub><sup>PRM</sup> is the textual description of the reward, e.g., an option can be regarded as good if v<sub>it</sub> is larger than certain threshold. To train PRM, we initialize it from the policy model π and use prompt templates and typical language model loss.
+</p>
+<p>
+<strong>ORM</strong>
+</p>
+<p>
+In additional to the value function and PRM, ORM is also used to guide MCTS. ORM is designed to evaluate options sequences in their entirety, assessing the extent to which the complete trajectory aligns with the desired end goal. The outcome evaluation complements value function and PRM by offering a comprehensive assessment of trajectories. Crucially, ORM plays a vital role in the simulation stage of MCTS by providing more accurate signals on the terminal state, which in turn facilitates a more balance between exploration and exploitation strategies. ORM is formulated as a text generation task, similar to PRM. We leverage the same dataset for the value function training and construct D<sub>ORM</sub> = { (x<sub>i</sub>, o<sub>1:T</sub><sup>i</sup>, r<sub>i</sub><sup>ORM</sup>) | i ∈ [N] }, where each instance includes a initial state or prompt x<sub>i</sub>, a sequence of actions or options o<sub>1:T</sub><sup>i</sup> taken from that state, and a textual reward r<sub>i</sub><sup>ORM</sup> indicating the sequence’s success or quality. Similarly, ORM is initialized from the policy model π and uses prompt templates and language model loss. 
+</p>
+<p>
+The final score evaluation of a state s is a weighted sum of the value function, PRM, and ORM:
+s(s) = β<sub>value</sub>⋅v<sub>ϕ</sub><sup>π</sup>(s) + β<sub>PRM</sub>⋅PRM(s) + β<sub>ORM</sub>⋅𝔼<sub>τ ∼ π<sup>fast</sup>(s)</sub>[ORM(τ)],
+where τ ∼ π<sup>fast</sup>(s) represents trajectories starting from s under π<sup>fast</sup>, and β<sub>value</sub>, β<sub>PRM</sub>, β<sub>ORM</sub> are hyperparameters.
+</p>
+<p>
+<span style="font-weight:bold;">Policy Self-Improvement</span>
+</p>
+<p>
+The policy improvement an iterative process with each iteration containing two main steps: <em>data generation</em> and <em>policy finetuning</em>.
+</p>
+<p>
+<strong>Data generation</strong>
+</p>
+<p>
+In this step, we assume to have the current policy π<sub>θ<sub>k</sub></sub> and synthetic prompts D<sub>k</sub> = {x<sub>1</sub><sup>k</sup>, …} at the k-th round, where each x<sub>1</sub><sup>k</sup> represents a question. We obtain the corresponding training data D<sub>k</sub> for policy π<sub>θ<sub>k</sub></sub> by firstly performing <em>ηMcts</em> on D<sub>k</sub> and then sampling a trajectory y<sub>i</sub><sup>k</sup> from the corresponding tree for each question x<sub>i</sub><sup>k</sup>. Here we choose the trajectory that yield the highest critic score on the leaf node for each input question. Next, we filter out instances where the corresponding trajectory is substandard forming D<sub>k</sub> = {(x<sub>i</sub><sup>k</sup>, y<sub>i</sub><sup>k</sup>) | f(x<sub>i</sub><sup>k</sup>, y<sub>i</sub><sup>k</sup>) > γ} where f represents a function for quality scoring, and γ indicates a threshold. There can be several ways to implement the function, and here we simply use the ORM.
+</p>
+<p>
+<strong>Policy finetuning</strong>
+</p>
+<p>
+With the obtained training data D<sub>k</sub>, we organize the data into the prompt templates. Then the policy π<sub>θ<sub>k</sub></sub> is finetuned using target-loss:
+ℒ<sub>θ<sub>k</sub></sub> = 𝔼<sub>(x<sub>i</sub><sup>k</sup>, y<sub>i</sub><sup>k</sup>) ∼ D<sub>k</sub></sub>[log π<sub>θ<sub>k</sub></sub>(y<sub>i</sub><sup>k</sup> | x<sub>i</sub><sup>k</sup>)].
+We leave other training methods, such as DPO or PPO in future work.
+</p>
+
+<h1>
+Experimental setting and results
+</h1>
+<p>
+<!-- Content from # Experiments and its subsections -->
+</p>
+
+<p>
+<span style="font-weight:bold;">Experiments</span>
+</p>
+<p>
+<strong>Experiment Setups</strong>
+</p>
+<p>
+<span class="smallcaps">AlphaLLM</span> is generally applicable to a wide spectrum tasks. As an early exploration, in this paper, we conduct experiments on mathematical reasoning problems where the learning signals are clear to define i.e., final answer is correct or wrong. We choose to evaluate on two widely used datasets GSM8K and MATH. For GSM8K, we utilize the whole test set while for MATH, due to computation constraints, we utilize a subset following the same procedure of. We evaluate the performance of predicting answers correctly for policy models. In addition, we calculate the average rollouts, represented by the number of nodes in the tree, as a measure of computational efficiency. We compare the performance of <span class="smallcaps">AlphaLLM</span> with a suite of proprietary model, including OpenAI’s GPT-4 and GPT-3.5, Anthropic’s Claude-2, as well as Google’s PaLM-2 and the gemini model family. To ensure a fair and consistent evaluation, we employ CoT as our primary prompting method. Additionally, we conduct comparisons with strong open-source models, including Llama-2-70b and WizardMath-70B-V1.0.
+</p>
+<p>
+We select Llama-2-70b as the policy model for the GSM8K dataset and WizardMath-70B-V1.0 for the MATH dataset. To construct the training dataset for the value function, PRM and ORM, we generate 50 trajectories for each prompt and construct the training target following Section&nbsp;4.4. Both PRM and ORM are initialized using the weights from the policy model, while the value function uses a smaller Llama-2-13b model, as we observed no performance gains from increasing the value function model size. In the design of ORM, tool usage is not incorporated for GSM8K. However, for MATH, we enhance ORM by incorporating tools like python sympy to assess the quality of a trajectory, in a manner similar to that described by. The training employ a learning rate of 1e-6 and are trained for one epoch. For the fast rollout policy model, we opt for the Abel-002-7B model for both the GSM8K and MATH tasks for its high efficiency and superior performance. For the MCTS parameters, they are configured at different scales, as shown in Appendix&nbsp;(7.6). We set β<sub>value</sub>, β<sub>PRM</sub>, and β<sub>ORM</sub> all to 1.0.
+</p>
+<p>
+For policy self-improving (Section&nbsp;4.5), we train the policy model up to 3 epochs, setting batch size to 128, learning rate to 5×10<sup>−6</sup> and minimal learning rate to 1×10<sup>−6</sup>. Linear warm-up and decay is used with warm-up percent to be 10%. We perform early stopping based on a devset held out from the training instances. For GSM8K experiments, we perform two rounds of self-improving, synthesizing 6.4k and 7.9k prompts respectively to obtain the corresponding MCTS outputs for training. For MATH experiments, we only perform one round of self-improving due to limited computation resources, and 5.9k prompts are synthesized.
+</p>
+<p>
+The termination function for options can be either be learned or rule-based. In practice, for the GSM8K dataset, the termination condition occurs at the end of each line. This is based on the typical structure of this dataset, where each line represents a distinct step or point. For the MATH dataset, due to its complexity and the base model’s tendency to generate many “\n\n” line breaks with some less meaningful content between them, termination occurs at the end of a line if a formula pattern is detected. During inference, if “\n\n” is encountered, we perform a rule-based check for formula patterns. It terminates if a pattern is found or continues generating until the next “\n\n”.
+</p>
+
+<p>
+<strong>Results</strong>
+</p>
+
+<div>
+<span id="table-1">
+</span>
+
+
+<!-- | Model               | Decoding | #Annotation | RN | FA | SYN | GSM8K | MATH |
+|---------------------|----------|------------|----|----|-----|-------|------|
+| GPT-3.5            | Sampling | -          | -  | -  | -   | 80.8  | 35.5 |
+| GPT-4              | Sampling | -          | -  | -  | -   | 92.0  | 42.5 |
+| GPT-4 (PAL)        | Sampling | -          | -  | -  | -   | 94.2  | 51.8 |
+| Gemini 1.0 Pro     | Sampling | -          | -  | -  | -   | 77.9  | 32.6 |
+| Gemini 1.0 Ultra   | Sampling | -          | -  | -  | -   | 88.9  | 53.2 |
+| Gemini 1.5 Pro     | Sampling | -          | -  | -  | -   | 92.5  | 58.5 |
+| Claude-2           | Sampling | -          | -  | -  | -   | 85.2  | 32.5 |
+| PaLM-2 540B        | Sampling | -          | -  | -  | -   | 80.7  | 34.3 |
+| Llama-2-70b        | Greedy   | 0          | ×  | ×  | ×   | 57.8  | -    |
+| Llama-2-70b SFT    | Greedy   | 7.5k       | ✓  | ✓  | ×   | 69.3  | -    |
+| WizardMath-70B-V1.0| Greedy   | 96k        | ✓  | ✓  | ×   | -     | 20.7 |
+| <span class="smallcaps">AlphaLLM</span> & Greedy         | 7.5k/7.5k  | ×  | ✓  | ✓   | 73.7  | 23.6 |
+| <span class="smallcaps">AlphaLLM</span> & ηMcts         | 7.5k/7.5k  | ×  | ✓  | ×   | 88.9  | 48.7 |
+| <span class="smallcaps">AlphaLLM</span> & ηMcts         | 7.5k/7.5k  | ×  | ✓  | ✓   | 92.0  | 51.0 | -->
+
+
+
+<body>
+  <div id="content"></div>
+<script>
+    const markdownText = `
+| Model               | Decoding | #Annotation | RN | FA | SYN | GSM8K | MATH |
+|---------------------|----------|------------|----|----|-----|-------|------|
+| GPT-3.5            | Sampling | -          | -  | -  | -   | 80.8  | 35.5 |
+| GPT-4              | Sampling | -          | -  | -  | -   | 92.0  | 42.5 |
+| GPT-4 (PAL)        | Sampling | -          | -  | -  | -   | 94.2  | 51.8 |
+| Gemini 1.0 Pro     | Sampling | -          | -  | -  | -   | 77.9  | 32.6 |
+| Gemini 1.0 Ultra   | Sampling | -          | -  | -  | -   | 88.9  | 53.2 |
+| Gemini 1.5 Pro     | Sampling | -          | -  | -  | -   | 92.5  | 58.5 |
+| Claude-2           | Sampling | -          | -  | -  | -   | 85.2  | 32.5 |
+| PaLM-2 540B        | Sampling | -          | -  | -  | -   | 80.7  | 34.3 |
+| Llama-2-70b        | Greedy   | 0          | ×  | ×  | ×   | 57.8  | -    |
+| Llama-2-70b SFT    | Greedy   | 7.5k       | ✓  | ✓  | ×   | 69.3  | -    |
+| WizardMath-70B-V1.0| Greedy   | 96k        | ✓  | ✓  | ×   | -     | 20.7 |
+| <span class="smallcaps">AlphaLLM</span> & Greedy         | 7.5k/7.5k  | ×  | ✓  | ✓   | 73.7  | 23.6 |
+| <span class="smallcaps">AlphaLLM</span> & ηMcts         | 7.5k/7.5k  | ×  | ✓  | ×   | 88.9  | 48.7 |
+| <span class="smallcaps">AlphaLLM</span> & ηMcts         | 7.5k/7.5k  | ×  | ✓  | ✓   | 92.0  | 51.0 |
+
+
+
+    `;
+    document.getElementById('content').innerHTML = marked.parse(markdownText);
+  </script>
+</body>
+
+<p>
+Table table-1: Performance comparisons of various methods on the GSM8K and MATH datasets.
+</p>
+</div>
+
+<p>
+Table 
+<a href="#table-1">
+table-1
+</a> lists the performance comparisons of various methods on the GSM8K and MATH datasets. Our findings reveal that <span class="smallcaps">AlphaLLM</span>, based on Llama-2-70B and WizardMath-70B-V1.0, utilizes only final answer annotations and continues to improve through training on responses from ηMcts. This comparison underscores the efficacy and broad applicability of our imagination-searching-criticizing self-improving framework. Moreover, when our model is augmented with ηMcts decoding strategy, its performance markedly improves, achieving scores of 88.9 and 48.7 on the GSM8K and MATH datasets, respectively. Following two iterations of self-improvement using synthetic prompts, <span class="smallcaps">AlphaLLM</span> demonstrates performance comparable to that of GPT-4. This suggests a viable approach to improving LLMs’ capabilities in complex problem-solving tasks in a self-improving fashion, leveraging a minimal amount of labeled data. We also analyze the performance of various search methods in Appendix (7.8).
+</p>
+
+<p>
+<strong>Ablation Study</strong>
+</p>
+
+<div>
+<span id="table-2">
+</span>
+| AB  | PRM  | FR-ORM | SM   | LG-#Rollout | Acc  |
+|-----|------|--------|------|------------|------|
+| ×   | ×    | ×      | ×    | ×          | 79.5 |
+| ✓   | ×    | ×      | ×    | ×          | 84.9 |
+| ✓   | ✓    | ×      | ×    | ×          | 85.9 |
+| ✓   | ✓    | ✓      | ×    | ×          | 86.5 |
+| ✓   | ✓    | ✓      | ✓    | ×          | 87.0 |
+| ✓   | ✓    | ✓      | ✓    | ✓          | 88.9 |
+<p>
+Table table-2(a): Ablation studies on GSM8K in terms of each proposed component, with a base Llama2-70b model.
+</p>
+</div>
+
+<div>
+<span id="table-3">
+</span>
+| TA-ORM | Option | Acc  | #Rollout |
+|--------|--------|------|----------|
+| ×      | ×      | 38.8 | 201      |
+| ✓      | ×      | 44.1 | 198      |
+| ✓      | ✓      | 45.4 | 148      |
+<p>
+Table table-3(b): Ablation studies on MATH regarding option-level MCTS and tool-augmented ORM.
+</p>
+</div>
+
+<p>
+We assess the effectiveness of each component in <span class="smallcaps">AlphaLLM</span> and report the results on GSM8K in Table 
+<a href="#table-2">
+table-2
+</a>(a). Vanilla MCTS, configured with only the value function and a fixed number of children per node, achieves an accuracy of 79.5%. This serves as a reference point for evaluating the incremental benefits introduced by each additional component. The use of adaptive branching increae the accuracy to 84.9%. The addition of PRM improves the accuracy modestly to 85.9%, showing the effectivenss of process supervision for searching. A more significant improvement is observed with the introduction of ORM with fast rollout, which boosts the accuracy to 86.5%. Integrating state merging results in a further increase in accuracy, reaching 87.0%. Finally the combined of increasing the number of rollouts with the other components yields the best performance on this task.
+</p>
+<p>
+Table 
+<a href="#table-3">
+table-3
+</a>(b) presents the ablation study of option formulation and the tool-augmented critic on the MATH dataset. Our proposed ηMcts achieves an accuracy of 45.4 with 148 rollouts. When options are excluded, reverting to essentially sentence-level MCTS, the performance decreases to 44.1 with a noticeable increase in the number of rollouts to 198. This demonstrates that option formulation introduces enhanced flexibility to MCTS, enabling better performance with fewer search efforts. Furthermore, the most significant decrease in performance is observed when only intrinsic knowledge is utilized for ORM, which drops to an accuracy of 38.8. This suggests that the absence of an external tool critically impedes the ORM’s capability to effectively assess challenging math problems.
+</p>
+
+<div>
+<span id="fig:self_improving_ablations">
+</span>
+<img src="fig:self_improving_ablations.jpeg"/>
+<p>
+Figure fig:self_improving_ablations: Empirical analysis on GSM8K of different self-improving data collection methods and number of iterations. Models are evaluated with greedy decoding, ηMcts with small #rollout and large #rollout.
+</p>
+</div>
+
+<p>
+Figure 
+<a href="#fig:self_improving_ablations">
+fig:self_improving_ablations
+</a> depicts a comparative results on GSM8K of two rounds of self-improving trained on trajectories collected using reranking and ηMcts. We report the performance of greedy decoding, ηMcts with a relatively small number of rollouts (50-60), and ηMcts with a larger number of rollouts (200-300) for each model. We observe that 1) Models trained on the trajectories from reranking or ηMcts outperform the initial policy by a significant margin. In addition, the performance can be iteratively improved with training suggesting that self-improving has the potential to achieve continual performance gain. 2) While both reranking and ηMcts can generate high-quality trajectories for self-improving , ηMcts is performant with high efficiency and better accuracy. Models trained on trajectories generated by it not only exceed the performance of those trained on reranked trajectories but also, when decoded with ηMcts, demonstrate on par performance with GPT-4, revealing that <span class="smallcaps">AlphaLLM</span> is an effective self-improving framework.
+</p>
+
+<div>
+<span id="table-4">
+</span>
+| Method            | Threshold | Acc  |
+|-------------------|-----------|------|
+| Edit distance     | 20        | 86.8 |
+| Edit distance     | 50        | 87.0 |
+| Cosine Similarity | 0.7       | 86.3 |
+| Model-based       | N/A       | 86.7 |
+<p>
+Table table-4(a): Ablation studies on the choice of heuristic/model-based functions in state merge on GSM8K with base Llama2-70b. 
+</p>
+</div>
+
+<div>
+<span id="table-5">
+</span>
+| #Trajectory | Acc  |
+|------------|------|
+| 1          | 85.9 |
+| 4          | 86.5 |
+| 8          | 86.7 |
+<p>
+Table table-5(b): Ablation studies of the number of rollout trajectories in fast-rollout estimation on GSM8K with base Llama2-70b.
+</p>
+</div>
+
+<p>
+We further analyze the impact of different hyperparameters and design choices for each component. Table 
+<a href="#table-4">
+table-4
+</a>(a) shows that varying heuristic functions (with hyperparameters) for state merge has limited impact on performance. Table 
+<a href="#table-5">
+table-5
+</a>(b) shows that, as the number of fast-rollouts increases, there is a corresponding improvement in performance. This is due to the reduction in the variance of the estimates. We used n = 4 in our experiments for better trade-off between performance and efficiency. Additional ablations on the choice of fast-rollout models, are provided in Appendix (7.7).
+</p>
+
+<h1>
+Discussion and conclusion
+</h1>
+<p>
+<!-- Combined text of # Conclusion plus "Limitations and Future Work" from the Appendix -->
+</p>
+<p>
+<strong># Conclusion (from the main text)</strong>
+</p>
+<p>
+In this paper, we introduce <span class="smallcaps">AlphaLLM</span>, an imagination-searching-criticizing framework designed for the self-improvement of LLMs without the necessity of additional annotations. At the heart of it is the integration of MCTS with LLMs. To tackle the inherent challenges associated with this integration, including data scarcity, the vastness of search spaces, and the subjective nature of feedback in language tasks, we introduce a data synthesizer for strategic prompt synthesis, an optimized MCTS tailored for efficient search in language tasks, and a trio of critic models to provide precise feedback. Our experimental findings on mathematical reasoning tasks reveal that <span class="smallcaps">AlphaLLM</span> significantly boosts the performance of LLMs without requiring extra data annotations. Moreover, when decoded with ηMcts, <span class="smallcaps">AlphaLLM</span> performs comparably to GPT-4, highlighting the potential for self-improvement in LLMs.
+</p>
+
+<p>
+<strong>Limitations and Future Work (originally part of Appendix)</strong>
+</p>
+<p>
+Despite the promising results demonstrated by <span class="smallcaps">AlphaLLM</span> in this study, there are several limitations that requires further exploration. ( ) Our current implementation employs relatively simple methods for generating synthetic prompts. Future iterations of <span class="smallcaps">AlphaLLM</span> should explore advanced techniques, such as Self-Instruct, to create both diverse and model capability-awared prompts. ( ) Although <span class="smallcaps">AlphaLLM</span> demonstrates improvements over base models, its performance in greedy sampling is substantially inferior to that observed when decoded with ηMcts. This indicates that the full potential of MCTS for self-improvement in LLMs has not yet been fully realized. Two potential factors contributing to this issue have been identified: a) the self-improvement loop may not be leveraging sufficient data; and b) the base model may be limited in its capacity for rapid learning. Addressing these concerns could lead to more significant improvemens. ( ) In our existing framework, the critic models remain static. We will explore mechanisms to continually update critic models to adapt to new policy models. This will help ensure the discriminator-generator gap and improve the overall training dynamics. ( ) The evaluation of <span class="smallcaps">AlphaLLM</span> has been limited to mathematical reasoning tasks. To verify the generalizability and broader applicability of the framework, future research will need to extend its application to other domains.
+</p>
+
+<h1>
+Bibliography
+</h1>
+
+<!-- Reformat the references into the required style -->
+<span id="abel-2018">
+</span>
+<ul>
+<li> first-author: David Abel
+<li> title: State abstractions for lifelong reinforcement learning
+<li> year: 2018
+</ul>
+
+<span id="auer-2002">
+</span>
+<ul>
+<li> first-author: Peter Auer
+<li> title: Finite-time analysis of the multiarmed bandit problem
+<li> year: 2002
+</ul>
+
+<span id="bai-2022">
+</span>
+<ul>
+<li> first-author: Yuntao Bai
+<li> title: Constitutional ai: Harmlessness from ai feedback
+<li> year: 2022
+</ul>
+
+<span id="besta-2024">
+</span>
+<ul>
+<li> first-author: Maciej Besta
+<li> title: Graph of thoughts: Solving elaborate problems with large language models
+<li> year: 2024
+</ul>
+
+<span id="bowman-2022">
+</span>
+<ul>
+<li> first-author: Samuel R Bowman
+<li> title: Measuring progress on scalable oversight for large language models
+<li> year: 2022
+</ul>
+
+<span id="chen-2024">
+</span>
+<ul>
+<li> first-author: Zixiang Chen
+<li> title: Self-play fine-tuning converts weak language models to strong language models
+<li> year: 2024
+</ul>
+
+<span id="chentanez-2004">
+</span>
+<ul>
+<li> first-author: Nuttapong Chentanez
+<li> title: Intrinsically motivated reinforcement learning
+<li> year: 2004
+</ul>
+
+<span id="chern-2023">
+</span>
+<ul>
+<li> first-author: Ethan Chern
+<li> title: Generative ai for math: Abel
+<li> year: 2023
+</ul>
+
+<span id="chung-2022">
+</span>
+<ul>
+<li> first-author: Hyung Won Chung
+<li> title: Scaling instruction-finetuned language models
+<li> year: 2022
+</ul>
+
+<span id="clouse-1996">
+</span>
+<ul>
+<li> first-author: Jeffery Allen Clouse
+<li> title: On integrating apprentice learning and reinforcement learning
+<li> year: 1996
+</ul>
+
+<span id="cobbe-2021">
+</span>
+<ul>
+<li> first-author: Karl Cobbe
+<li> title: Training verifiers to solve math word problems
+<li> year: 2021
+</ul>
+
+<span id="de-waard-2016">
+</span>
+<ul>
+<li> first-author: Maarten De Waard
+<li> title: Monte carlo tree search with options for general video game playing
+<li> year: 2016
+</ul>
+
+<span id="ding-2023">
+</span>
+<ul>
+<li> first-author: Ruomeng Ding
+<li> title: Everything of thoughts: Defying the law of penrose triangle for thought generation
+<li> year: 2023
+</ul>
+
+<span id="feng-2023">
+</span>
+<ul>
+<li> first-author: Xidong Feng
+<li> title: Alphazero-like tree-search can guide large language model decoding and training
+<li> year: 2023
+</ul>
+
+<span id="fu-2024">
+</span>
+<ul>
+<li> first-author: Yangqing Fu
+<li> title: Accelerating monte carlo tree search with probability tree state abstraction
+<li> year: 2024
+</ul>
+
+<span id="gou-2023">
+</span>
+<ul>
+<li> first-author: Zhibin Gou
+<li> title: Tora: A tool-integrated reasoning agent for mathematical problem solving
+<li> year: 2023
+</ul>
+
+<span id="guo-2024">
+</span>
+<ul>
+<li> first-author: Hongyi Guo
+<li> title: Human-instruction-free llm self-alignment with limited samples
+<li> year: 2024
+</ul>
+
+<span id="hao-2023">
+</span>
+<ul>
+<li> first-author: Shibo Hao
+<li> title: Reasoning with language model is planning with world model
+<li> year: 2023
+</ul>
+
+<span id="hendrycks-2021">
+</span>
+<ul>
+<li> first-author: Dan Hendrycks
+<li> title: Measuring mathematical problem solving with the math dataset
+<li> year: 2021
+</ul>
+
+<span id="hong-2023">
+</span>
+<ul>
+<li> first-author: Ruixin Hong
+<li> title: A closer look at the self-verification abilities of large language models in logical reasoning
+<li> year: 2023
+</ul>
+
+<span id="huang-2023">
+</span>
+<ul>
+<li> first-author: Jie Huang
+<li> title: Large language models cannot self-correct reasoning yet
+<li> year: 2023
+</ul>
+
+<span id="lewkowycz-2022">
+</span>
+<ul>
+<li> first-author: Aitor Lewkowycz
+<li> title: Solving quantitative reasoning problems with language models
+<li> year: 2022
+</ul>
+
+<span id="li-2023">
+</span>
+<ul>
+<li> first-author: Xian Li
+<li> title: Self-alignment with instruction backtranslation
+<li> year: 2023
+</ul>
+
+<span id="lightman-2023">
+</span>
+<ul>
+<li> first-author: Hunter Lightman
+<li> title: Let’s verify step by step
+<li> year: 2023
+</ul>
+
+<span id="liu-2023">
+</span>
+<ul>
+<li> first-author: Jiacheng Liu
+<li> title: Making ppo even better: Value-guided monte-carlo tree search decoding
+<li> year: 2023
+</ul>
+
+<span id="long-2023">
+</span>
+<ul>
+<li> first-author: Jieyi Long
+<li> title: Large language model guided tree-of-thought
+<li> year: 2023
+</ul>
+
+<span id="luketina-2019">
+</span>
+<ul>
+<li> first-author: Jelena Luketina
+<li> title: A survey of reinforcement learning informed by natural language
+<li> year: 2019
+</ul>
+
+<span id="luo-2023">
+</span>
+<ul>
+<li> first-author: Haipeng Luo
+<li> title: Wizardmath: Empowering mathematical reasoning for large language models via reinforced evol-instruct
+<li> year: 2023
+</ul>
+
+<span id="madaan-2024">
+</span>
+<ul>
+<li> first-author: Aman Madaan
+<li> title: Self-refine: Iterative refinement with self-feedback
+<li> year: 2024
+</ul>
+
+<span id="nye-2021">
+</span>
+<ul>
+<li> first-author: Maxwell Nye
+<li> title: Show your work: Scratchpads for intermediate computation with language models
+<li> year: 2021
+</ul>
+
+<span id="openai-2023">
+</span>
+<ul>
+<li> first-author: R OpenAI
+<li> title: Gpt-4 technical report
+<li> year: 2023
+</ul>
+
+<span id="ouyang-2022">
+</span>
+<ul>
+<li> first-author: Long Ouyang
+<li> title: Training language models to follow instructions with human feedback
+<li> year: 2022
+</ul>
+
+<span id="peng-2017">
+</span>
+<ul>
+<li> first-author: Baolin Peng
+<li> title: Composite task-completion dialogue policy learning via hierarchical deep reinforcement learning
+<li> year: 2017
+</ul>
+
+<span id="rafailov-2023">
+</span>
+<ul>
+<li> first-author: Rafael Rafailov
+<li> title: Direct preference optimization: Your language model is secretly a reward model
+<li> year: 2023
+</ul>
+
+<span id="ramamurthy-2022">
+</span>
+<ul>
+<li> first-author: Rajkumar Ramamurthy
+<li> title: Is reinforcement learning (not) for natural language processing?: Benchmarks, baselines, and building blocks for natural language policy optimization
+<li> year: 2022
+</ul>
+
+<span id="saunders-2022">
+</span>
+<ul>
+<li> first-author: William Saunders
+<li> title: Self-critiquing models for assisting human evaluators
+<li> year: 2022
+</ul>
+
+<span id="schulman-2017">
+</span>
+<ul>
+<li> first-author: John Schulman
+<li> title: Proximal policy optimization algorithms
+<li> year: 2017
+</ul>
+
+<span id="silver-2016">
+</span>
+<ul>
+<li> first-author: David Silver
+<li> title: Mastering the game of go with deep neural networks and tree search
+<li> year: 2016
+</ul>
+
+<span id="silver-2017">
+</span>
+<ul>
+<li> first-author: David Silver
+<li> title: Mastering chess and shogi by self-play with a general reinforcement learning algorithm
+<li> year: 2017
+</ul>
+
+<span id="stechly-2024">
+</span>
+<ul>
+<li> first-author: Kaya Stechly
+<li> title: On the self-verification limitations of large language models on reasoning and planning tasks
+<li> year: 2024
+</ul>
+
+<span id="sun-2023">
+</span>
+<ul>
+<li> first-author: Zhiqing Sun
+<li> title: Principle-driven self-alignment of language models from scratch with minimal human supervision
+<li> year: 2023
+</ul>
+
+<span id="sutton-2018">
+</span>
+<ul>
+<li> first-author: Richard S Sutton
+<li> title: Reinforcement learning: An introduction
+<li> year: 2018
+</ul>
+
+<span id="sutton-1999">
+</span>
+<ul>
+<li> first-author: Richard S Sutton
+<li> title: Between mdps and semi-mdps: A framework for temporal abstraction in reinforcement learning
+<li> year: 1999
+</ul>
+
+<span id="sutton-1984">
+</span>
+<ul>
+<li> first-author: Richard Stuart Sutton
+<li> title: Temporal credit assignment in reinforcement learning
+<li> year: 1984
+</ul>
+
+<span id="taylor-2014">
+</span>
+<ul>
+<li> first-author: Matthew E Taylor
+<li> title: Reinforcement learning agents providing advice in complex video games
+<li> year: 2014
+</ul>
+
+<span id="team-2023">
+</span>
+<ul>
+<li> first-author: Gemini Team
+<li> title: Gemini: a family of highly capable multimodal models
+<li> year: 2023
+</ul>
+
+<span id="touvron-2023">
+</span>
+<ul>
+<li> first-author: Hugo Touvron
+<li> title: Llama 2: Open foundation and fine-tuned chat models
+<li> year: 2023
+</ul>
+
+<span id="uesato-2022">
+</span>
+<ul>
+<li> first-author: Jonathan Uesato
+<li> title: Solving math word problems with process-and outcome-based feedback
+<li> year: 2022
+</ul>
+
+<span id="valmeekam-2022">
+</span>
+<ul>
+<li> first-author: Karthik Valmeekam
+<li> title: Large language models still can’t plan (a benchmark for llms on planning and reasoning about change)
+<li> year: 2022
+</ul>
+
+<span id="van-eyck-2012">
+</span>
+<ul>
+<li> first-author: Gabriel Van Eyck
+<li> title: Revisiting move groups in monte-carlo tree search
+<li> year: 2012
+</ul>
+
+<span id="wang-2023">
+</span>
+<ul>
+<li> first-author: Peiyi Wang
+<li> title: Math-shepherd: Verify and reinforce llms step-by-step without human annotations
+<li> year: 2023
+</ul>
+
+<span id="wang-2022">
+</span>
+<ul>
+<li> first-author: Yizhong Wang
+<li> title: Self-instruct: Aligning language model with self generated instructions
+<li> year: 2022
+</ul>
+
+<span id="wei-2022">
+</span>
+<ul>
+<li> first-author: Jason Wei
+<li> title: Chain-of-thought prompting elicits reasoning in large language models
+<li> year: 2022
+</ul>
+
+<span id="xie-2024">
+</span>
+<ul>
+<li> first-author: Yuxi Xie
+<li> title: Self-evaluation guided beam search for reasoning
+<li> year: 2024
+</ul>
+
+<span id="xu-2023">
+</span>
+<ul>
+<li> first-author: Can Xu
+<li> title: Wizardlm: Empowering large language models to follow complex instructions
+<li> year: 2023
+</ul>
+
+<span id="yao-2024">
+</span>
+<ul>
+<li> first-author: Shunyu Yao
+<li> title: Tree of thoughts: Deliberate problem solving with large language models
+<li> year: 2024
+</ul>
+
+<span id="yu-2023">
+</span>
+<ul>
+<li> first-author: Longhui Yu
+<li> title: Metamath: Bootstrap your own mathematical questions for large language models
+<li> year: 2023
+</ul>
+
+<span id="yuan-2024">
+</span>
+<ul>
+<li> first-author: Lifan Yuan
+<li> title: Advancing llm reasoning generalists with preference trees
+<li> year: 2024
+</ul>
+
+<span id="yuanw-2024">
+</span>
+<ul>
+<li> first-author: Weizhe Yuan
+<li> title: Self-rewarding language models
+<li> year: 2024
+</ul>
+
+<span id="zelikman-2022">
+</span>
+<ul>
+<li> first-author: Eric Zelikman
+<li> title: Star: Bootstrapping reasoning with reasoning
+<li> year: 2022
+</ul>
+
+<span id="zelikman-2024">
+</span>
+<ul>
+<li> first-author: Eric Zelikman
+<li> title: Quiet-star: Language models can teach themselves to think before speaking
+<li> year: 2024
+</ul>
+
+<span id="zhu-2024">
+</span>
+<ul>
+<li> first-author: Tinghui Zhu
+<li> title: Deductive beam search: Decoding deducible rationale for chain-of-thought reasoning
+<li> year: 2024
+</ul>
+
+<h1>
+Checklist
+</h1>
+<p>
+<!-- Verbatim text of the NeurIPS Paper Checklist -->
+</p>
+<p>
+1.  <strong>Claims</strong>
+</p>
+<p>
+2.  Question: Do the main claims made in the abstract and introduction accurately reflect the paper’s contributions and scope?
+</p>
+<p>
+3.  Answer:
+</p>
+<p>
+4.  Justification: Yes the claims are accurately made.
+</p>
+<p>
+5.  Guidelines:
+</p>
+<p>
+    -   The answer NA means that the abstract and introduction do not include the claims made in the paper.
+    -   The abstract and/or introduction should clearly state the claims made, including the contributions made in the paper and important assumptions and limitations. A No or NA answer to this question will not be perceived well by the reviewers.
+    -   The claims made should match theoretical and experimental results, and reflect how much the results can be expected to generalize to other settings.
+    -   It is fine to include aspirational goals as motivation as long as it is clear that these goals are not attained by the paper.
+</p>
+<p>
+6.  <strong>Limitations</strong>
+</p>
+<p>
+7.  Question: Does the paper discuss the limitations of the work performed by the authors?
+</p>
+<p>
+8.  Answer:
+</p>
+<p>
+9.  Justification: Yes we discussed the limitations in Appendix.
+</p>
+<p>
+10. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper.
+    -   The authors are encouraged to create a separate "Limitations" section in their paper.
+    -   The paper should point out any strong assumptions and how robust the results are to violations of these assumptions (e.g., independence assumptions, noiseless settings, model well-specification, asymptotic approximations only holding locally). The authors should reflect on how these assumptions might be violated in practice and what the implications would be.
+    -   The authors should reflect on the scope of the claims made, e.g., if the approach was only tested on a few datasets or with a few runs. In general, empirical results often depend on implicit assumptions, which should be articulated.
+    -   The authors should reflect on the factors that influence the performance of the approach. For example, a facial recognition algorithm may perform poorly when image resolution is low or images are taken in low lighting. Or a speech-to-text system might not be used reliably to provide closed captions for online lectures because it fails to handle technical jargon.
+    -   The authors should discuss the computational efficiency of the proposed algorithms and how they scale with dataset size.
+    -   If applicable, the authors should discuss possible limitations of their approach to address problems of privacy and fairness.
+    -   While the authors might fear that complete honesty about limitations might be used by reviewers as grounds for rejection, a worse outcome might be that reviewers discover limitations that aren’t acknowledged in the paper. The authors should use their best judgment and recognize that individual actions in favor of transparency play an important role in developing norms that preserve the integrity of the community. Reviewers will be specifically instructed to not penalize honesty concerning limitations.
+</p>
+<p>
+11. <strong>Theory Assumptions and Proofs</strong>
+</p>
+<p>
+12. Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
+</p>
+<p>
+13. Answer:
+</p>
+<p>
+14. Justification: We provide the assumptions and proofs for the Theorem 4.1. and other theoretical results.
+</p>
+<p>
+15. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not include theoretical results.
+    -   All the theorems, formulas, and proofs in the paper should be numbered and cross-referenced.
+    -   All assumptions should be clearly stated or referenced in the statement of any theorems.
+    -   The proofs can either appear in the main paper or the supplemental material, but if they appear in the supplemental material, the authors are encouraged to provide a short proof sketch to provide intuition.
+    -   Inversely, any informal proof provided in the core of the paper should be complemented by formal proofs provided in appendix or supplemental material.
+    -   Theorems and Lemmas that the proof relies upon should be properly referenced.
+</p>
+<p>
+16. <strong>Experimental Result Reproducibility</strong>
+</p>
+<p>
+17. Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
+</p>
+<p>
+18. Answer:
+</p>
+<p>
+19. Justification: We provided the hyoerparameters to reproduce the results.
+</p>
+<p>
+20. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not include experiments.
+    -   If the paper includes experiments, a No answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
+    -   If the contribution is a dataset and/or model, the authors should describe the steps taken to make their results reproducible or verifiable.
+    -   Depending on the contribution, reproducibility can be accomplished in various ways. For example, if the contribution is a novel architecture, describing the architecture fully might suffice, or if the contribution is a specific model and empirical evaluation, it may be necessary to either make it possible for others to replicate the model with the same dataset, or provide access to the model. In general. releasing code and data is often one good way to accomplish this, but reproducibility can also be provided via detailed instructions for how to replicate the results, access to a hosted model (e.g., in the case of a large language model), releasing of a model checkpoint, or other means that are appropriate to the research performed.
+    -   While NeurIPS does not require releasing code, the conference does require all submissions to provide some reasonable avenue for reproducibility, which may depend on the nature of the contribution. For example:
+        1.  If the contribution is primarily a new algorithm, the paper should make it clear how to reproduce that algorithm.
+        2.  If the contribution is primarily a new model architecture, the paper should describe the architecture clearly and fully.
+        3.  If the contribution is a new model (e.g., a large language model), then there should either be a way to access this model for reproducing the results or a way to reproduce the model (e.g., with an open-source dataset or instructions for how to construct the dataset).
+        4.  We recognize that reproducibility may be tricky in some cases, in which case authors are welcome to describe the particular way they provide for reproducibility. In the case of closed-source models, it may be that access to the model is limited in some way (e.g., to registered users), but it should be possible for other researchers to have some path to reproducing or verifying the results.
+</p>
+<p>
+21. <strong>Open access to data and code</strong>
+</p>
+<p>
+22. Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+</p>
+<p>
+23. Answer:
+</p>
+<p>
+24. Justification: The code is available at https://github.com/YeTianJHU/AlphaLLM.
+</p>
+<p>
+25. Guidelines:
+</p>
+<p>
+    -   The answer NA means that paper does not include experiments requiring code.
+    -   Please see the NeurIPS code and data submission guidelines for more details.
+    -   While we encourage the release of code and data, we understand that this might not be possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not including code, unless this is central to the contribution (e.g., for a new open-source benchmark).
+    -   The instructions should contain the exact command and environment needed to run to reproduce the results. 
+    -   The authors should provide instructions on data access and preparation, including how to access the raw data, preprocessed data, intermediate data, and generated data, etc.
+    -   The authors should provide scripts to reproduce all experimental results for the new proposed method and baselines. If only a subset of experiments are reproducible, they should state which ones are omitted from the script and why.
+    -   At submission time, to preserve anonymity, the authors should release anonymized versions (if applicable).
+    -   Providing as much information as possible in supplemental material (appended to the paper) is recommended, but including URLs to data and code is permitted.
+</p>
+<p>
+26. <strong>Experimental Setting/Details</strong>
+</p>
+<p>
+27. Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
+</p>
+<p>
+28. Answer:
+</p>
+<p>
+29. Justification: Yes training and test details are mentioned.
+</p>
+<p>
+30. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not include experiments.
+    -   The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
+    -   The full details can be provided either with the code, in appendix, or as supplemental material.
+</p>
+<p>
+31. <strong>Experiment Statistical Significance</strong>
+</p>
+<p>
+32. Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+</p>
+<p>
+33. Answer:
+</p>
+<p>
+34. Justification: Error bars are not included in our experiment results due to the high computational cost.
+</p>
+<p>
+35. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not include experiments.
+    -   The authors should answer "Yes" if the results are accompanied by error bars, confidence intervals, or statistical significance tests.
+    -   The method for calculating the error bars should be explained.
+</p>
+<p>
+36. <strong>Experiments Compute Resources</strong>
+</p>
+<p>
+37. Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
+</p>
+<p>
+38. Answer:
+</p>
+<p>
+39. Justification: We provide the information of the compute resources we used in the Appendix.
+</p>
+<p>
+40. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not include experiments.
+    -   The paper should indicate the type of compute workers CPU or GPU, internal cluster, or cloud provider, including relevant memory and storage.
+    -   The paper should provide the amount of compute required for each of the individual experimental runs as well as estimate the total compute.
+</p>
+<p>
+41. <strong>Code Of Ethics</strong>
+</p>
+<p>
+42. Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics?
+</p>
+<p>
+43. Answer:
+</p>
+<p>
+44. Justification: Yes the research conform NeurIPS Code of Ethics.
+</p>
+<p>
+45. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
+    -   If the authors answer No, they should explain the special circumstances that require a deviation from the Code of Ethics.
+</p>
+<p>
+46. <strong>Broader Impacts</strong>
+</p>
+<p>
+47. Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+</p>
+<p>
+48. Answer:
+</p>
+<p>
+49. Justification: This work primarily focuses on foundational research in algorithm improvement and, as such, does not have a direct societal impact.
+</p>
+<p>
+50. Guidelines:
+</p>
+<p>
+    -   The answer NA means that there is no societal impact of the work performed.
+</p>
+<p>
+51. <strong>Safeguards</strong>
+</p>
+<p>
+52. Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
+</p>
+<p>
+53. Answer:
+</p>
+<p>
+54. Justification: The paper has no such risks.
+</p>
+<p>
+55. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper poses no such risks.
+</p>
+<p>
+56. <strong>Licenses for existing assets</strong>
+</p>
+<p>
+57. Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
+</p>
+<p>
+58. Answer:
+</p>
+<p>
+59. Justification: The datasets and models used in this paper are properly cited.
+</p>
+<p>
+60. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not use existing assets.
+</p>
+<p>
+61. <strong>New Assets</strong>
+</p>
+<p>
+62. Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
+</p>
+<p>
+63. Answer:
+</p>
+<p>
+64. Justification: We didn’t release new assets.
+</p>
+<p>
+65. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not release new assets.
+</p>
+<p>
+66. <strong>Crowdsourcing and Research with Human Subjects</strong>
+</p>
+<p>
+67. Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)?
+</p>
+<p>
+68. Answer:
+</p>
+<p>
+69. Justification: This paper does not involve crowdsourcing nor research with human subjects.
+</p>
+<p>
+70. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+</p>
+<p>
+71. <strong>Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects</strong>
+</p>
+<p>
+72. Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
+</p>
+<p>
+73. Answer:
+</p>
+<p>
+74. Justification: This paper does not involve crowdsourcing nor research with human subjects.
+</p>
+<p>
+75. Guidelines:
+</p>
+<p>
+    -   The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+</p>
+
+<h1>
+Appendices
+</h1>
+<p>
+<!-- Verbatim text of other appendices (excluding the limitations section, which was moved to Discussion and Conclusion) -->
+</p>
+<p>
+<strong># Appendix</strong>
+</p>
+<p>
+<span style="font-weight:bold;">Imagination, Searching, Criticizing and Learning Loop</span>
+</p>
+<p>
+<strong>Input</strong> Initial dataset D<sup>0</sup> = {(x<sub>i</sub><sup>0</sup>, y<sub>i</sub><sup>0</sup>) | i ∈ [N]}, policy model π<sub>θ</sub><sup>0</sup>, reward model R, number of self-improving training loop K
+</p>
+<p>
+<strong>Output</strong> θ<sup>k</sup>
+</p>
+<p>
+<span id="algo:self_improving">
+</span>
+Algorithm [algo:self_improving].
+</p>
+<p>
+The algorithm is shown in Algorithm [algo:self_improving].
+</p>
+<p>
+<span style="font-weight:bold;">Option-level MCTS</span>
+</p>
+
+<div>
+<span id="fig:emcts">
+</span>
+<img src="fig:emcts.jpeg"/>
+<p>
+Figure fig:emcts: An overview of the four operations of ηMcts. A node is selected, expanded, simulated with fast rollout policy until a terminal node is reached, then the signals from value function, PRM and ORM are backpropagated.
+</p>
+</div>
+
+<p>
+As illustrated in Figure 
+<a href="#fig:emcts">
+fig:emcts
+</a>, option-level MCTS consists of the following operations:
+</p>
+<p>
+-   <strong>Selection</strong> Starting from the root node, we iteratively select the child node based on Equation [eqs:ucb].
+</p>
+<p>
+-   <strong>Expansion</strong> Once an expandable leaf node is selected, a new node is generated by starting with the previous state of the parent node as the initial option state. The option is then sampled using the policy π, and its completion is determined by the termination function β.
+</p>
+<p>
+-   <strong>Simulation</strong> The scaled reward of the newly expanded node, as well as some simulated future trajectories are evaluated using the feedback functions, which is discussed in §4.4.
+</p>
+<p>
+-   <strong>Backpropagation</strong> The average value of the newly generated node and all its ancestors is updated using the scaled reward from the evaluation step. Meanwhile, the visit counts for these nodes are also increased by one.
+</p>
+
+<p>
+<span style="font-weight:bold;">Importance-Based Adaptive Branching Under Uniform Distribution</span>
+</p>
+<p>
+Let V = {v<sub>ϕ</sub><sup>π</sup>(s<sub>t</sub>, o<sub>t</sub><sup>1</sup>), …, v<sub>ϕ</sub><sup>π</sup>(s<sub>t</sub>, o<sub>t</sub><sup>m<sub>t</sub></sup>)} be a set of m<sub>t</sub> values that are uniformly distributed. If the maximum and minimum values from V are v<sub>max</sub> and v<sub>min</sub>, the average gap is (v<sub>max</sub>−v<sub>min</sub>)/(m<sub>t</sub>−1). The upper bound of expected minimum distances from a new value v<sub>new</sub> to any value from V is (v<sub>max</sub>−v<sub>min</sub>)/(2(m<sub>t</sub>−1)).
+</p>
+<p>
+Since v<sub>max</sub> − v<sub>min</sub> = 2I(s<sub>t</sub>) for a uniform distribution, we can conclude E<sub>ϕ</sub>(t) ≤ I(s<sub>t</sub>)/(m<sub>t</sub>−1).
+</p>
+<p>
+<strong>Theorem 2</strong>. The optimal branching factor m<sub>t</sub> in a tree search is set such that m<sub>t</sub>−1 is proportional to the node importance I(s<sub>t</sub>), under the condition I(s<sub>t</sub>)/(m<sub>t</sub>−1) ≤ ϵ.
+</p>
+<p>
+Proof details are given in the text.
+</p>
+
+<p>
+<span style="font-weight:bold;">Importance-Based Adaptive Branching Under Gaussian Distribution</span>
+</p>
+<p>
+If we assume that v<sub>ϕ</sub><sup>π</sup>([s<sub>t</sub>, o<sub>t</sub><sup>j</sup>]) and v<sub>ϕ</sub><sup>π</sup>([s<sub>t</sub>, o<sub>t</sub><sup>i</sup>]) are i.i.d. Gaussian random variables with mean μ and variance 2σ<sup>2</sup>, a detailed derivation is provided in the original text. 
+</p>
+
+<p>
+<span style="font-weight:bold;">Prompt Templates</span>
+</p>
+<p>
+<strong>PRM</strong><br/>
+“###You are given a math problem ... ”
+</p>
+<p>
+<strong>ORM</strong><br/>
+“###Assess a solution including final answer ... ”
+</p>
+<p>
+<strong>Policy Finetuning</strong><br/>
+For MATH experiments that take a WizardMath V1.0 70B as the policy, we adopt their proposed system prompt for self-improving. For GSM8K experiments taking Llama2 70B pretrain as the policy, we use a system prompt. 
+</p>
+
+<p>
+<span style="font-weight:bold;">MCTS Details</span>
+</p>
+<p>
+We set the MCTS parameters in table with c=..., as described in the main text.
+</p>
+
+<p>
+<span style="font-weight:bold;">Additional Ablations</span>
+</p>
+<p>
+<strong>Fast-rollout model</strong><br/>
+Using Llama-2-70b instead of Abel-7B-002 is discussed in the main text.
+</p>
+
+<div>
+<span id="table-6">
+</span>
+| Method       | #Rollouts | Accuracy |
+|--------------|----------|----------|
+| Greedy       | 1        | 57.8     |
+| Rerank       | 10       | 67.4     |
+| Rerank       | 30       | 74.2     |
+| Rerank       | 50       | 75.4     |
+| ...          | ...      | ...      |
+<p>
+Table table-6: Comparison of various search or reranking methods on GSM8K and MATH with different rollouts.
+</p>
+</div>
+
+<p>
+<span style="font-weight:bold;">Rollout Example</span>
+</p>
+<p>
+A short example from GSM8K is given, illustrating states and fast-rollout paths. 
+</p>
+
+<p>
+<span style="font-weight:bold;">Critic Performance</span>
+</p>
+<p>
+We evaluated the performance of the value function and PRM on the GSM8K test set. The results indicate that the value function achieves higher precision and better calibration, while PRM demonstrates a superior recall.
+</p>
+
+<p>
+<span style="font-weight:bold;">Compute Resources</span>
+</p>
+<p>
+Our experiments were conducted using NVIDIA A100 40GB GPUs. Serving models based on Llama-2-70B or WizardMath-70B required 4 GPUs, while serving Llama-2-7B and Abel-002-7B was possible on a single GPU. Training the 70B models required 64 GPUs.
+</p>
+
+<script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script> 
+

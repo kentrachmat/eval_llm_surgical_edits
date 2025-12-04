@@ -1,0 +1,232 @@
+\subsection{Details about model and learning}
+\label{appen:model}
+
+Given a trajectory $\tau$, $z \in \mathbb{R}^d$ is the latent vector to represent the variable-length trajectory. $y \in \mathbb{R}$ is the return of the trajectory. With offline training trajectory-return pairs $\{(\tau_i, y_i), i = 1, ..., n\}$. The log-likelihood function is $L( \theta) = \sum_{i=1}^{n} \log p_\theta(\tau_i, y_i)$, with learning gradient $\nabla_\theta L( \theta) = \sum_{i=1}^{n} \nabla_\theta \log p_\theta(\tau_i, y_i)$. We derive the form of $\nabla_\theta \log p_\theta(\tau_i, y_i)$, proving \cref{eq:grad}
+ below, dropping index subscript $_i$ for simplicity.
+\begin{align*} \nabla_\theta \log p_\theta(\tau, y) &= \frac{\nabla_\theta p_\theta(\tau, y)}{p_\theta(\tau, y)} \\ &= \frac{1}{p_\theta(\tau, y)} \int \nabla_\theta p_\theta(\tau, y, z=U_\alpha(z_0)) dz_0 
+\\ &= \int \frac{p_\theta(\tau, y, z=U_\alpha(z_0))}{p_\theta(\tau, y)} \nabla_\theta \log p_\theta(\tau, y, z=U_\alpha(z_0)) dz_0 
+\\ &= \int p_\theta(z_0 | \tau, y) \nabla_\theta \log p_\theta(\tau, y, z=U_\alpha(z_0)) dz_0 
+\\ &= \E_{p_\theta(z_0|\tau, y)} \left[ \nabla_\theta \log p_\theta(\tau, y, z=U_\alpha(z_0)) \right] 
+\\ &= \E_{p_\theta(z_0|\tau, y)} \left[ \nabla_\theta \log p_\beta(\tau|U_\alpha(z_0)) + \nabla_\theta \log p_\gamma(y|U_\alpha(z_0)) + \nabla_\theta \log p_0(z_0) \right] 
+\\ &= \E_{p_\theta(z_0|\tau, y)} \left[ \nabla_\theta \log p_\beta(\tau|U_\alpha(z_0)) + \nabla_\theta \log p_\gamma(y|U_\alpha(z_0)) \right]. 
+\end{align*}
+
+
+
+\subsection{Training details}
+\label{appen:training}
+For Gym-Mujoco offline training, as shown in Table ~\ref{table:gym-train}, most of the hyperparameters were shared across all tasks except context length and hidden size. However, due to the significant variations in the scale of the maze maps and the lengths of the trajectories within the Maze2D environments—spanning umaze, medium, and large categories—model sizes were adjusted accordingly to accommodate these differences, where the detailed setting can be found in Table ~\ref{table:maze2d-train}. We also show the parameters for Franka Kitchen environment in Table ~\ref{table:kitchen-train} and Connect Four in Table ~\ref{table:connect4-train}. 
+
+Training time for the Gym-Mujoco tasks using a single Nvidia A6000 GPU is 18 hours on average. We train Maze2d tasks using a single Nvidia A100 GPU using 30 hours on average. Kitchen tasks using a single Nvidia A6000 GPU takes 60 hours on average. Connect-4 on a single Nvidia A6000 GPU takes 10 hours. 
+
+\begin{table}[H]
+\centering
+\caption{Gym-Mujoco Environments LPT Model Parameters}
+%\resizebox{0.65\linewidth}{!}{%
+\centering
+\begin{tabular}{lcccc}
+\toprule
+{Parameter}  &\multicolumn{1}{c}{HalfCheetah} & \multicolumn{1}{c}{Walker2D} &\multicolumn{1}{c}{Hopper}&\multicolumn{1}{c}{AntMaze}\\
+\midrule
+Number of layers            & 3     & 3     & 3     & 3     \\
+Number of attention heads   & 1     &1      &1      & 1     \\
+Embedding dimension         &128    &128    &128    & 192     \\
+Context length              &32     &64     &64     & 64     \\
+Learning rate               &1e-4   &1e-4   &1e-4   & 1e-3     \\
+Langevin step size          &0.3    &0.3    &0.3    & 0.3     \\
+Nonlinearity function       &ReLU   &ReLU   &ReLU   & ReLU     \\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+\label{table:gym-train}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{Maze2D Environments LPT Model Parameters}
+%\resizebox{0.48\linewidth}{!}{%
+\centering
+\begin{tabular}{lccc}
+\toprule
+{Parameter}  &\multicolumn{1}{c}{Umaze} & \multicolumn{1}{c}{Medium} &\multicolumn{1}{c}{Large}\\
+\midrule
+Number of layers            & 1     & 3     & 4     \\
+Number of attention heads   & 8     & 1      &4      \\
+Embedding dimension         &128    &192    &192    \\
+Context length              &32     &64     &64     \\
+Learning rate               &1e-3   &1e-3   &2e-4   \\
+Langevin step size          &0.3    &0.3    &0.3    \\
+Nonlinearity function       &ReLU   &ReLU   &ReLU   \\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+\label{table:maze2d-train}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Franka Kitchen Environments LPT Model Parameters}
+%\resizebox{0.4\linewidth}{!}{%
+\centering
+\begin{tabular}{lcc}
+\toprule
+{Parameter}  &\multicolumn{1}{c}{Mixed} & \multicolumn{1}{c}{Partial}\\
+\midrule
+Number of layers            &4     &3      \\
+Number of attention heads   &4     &16      \\
+Embedding dimension         &128    &128     \\
+Context length              &16     &16      \\
+Learning rate               &1e-3   &1e-3    \\
+Langevin step size          &0.3    &0.3     \\
+Nonlinearity function       &ReLU   &ReLU    \\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+\label{table:kitchen-train}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{Connect 4 LPT Model Parameters}
+%\resizebox{0.33\linewidth}{!}{%
+\centering
+\begin{tabular}{lccc}
+\toprule
+{Parameter}  &\multicolumn{1}{c}{Value} \\
+\midrule
+Number of layers            & 3     \\
+Number of attention heads   & 4     \\
+Embedding dimension         &128    \\
+Context length              &4     \\
+Learning rate               &1e-3   \\
+Langevin step size          &0.3    \\
+Nonlinearity function       &ReLU   \\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+\label{table:connect4-train}
+\end{table}
+
+
+
+
+
+\subsection{Discussion on data quality of Antmaze medium and large}
+\label{appen:antmaze}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/fig4-antmaze_large_len_vs_return.png}
+    \caption{Trajectory length and return distribution in dataset Antmaze-large-diverse}
+    \label{fig:len_vs_return}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/fig3-maze2d-large.png}
+    \caption{Trajectory length and return distribution in dataset Maze2D-Large}
+    \label{fig:stats-large}
+\end{figure}
+
+
+
+In our experiments, we encounter a curious phenomenon that LPT outperforms CQL, DT and QDT in Antmaze-umaze by a large margin but falls behind in Antmaze-large. Upon closer examination of the data from D4RL, we gained valuable insights into the potential reasons behind LPT's performance on this task.
+
+
+\cref{fig:len_vs_return} plots the distributions of final returns and the trajectory lengths. Surprisingly, this dataset consists of 5448 trajectories (75.86\%) with length=1, 893 trajectories (12.43\%) with length=1000, and only 841 trajectories (11.71\%) with lengths in between. Such a biased trajectory coverage can be detrimental to sequence models like LPT, which learn to make decisions by discovering correlations between trajectories and returns.
+
+As a reference, \cref{fig:stats-large} shows the distributions of final returns and the trajectory lengths of Maze2D-large, a task where LPT performs well. It is important to note that TD-learning methods, such as CQL and QDT, rely solely on $(s, a, s^\prime, r)$ tuples and are less affected by the trajectory length distribution in the dataset. Consequently, Antmaze-large in D4RL remains a fair dataset for these methods to perform offline RL. 
+
+
+\subsection{Ablation study}
+\label{appen:ablation}
+We investigate the role of the expressive prior $p_\alpha(z)$ in our Latent Plan Transformer (LPT) model by removing the UNet component, which transforms $z_0$ from a non-informative Gaussian distribution. Table~\ref{table:ablation} reports the results on three Gym-Mujoco tasks and Connect Four. We observe that the performance of LPT drops in all environments when the UNet is removed. For example, in the stochastic environment Connect Four, LPT's performance decreases from $0.99$ to $0.90$, while the baseline Decision Transformer (DT) without latent variables achieves $0.80$. These results indicate that a more flexible prior benefits the learning and inference of LPT.
+
+
+\begin{table}[h]
+\caption{Ablation study results on Gym-Mujoco tasks and Connect Four.}
+\label{table:ablation}
+\centering
+%\resizebox{0.7\linewidth}{!}{%
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+{Dataset}  &\multicolumn{1}{c}{DT} &\multicolumn{1}{c}{LPT} &\multicolumn{1}{c}{LPT w/o UNet}\\
+\midrule
+halfcheetah-medium-replay &$33.0\pm 4.8$ & ${39.64}\pm0.83$ &${34.70}\pm1.58$ \\
+hopper-medium-replay &$50.8\pm14.3$ & ${71.17}\pm3.01$ & ${53.41}\pm 6.95$\\
+walker2d-medium-replay &$51.6\pm24.7$ & ${72.31}\pm1.92$ & ${56.88}\pm 4.20$\\
+\midrule
+Connect Four &$0.8\pm0.07$ &${0.99}\pm0.01$ & ${0.90}\pm0.06$\\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+% \vspace{-1em}
+\end{table}
+
+To further explore the impact of the prior, we conducted additional experiments testing the effects of different UNet configurations on LPT's performance. Table~\ref{table:unet_ablation} shows the normalized scores on the \texttt{walker2d-medium-replay} task with various UNet architectures. We observe that reducing the capacity or expressiveness of the UNet (e.g., smaller dimension, fewer multipliers, smaller initial convolution, or fewer ResBlocks) consistently degrades performance, though still outperforming the model without the UNet prior. This suggests that a more expressive prior enhances LPT's ability to model complex policies.
+
+\begin{table}[h]
+\caption{Effect of different UNet configurations on LPT performance.}
+%\vspace{1em}
+\label{table:unet_ablation}
+\centering
+%\resizebox{0.55\linewidth}{!}{%
+\centering
+\begin{tabular}{lc}
+\toprule
+{Model Prior} & \multicolumn{1}{c}{Normalized Score }\\
+\midrule
+UNet (original)                  & $\mathbf{72.31} \pm 1.92$ \\
+UNet w/ smaller dimension        & $64.06 \pm 1.94$ \\
+UNet w/ fewer multipliers        & $64.59 \pm 1.54$ \\
+UNet w/ smaller initial convolution & $70.49 \pm 2.84$ \\
+UNet w/ single ResBlock          & $67.95 \pm 4.64$ \\
+No UNet (Standard Normal prior)  & $56.88 \pm 4.20$ \\
+\bottomrule
+\end{tabular}
+%}
+\end{table}
+
+Our results underscore the crucial role of the learned prior in LPT's performance. The original UNet configuration achieves the highest normalized score, indicating that our current UNet design is optimal among the variants tested. We appreciate the reviewer's suggestion, as it prompted us to perform a more detailed analysis of the prior's impact on LPT.
+
+
+
+\subsection{Continual learning with online data}
+\label{appen:online}
+We are also interested in LPT's potential in finetuning or even continual learning. Inspired by ODT~\citep{zheng2022online}, we employ a trajectory replay butter~\citep{mnih2015human} to store samples from online interaction in a first-in-first-out manner. After the completion of each episode, we update LPT with the same learning algorithm as with the offline data. Note that ODT introduces some techniques additional to DT. In contrast, LPT explores with the provably efficient posterior sampling~\citep{osband2013more, osband2017posterior}. We report the results in~\cref{tab:continual}. Despite the significance in a few tasks, the improvement is within 1 standard deviation of the mean for the majority. We observe a similar pattern in ODT~\citep{zheng2022online}. 
+
+\begin{table}[H]
+\caption{Evaluation results of online Open AI Gym MuJoCo and Antmaze tasks. ODT baselines are sourced from~\citet{zheng2022online}. Our results are reported over $5$ seeds.}
+\centering
+\label{tab:continual}
+%\resizebox{0.7\linewidth}{!}{%
+\begin{tabular}{lcc|cc}
+\toprule
+\multicolumn{1}{l}{\multirow{2}{*}{Dataset}} & \multicolumn{2}{c}{Step-wise Reward}                                          & \multicolumn{2}{c}{Final Return}        \\
+ & \multicolumn{1}{c}{ODT} & \multicolumn{1}{c}{$\Delta$} &\multicolumn{1}{c}{LPT} & \multicolumn{1}{c}{$\Delta$}\\
+\midrule
+halfcheetah-medium       &$42.16\pm1.48$ &$-0.56$ &$43.26\pm0.59$ &$0.13$ \\
+halfcheetah-medium-replay         &$40.2\pm1.61$ &$0.43$ &$40.63\pm0.28$ &$0.99$ \\
+hopper-medium       &$97.54\pm2.1$ &$30.59$ &$64.84\pm10.29$ &$6.32$ \\
+hopper-medium-replay         &$88.89\pm6.33$ &$2.25$ &$72.44\pm8.07$ &$1.27$\\
+walker2d-medium      &$76.79\pm2.30$ &$4.60$ &$79.54\pm5.11$ &$1.69$\\
+walker2d-medium-replay         &$76.86\pm4.04$ &$7.94$ &$78.99\pm3.84$ &$6.68$\\
+\midrule
+Antmaze-umaze      &$88.5\pm5.88$ &$35.4$ &$83.5\pm3.28$ &$22.3$ \\
+Antmaze-diverse      &$56.00\pm5.69$ &$5.8$ &$75.6\pm2.8$ &$8.0$\\
+\bottomrule
+% \bottomrule
+\end{tabular}
+%}
+\label{table:online}
+\end{table}
+
+

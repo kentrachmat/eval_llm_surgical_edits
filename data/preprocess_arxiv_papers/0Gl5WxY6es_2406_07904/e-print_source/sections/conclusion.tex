@@ -1,0 +1,8 @@
+\section{Limitations and Conclusion}
+\label{sec:conclusion} 
+\vspace{-0.2cm}
+In this work, we studied various action space adapters (\asas) across a variety of embodiments, action spaces, and environments. We provide a generalization of prior works through the lens of action space adaptors, and for both discrete and continuous action spaces demonstrate designs that we show can leverage the knowledge within the \vlm.
+Our findings conclude that for continuous actions, it is best to learn action tokens that accurately model the action distribution, while for discrete actions, it is best to reason over semantic language descriptions of actions.
+We verify these ideas across \taskcount embodied AI tasks in 5 diverse environments.
+
+A limitation of our work is all our analysis is under a single \vlm (\llava). Another limitation is that \rvq, the best performing \asa in continuous action spaces, requires collecting demonstrations to train the VQ model. Our analyses are also under only a single LoRA training setting. Future analyses can explore different base \vlms under different training regimes like full LLM finetuning. While our investigation of ASAs enables connecting a MLLM to various action spaces, the performance of these methods is still subpar for real-robot deployment where high success and safety are critical. MLLMs with the best ASA still struggle on simple environments like BabyAI, only achieving 40\% success rate. Further work is needed to improve the performance of these methods for real-world usage. Our investigation also only studies adapting MLLMs through behavioral cloning or on-policy RL. Future work can investigate if the choice of ASA varies when adapting the MLLM with other learning algorithms such as off-policy RL or offline RL.

@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: neurips_2023.aux
+The style file: iclr2021_conference.bst
+Database file #1: neurips_2023.bib
+Warning--I didn't find a database entry for ""
+You've used 64 entries,
+            2773 wiz_defined-function locations,
+            891 strings with 19838 characters,
+and the built_in function-call counts, 41291 in all, are:
+= -- 3207
+> -- 4190
+< -- 12
++ -- 1408
+- -- 1341
+* -- 3861
+:= -- 6811
+add.period$ -- 200
+call.type$ -- 64
+change.case$ -- 619
+chr.to.int$ -- 61
+cite$ -- 128
+duplicate$ -- 1357
+empty$ -- 2227
+format.name$ -- 1409
+if$ -- 8209
+int.to.chr$ -- 4
+int.to.str$ -- 1
+missing$ -- 65
+newline$ -- 332
+num.names$ -- 256
+pop$ -- 1244
+preamble$ -- 1
+purify$ -- 558
+quote$ -- 0
+skip$ -- 1285
+stack$ -- 0
+substring$ -- 580
+swap$ -- 130
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 689
+warning$ -- 0
+while$ -- 227
+width$ -- 0
+write$ -- 809
+(There was 1 warning)

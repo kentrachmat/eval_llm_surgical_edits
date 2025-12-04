@@ -1,0 +1,67 @@
+\section{\textbf{Introduction}}
+\vspace{-0.5\baselineskip}
+% The powerful function approximation and representation capabilities 
+The potent capabilities of deep neural networks have driven the brilliant triumph of deep reinforcement learning (DRL) across diverse domains~\citep{AlphaGo_Zero, AlphaFold, GPT4TR}.
+Nevertheless, recent studies highlight a pronounced limitation of neural networks: they struggle to maintain adaptability and learning from new data after training on a non-stationary objective~\citep{capacity_loss, dormant_neuron}, a challenge known as \textbf{\textit{plasticity loss}}~\citep{understanding_plasticity, plasticity_loss_CRL}.
+Since RL agents must continuously adapt their policies through interacting with environment, non-stationary data streams and optimization objectives are inherently embedded within the DRL paradigm~\citep{Regenerative_Regularization}.
+Consequently, plasticity loss presents a fundamental challenge for achieving sample-efficient DRL applications~\citep{primacy_bias, breaking_RR_barrier}.
+
+Although several strategies have been proposed to address this concern, previous studies primarily focused on mitigating plasticity loss through methods such as resetting the parameters of neurons~\citep{primacy_bias, breaking_RR_barrier, dormant_neuron}, incorporating regularization techniques~\citep{Regenerative_Regularization, understanding_plasticity, capacity_loss} and adjusting network architecture~\citep{BBF, continual_backprop, plasticity_loss_CRL}.
+The nuanced impacts of various dimensions within the DRL framework on plasticity remain underexplored.
+This knowledge gap hinders more precise interventions to better preserve plasticity.
+To this end, this paper delves into the nuanced mechanisms underlying DRL's plasticity loss from three primary yet underexplored perspectives: data, agent modules, and training stages.
+Our investigations focus on visual RL (VRL) tasks that enable decision-making directly from high-dimensional observations.
+As a representative paradigm of end-to-end DRL, VRL is inherently more challenging than learning from handcrafted state inputs, leading to its notorious sample inefficiency~\citep{ma2022comprehensive, DrQ-v2, tomar2021learning}.
+
+We begin by revealing the indispensable role of data augmentation (DA) in mitigating plasticity loss for off-policy VRL algorithms.
+Although DA is extensively employed to enhance VRL's sample efficiency~\citep{drq, DrQ-v2}, its foundational mechanism is still largely elusive.
+Our investigation employs a factorial experiment with DA and Reset.
+The latter refers to the re-initialization of subsets of neurons and has been shown to be a direct and effective method for mitigating plasticity loss~\citep{primacy_bias}.
+However, our investigation has surprisingly revealed two notable findings:
+(1) Reset can significantly enhance performance in the absence of DA, but show limited or even negative effects when DA is applied.
+This suggests a significant plasticity loss when DA is not employed, contrasted with minimal or no plasticity loss when DA is utilized.
+(2) Performance with DA alone surpasses that of reset or other interventions without employing DA, highlighting the pivotal role of DA in mitigating plasticity loss. 
+Furthermore, the pronounced difference in plasticity due to DA's presence or absence provides compelling cases for comparison, allowing a deeper investigation into the differences and developments of plasticity across different modules and stages.
+
+% \ls{give a visualization of the VRL pipeline. We should build the connection for these three modules.}
+We then dissect VRL agents into three core modules: the encoder, actor, and critic, aiming to identify which components suffer most from plasticity loss and contribute to the sample inefficiency of VRL training.
+Previous studies commonly attribute the inefficiency of VRL training to the challenges of constructing a compact representation from high-dimensional observations~\citep{tomar2021learning, CURL, wang2022vrl3, ATC, RRL}.
+A natural corollary to this would be the rapid loss of plasticity in the encoder when learning from scratch solely based on reward signals, leading to sample inefficiency.
+However, our comprehensive experiments reveal that it is, in fact, the plasticity loss of the critic module that presents the critical bottleneck for training.
+This insight aligns with recent empirical studies showing that efforts to enhance the representation of VRL agents, such as meticulously crafting self-supervised learning tasks and pre-training encoders with extra data, fail to achieve higher sample efficiency than simply applying DA alone~\citep{Does_SSL,Learning-from-Scratch}.
+Tailored interventions to maintain the plasticity of critic module provide a promising path for achieving sample-efficient VRL in future studies.
+
+% Given the strong correlation between the critic's plasticity and training efficiency, we then assess the variation in plasticity loss across training stages by monitoring the Fraction of Active Units (FAU) in the critic module~\citep{understanding_plasticity, dormant_neuron, Enhancing_Generalization_Plasticity}.
+Given the strong correlation between the critic's plasticity and training efficiency, we note that the primary contribution of DA lies in facilitating the early-stage recovery of plasticity within the critic module.
+Subsequently, we conduct a comparative experiment by turning on or turning off DA at certain training steps and obtain two insightful findings:
+(1) Once the critic's plasticity has been recovered to an adequate level in the early stage, there's no need for specific interventions to maintain it.
+(2) Without timely intervention in the early stage, the critic's plasticity loss becomes catastrophic and irrecoverable.
+These findings underscore the importance of preserving critic plasticity during the initial phases of training. Conversely, plasticity loss in the later stages is not a critical concern.
+To conclude, the main takeaways from our revisiting can be summarized as follows:
+\begin{itemize}[itemsep=0pt,parsep=1pt,topsep=0pt,partopsep=0pt]
+    \item DA is indispensable for preserving the plasticity of VRL agents. (Section~\ref{Sec: Data})
+    \item Critic's plasticity loss is a critical bottleneck affecting the training efficiency. (Section~\ref{Sec: Modules})
+    \item Maintaining plasticity in the early stages is crucial to prevent irrecoverable loss. (Section~\ref{Sec: Stages})
+\end{itemize}
+
+% \ls{the relationship between these three modules/findings and the high RR dilemma should be further clarified. Since the proposed approach tries to solve the RR dilemma} \ls{can we draw some figure to show this connection between the plasticity and RR dilemma?}
+We conclude by addressing a longstanding question in VRL: how to determine the appropriate replay ratio (RR), defined as the number of gradient updates per environment step, to achieve optimal sample efficiency~\citep{fedus2020revisiting}.
+Prior research set a static RR for the entire training process, facing a dilemma: while increasing the RR of off-policy algorithms should enhance sample efficiency, this improvement is offset by the exacerbated plasticity loss~\citep{primacy_bias, dormant_neuron, BBF}.
+However, aforementioned analysis indicates that the impact of plasticity loss varies throughout training stages, advocating for an adaptive adjustment of RR based on the stage, rather than setting a static value.
+Concurrently, the critic's plasticity has been identified as the primary factor affecting sample efficiency, suggesting its level as a criterion for RR adjustment.
+Drawing upon these insights, we introduce a simple and effective method termed \textit{Adaptive RR} that dynamically adjusts the RR according to the critic's plasticity level.
+Specifically, \textit{Adaptive RR} commences with a lower RR during the initial training phases and elevates it upon observing significant recovery in the critic's plasticity.
+Through this approach, we effectively harness the sample efficiency benefits of a high RR, while skillfully circumventing the detrimental effects of escalated plasticity loss.
+Our comprehensive evaluations on the DeepMind Control suite~\citep{DMC_suite} demonstrate that \textit{Adaptive RR} attains superior sample efficiency compared to static RR baselines.
+
+
+
+
+% Our contributions in this work can be summarized in the following two aspects:
+% \begin{enumerate}[itemsep=0pt,parsep=1pt,topsep=0pt,partopsep=0pt]
+%     \item We systematically revisit the plasticity in VRL from three primary underexplored facets:
+%     \begin{enumerate}[itemsep=1pt,parsep=1pt,topsep=0pt,partopsep=0pt]
+%         \item Second level item 1
+%         \item Second level item 2
+%     \end{enumerate}
+% \end{enumerate}

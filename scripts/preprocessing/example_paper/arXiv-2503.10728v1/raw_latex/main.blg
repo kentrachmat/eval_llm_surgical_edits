@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: acl_natbib.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: custom.bib
+Warning--I'm ignoring Zuboff2015's extra "year" field
+--line 385 of file custom.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty journal in llama3modelcard
+Warning--empty journal in corina2020
+Warning--empty booktitle in geronimowheretofind
+Warning--empty booktitle in colin2018
+Warning--empty journal in verena2023
+You've used 65 entries,
+            3571 wiz_defined-function locations,
+            1048 strings with 25182 characters,
+and the built_in function-call counts, 61036 in all, are:
+= -- 4176
+> -- 5393
+< -- 24
++ -- 1771
+- -- 1692
+* -- 5009
+:= -- 9763
+add.period$ -- 228
+call.type$ -- 65
+change.case$ -- 907
+chr.to.int$ -- 67
+cite$ -- 70
+duplicate$ -- 3657
+empty$ -- 3178
+format.name$ -- 1871
+if$ -- 12488
+int.to.chr$ -- 3
+int.to.str$ -- 1
+missing$ -- 860
+newline$ -- 289
+num.names$ -- 260
+pop$ -- 1931
+preamble$ -- 1
+purify$ -- 823
+quote$ -- 0
+skip$ -- 1953
+stack$ -- 0
+substring$ -- 1037
+swap$ -- 1966
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 585
+warning$ -- 5
+while$ -- 220
+width$ -- 0
+write$ -- 737
+(There were 6 warnings)

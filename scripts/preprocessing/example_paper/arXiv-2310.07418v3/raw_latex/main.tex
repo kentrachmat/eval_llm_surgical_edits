@@ -1,0 +1,131 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2024_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{enumitem}
+% \usepackage{booktabs}
+
+
+\usepackage{fontawesome} 
+% \usepackage{hyperref}
+
+% \newcommand{\githubfootnote}[1]{%
+%     \footnote{\protect\faGithub\ #1}
+% }
+
+\newcommand{\githubfootnote}[1]{
+    \begingroup
+    \renewcommand\thefootnote{\faGithub}
+    \footnote{#1}
+    \endgroup
+}
+
+\usepackage{booktabs} % For better-looking tables
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{xcolor}
+\definecolor{mycitecolor}{HTML}{3498DC}
+\definecolor{mylinkcolor}{HTML}{E74D3B}
+\definecolor{myurlcolor}{HTML}{980000}
+\definecolor{mydarkgreen}{rgb}{0,0.6,0}
+\definecolor{myorange}{HTML}{E7730D}
+\definecolor{myblue}{HTML}{4594c1}
+
+\definecolor{AAGray}{HTML}{999999}
+\definecolor{BBGray}{rgb}{0,0.6,0}
+\definecolor{AABlue}{HTML}{6db0ce}
+\definecolor{AARed}{HTML}{ce471a}
+\newcommand{\bestscore}[1]{\bm{#1}}
+
+\usepackage[colorlinks=true,linkcolor=mylinkcolor,citecolor=mycitecolor,urlcolor=myurlcolor]{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{graphicx} 
+\usepackage{wrapfig}
+\usepackage[most]{tcolorbox}
+\definecolor{C1}{HTML}{1F77B4}
+
+% algorithm
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode} 
+\newcommand{\Appendix}{\textcolor{mylinkcolor}{Appendix}}
+
+\def\equationautorefname~#1\null{Eq~#1\null}
+\renewcommand{\sectionautorefname}{\S\kern-0.2em}
+\renewcommand{\subsectionautorefname}{\S\kern-0.2em}
+\renewcommand{\subsubsectionautorefname}{\S\kern-0.2em}
+
+\title{Revisiting Plasticity in Visual Reinforcement Learning: Data, Modules and Training Stages}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+\author{Guozheng Ma$^{1}$\thanks{Equal Contribution, $^{\dag}$Corresponding authors.} \quad Lu Li$^{1}$\footnotemark[1] \quad Sen Zhang$^2$ \quad Zixuan Liu$^1$\quad Zhen Wang$^2$ \\ \textbf{Yixin Chen$^3$\quad Li Shen$^4$\footnotemark[2]\quad Xueqian Wang$^{1}$\footnotemark[2] \quad Dacheng Tao$^5$} 
+% \vspace{0.2cm}
+\\
+{\fontsize{8.5}{9}\selectfont $^1$Tsinghua University \quad $^2$The University of Sydney \quad $^3$Washington University in St. Louis} \\ {\fontsize{8.5}{9}\selectfont $^4$JD Explore Academy \quad $^5$Nanyang Technological University, Singapore}  \\
+{\tt\fontsize{7.8}{7.8}\selectfont \{mgz21,lilu21,zx-liu21\}@mails.tsinghua.edu.cn; sen.zhang@sydney.edu.au} \\
+{\tt\fontsize{7.8}{7.8}\selectfont zwan4121@uni.sydney.edu.au; chen@cse.wustl.edu; mathshenli@gmail.com}\\
+{\tt\fontsize{7.8}{7.8}\selectfont wang.xq@sz.tsinghua.edu.cn; dacheng.tao@ntu.edu.sg}
+}
+\vspace{-\baselineskip}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\usepackage{tcolorbox}
+\newcommand{\hypothesis}[2]{%
+% \vspace{-1cm}
+\begin{tcolorbox}[leftrule=2.5mm,size=title]
+\textbf{#1}: #2
+\end{tcolorbox}
+% \vspace{-0.5\baselineskip}
+}
+
+\newcommand{\ls}[1]{{\color{red}{\bf\sf [LS: #1]}}}
+\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+\input{Content/0_Abstract}
+\end{abstract}
+
+\input{Content/1_Introduction}
+\input{Content/2_Related_Work}
+\input{Content/3_Data}
+\input{Content/4_Module}
+\input{Content/5_Stages}
+\input{Content/6_Solutions}
+\input{Content/7_Conclusion}
+
+\newpage
+\appendix
+\input{Content/Appendix}
+
+\newpage
+\section*{Acknowledgements}
+This work is supported by STI 2030—Major Projects (No. 2021ZD0201405). 
+We thank Zilin Wang and Haoyu Wang for their valuable suggestions and collaboration. We also extend our thanks to Evgenii Nikishin for his support in the implementation of plasticity injection.
+Furthermore, we sincerely appreciate the time and effort invested by the anonymous reviewers in evaluating our work, and are grateful for their valuable and insightful feedback.
+
+\newpage
+\bibliography{main_citation}
+\bibliographystyle{iclr2024_conference}
+
+\end{document}

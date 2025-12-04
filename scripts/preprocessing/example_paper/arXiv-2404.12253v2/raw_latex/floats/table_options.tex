@@ -1,0 +1,20 @@
+\begin{table}[!htb]
+\footnotesize
+    \centering
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{c|c|c}
+
+    \toprule
+    \texttt{Search Node} & \texttt{Example} & \texttt{Termination}  \cr
+    \midrule
+    Token-level & $y_0 \rightarrow y_1 \rightarrow y_2 \rightarrow y_3 \rightarrow y_5 \rightarrow y_6 \rightarrow y_7 \rightarrow y_8$ &  token\cr
+    \midrule
+    Sentence-level & $y_0 y_1 y_2$ \enterkey{}  $\rightarrow y_4 y_5 y_6$ \enterkey{} $\rightarrow y_7 y_8 y_9 y_{10}$ & new line\cr
+    \midrule
+    Option-level & $y_0$  $\rightarrow y_1 y_2$ \enterkey{} $\rightarrow y_4 y_5 y_6$ \enterkey{} $y_7 y_8 y_9$ \enterkey{} $\rightarrow y_{10}$& termination function\cr
+    \bottomrule
+    \end{tabular}
+    \vspace{2mm}
+    \caption{Comparative illustration of token-level, sentence-level, and option-level MCTS search nodes. $y$ denotes a token sampled from the policy model. The arrow $\rightarrow$ represents the transition from one search node to the subsequent node within the search process.}
+    \label{tab:option}
+\end{table}

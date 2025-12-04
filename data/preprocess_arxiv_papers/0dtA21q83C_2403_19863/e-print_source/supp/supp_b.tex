@@ -1,0 +1,71 @@
+\subsection{Equivalence with Product of Experts Framework}
+\label{sec:poe_proof}
+
+In \cref{sec:linear_decodability_analysis} of the main text, we asserted that our training methodology is derived from the Product of Experts. In this section, we elucidate this mathematically:
+
+% Define the softmax function mapping
+\begin{align*}
+f &: \mathbb{R}^F \xrightarrow{\text{linear}}
+ \mathbb{R}^c,  \quad  \tilde{f}(x) = \operatorname{softmax}(f(x))
+\end{align*}
+
+
+% Define the mapping \phi_b with a description of its domain and codomain
+\begin{align*}
+\phi_b &: \mathbb{R}^{C \times H \times W} \longrightarrow \mathbb{R}^F, \quad \text{where } F \text{ is the feature dimension}
+\end{align*}
+
+% Define the mapping \phi_d with a description of its domain and depth relationship to \phi_b
+\begin{align*}
+\phi_d &: \mathbb{R}^{C \times H \times W} \longrightarrow \mathbb{R}^F, \quad \text{such that } \operatorname{depth}(\phi_b) > \operatorname{depth}(\phi_d)
+\end{align*}
+
+
+% Define the loss function L
+\[
+\begin{aligned}
+& L(x, y ; \phi_b, \phi_d)=-\sum_{c=1}^C y_c \log (\hat{p}_{\phi_b, \phi_d}^c) \quad \text{(Loss function definition)} \\
+ \hat{p}_{\phi_b, \phi_d} &=\frac{\tilde{f}_c(\phi_b(x)) \cdot \tilde{f}_c(\phi_d(x))}{\sum_{c=1}^C \tilde{f}_c(\phi_b(x)) \cdot \tilde{f}_c(\phi_d(x))} \quad \text{(Product of Experts)} \\
+& =\operatorname{softmax}_c(\log (\tilde{f}(\phi_b(x))) + \log (\tilde{f}(\phi_d(x)))) \quad \text{(Softmax log-sum-exp trick)} \\
+& =\operatorname{softmax}_c(f(\phi_b(x)) + f(\phi_d(x))) \quad \text{(Translation invariance of softmax)} \\
+& =\operatorname{softmax}_c(f(\phi_b(x) + \phi_d(x))) \quad \text{(Linearity of classifier \( f \))}
+\end{aligned}
+\]
+
+We utilize $\hat{p}_{\phi_b, \phi_d}$ to compute the probabilities in DeNetDM which is the same as Equation 2 presented in the main paper.
+
+\subsection{Pseudocode}
+\label{supp_sec:pseudocode}
+The pseudocode for the entire training process of DeNetDM is provided in \cref{psuedocode}.
+
+
+\begin{algorithm}
+    \caption{DeNetDM: Training}
+    \begin{algorithmic}[1]
+        \Statex \textbf{Input:} Data: $\{(x, y)_i\}_{i=1}^{N}$
+        \Statex \textbf{Output:} $\phi_t, f_t$
+        \Statex \textbf{Initialize:} $\phi_{t}, f_t, f ,\phi_b, \phi_d$ such that $\depth(\phi_b) > \depth(\phi_d)$
+        \Repeat
+            \State Fetch minibatch data $\{(x, y)_i\}_{i=1}^{K}$
+            \For{$i=1$ to $K$ (in parallel) }
+                \State Compute $\hat{p}$ using \eqref{eq: p_stage1} to obtain $(\hat{p}, y)_i$
+            \EndFor
+            % \State Update $\phi_{b}$, $\phi_d$, $f$ by SGD to minimize $\mathcal{L}(\phi_{b}, \phi_{d}, f) = \sum_{i=1}^{K} \mathcal{L}_{CE}(\hat{p}, y)_i$ where $\mathcal{L}_{CE}$ is defined by \eqref{eq:cross_entropy_stage1}
+            \State Update $\phi_{b}$, $\phi_d$, $f$ by minimizing $\mathcal{L}_{CE}$ in \eqref{eq:cross_entropy_stage1} via SGD 
+        \Until{Convergence} \Comment{stage1}
+        \Repeat
+            \State Fetch minibatch data $\{(x, y)_i\}_{i=1}^{K}$
+            \For{$i=1$ to $K$ (in parallel)}
+                \State Compute $\hat{p}$, $\hat{p}_s$, $\hat{p}_t$ via \eqref{eq:poe_target}, \eqref{eq:ps}, \eqref{eq:pt} respectively
+            \EndFor
+            \State Update $\phi_{t}$, $f_t$ by minimizing $\mathcal{L}$ in \eqref{eq:L} via SGD
+        \Until{Convergence} \Comment{stage2}
+    \end{algorithmic}
+    \label{psuedocode}
+\end{algorithm}
+
+\subsection{Feature Decodability}
+\label{sec:feature_decodability}
+
+We utilize feature decodability to gauge the extent to which specific dataset features can be reliably decoded across models of varying depths. \cite{NEURIPS2020_71e9c662} demonstrated that the visual features can be decoded from the higher layers of untrained models. Additionally, they observed that the feature decodability from an untrained model has a significant impact in determining which features are emphasized and suppressed during the model training. Following their approach, we specifically focus on assessing the decodability of bias and core attributes from the penultimate layer of untrained models. In order to evaluate the decodability of an attribute in a dataset, we train a decoder to map the activations from the penultimate layer of a frozen, untrained model to attribute labels. The decoder comprises a single linear layer followed by a softmax activation function. The decoder is trained using an unbiased validation set associated with the dataset, where each instance is labeled according to the attribute under consideration. Subsequently, the linear decodability of the attribute, measured in accuracy, is reported on the unbiased test set. We investigate the decodability of digit and color attributes in the CMNIST dataset from MLP models with varying depths, including 3, 4, and 5 layers, and the results are depicted in \cref{fig:linear_decodability_untrained}. To investigate how feature decodability evolves during the early stages of Empirical Risk Minimization (ERM) training across networks with varying depths, we train 3-layer and 5-layer MLPs on the CMNIST dataset. Following the training, we evaluate the model's linear decodability for digit and color attributes.
+

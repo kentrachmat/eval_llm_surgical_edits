@@ -1,0 +1,34 @@
+\section{Introduction}
+
+Multimodal Large Language Models (\vlms), defined as Large Foundation Models that take as input text and images and generate text, have recently seen rapid progress and impressive performance~\citep{bai2023qwen,kosmos-1,peng2023kosmos2,blip-2,instruct-blip,llava,li2023multimodal,zhu2023minigpt,ye2023mplug,li2023otter,li2023mimic, mckinzie2024mm1,idefics}. These models are important as they solve a large range of useful yet difficult natural language and image tasks, such as describing images, answering visual and textual questions, reasoning, and learning from a small number of examples. They have only recently improved to the point of being usable enough for general deployment with human non-experts~\citep{team2023gemini,achiam2023gpt,touvron2023llama}. 
+
+While \vlms are capable of describing real-world embodied concepts, their capabilities in embodied tasks are limited to using text for actions through generating code~\cite{liang2022code,zeng2022socratic}, representing actions as text~\cite{brohan2023rt}, or extracting actions from internal representations~\cite{li2023vision,szot2023large}.
+\emph{Grounding}~\citep{tellex2020robots} \vlms to generate actions extends their capabilities to embodied tasks, such as robot manipulation and navigation, and is of tremendous value for practical problems, potentially overcoming the high cost of training tabula rasa.
+Extending \vlms to multimodal image generation enables object detection and segmentation, and image and video generation~\cite{peng2023kosmos2,chen2023shikra,you2023ferret,wang2023visionllm,lai2023lisa,zhang2023llava}.
+In embodied settings, grounding \vlms via predicting agent affordances and generating actions yields effective policies capable of generalizing to new tasks~\cite{ahn2022can, szot2023large, driess2023palm, brohan2023rt}.
+
+A key and open challenge in grounding \vlms, which limits their capabilities in embodied tasks, is the gap between the native output space, natural language, and the action space of embodied agents.
+This problem is particularly acute in continuous action spaces, where low-level controllers may require a high degree of precision. Across the literature, a number of architectures and ways of handling action spaces have been proposed, but there has not been a systematic study of these designs.
+Our contributions generalize prior attempts to adapt \vlms to generate actions through an empirical study on which principles and strategies are necessary to effectively close the gap between the action spaces of \vlms and embodied agents. 
+We study various grounding re-parameterization strategies, which we refer to as Action Space Adapters (ASAs), across a range of embodiments, action spaces, and environments. In particular, we explore the following types of \asas: (1) \asas that directly generate actions from a new prediction policy using the \vlm hidden representations as input; (2) \asas that reuse the native token space of the \vlm to encode actions; (3) and \asas that introduce a new token space to encode the actions of the agent while adapting the \vlms to predict these new tokens.
+
+Further, we empirically identify important principles for designing \asas. For continuous action spaces, learned tokenization with several vocabularies that residually model continuous actions gives the right modeling precision while using vocabularies of manageable sizes and, as a result, yields the best performance across all continuous control environments. 
+This learned tokenization outperforms direct action prediction, indicating this approach allows the model to effectively learn a multimodal distribution over action spaces. In addition, the above tokenization strategy boosts performance when the policy is a \vlm, compared to other standard non-LLM-based policies, indicating that it manages to better tap into the knowledge of the model.
+
+For discrete action spaces, we study \asas that better align the embodied actions with the output space of the \vlm. We demonstrate that a semantic alignment between these -- mapping discrete actions to semantically related tokens in the \vlm vocabulary -- yields the best strategy compared to other adapters that either reuse or define a new vocabulary. The superiority of this strategy is evident in performance on environments with discrete action spaces and also in RL sample efficiency.
+
+Finally, the above principles are thoroughly validated across five embodied AI environments, three of which are robotic continuous control and two with discrete actions as illustrated in \Cref{fig:teaser}.
+Altogether, we consider \taskcount language specified tasks. 
+In the continuous case, the best tokenization achieves $72\%$ on \calvin~\cite{mees2022calvin}, up from $68\%$ for direct action regression and $28\%$ for uniform action tokenization; and $84\%$ on \metaworld~\cite{yu2020meta}, up from $61\%$ for direct action regression and $75\%$ for uniform tokenization. Similarly, in the case of discrete actions, the proposed semantically aligned action tokens yield $51\%$ on LangR~\cite{szot2023large}, up from $42\%$ for direct action prediction.
+
+
+\begin{figure*}[t!] 
+  \centering
+  \includegraphics[width=\textwidth]{figures/diagrams/teaser.pdf}
+  \caption{
+    We empirically analyze how to ground \vlms in actions across \taskcount tasks in continuous and discrete action spaces. 
+    In each environment, we train a multi-task policy with different {\asalong}s (\asas) to re-parameterize the \vlm to output actions. For continuous actions, learning a tokenization with several tokens per-action performs best (Residual VQ). For discrete actions, mapping actions to semantically related language tokens performs best (Semantic Tokenization).
+  }
+  \label{fig:teaser}
+\end{figure*}
+

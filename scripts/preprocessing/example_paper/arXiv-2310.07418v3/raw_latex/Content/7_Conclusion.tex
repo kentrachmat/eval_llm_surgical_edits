@@ -1,0 +1,22 @@
+\section{\textbf{Conclusion, Limitations, and Future Work}}
+
+\vspace{-0.5\baselineskip}
+In this work, we delve deeper into the plasticity of VRL, focusing on three previously underexplored aspects, deriving pivotal and enlightening insights:
+\textcolor{mydarkgreen}{$\bullet$}~DA emerges as a potent strategy to mitigate plasticity loss.
+\textcolor{mydarkgreen}{$\bullet$}~Critic's plasticity loss stands as the primary hurdle to the sample-efficient VRL.
+\textcolor{mydarkgreen}{$\bullet$}~Ensuring plasticity recovery during the early stages is pivotal for efficient training.
+Armed with these insights, we propose \textit{Adaptive RR} to address the high RR dilemma that has perplexed the VRL community for a long time.
+By striking a judicious balance between sample reuse frequency and plasticity loss management, \textit{Adaptive RR} markedly improves the VRL's sample efficiency.
+
+\textbf{Limitations.}~~
+Firstly, our experiments focus on DMC and Atari environments, without evaluation in more complex settings. As task complexity escalates, the significance and difficulty of maintaining plasticity concurrently correspondingly rise. Secondly, we only demonstrate the effectiveness of \textit{Adaptive RR} under basic configurations. A more nuanced design could further unlock its potential.
+
+\textbf{Future Work.}~~
+Although neural networks have enabled scaling RL to complex decision-making scenarios, they also introduce numerous difficulties unique to DRL, which are absent in traditional RL contexts.
+Plasticity loss stands as a prime example of these challenges, fundamentally stemming from the contradiction between the trial-and-error nature of RL and the inability of neural networks to continuously learn non-stationary targets.
+To advance the real-world deployment of DRL, it is imperative to address and understand its distinct challenges.
+Given RL's unique learning dynamics, exploration of DRL-specific network architectures and optimization techniques is essential.
+
+% network architectures
+
+% indicates a need to explore optimization techniques specific to reinforcement learning due to its unique learning dynamics.

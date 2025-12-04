@@ -1,0 +1,201 @@
+\section{Local Minima of (\ref{Eq:Non:Convex})}
+\label{Analysis:Non:Convex}
+
+We will show that there are nontrivial local minima due to symmetries induced by the rotation group. However, those local minima do not recover the underlying ground-truth shape. As a result, they force the network to learn the wrong patterns from the data. For simplicity, we focus on the 2D setting. The extension to 3D is straightforward. 
+
+
+In 2D, we assume that the underlying curve is $(x, k_0 x^2)$.  SDF samples are given by $(x,k_0 x^2+y, y)$ where $x \sim p, y \sim q$. Consider the 2D rigid pose parameters$\theta, t_x, t_y$. Let $k$ be the curve parameter. Our goal is to optimize parameters $\theta, t_x, t_y, k$ to minimize the following $L^2$ reconstruction loss: 
+
+\begin{align*}
+r(k, t_x, t_y, \theta) = & \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}\Big(\sin(\theta)x + \cos(\theta)(k_0x^2+y) +t_y-\\
+& \quad k\big(\cos(\theta)x-\sin(\theta)(k_0x^2+y) + t_x\big)^2-y\Big)^2\\
+\end{align*}
+
+Clearly, $(k_0, 0,0,0)$ is a global minimum of $r$. The following proposition shows that there is another local minimum of $r$.
+\begin{proposition}
+Suppose $p$ and $q$ are independent,  and 
+$$
+\underset{x\sim p}{\mathbb{E}} x = 0.
+$$
+Then $(-k_0, 0, 2c, \pi)$ is a critical point of $r$, where $c = \underset{y\sim q}{E}y$.
+In addition, it is a local minimum of $r$ if we assume
+$$
+\underset{x\sim p}{\mathbb{E}} x^3 = \underset{x\sim p}{\mathbb{E}} x^5 =0, \quad |y| \ll |x|.
+$$
+\label{Prop:Local:Minimum}
+\end{proposition}
+
+We defer the proof of Prop.~\ref{Prop:Local:Minimum} to Appendix~\ref{Proof:Prop:Local:Minimum}. Prop.~\ref{Prop:Local:Minimum} shows that there is a non-trivial critical point whose parameters depend on the sampling pattern. As neural network training mostly uses first-order methods that can be trapped into critical points,  this means that without careful initialization, the network will memorize non-shape-related patterns from data, and significantly impairs the generalization ability of the resulting network.  
+
+\subsection{Proof of Prop.~\ref{Prop:Local:Minimum}}
+\label{Proof:Prop:Local:Minimum}
+
+Denote 
+\begin{align*}
+l(x,y,k,t_x,t_y,\theta) &=\sin(\theta)x + \cos(\theta)(k_0x^2+y) +t_y-\\
+& \quad k\big(\cos(\theta)x-\sin(\theta)(k_0x^2+y) + t_x\big)^2-y.
+\end{align*}
+It is easy to check that
+\begin{equation}
+l(x,y, -k_0, 0, 2c, \pi) = 2c - 2y.
+\label{Eq:Val}
+\end{equation}
+The first-order gradients of $l$ with respect to $k, t_x,t_y,\theta$ are given by
+\begin{align}
+\frac{\partial l}{\partial k}
+(x,y, -k_0, 0, 2c, \pi) & = -x^2,\label{Eq:D:k} \\
+\frac{\partial l}{\partial t_x}
+(x,y, -k_0, 0, 2c, \pi) & = -k_0x,\label{Eq:D:Tx} \\
+\frac{\partial l}{\partial t_y}
+(x,y, -k_0, 0, 2c, \pi) & = 1,\label{Eq:D:Ty} \\
+\frac{\partial l}{\partial \theta}
+(x,y, -k_0, 0, 2c, \pi) & = -x -k_0^2x^3 -k_0 xy.
+\label{Eq:D:Theta} 
+\end{align}
+Therefore, we have
+\begin{align*}
+\frac{\partial r}{\partial k}(-k_0, 0, 2c, \pi) & = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}} \frac{\partial l}{\partial k}(x,y,-k_0, 0, 2c, \pi) l(x,y,-k_0,0,2c,\pi) \\  
+& = -\underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}(2c-2y)x^2 = 0,
+\end{align*}
+and
+\begin{align*}
+\frac{\partial r}{\partial t_x}(-k_0, 0, 2c, \pi) & = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}} \frac{\partial l}{\partial t_x}(x,y,-k_0, 0, 2c, \pi) l(x,y,-k_0,0,2c,\pi) \\  
+& = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}(2c-2y)kx = 0,
+\end{align*}
+and
+\begin{align*}
+\frac{\partial r}{\partial t_y}(-k_0, 0, 2c, \pi) & = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}} \frac{\partial l}{\partial t_y}(x,y,-k_0, 0, 2c, \pi) l(x,y,-k_0,0,2c,\pi) \\  
+& = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}(2c-2y) = 0,
+\end{align*}
+and
+\begin{align*}
+\frac{\partial r}{\partial t_x}(-k_0, 0, 2c, \pi) & = \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}} \frac{\partial l}{\partial t_x}(x,y,-k_0, 0, 2c, \pi) l(x,y,-k_0,0,2c,\pi) \\  
+& = -\underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}(2c-2y)(x+k_0^2x^3+k_0xy) = 0.
+\end{align*}
+This means that $(-k_0, 0, 2c, \pi)$ is a critical point of $r$. To show that it is indeed a local minimum, we study the second-order derivatives of $r$. We begin with the second-order derivatives of $l$. They are
+\begin{align*}
+\frac{\partial^2 l}{\partial^2 \theta}(x,y,-k_0, 0, 2c, \pi) & = 2k_0(k_0x^2+y)^2 +y -k_0x^2\\
+\frac{\partial^2 l}{\partial \theta \partial t_x}(x,y,-k_0, 0, 2c, \pi) & = 2k_0(k_0x^2+y)\\    
+\frac{\partial^2 l}{\partial^2 t_x}(x,y,-k_0, 0, 2c, \pi) & = 2k_0,    
+\end{align*}
+and
+\begin{align*}
+\frac{\partial^2 l}{\partial^2 k}(x,y,-k_0, 0, 2c, \pi) & = 0\\
+\frac{\partial^2 l}{\partial k \partial t_x}(x,y,-k_0, 0, 2c, \pi) & = 2x\\    
+\frac{\partial^2 l}{\partial k \partial \theta}(x,y,-k_0, 0, 2c, \pi) & = 2x(k_0x^2+y),
+\end{align*}
+and
+\begin{align*}
+\frac{\partial^2 l}{\partial^2 t_y}(x,y,-k_0, 0, 2c, \pi) & = 0, \qquad 
+\frac{\partial^2 l}{\partial t_y\partial k}(x,y,-k_0, 0, 2c, \pi)  = 0 \\
+\frac{\partial^2 l}{\partial t_y \partial t_x}(x,y,-k_0, 0, 2c, \pi) & = 0, \qquad 
+\frac{\partial^2 l}{\partial t_y\partial \theta}(x,y,-k_0, 0, 2c, \pi)  = 0 \\
+\end{align*}
+Note that $\forall \alpha, \beta\in \{k,t_x,t_y,\theta\}$,
+\begin{align*}
+&\frac{\partial^2 r}{\partial \alpha \partial \beta}(-k_0,0,2c,\pi) \\
+=& \underset{x\sim p}{\mathbb{E}}\underset{y\sim q}{\mathbb{E}}\Big(l(x,y,-k_0,0,2c,\pi)\frac{\partial l^2}{\partial \alpha \partial \beta}(x,y,-k_0,0,2c,\pi)\\
+&\qquad\quad  +\frac{\partial l}{\partial \alpha}(x,y,-k_0,0,2c,\pi)\frac{\partial l}{\partial \beta}(x,y,-k_0,0,2c,\pi) \Big)    
+\end{align*}
+Denote
+\begin{align*}
+ V_x^i = \underset{x\sim p}{\mathbb{E}}x^i, \qquad  V_y^i = \underset{y\sim q}{\mathbb{E}}y^i.
+\end{align*}
+We have
+\begin{align*}
+\frac{\partial^2 r}{\partial^2 \theta}(-k_0, 0, 2c, \pi) & = V_x^2 + 2k_0 c(V_x^2 + 2V_y^2) + (2+4V_x^2k_0^2)(c^2-V_y^2) \\
+& -4k_0 V_y^3 + k_0^2(2V_x^4+V_x^2V_y^2) + 2k_0^3cV_x^4 +k_0^4 V_x^6 \\
+\frac{\partial^2 r}{\partial \theta \partial t_x}(-k_0, 0, 2c, \pi) & = k_0\big(V_x^2 + k_0^2V_x^4+k_0cV_x^2+4(c^2-V_y^2)\big)\\
+\frac{\partial^2 r}{\partial^2 t_x}(-k_0, 0, 2c, \pi) & = k_0^2V_x^2,    
+\end{align*}
+and
+\begin{align*}
+\frac{\partial^2 r}{\partial^2 k}(-k_0, 0, 2c, \pi) & = V_x^4\\
+\frac{\partial^2 r}{\partial k \partial t_x}(-k_0, 0, 2c, \pi) & = k_0V_x^3 = 0\\    
+\frac{\partial^2 r}{\partial k \partial \theta}(-k_0, 0, 2c, \pi) & =V_x^3(1+k_0c) + k_0^2V_x^5 = 0,
+\end{align*}
+and
+\begin{align*}
+\frac{\partial^2 r}{\partial^2 t_y}(-k_0, 0, 2c, \pi) &  = 1, \\ 
+\frac{\partial^2 r}{\partial t_y\partial k}(-k_0, 0, 2c, \pi) & = -V_x^2\\
+\frac{\partial^2 r}{\partial t_y \partial t_x}(-k_0, 0, 2c, \pi) & = 0, \\
+\frac{\partial^2 r}{\partial t_y\partial \theta}(-k_0, 0, 2c, \pi)  & = 0 \\
+\end{align*}
+
+It remains to show that
+\begin{equation}
+\frac{\partial^2 r}{\partial^2 \theta}(-k_0, 0, 2c, \pi) \frac{\partial^2 r}{\partial^2 t_x}(-k_0, 0, 2c, \pi)  > \big(\frac{\partial^2 r}{\partial \theta \partial t_x}(-k_0, 0, 2c, \pi) \big)^2
+\label{Eq:PSD:1}
+\end{equation}
+and
+\begin{equation}
+\frac{\partial^2 r}{\partial^2 k}(-k_0, 0, 2c, \pi) \frac{\partial^2 r}{\partial^2 t_y}(-k_0, 0, 2c, \pi)  > \big(\frac{\partial^2 r}{\partial k \partial t_y}(-k_0, 0, 2c, \pi) \big)^2
+\label{Eq:PSD:2}
+\end{equation}
+
+The difference between the left and right-hand sides of (\ref{Eq:PSD:1})
+\begin{align*}
+&k_0^2\Big(V_x^2\big( V_x^2 + 2k_0 c(V_x^2 + 2V_y^2) + (2+4V_x^2k_0^2)(c^2-V_y^2)-4k_0 V_y^3 \\
+&  + k_0^2(2V_x^4+V_x^2V_y^2) + 2k_0^3cV_x^4 +k_0^4 V_x^6\big) - \big(V_x^2 + k_0^2V_x^4\big)^2\\
+& -\big(k_0cV_x^2+4(c^2-V_y^2)\big)^2-2\big(V_x^2 + k_0^2V_x^4\big)\big(k_0cV_x^2+4(c^2-V_y^2)\big)\Big) \\  
+= & k_0^2\Big(k_0^4\big(V_x^2V_x^6-{V_x^4}^2\big) \Big) 
++\Big(V_x^2\big(4k_0 c(3V_y^2-2c^2) \\
+&+ (6+5V_x^2k_0^2)(V_y^2-c^2)-4k_0 V_y^3 \\
+&+2k_0^2V_x^4\big)-16(c^2-V_y^2)^2 \Big) 
+\end{align*}
+As $y \ll x$, the above quantity is above zero if 
+$$
+V_x^2 V_x^6 > {V_x^4}
+$$
+which can be derived from Cauchy inequality. (\ref{Eq:PSD:2}) is equivalent to 
+$$
+V_x^4 > {V_x}^2.
+$$
+which can be derived from the Cauchy inequality. 
+
+$\qedwhite$
+%\section{Proof of Theorem~\ref{Theorem:Impossibility:Result}}
+%\label{Proof:Theorem:Impossibility:Result}
+%We prove Theorem~\ref{Theorem:Impossibility:Result} by contradiction. Given $\theta$, we can find the corresponding partition of the space $\set{B}(r)\otimes \R^d$ into cells $\set{C}_1\cup \cdots \cup \set{C}_N$, so that $f^{\theta}(\bs{z},\bs{p})$ is the polynomial function in $\bs{p}$ and $\bs{z}$, whose degree is at most $2L$, where $L$ is the depth. With $f_i(\bs{z},\bs{p})$ we denote the resulting polynomial of $\set{C}_i$. Note that $f_i$ is continuous across the boundaries of $\set{C}_i$. 
+
+
+
+%Given $r$, consider $N \gg |\theta|$ samples $\bs{p}_i, 1\leq i \leq N$ in $\set{B}(r)$. Suppose $\forall a, b,c, R,\bs{t}$, $\exists \bs{z}$,
+%$$
+%|f^{\theta}(\bs{z},\bs{p}) - | \leq 
+%$$
+
+%$\qedwhite$
+
+
+\section{More Results}
+
+We include more visualization comparisons. We show the comparison with generalizable methods and scene-specific methods in Fig.~\ref{fig: compare_vis_1} and Fig.~\ref{fig: compare_vis_2}, respectively. We also include a failure case of \modelname{} in Fig.~\ref{fig: failure}.
+
+\begin{figure*}
+% \includegraphics[scale=0.33,bb=0 0 30 1770]{images/compare_1.pdf}
+\includegraphics[width=\linewidth]{images/compare_1.pdf}
+% \vspace{-0.2in}
+\caption{Compare with the generalizable methods DeepSDF and DeepLS on ShapeNet shapes. We show two images for each method, one for the overall shape quality, and a zoom-in detail check.}
+%\vspace{-0.1in}
+\label{fig: compare_vis_1}    
+\end{figure*}
+
+
+\begin{figure*}
+% \includegraphics[scale=0.4,bb=0 0 30 1070]{images/compare_2.pdf}
+\includegraphics[width=\linewidth]{images/compare_2.pdf}
+% \vspace{-0.1in}
+\caption{Compare with the shape-specific method NGLOD on Thingi shapes. We show two images for each method, one for the overall shape quality, and a zoom-in detail check.}
+%\vspace{-0.1in}
+\label{fig: compare_vis_2}    
+\end{figure*}
+
+
+
+\begin{figure*}
+% \includegraphics[scale=0.42,bb=0 0 30 330]{images/failure.pdf}
+\includegraphics[width=\linewidth]{images/failure.pdf}
+\caption{Analysis of the failure case. \modelname{} still struggles to represent extremely detailed geometry parts.}
+\label{fig: failure}    
+\end{figure*}

@@ -1,0 +1,112 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Eval in Original Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{wrapfigure}{r}{.48\linewidth}
+% \vspace{-10pt}
+% \centering
+% \resizebox{\linewidth}{!}{
+%     \tablestyle{5pt}{1.1}
+%     {\renewcommand\conf[1]{}
+%     \tablestyle{5pt}{1.1}
+%     \begin{tabular}{y{56}x{40}|x{30}x{30}x{30}x{30}}
+%         & & \multicolumn{4}{c}{Accuracies (\%)}\\
+%         Method & FLOPs (G) & Joint & \modela{Task A} & \modelb{Task B} & Avg \\
+%     \shline
+%     \modela{Model A}                        & {10.88} & {46.7\conf{0.6}} & {94.4\conf{0.8}} & {18.4\conf{3.1}} & {56.4\conf{1.7}} \\
+%     \modelb{Model B}                        & {10.88} & {40.2\conf{9.6}} & {22.3\conf{6.9}} & {93.8\conf{1.7}} & {58.0\conf{2.9}} \\
+%     \hline
+%     W. Avg                                  &  10.88     & {32.1\conf{3.8}}           & {50.9\conf{13.8}}           & {50.2\conf{7.6}}           & {50.6\conf{3.9}} \\
+%     Git Re-Basin$\ddag$                     &  10.88     & {10.0\conf{0.1}}           & {20.1\conf{0.2}}           & {19.8\conf{0.2}}           & {20.0\conf{0.2}}  \\
+%     Permute                                 &  10.88     & {41.9\conf{2.1}}          & {82.5\conf{6.3}}          & {82.5\conf{8.3}}          & {82.5\conf{3.6}} \\
+%     \default{{\bf \name{}}$_\text{20/20}$}  &  10.88     & \textbf{59.1\conf{2.0}}   & \textbf{90.0\conf{1.3}}   & \textbf{88.2\conf{3.2}}   & \textbf{89.1\conf{1.7}} \\
+%     \hline
+%     \gc{Ensemble}                           & \gc{21.76} & \gc{60.3}       & \gc{94.4}       & \gc{93.8}       &  \gc{94.1} \\
+%     \default{{\bf \name{}}$_\text{13/20}$}  & {14.52}    & {-}          & {-}          & {-}          & {-} \\
+%     \default{{\bf \name{}}$_\text{7/20}$}   & {18.14}    &  \textbf{-}         &  \textbf{-}         & \textbf{-}          & \textbf{-} \\
+% \end{tabular}
+%     }
+% }
+% \captionof{table}{\textbf{CIFAR-10 (5+5) Cross Entropy.} \name{}\ vs. baselines using ResNet-20 ($16\times$ width). Merging the entire model as in prior work produces bad results when using cross-entropy, hence we use CLIP in the main draft. If we use partial zipping, we can recover a lot of the lost performance. $\ddag$ refers to \cite{ainsworth2022git}
+% % all pairs (2-way merging) and per-task accuracy for each head (4-way merging).
+% % We compare to our strong baseline as \cite{ainsworth2022git} doesn't support models with different outputs.
+% }
+% \label{tab:cifar5_ce_results}
+% % \end{table}
+% \vspace{-20pt}
+% \end{wrapfigure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Eval with zipping until Node 63 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{wrapfigure}{r}{.48\linewidth}
+% \vspace{-10pt}
+% \centering
+% \resizebox{\linewidth}{!}{
+%     \tablestyle{5pt}{1.1}
+%     {\renewcommand\conf[1]{}
+%     \tablestyle{5pt}{1.1}
+%     \begin{tabular}{y{56}x{40}|x{30}x{30}x{30}x{30}}
+%         & & \multicolumn{4}{c}{Accuracies (\%)}\\
+%         Method & FLOPs (G) & Joint & \modela{Task A} & \modelb{Task B} & Avg \\
+%     \shline
+%     \modela{Model A}                        & {10.88} & {46.7\conf{0.7}} & {94.4\conf{0.8}} & {18.4\conf{3.2}} & {56.4\conf{1.7}} \\
+%     \modelb{Model B}                        & {10.88} & {40.2\conf{9.7}} & {22.2\conf{6.9}} & {93.8\conf{1.7}} & {58.1\conf{2.9}} \\
+%     \hline
+%     W. Avg                                  &  10.88     & {31.5\conf{2.2}}             & {50.9\conf{13.8}}             & {50.2\conf{7.6}}              & {50.6\conf{3.9}} \\
+%     Git Re-Basin$\ddag$                     &  10.88     & {27.3\conf{0.5}}             & {46.3\conf{1.6}}              & {46.3\conf{9.3}}              & {38.9\conf{7.7}}  \\
+%     Permute                                 &  10.88     & {49.4\conf{7.0}}             & {82.6\conf{6.3}}              & {82.5\conf{8.3}}              & {82.5\conf{3.6}} \\
+%     \default{{\bf \name{}}$_\text{20/20}$}  &  10.88     & \textbf{72.0\conf{2.5}}      & \textbf{90.0\conf{1.3}}       & \textbf{88.2\conf{3.2}}       & \textbf{89.1\conf{1.7}} \\
+%     \hline
+%     \gc{Ensemble}                           & \gc{21.76} & \gc{76.9\conf{0.7}}          & \gc{93.0\conf{.8}}            & \gc{93.9\conf{2.2}}           &  \gc{92.1\conf{2.0}} \\
+%     % \default{{\bf \name{}}$_\text{19/20}$}  &  10.88     & \textbf{72.0\conf{2.5}}      & \textbf{90.0\conf{1.3}}       & \textbf{88.2\conf{3.2}}       & \textbf{89.1\conf{1.7}} \\
+%     \default{{\bf \name{}}$_\text{13/20}$}  & {14.52}    & {73.4\conf{2.7}}                & {91.5\conf{0.9}}                 & {89.6\conf{3.4}}                 & {90.5\conf{1.6}} \\
+%     \default{{\bf \name{}}$_\text{7/20}$}   & {18.14}    &  \textbf{75.5\conf{2.9}}        &  \textbf{92.7\conf{1.0}}         & \textbf{90.7\conf{3.3}}          & \textbf{91.7\conf{1.5}} \\
+% \end{tabular}
+%     }
+% }
+% \captionof{table}{\textbf{CIFAR-10 (5+5) Cross Entropy.} \name{}\ vs. baselines using ResNet-20 ($16\times$ width). 
+% Merging the entire model with \name{} \ nearly achieves the ensemble with half the FLOPs and vastly outperforms the nearest baseline. 
+% Partially merging, brings \name{}\ even closer to the ensemble.
+% $\ddag$ refers to \cite{ainsworth2022git}
+% % all pairs (2-way merging) and per-task accuracy for each head (4-way merging).
+% % We compare to our strong baseline as \cite{ainsworth2022git} doesn't support models with different outputs.
+% }
+% \label{tab:cifar5_ce_results}
+% % \end{table}
+% \vspace{-20pt}
+% \end{wrapfigure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Eval with Node None %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{wrapfigure}{r}{.48\linewidth}
+\vspace{-10pt}
+\centering
+\resizebox{\linewidth}{!}{
+    \tablestyle{5pt}{1.1}
+    {
+    \tablestyle{5pt}{1.1}
+    \begin{tabular}{y{56}x{40}|x{30}x{30}x{30}x{30}}
+        & & \multicolumn{4}{c}{Accuracies (\%)}\\
+        Method & FLOPs (G) & Joint & \modela{Task A} & \modelb{Task B} & Avg \\
+    \shline
+    \modela{Model A}                        & {10.88} & {46.7\conf{0.6}} & {94.4\conf{0.8}} & {18.4\conf{3.1}} & {56.4\conf{1.7}} \\
+    \modelb{Model B}                        & {10.88} & {40.2\conf{9.6}} & {22.3\conf{6.9}} & {93.8\conf{1.7}} & {58.0\conf{2.9}} \\
+    \hline
+    W. Avg                                  &  10.88     & {30.4\conf{2.4}}             & {46.2\conf{13.4}}             & {47.0\conf{9.3}}              & {46.6\conf{3.9}} \\
+    Git Re-Basin$~\ddag$                     &  10.88     & {27.3\conf{0.5}}             & {46.3\conf{1.6}}              & {46.3\conf{9.3}}              & {38.9\conf{7.7}}  \\
+    Permute                                 &  10.88     & {45.4\conf{5.3}}             & {81.3\conf{7.9}}              & {79.5\conf{10.0}}              & {80.4\conf{3.8}} \\
+    \default{{\bf \name{}}$_\text{20/20}$}  &  10.88     & \textbf{66.0\conf{3.9}}      & \textbf{88.0\conf{0.9}}       & \textbf{86.7\conf{4.0}}       & \textbf{87.4\conf{2.0}} \\
+    \hline
+    \gc{Ensemble}                           & \gc{21.76} & \gc{80.0\conf{2.4}}          & \gc{94.4\conf{0.8}}            & \gc{93.8\conf{1.7}}           &  \gc{94.1\conf{0.7}} \\
+    \default{{\bf \name{}}$_\text{19/20}$}  &  10.89     & {72.0\conf{2.5}}      & {90.0\conf{1.3}}       & {88.2\conf{3.2}}       & {89.1\conf{1.7}} \\
+    \default{{\bf \name{}}$_\text{13/20}$}  & {14.52}    & {73.4\conf{2.7}}                & {91.5\conf{0.9}}                 & {89.6\conf{3.4}}                 & {90.5\conf{1.6}} \\
+    \default{{\bf \name{}}$_\text{7/20}$}   & {18.14}    &  \textbf{75.5\conf{2.9}}        &  \textbf{92.7\conf{1.0}}         & \textbf{90.7\conf{3.3}}          & \textbf{91.7\conf{1.5}} \\
+\end{tabular}
+    }
+}
+\captionof{table}{\textbf{CIFAR-10 (5+5) Cross Entropy.} \name{}\ vs. baselines using ResNet-20 ($16\times$ width). 
+Merging with \name{} \ up to the last layer (\name{}$_{19/20}$) nearly achieves the ensemble ``Task Avg.'' performance with half the FLOPs and vastly outperforms the nearest baseline. 
+Partially merging, brings \name{}\ even closer to the ensemble.
+$\ddag$ refers to \cite{ainsworth2022git}
+% all pairs (2-way merging) and per-task accuracy for each head (4-way merging).
+% We compare to our strong baseline as \cite{ainsworth2022git} doesn't support models with different outputs.
+}
+\label{tab:cifar5_ce_results}
+% \end{table}
+\vspace{-20pt}
+\end{wrapfigure}

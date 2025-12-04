@@ -1,0 +1,113 @@
+% Compare all existing approaches, add MATH results
+% \begin{table}[!htb]
+%     \centering
+%     \begin{tabular}{ll|c|c}
+%         \multicolumn{2}{l|}{Method}         & GSM8K  & MATH   \\
+%         \hline
+%         \multicolumn{2}{l|}{GPT-4 }         & $92.0$ & $42.5$ \\
+%         \multicolumn{2}{l|}{GPT-4 (PAL)}    & $94.2$ & $51.8$ \\
+%         \hline
+%          \multirow{3}{*}{Gemini} & 1.0 Pro  & $77.9$ & $32.6$ \\
+%          & 1.0 Ultra                        & $88.9$ & $53.2$ \\
+%          & 1.5 Pro                          & $92.5$ & $58.5$ \\
+%         \hline
+%         \multicolumn{2}{l|}{ChatGPT}        & $80.8$ & $35.5$ \\
+%         \multicolumn{2}{l|}{Claude-2}       & $85.2$ & $32.5$ \\
+%         \multicolumn{2}{l|}{PaLM-2}         & $80.7$ & $34.3$ \\
+%         \hline
+%         \multicolumn{2}{l|}{LLaMA-2 70B}     & $57.8$ & $14.4$ \\
+%         \multicolumn{2}{l|}{LLaMA-2 70B SFT} & $69.3$ & $14.9$ \\
+%       % \multicolumn{2}{l|}{ToRA}            & $84.3$ & $49.7$ \\
+%     \multicolumn{2}{l|}{WizardMath 70B V1.0} & $81.6$ & $22.7$ \\
+%         \hline \hline
+%         \multirow{2}{*}{MCTS} & Base model  & $88.9$ & $48.7$ \\
+%          & Improved policy                  & $92.4$ & $51.0$   \\
+%         \hline
+%     \end{tabular}
+%     \vspace{4mm}
+%     \caption{Overall results on GSM8K and MATH test sets. 
+%     We use LLaMA-2 70B and WizardMath 70B V1.0 as our base models on GSM8K and MATH data sets respectively. 
+%     }
+%     \label{tab:final_result}
+% \end{table}
+
+{
+\renewcommand{\arraystretch}{1.05}
+% \begin{table*}[!t]
+% \centering
+% \scalebox{1.1}{    
+% 	\setlength\tabcolsep{6pt}
+% 	% \begin{threeparttable}
+% 		% \fontsize{9}{9}
+% 		% \selectfont
+% 		\begin{tabular}{lcc|cc}
+% 			\toprule
+% 			Model         & \texttt{IDD} & \texttt{SYN} & \texttt{GSM8K} & \texttt{MATH} \cr 
+% 			\midrule
+%     GPT-3.5~\cite{} & - & - & 80.8 & 35.5 \cr
+%    GPT-4~\cite{} & - & - & 92.0 & 42.5 \cr
+%    GPT-4 (PAL)~\cite{} & - & - & 94.2 & 51.8 \cr
+%    \midrule
+%    Gemini 1.0 Pro~\cite{} & - & - & 77.9 & 32.6 \cr
+%    Gemini 1.0 Ultra~\cite{} & - & - & 88.9 & 53.2 \cr
+%    Gemini 1.5 Pro~\cite{} & - & - & 92.5 & 58.5 \cr
+%    \midrule
+%    Claude-2~\cite{} & - & - & 85.2 & 32.5 \cr
+%    PaLM-2 540B~\cite{} & - & - & 80.7 & 34.3 \cr
+%    \midrule
+%    LLaMA-2 70B & $\times$ & $\times$ & 57.8 & 14.4 \cr
+%    LLaMA-2 70B SFT & $\checkmark$ & $\times$ & 69.3 & 14.9 \cr
+%    WizardMath 70B V1.0 & $\times$ & $\times$ & 81.6 & 22.7 \cr
+%    \midrule
+%    \model{} & $\checkmark$ & $\times$ & 88.9 & 48.7 \cr
+%    \model{} & $\checkmark$ & $\checkmark$ & 92.4 & 51.0 \cr
+% 			\bottomrule  
+% 		\end{tabular}
+% 	% \end{threeparttable}
+% 		  }
+% 	\caption{Overall results on GSM8K and MATH test sets. 
+%     We use LLaMA-2 70B and WizardMath 70B V1.0 as our base models on GSM8K and MATH data sets respectively. \texttt{IDD} indicates that the model has been trained using in-domain data. \texttt{SYN} denotes that the model has been trained on synthetic prompts, with trajectories generated using MCTS. }
+% 	\label{table:main_results}
+% \end{table*}
+
+\begin{table*}[!t]
+\small
+    \centering
+    % \scalebox{1.1}{    
+        \setlength\tabcolsep{6pt}
+        % \begin{threeparttable}
+        % \fontsize{9}{9}
+        % \selectfont
+        \begin{tabular}{lccccc|cc}
+            \toprule
+            Model                    & \texttt{Decoding} & \texttt{\#Annotation} & \texttt{RN} & \texttt{FA} & \texttt{SYN} & \texttt{GSM8K} & \texttt{MATH} \cr 
+            \midrule
+            GPT-3.5~\cite{}          & Sampling & - & - & -             & -            & 80.8           & 35.5 \cr          
+            GPT-4~\cite{}            & Sampling & -  & - & -          & -            & 92.0           & 42.5 \cr          
+            GPT-4 (PAL)~\cite{}      & Sampling & -   & - & -         & -            & 94.2           & 51.8 \cr          
+            \midrule
+            Gemini 1.0 Pro~\cite{}   & Sampling & -   & - & -          & -            & 77.9           & 32.6 \cr          
+            Gemini 1.0 Ultra~\cite{} & Sampling & -    & - & -         & -            & 88.9           & 53.2 \cr          
+            Gemini 1.5 Pro~\cite{}   & Sampling & -     & - & -        & -            & 92.5           & 58.5 \cr          
+            \midrule
+            Claude-2~\cite{}         & Sampling & -     & - & -        & -            & 85.2           & 32.5 \cr          
+            PaLM-2 540B~\cite{}      & Sampling & -      & - & -       & -            & 80.7           & 34.3 \cr          
+            \midrule
+            Llama-2-70b              & Greedy & 0 & $\times$ & $\times$ & $\times$         & 57.8           & - \cr          
+            Llama-2-70b SFT          & Greedy & 7.5k & $\checkmark$ & $\checkmark$ & $\times$     & 69.3           & - \cr          
+            WizardMath-70B-V1.0      & Greedy & 96k & $\checkmark$ & $\checkmark$ & $\times$         & -           & 20.7 \cr          
+            \model{}                 & Greedy & 7.5k/7.5k & $\times$ & $\checkmark$ & $\checkmark$ & 73.7           & 23.6 \cr         
+            \midrule
+            \model{}                 & \emcts{} & 7.5k/7.5k & $\times$ & $\checkmark$ & $\times$      & 88.9           & 48.7 \cr          
+            \model{}                 & \emcts{} & 7.5k/7.5k & $\times$ & $\checkmark$ & $\checkmark$  & 92.0           & 51.0 \cr                       
+            \bottomrule   
+        \end{tabular}
+        % \end{threeparttable}
+    
+    % \caption{Comparison results of \model{} on the GSM8K and MATH datasets, utilizing LLaMA-2 70B and WizardMath 70B V1.0 as base models for GSM8K and MATH datasets, respectively. \texttt{\#Annotation} indicates the quantity of labeled data employed for fine-tuning each base model. The annotation used for training are noted as \texttt{RN} for rationales and \texttt{FA} for final answers. \texttt{SYN} means models trained on synthetic prompts, where trajectories were generated using \emcts{}. }
+
+\caption{Comparison results of \model{} on the GSM8K and MATH datasets. \texttt{\#Annotation} indicates the quantity of labeled data employed for fine-tuning policy or training critic models. The annotation used for training are noted as \texttt{RN} for rationales and \texttt{FA} for final answers. \texttt{SYN} means models trained on synthetic prompts, where trajectories were generated using \emcts{}. }
+    
+    \label{table:main_results}
+\end{table*}
+}

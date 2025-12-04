@@ -1,0 +1,30 @@
+\input{figures/11_alg_ablations_and_partial_and_model_size}
+\section{Analysis} \label{sec:ablations}
+% Here, we analyze and ablate the performance of \name{}\ on the settings described in Sec.~\ref{sec:results}.
+
+
+\paragraph{Merging \textit{within} Models.}
+A critical piece of \name{}\ compared to prior work is the ability to merge \textit{within} models, not just \textit{across} models. In Sec.~\ref{sec:partial_zip}, we introduce a budget parameter $\beta$ to limit the number of same-model merges, 
+and here use CIFAR-100 (50+50) and ImageNet-1k (200+200) to illustrate its effectiveness (Fig.~\ref{fig:variations}\hyperref[fig:variations]{a}).
+On CIFAR, same-model merges are very important, with the optimal budget being above 0.8, meaning 80\% of merges are allowed to be within the same model. This is not the case, however, on ImageNet, where the difficulty of the task means there likely are much fewer redundant features \textit{within} each model.
+
+\paragraph{Model Scale.}
+In Fig.~\ref{fig:variations}\hyperref[fig:variations]{b}, we test the effect of model scale directly by evaluating joint accuracy on our CIFAR-100 (50+50) setting with ResNet-20 models of increasing width. Here, we explicitly see that when the width of the models are too small for the task (e.g., $<4\times$), \name{}\ and the Permute baseline perform identically (though both much better than Git Re-Basin). However, when the scale increases, \name{}\ trends toward the ensemble upper bound of 75\%, while both the Permute baseline and Git Re-Basin plateau at around 45\%. This corroborates Eq.~\ref{eq:mainpaper_barrier} and indicates our method uses the extra model capacity effectively, much better than prior work.
+\input{figures/10_alg_choice}
+\vspace{-1em}
+\paragraph{Matching Algorithm.}
+In Tab.~\ref{tab:matching_alg}, we compare matching algorithms used to compute \modelc{$M_i$} in Eq.~\ref{eq:zip}. Using either the identity (weight averaging) or a permutation (as in prior work) underperforms on CIFAR-10 (5+5) joint 10-way classification. 
+In contrast, we obtain up to 21.2\% higher accuracy if we allow both permutations and \textit{merging within models}.
+% In contrast, if we allow merging \textit{within} models as well, then we obtain up to 21.2\% higher accuracy than permuting alone. 
+However, doing this optimally is difficult, as the standard linear sum assignment algorithm assumes bipartite matches. We could use a optimal graph-based solver (e.g., \citet{networkx}) instead, but doing so is prohibitively slow (11 minutes to transform a ResNet-20$\times$4 model). Thus, we find matches greedily by repeatedly taking the most correlated pair of features without replacement. This performs almost as well, and is multiple orders of magnitude faster. If we allow repeated matches (Sec.~\ref{sec:partial_zip}), we obtain a slightly better result.
+Like \citet{bolya2022token}, we find that matching is better for merging features than clustering (K-Means).
+
+% \input{figures/14_model_size}
+% indicates that our method uses the extra capacity of these models effectively, much better than prior work.
+
+% \input{figures/12_alg_partial_zip}
+
+% \paragraph{Partial Zipping.} Overall, we find partial zipping to be a simple yet effective technique to add capacity back to the merged model. For CIFAR-100, we can obtain near ensemble accuracies at a 1.5$\times$ speed-up (Tab.~\ref{tab:cifar50+50}). Similarly on a difficult setting like ImageNet, partial zipping is \textit{necessary} to obtain any reasonable accuracy. Additional results in Appendix~\ref{ap:partial_zipping}.
+
+% In Fig.~\ref{fig:variations}, we plot the average per task accuracy by the number of layers zipped in ResNet-20$\times$8 for CIFAR-100 (50+50) and ResNet-50 for ImageNet-1k (200+200). Note that to avoid adding extra unmerge modules into the network, our stopping point while unzipping has to be the end of a stage. 
+% Overall, we find partial zipping to be a simple yet effective technique to add capacity back to the merged model. For CIFAR-100, we can obtain near ensemble accuracies at a 1.5$\times$ speed-up. Similarly on a difficult setting like ImageNet, partial zipping is \textit{necessary} to obtain any reasonable accuracy.

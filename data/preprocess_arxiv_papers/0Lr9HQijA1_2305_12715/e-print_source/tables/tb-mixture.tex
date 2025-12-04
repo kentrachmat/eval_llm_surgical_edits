@@ -1,0 +1,28 @@
+\begin{table}[t!]
+\centering
+\caption{Accuracy comparison of \textbf{mixture of different imprecise labels}. We report results of full labels, partial ratio $q$ of 0.1 (0.01) and 0.3 (0.05) for CIFAR-10 (CIFAR-100), and noise ratio $\eta$ of 0.1, 0.2, and 0.3 for CIFAR-10 and CIFAR-100.
+% We copy the baseline results from \citep{xu2023dali}.
+}
+\label{tab:main-mix}
+% \vspace{-0.05in}
+\resizebox{0.85 \textwidth}{!}{%
+\begin{tabular}{@{}l|c|ccc|c|ccc@{}}
+\toprule
+\multirow{2}{*}{Method} & \multirow{2}{*}{$q$} & \multicolumn{3}{c|}{CIFAR-10, $l$=50000} & \multirow{2}{*}{$q$} & \multicolumn{3}{c}{CIFAR-100, $l$=50000} \\
+            &                   & $\eta$=0.1 & $\eta$=0.2 & $\eta$=0.3 &                   & $\eta$=0.1 & $\eta$=0.2 & $\eta$=0.3 \\ \midrule
+PiCO+ \citep{wang2022pico+}      & \multirow{6}{*}{0.1} &  93.64   &  93.13   & 92.18 & \multirow{6}{*}{0.01} &   71.42  &   70.22   &  66.14   \\
+IRNet \citep{lian2022irnet}      &                   &   93.44  &   92.57  &  92.38   &                   &   71.17  &  70.10   &  68.77   \\
+DALI \citep{xu2023dali}       &                   &  94.15   &   94.04  &     93.77   &                   &  72.26   &  71.98   &   71.04   \\
+PiCO+ Mixup \citep{xu2023dali} &                   &  94.58   &  94.74   &  94.43 &                   &   75.04  &   74.31  &  71.79   \\
+DALI Mixup \citep{xu2023dali}   &                   &  \underline{95.83}    &  \underline{95.86}   &  \underline{95.75}   &                   &  \underline{76.52}   &  \underline{76.55}   &  \underline{76.09}   \\
+Ours        &                   &   \textbf{96.47\scriptsize{±0.11}}  &   \textbf{96.09\scriptsize{±0.20}}   &   \textbf{95.83\scriptsize{±0.05}}   &                   &  \textbf{77.53\scriptsize{±0.24}}   &   \textbf{76.96\scriptsize{±0.02}}   &   \textbf{76.43\scriptsize{±0.27}}    \\ \midrule
+PiCO+  \citep{wang2022pico+}     & \multirow{6}{*}{0.3} &     92.32  &  92.22   &    89.95  & \multirow{6}{*}{0.05} &    69.40  &  66.67   &     62.24   \\
+IRNet  \citep{lian2022irnet}     &                   &   92.81   & 92.18    &  91.35    &                   &    70.73   &  69.33   &   68.09   \\
+DALI \citep{xu2023dali}       &                   &  93.44   &  93.25   &    92.42  &                   &  72.28   &   71.35  &   70.05   \\
+PiCO+ Mixup \citep{xu2023dali} &                   &  94.02   &  94.03    & 92.94    &                   &  73.06   &   71.37   &  67.56   \\
+DALI Mixup  \citep{xu2023dali} &                   &  \underline{95.52}   &  \underline{95.41}    &  \underline{94.67}   &                   &   \underline{76.87}  &  \underline{75.23}   &  \underline{74.49}   \\
+Ours        &                   &   \textbf{96.2\scriptsize{±0.02}}   &  \textbf{95.87\scriptsize{±0.14}}   &  \textbf{95.22\scriptsize{±0.06}}   &                   &    \textbf{77.07\scriptsize{±0.16}} &  \textbf{76.34\scriptsize{±0.08}}    & \textbf{75.13\scriptsize{±0.63}}     \\ \bottomrule
+\end{tabular}%
+}
+\vspace{-0.05in}
+\end{table}

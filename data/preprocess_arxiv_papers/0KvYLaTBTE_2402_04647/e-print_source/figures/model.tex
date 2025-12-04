@@ -1,0 +1,50 @@
+\begin{tikzpicture}[->, >=stealth', auto, thick, node distance=1.3cm]
+    % First figure
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1,minimum size=0.7cm]
+    \node[state]    (z)                                 {$z$};
+    \node[state]    (z0)[above =0.6cm of z,label=center:$z_0$] {\phantom{$z$}};
+    \node[state]    (x)[below left=0.48cm and 0.36cm of z,fill=black!20,label=center:$\tau$] {\phantom{$z$}};
+    \node[state]    (y)[below right=0.48cm and 0.36cm of z,fill=black!20,label=center:$y$] {\phantom{$z$}};
+    \path
+    (z) edge[right]               (y)
+    (z) edge[left]                (x)
+    (z0) edge[left]      node{\small $z=U_\alpha{(z_0)}$}          (z);
+    \node       (pa)[right= -0.05cm of z]    {\small $p_\alpha(z)$};
+    \node       (px)[below= -0.08cm of x]    {\small $p_\beta(\tau|z)$};
+    \node       (py)[below= -0.08cm of y]    {\small $p_\gamma(y|z)$};
+
+    % Dashed line in the middle
+    \draw[dashed, -] (1.75cm, -1.8cm) -- (1.75cm, 2.2cm);
+    
+    % Second figure
+    \begin{scope}[shift={(4.5cm,1cm)}, block/.style={rectangle, draw, fill=black!10, minimum width=3cm, minimum height=0.6cm, align=center, rounded corners},
+    arrow/.style={thin, -stealth'},
+    bigbox/.style={draw, thick, rounded corners, inner sep=5pt, dashed}]
+    
+        % Sub-boxes
+        \node[block] (cross) {\small Cross-attention};
+        \node[block, below=0.75cm of cross] (causal) {\small Causal Transformer};
+
+        % Main box that fits around the sub-boxes
+        \begin{scope}[on background layer]
+        \node[bigbox, fit=(cross) (causal)] (mainbox) {};
+        \end{scope}
+
+        % Times N at the top right of Causal Transformer
+        \node[above right=0.1cm and -0.5cm of cross.north east, anchor=south west] (N) {$\times N$};
+
+        % Variable z and arrows
+        \node[left=0.5cm of mainbox.west] (z2) {$z$};
+        \node[below=0.3 cm of mainbox] (xi) {\small$\tau=(s_1,a_1,s_2,a_2,\dots, s_H, a_H)$};
+        \node[above=0.3 cm of mainbox] (xo) {\small$a_1,a_2,\dots,\cdots,a_H$};
+
+        % Arrows to cross-attention
+        \draw[arrow] (z2) -| ($(cross.south west)!0.25!(cross.south east)$);
+        \draw[arrow] (z2) -| ($(cross.south west)!0.5!(cross.south east)$);
+        \draw[arrow] (xi) -- (causal);
+        \draw[arrow] (cross) -- (xo);
+
+        % Arrow from causal transformer to cross-attention
+        \draw[arrow] ($(causal.north west)!0.75!(causal.north east)$) -- ($(cross.south west)!0.75!(cross.south east)$);
+    \end{scope}
+\end{tikzpicture}

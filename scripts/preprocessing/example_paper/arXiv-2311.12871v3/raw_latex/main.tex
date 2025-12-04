@@ -1,0 +1,552 @@
+
+\documentclass{article}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} %
+
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+\usepackage[accepted]{icml2024}
+
+\input{configs}
+
+\icmltitlerunning{An Embodied Generalist Agent in 3D World}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{An Embodied Generalist Agent in 3D World}
+
+
+
+\icmlsetsymbol{equal}{*}
+\icmlsetsymbol{lead}{†}
+
+\begin{icmlauthorlist}
+\icmlauthor{Jiangyong Huang}{equal,bigai,pku}
+\icmlauthor{Silong Yong}{equal,bigai,thu}
+\icmlauthor{Xiaojian Ma}{equal,lead,bigai}
+\icmlauthor{Xiongkun Linghu}{equal,bigai}
+\icmlauthor{Puhao Li}{bigai,thu} \\
+\icmlauthor{Yan Wang}{bigai}
+\icmlauthor{Qing Li}{bigai}
+\icmlauthor{Song-Chun Zhu}{bigai,pku,thu}
+\icmlauthor{Baoxiong Jia}{bigai}
+\icmlauthor{Siyuan Huang}{lead,bigai}
+\end{icmlauthorlist}
+
+\icmlaffiliation{bigai}{State Key Laboratory of General Artificial Intelligence, Beijing Institute for General Artificial Intelligence (BIGAI)}
+\icmlaffiliation{pku}{Peking University}
+% \icmlaffiliation{cmu}{Carnegie Mellon University}
+\icmlaffiliation{thu}{Tsinghua University}
+
+
+\icmlkeywords{Embodied Generalist Agent, 3D Vision-Language, Grounded 3D Scene Understanding, ICML}
+
+\vskip 0.3in
+]
+
+
+
+\printAffiliationsAndNotice{\icmlEqualContribution \textsuperscript{†}Research lead} %
+
+\begin{abstract}
+Leveraging massive knowledge from \ac{llm}, recent machine learning models show notable successes in general-purpose task solving in diverse domains such as computer vision and robotics. However, several significant challenges remain: (i) most of these models rely on 2D images yet exhibit a limited capacity for 3D input; (ii) these models rarely explore the tasks inherently defined in 3D world, \eg, 3D grounding, embodied reasoning and acting.
+We argue these limitations significantly hinder current models from performing real-world tasks and approaching general intelligence. To this end, we introduce \agent, an embodied multi-modal generalist agent that excels in perceiving, grounding, reasoning, planning, and acting in the 3D world. \agent is trained with a unified task interface, model architecture, and objective in two stages: (i) 3D vision-language (VL) alignment and (ii) 3D \ac{vla} instruction tuning. We collect large-scale datasets comprising diverse object-level and scene-level tasks, which require considerable understanding of and interaction with the 3D world. Moreover, we meticulously design an LLM-assisted pipeline to produce high-quality 3D VL data. Through extensive experiments, we demonstrate \agent's remarkable proficiency across a wide spectrum of tasks, including 3D captioning, question answering, embodied reasoning, navigation and manipulation. Our ablative studies and scaling analyses further provide valuable insights for developing future embodied generalist agents. Code and data are available on \href{https://embodied-generalist.github.io/}{project page}.
+\end{abstract}
+\section{Introduction}\label{sec:intro}
+
+Building one generalist model that can handle comprehensive tasks like humans has been a long-existing pursuit in artificial intelligence and neuroscience~\citep{lake2015human,lake2017building,zhu2020dark, mountcastle1979organizing,schmidhuber2018one,huang2022perceive}. Recent advances in \ac{llm}~\citep{brown2020language} and ``foundation models''~\citep{bommasani2021opportunities} emerge as a promising paradigm in building such generalist models in natural language processing~\citep{openai2022chatgpt,openai2023gpt4}, computer vision~\citep{kirillov2023segment,alayrac2022flamingo}, and robotics~\citep{brohan2022rt,brohan2023rt,reed2022generalist,driess2023palm,li2023multimodal}. The keys to the success of this paradigm lie in large-scale internet-level datasets from numerous tasks and domains, as well as scalable Transformer architectures~\citep{vaswani2017attention} that can absorb generalizable and task-agnostic knowledge from the data. 
+Nonetheless, existing generalist models primarily thrive within 2D domains, lacking comprehension of the 3D physical environment that envelops human-level intelligence. This limitation stands as an obstacle that prevents current models from solving real-world tasks and approaching general intelligence. Therefore, we ask a fundamental question: \textit{how to equip the generalist agent with a comprehensive understanding of and the ability to interact with the real 3D world}?
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=\textwidth]{figs/leo_model_v15.pdf}%
+  \caption{\textbf{The proposed embodied generalist agent \agent}. It takes egocentric 2D images, 3D point clouds, and texts as input and formulates comprehensive 3D tasks as autoregressive sequence prediction. By instruction-tuning \agent, it extends the capability of \ac{llm} to multi-modal vision-language-action tasks with a unified model.}
+  \label{fig:leo}
+  \vskip -0.05in
+\end{figure*}
+
+The development of such generalist agents encounters three primary challenges: the lack of suitable datasets, unified models, and effective learning strategies. Despite substantial progress in scaling up image-text models~\citep{tsimpoukelli2021multimodal,alayrac2022flamingo} and the curation of corresponding datasets~\citep{radford2021learning,schuhmann2022laion}, advancement in 3D scene-level understanding has significantly lagged behind. This is largely attributed to the limited scale and manual labeling of 3D datasets \citep{dai2017scannet,wald2019rio,chen2020scanrefer}, given the higher cost associated with collecting 3D data compared to 2D data. Furthermore, large-scale unified pretraining and efficient finetuning are under-explored by previous 3D VL models, which are often designed with strong priors \citep{zhao20213dvg,chen2022language}. Notably, recent works \citep{zhu20233d,hong20233d} utilize multi-modal Transformer together with synthetic data to enhance the model's capability in grounded 3D scene understanding. Nevertheless, they fall short in embodied tasks, \eg, acting within 3D environments. Additionally, there are significant yet rarely explored problems, \eg, the potential of \ac{vla} learning and efficient adaptation of \ac{llm} for 3D tasks.
+
+
+In this work, we introduce the generalist agent \agent, which is generically embodied, multi-modal, and general-purpose. It can take egocentric 2D images, 3D point clouds, and texts as task input and handle comprehensive tasks within the 3D environment. As shown in \cref{fig:leo}, \textit{\agent exhibits the capability of perceiving, grounding, reasoning, planning, and acting with a unified task interface, model architecture, and objective.} \agent perceives through an egocentric 2D image encoder for the embodied view and an object-centric 3D point cloud encoder for the third-person global view. Such perception modules can be flexibly adapted to various embodied environments and enhance 3D reasoning. The encoded visual tokens are interleaved with text tokens to form a unified multi-modal task sequence, which further serves as the input to a decoder-only LLM. Equipped with a vocabulary containing both text and action tokens, the LLM can generate responses to various tasks simultaneously. Consequently, all the tasks are formulated as sequence prediction, thereby accommodating a unified training objective.
+
+Following prior experiences \citep{liu2023visual}, we adopt a two-stage learning scheme, \ie, 3D VL alignment and 3D \ac{vla} instruction tuning. We accordingly collect large-scale comprehensive datasets \agent-align and \agent-instruct, which comprise diverse object-level and scene-level tasks. Notably, we meticulously design an LLM-assisted pipeline to generate high-quality 3D VL data, wherein we propose to prompt \ac{llm} \citep{openai2022chatgpt} with scene graphs and \ac{ocot} method. To further enhance quality control, we devise a series of refinement procedures via regular expression matching and scene graph retrieval. We demonstrate our approach largely enriches the data scale and diversity, meanwhile mitigating hallucination in LLM-generated data.
+
+
+We quantitatively evaluate and ablate \agent on diverse 3D tasks, including 3D captioning~\citep{chen2021scan2cap}, 3D question answering~\citep{azuma2022scanqa}, situated question answering~\citep{ma2023sqa3d}, embodied navigation~\citep{ramrakhya2022habitat}, and robotic manipulation~\citep{cliport}. The results indicate (i) through task-agnostic instruction tuning with a unified model, \agent achieves state-of-the-art performances on most tasks, particularly surpassing previous task-specific models; (ii) \agent shows proficiency in scene-grounded dialogue and planning, capable of generating flexible and coherent responses; (iii) \agent achieves comparable performances to \sota task-specific models on navigation and manipulation tasks, and exhibits remarkable generalization ability; (iv) \agent's strong performances stem from both data and model aspects, including the alignment stage, data diversity, generalist-style instruction tuning, and object-centric representation; (v) \agent manifests the scaling law that echoes prior findings~\citep{kaplan2020scaling,reed2022generalist,openai2023gpt4}. We also present qualitative results to illustrate \agent's versatility and proficiency in grounded 3D scene understanding.
+
+
+In summary, our main contributions are as follows: (i) we propose \agent, the first embodied generalist agent capable of following human instructions to perceive, ground, reason, plan, and act in the 3D world; (ii) we propose a simple yet effective framework that connects object-centric 3D representation and LLM to efficiently bridge the gap between vision, language, and embodied action; (iii) we collect large-scale comprehensive datasets for our two-stage generalist training scheme, and particularly propose an LLM-assisted pipeline for the generation of high-quality 3D VL data; (iv) we conduct extensive experiments to demonstrate \agent's proficiency across various tasks, and present in-depth analyses to reveal valuable insights; (v) we release the data, code, and model weights to endow the future research in embodied generalist agents.
+
+\section{Model}\label{sec:model}%
+The leading design principles of \agent are two-fold: 1) It should handle the multi-modal input of egocentric 2D, global 3D, and textual instruction, and the output of textual response as well as embodied action commands in a unified architecture; 2) It should leverage pre-trained large language models (LLMs) as a powerful prior for the downstream tasks. We therefore convert all data of different modalities into a sequence of tokens, illustrated below:
+\vskip -0.3in
+\begin{equation}\label{equ:data}
+\begin{split}
+    &\underbrace{\text{\texttt{You are...}}}_{\text{system message}}~\underbrace{s_{\text{2D}}^{(1)},..., s_{\text{2D}}^{(M)}}_{\substack{\text{2D image tokens}\\ \text{(optional)}}}\underbrace{s_{\text{3D}}^{(1)},..., s_{\text{3D}}^{(N)}}_{\substack{\text{object-centric}\\\text{3D tokens}}},\\
+    &\underbrace{\text{\texttt{USER:... ASSISTANT:}}}_{\text{instruction}}~\underbrace{s_{\text{res}}^{(1)},...s_{\text{res}}^{(T)}}_{\text{response}}.
+\end{split}
+\end{equation}
+\vskip -0.2in
+With this representation, we formulate the learning of \agent as GPT-style autoregressive language modeling~\citep{brown2020language} given the \textit{prefix} (from \textit{system message} to \textit{instruction}), \ie prefix language modeling~\citep{raffel2020exploring}. Therefore, a pretrained LLM can be used to process such sequences. Next, we will detail the tokenization of multi-modal data, model architecture, training loss, and inference settings. An overview of our model can be found in \cref{fig:leo}.
+\vskip -0.5in
+
+\subsection{Tokenization}\label{sec:model_tokenization}
+
+We follow prior practices in 2D VLM~\citep{liu2023visual,alayrac2022flamingo} and 3D VLM~\citep{zhu20233d} to tokenize the multi-modal data in \agent. 
+We use SentencePiece tokenizer~\citep{kudo2018sentencepiece} to encode text with 32k subwords; 2D image tokens for egocentric 2D images; and object-centric 3D tokens extracted over Mask3D-based~\citep{schult2022mask3d} object proposals for 3D point cloud inputs.
+For embodied action commands, continuous actions (\eg in manipulation) are discretized (details in \cref{sec:action_tokenization}) to join the discrete actions (\eg navigation) and form a unified discrete action space. We follow~\cite{brohan2023rt} to map these discrete actions to the least used tokens in SentencePiece.
+After tokenization, all tokens are ordered into the format in (\ref{equ:data}).
+
+
+\begin{table*}[t!]
+\begin{minipage}{0.65\linewidth}
+    \captionof{table}{\label{tab:data_stat}\textbf{Datasets statistics}. We illustrate key statistics of datasets for 3D VL alignment (\agent-align) and 3D VLA instruction tuning (\agent-instruct). \textit{res.} (response) denotes tokens to be predicted, while \textit{prefix} denotes those in the context.} 
+    \centering
+    \small
+    \setlength\tabcolsep{3pt}
+    \resizebox{1.0\linewidth}{!}{
+    \begin{tabular}{ccccccc}
+    \toprule
+         Dataset & Task & 2D input & 3D assets & \#data & \makecell{\#token\\(\textit{res.})} & \makecell{\#token\\(\textit{prefix}+\textit{res.})} \\ 
+         \midrule
+         \multirow{3}{*}{\agent-align} & object captioning & \xmark & Objaverse & 660K & 10M & 27M \\
+         & object referring & \xmark & ScanNet + 3RScan &  354K & 15M & 39M  \\
+         & scene captioning & \xmark & 3RScan & 20K & 3.3M & 4.4M \\
+         \midrule
+        \multirow{6}{*}{\agent-instruct} & 3D captioning & \xmark & ScanNet & 37K & 821K & 3M  \\
+         & 3D QA & \xmark & ScanNet + 3RScan & 83K & 177K & 4M \\
+         & 3D dialogue & \xmark & 3RScan & 11K & 1.1M & 8.3M \\
+         & task planning & \xmark & 3RScan & 14K & 1.9M & 2.7M  \\
+         & navigation & \cmark & MP3D & 60K & 11.4M & 272M \\
+         & manipulation & \cmark & CLIPort & 300K & 7.2M & 734M \\
+         \bottomrule
+    \end{tabular}
+    }
+\end{minipage}
+\hfill
+\begin{minipage}{0.33\linewidth}
+    \centering
+    \small
+    {Answer accuracy of LLM-generated data on three types of questions.}\label{tab:data_quality_comparison}
+    \setlength\tabcolsep{3pt}
+    \resizebox{1.0\linewidth}{!}{
+    \begin{tabular}{lccc}
+        \toprule
+         & Counting & Existence & Non-existence \\
+        \midrule
+        3D-LLM & 56.5 & 96.8 & 40.0 \\
+        \midrule
+        Ours & 57.4 & 91.3 & 27.4 \\
+        + O-CoT & 78.0 & 93.4 & 30.5 \\
+        + refinement & 100.0 & 100.0 & 100.0 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \captionof{table}{The amount of examined data in \cref{tab:data_quality_comparison}. 3D-LLM data \citep{hong20233d} is much less since we can only access a subset.}\label{tab:data_quality_statistics}
+    \setlength\tabcolsep{3pt}
+    \resizebox{1.0\linewidth}{!}{
+    \begin{tabular}{lccc}
+        \toprule
+         & Counting & Existence & Non-existence \\
+        \midrule
+        3D-LLM & 434 & 95 & 10 \\
+        Ours & 2666 & 6766 & 3314 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{minipage}
+\vspace{-0.28em}
+\end{table*}
+
+
+\subsection{Token Embedding \& LLM}
+
+We apply several token embedding functions to process the tokens in the sequence before sending them to the LLM. The LLM will then align these tokens of different modalities, and produce the response. Most of the responses are text and can be decoded directly. For responses that include embodied actions, we will map the reserved SentencePiece text tokens back to action commands.
+
+\paragraph{Text \& 2D token embedding.}  For text tokens (including embodied actions that have been mapped to the reserved text tokens), an embedding look-up table is used to map them into vectors. While the egocentric 2D image is encoded by a pretrained OpenCLIP ConvNext~\citep{liu2022convnet} for obtaining image token embeddings.
+We apply MLP adapters to match the dimensions of all token embeddings.
+
+\paragraph{Object-centric 3D token embedding.} Each 3D object token (\ie, the point cloud of a 3D object) is first encoded by a pretrained point cloud encoder (\eg, PointNet++~\citep{qi2017pointnet++}). We then adopt the Spatial Transformer introduced in~\cite{chen2022language} to further process the point cloud embedding of all objects into object-centric 3D token embeddings. 
+In a nutshell, Spatial Transformer biases the standard attention score with relative position and size for capturing 3D relations between objects. 
+Due to space limit, the readers are referred to~\cite{chen2022language} and \cref{sec:supp_embedding} for more details. %
+
+\paragraph{Pretrained LLM.} We choose Vicuna-7B~\citep{vicuna2023}
+to process the token sequence. In order to tackle the challenging alignment and grounding problem of multi-modal tokens (2D, 3D, text, embodied action) while preserving the LLM pretrained knowledge, we employ LoRA~\citep{hu2022lora} to introduce additional tunable parameters to the frozen pretrained LLM. 
+
+\subsection{Training \& Inference}
+We formulate the learning objective of \agent following~\citep{brown2020language,raffel2020exploring} in a prefix language modeling fashion. For a batch $\mathcal{B}$ of token sequence $s$, we optimize \agent via:
+\vskip -0.3in
+\begin{align}
+   \mathcal{L}(\theta, \mathcal{B}) = -\sum^{|\mathcal{B}|}_{b=1}\sum^{T}_{t=1}\log p_{\theta}(s_{\text{res}}^{(b,t)}|s_{\text{res}}^{(b,<t)},s_{\text{prefix}}^{(b)}), 
+\end{align}
+\vskip -0.15in
+where $s_\text{prefix}$ denotes the prefix tokens (from \textit{system message} to \textit{instruction}) in (\ref{equ:data}). 
+During training, we freeze the pretrained 3D point cloud encoder and the LLM and finetune the 2D image encoder, the Spatial Transformer, and the LoRA parameters.
+In total, \agent has \textasciitilde{}7B parameters and \textasciitilde{}142M of them will be tuned. 
+During inference, we use beam search to generate textual responses. For tasks that require action commands, we map the textual outputs to action commands as discussed in \cref{sec:model_tokenization}. More details on the model and training can be found in \cref{app:model}.
+
+
+
+
+
+
+
+\section{Datasets}\label{sec:data}
+
+Since \agent is a generalist agent that receives multi-modal inputs and follows instructions, we adopt the two-stage training proposed by \citet{liu2023visual} and split the data into two sets: (i) \agent-align (\cref{sec:data:align}) that focuses on \textbf{3D \ac{vl} alignment} to bridge the gap between 3D scene representation and natural language; and (ii) \agent-instruct (\cref{sec:sft}) that targets at \textbf{3D VLA instruction tuning} to endow \agent with various capabilities. The statistics and examples of these datasets can be found in \cref{tab:data_stat} and \cref{sec:supp_leo_ds_examples}, respectively. Due to the data scarcity, we adopt LLMs to facilitate the data generation process and outline the details in \cref{sec:data:generation}.
+
+\subsection{\agent-align: 3D Vision-Language Alignment}\label{sec:data:align}
+In \agent-align, we focus on 3D \ac{vl} alignment. Similar to BLIP-2~\citep{li2023blip}, we train \agent to generate captions given various 3D inputs. Specifically, we collect three types of 3D captioning data: 1) \textbf{object-level captions}, where we align 3D individual objects with their descriptions \citep{luo2023scalable}; 2) \textbf{object-in-the-scene captions}, where the goal is to generate the referring expressions of objects in a 3D scene context \citep{achlioptas2020referit3d,zhu20233d}; and 3) \textbf{scene-level captions}, which focuses on depicting global 3D scene using natural language. Due to the space limit, we defer details including data source and components to \cref{app:dataset:leo_align}.
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth, keepaspectratio]{figs/data_framework_0131.pdf}%
+  \caption{\textbf{Our proposed LLM-assisted 3D-language data generation pipeline and data examples.}. (Top-left) Messages with 3D scene graphs,
+  including object attributes and relations in a phrasal form,
+  used for providing scene context when prompting LLM.
+  (Top-right) The human-defined refinement procedures were conducted over raw LLM responses to improve data quality.
+  (Bottom) Examples of LLM-assisted generation in \agent-align and \agent-instruct. \textcolor{gray}{Thoughts, colored in gray, will be removed after refinements}.}
+  \label{fig:data_framework}
+  \vskip -0.15in
+\end{figure*}
+
+\subsection{\agent-instruct: Instruction Following in 3D world}\label{sec:sft}
+In \agent-instruct, \agent will be tuned to follow instructions and accomplish various 3D \ac{vla} tasks. We curate a comprehensive set of tasks that covers a broad spectrum from grounded scene understanding and reasoning~\citep{chen2021scan2cap, ma2023sqa3d}, to dialogue, planning, and embodied acting~\citep{savva2019habitat,cliport}. Specifically, we introduce 1) \textbf{3D captioning and question answering} -- given 3D scene input, the agent needs to generate a natural language response to describe the scene or answer questions; 2) \textbf{3D dialogue and task planning}, where the agent is expected to generate flexible and coherent responses to complex instructions with respect to the given 3D scene, and 3) \textbf{navigation and manipulation}, which require the agent to accomplish a variety of embodied acting tasks in the 3D scene. We defer details to \cref{app:dataset:leo_instruct}.
+
+
+\subsection{LLM-assisted 3D-language Data Generation}\label{sec:data:generation}
+As mentioned above, at the core of producing a large proportion of \agent-align and \agent-instruct is the assistance of LLMs. We now detail the key techniques of prompting LLMs (\ie, ChatGPT) to generate 3D-text paired data. An overview can be found in \cref{fig:data_framework}.
+
+\paragraph{Scene-graph-based prompting.} Our data generation pipeline starts with 3D scene graphs from 3DSSG~\citep{wu2021scenegraphfusion}, which provide scene contexts for prompting. 
+Compared to counterparts that utilize object boxes~\citep{yin2023lamm,hong20233d,wang2023chat}, it offers both rich object attributes and accurate spatial relation information among objects, allowing \ac{llm} to generate data with high-quality 3D details (comparisons in \cref{sec:scene graph prompting and bbox prompting}). Next, we manually design some examples as seed tasks~\cite{liu2023visual}, including scene and object captioning, QA, dialogue, and planning, and ask LLM to produce more tasks as well as the responses. Details for designing the seed tasks can be found in~\cref{app:dataset:seed_task}.
+
+\paragraph{Object-centric CoT.} To further combat the \textbf{hallucination} of \ac{llm}~\citep{bang2023hallucination} in open-ended generation as in our pipeline, we propose the object-centric chain of thought (\ac{ocot}) prompting that requires the LLM to explicitly provide the label and ID of object candidates as \textcolor{gray}{thoughts} during text generation. We also utilize subgraph sampling to further enhance the diversity of 3D scene graphs (see details in \cref{app:subgraph_sampling}). We provide examples of \ac{ocot} in~\cref{fig:data_framework}. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Refinement procedures.} Upon the scene graph and O-CoT prompting, we introduce refinement as an additional safeguard to the quality and reliability of our generated data. Specifically, we send raw LLM responses to several human-defined filters based on the 3D scene graphs: negative responses (\eg, lacking the necessary information to answer) will be removed; unnatural narratives will be rewritten, \etc. Further, we detect text that involves logical reasoning (\eg, counting) or hallucination, and manually fix the wrong responses according to the ground truth provided by scene graphs. We provide illustrative examples in \cref{fig:data_framework} and \cref{app:dataset:refine:examples}, and quantitative analysis on the impact of data refinement procedures in \cref{sec:impact_data_refinement}. %
+
+
+
+
+\paragraph{Assess the quality of generated data.} In addition to data examples, we propose to assess the quality of generated data quantitatively. We focus on the LLM-produced question-answer pairs about objects (questions starting with \textit{How many/Is there} and ending with \textit{in the room/bedroom/kitchen/living room/bathroom}). We first divide these pairs into three categories: \textit{counting}, \textit{existence}, and \textit{non-existence}, which examines the number of certain objects/whether an object exists/whether an object does not exist in the scene, respectively. We manually check if the answers in these pairs are correct, and report the overall accuracy. Results in \cref{tab:data_quality_comparison} demonstrate that our proposed scene-graph-based prompting, O-CoT prompting and refinement bring consistent improvement to data quality and the complete data generation pipeline outperforms a recent counterpart (3D-LLM). We also demonstrate how we help address the \textbf{grammatical errors} compared to counterparts in \cref{app:additional_data_comparison}. Finally, we provide the data distribution in \cref{app:dataset statistics} to illustrate the \textbf{diversity} of our generated data. 
+
+
+
+
+
+
+
+
+
+
+
+\begin{table*}
+\begin{minipage}{0.635\linewidth}
+\centering
+\captionof{table}{\textbf{Quantitative comparison with \sota models on 3D VL understanding and embodied reasoning tasks}. ``C'' stands for ``CIDEr'', ``B-4'' for ``BLEU-4'', ``M'' for ``METEOR'', ``R'' for ``ROUGE'', ``Sim'' for sentence similarity, and ``EM@1'' for top-1 exact match. The n-gram metrics for Scan2Cap are governed by IoU@0.5. $^\dagger$ indicates answering questions via prompting GPT-3 with the generated scene caption. \textcolor{gray}{Gray} indicates evaluation results with refined exact-match protocol.}
+\vspace{0.1em}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lccccccccccc}
+    \toprule
+     & \multicolumn{5}{c}{Scan2Cap (val)} & \multicolumn{5}{c}{ScanQA (val)} & SQA3D (test) \\
+     \cmidrule(lr){2-6} \cmidrule(lr){7-11} \cmidrule(lr){12-12}
+     & C & B-4 & M & R & Sim & C & B-4 & M & R & EM@1 & EM@1 \\
+    \midrule
+    \multicolumn{1}{l}{\small\textbf{\textit{Task-specific models}}} \\
+    Scan2Cap & 35.2 & 22.4 & 21.4 & 43.5 & - & - & - & - & - & - & \hspace{2pt} 41.0$^\dagger$ \\
+    3DJCG & 47.7 & 31.5 & 24.3 & 51.8 & - & - & - & - & - & - & - \\
+    Vote2Cap-DETR & 61.8 & 34.5 & 26.2 & 54.4 & - & - & - & - & - & - & - \\
+    ScanRefer+MCAN & - & - & - & - & - & 55.4 & 7.9 & 11.5 & 30.0 & 18.6 & - \\
+    ClipBERT & - & - & - & - & - & - & - & - & - & - & 43.3 \\
+    ScanQA & - & - & - & - & - & 64.9 & 10.1 & 13.1 & 33.3 & 21.1 & 47.2 \\
+    \midrule
+    \multicolumn{1}{l}{\small\textit{\textbf{Task-specific fine-tuned}}} \\
+    3D-VisTA & 66.9 & 34.0 & 27.1 & 54.3 & 53.8 & 69.6 & 10.4 & 13.9 & 35.7 & 22.4 & 48.5 \\
+    3D-LLM (FlanT5) & - & - & - & - & - & 69.4 & 12.0 & 14.5 & 35.7 & 20.5 & - \\
+    \midrule
+
+    \agent & \textbf{72.4} & \textbf{38.2} & \textbf{27.9} & \textbf{58.1} & \textbf{55.3} & \textbf{101.4} & \textbf{13.2} & \textbf{20.0} & \textbf{49.2} & \textbf{24.5 \textcolor{gray}{(47.6)}} & \textbf{50.0 \textcolor{gray}{(52.4)}} \\
+    
+
+    
+    
+    
+    
+
+
+    \bottomrule
+\end{tabular}
+}
+\label{tab:vl_results}
+\end{minipage}
+\hfill
+\begin{minipage}{0.345\linewidth}
+    \vspace{-0.05em}
+    \centering   
+    \small
+    \captionof{table}{\label{tab:test_result_act_cliport} \textbf{Results on robot manipulation}. {\color{mygreen}{seen}} indicates in-domain tasks. {\color{myred}{unseen}} marks OOD tasks with novel colors or objects.}
+    \vspace{-0.25em}
+    \setlength\tabcolsep{2pt}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{llllccccccccccccccc}
+    \toprule
+    \multicolumn{4}{l}{} & \multicolumn{4}{c}{\small{separating-piles}} & \multicolumn{4}{c}{\small{\makecell{packing-google\\-objects-seq}}} & \multicolumn{4}{c}{\small{\makecell{put-blocks-in\\-bowls}}} \\
+    \cmidrule(lr){5-8}\cmidrule(lr){9-12}\cmidrule(lr){13-16}
+    \multicolumn{4}{c}{}& \multicolumn{2}{c}{\color{mygreen}{seen}} & \multicolumn{2}{c}{\color{myred}{unseen}} & \multicolumn{2}{c}{\color{mygreen}{seen}} & \multicolumn{2}{c}{\color{myred}{unseen}} & \multicolumn{2}{c}{\color{mygreen}{seen}} & \multicolumn{2}{c}{\color{myred}{unseen}} \\
+    
+    \midrule
+    
+    \multicolumn{4}{l}{CLIP-only}        & \multicolumn{2}{c}{90.2} & \multicolumn{2}{c}{71.0} & \multicolumn{2}{c}{95.8} & \multicolumn{2}{c}{57.8} & \multicolumn{2}{c}{97.7} & \multicolumn{2}{c}{44.5} \\
+    
+    \multicolumn{4}{l}{CLIPort (single)}          & \multicolumn{2}{c}{98.0} & \multicolumn{2}{c}{\textbf{75.2}} & \multicolumn{2}{c}{\textbf{96.2}} & \multicolumn{2}{c}{71.9} & \multicolumn{2}{c}{\textbf{100}} & \multicolumn{2}{c}{25.0} \\
+
+    \multicolumn{4}{l}{CLIPort (multi)}          & \multicolumn{2}{c}{89.0} & \multicolumn{2}{c}{62.8} & \multicolumn{2}{c}{84.4} & \multicolumn{2}{c}{70.3} & \multicolumn{2}{c}{\textbf{100}} & \multicolumn{2}{c}{\textbf{45.8}} \\
+    
+    \midrule
+    
+    \multicolumn{4}{l}{\agent}  & \multicolumn{2}{c}{\textbf{98.8}} & \multicolumn{2}{c}{\textbf{75.2}} & \multicolumn{2}{c}{76.6} & \multicolumn{2}{c}{\textbf{79.8}} & \multicolumn{2}{c}{86.2} & \multicolumn{2}{c}{35.2} \\
+    \bottomrule
+\end{tabular}
+}
+    \vfill
+\centering
+\small
+\setlength\tabcolsep{2pt}
+\captionof{table}{\label{tab:test_result_act_objnav}\textbf{Results on object navigation.} {$^\dagger$ indicates zero-shot evaluation.}}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+ \multicolumn{2}{c}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\small{MP3D-val}} & & \multicolumn{2}{c}{\small{HM3D-val}} \\ \cmidrule(lr){3-4}\cmidrule(lr){6-7}
+\multicolumn{2}{l}{} &  \small{Success$(\uparrow)$} & \small{SPL$(\uparrow)$} & & \small{Success$(\uparrow)$} &  \small{SPL$(\uparrow)$}\\ \midrule
+\multicolumn{2}{c}{Habitat-web (shortest)} & 4.4 & 2.2 & & - &  - \\
+\multicolumn{2}{c}{Habitat-web (demo)} & \textbf{35.4} & 10.2 & & - & - \\
+\multicolumn{2}{c}{ZSON} & 15.3$^\dagger$ & 4.8$^\dagger$ & & \textbf{25.5} & 12.6 \\
+\midrule
+\multicolumn{2}{c}{\agent} & 23.1 & \textbf{15.2} & & 23.1$^\dagger$ & \textbf{19.1}$^\dagger$ \\
+\bottomrule
+
+\end{tabular}
+}  
+\end{minipage}
+\vskip -0.15in
+\end{table*}
+
+\section{Capabilities and Analyses}\label{sec:exp}
+We demonstrate \agent's capabilities by a comprehensive evaluation on the full spectrum of embodied 3D tasks encompassing perceiving, grounding, reasoning, planning, and acting.
+In \cref{sec:exp_3dvl}, we present quantitative comparisons between \agent and \sota models on various 3D VL tasks, underscoring \agent's proficiency in 3D VL understanding and reasoning. In \cref{sec:exp_dialog}, we highlight \agent's strength in scene-grounded dialogue and task planning. In \cref{sec:exp_eai}, we extend \agent to embodied acting tasks wherein \agent exhibits remarkable versatility. In \cref{sec:ablation}, we conduct ablative studies to reveal more insights into \agent, including data and model aspects. In \cref{sec:exp_scaling}, we probe the scaling effect and manifest the potential for further development.
+
+
+\subsection{3D Vision-Language Understanding and Reasoning}\label{sec:exp_3dvl}
+
+\paragraph{Overview.} Understanding and reasoning about object attributes, object relations, and other facets of 3D scenes from an agent's egocentric perspective is a fundamental capability of an embodied generalist agent in the 3D world. We investigate \textit{how well can \agent perform 3D VL understanding and embodied reasoning tasks, especially when being compared against task-specific models and existing generalist agents}. Specifically, we consider three renowned 3D tasks: 3D captioning on Scan2Cap~\citep{chen2021scan2cap}, 3D QA on ScanQA~\citep{azuma2022scanqa}, and 3D embodied reasoning on SQA3D~\citep{ma2023sqa3d}. Our evaluation metrics include conventional scores (\eg, CIDEr, BLEU, METEOR, ROUGE) and other metrics adapted for open-ended generation, \eg, sentence similarity \citep{reimers2019sentence} and refined exact-match accuracy (see details in \cref{sec:supp_eval_qa}).
+Following 3D-VisTA~\citep{zhu20233d}, \textbf{we use object proposals from Mask3D~\citep{schult2022mask3d} instead of ground-truth object segments for evaluation.}
+
+
+\paragraph{Baselines.} For quantitative comparisons, we include both task-specific approaches and generalist models: 1) \sota specialists in 3D dense captioning \citep{chen2021scan2cap,cai20223djcg,chen2023end}; 2) \sota specialists in 3D QA \citep{azuma2022scanqa,ma2023sqa3d}; 3) task-specific fine-tuned generalist models like 3D-VisTA \citep{zhu20233d} and 3D-LLM \citep{hong20233d}. To the best of our knowledge, \textit{\agent is the first model that, in stark contrast to prior models, can directly handle the aforementioned 3D VL tasks in a unified architecture without task-specific fine-tuning}. This lends greater credence to \agent's comparative superiority.
+
+
+
+
+    
+
+    
+    
+    
+    
+
+
+
+    
+    
+    
+
+    
+    
+
+
+
+\paragraph{Results \& analysis.} As shown in \cref{tab:vl_results}, \agent surpasses both \sota single-task and task-specific fine-tuned models significantly on 3D dense captioning and 3D QA tasks. In contrast to the specialist models that utilize task-specific heads, our LLM-based approach not only affords the flexibility of generating open-ended responses but also exhibits excellent quantitative results. On the other hand, considering the complicated feature aggregation in 3D-LLM, we believe that object-centric 3D representation is a simple yet effective option to connect 3D scenes with LLM while harnessing the inherent knowledge of LLM.
+
+\vspace{-0.3em}
+\subsection{Scene-grounded Dialogue and Planning}\label{sec:exp_dialog}
+
+\paragraph{Overview.} Upon the 3D VL understanding and reasoning, we anticipate \agent to support more sophisticated interaction with humans, \eg, responding to complex multi-round user instructions in the 3D world. To verify these capabilities, we conduct qualitative studies on 3D dialogue and planning tasks, with unseen scenarios from the held-out test sets of \agent-instruct. We defer the quantitative results of dialogue and planning to our ablation study in \cref{sec:ablation}. Quantitative comparison with other approaches is infeasible given the absence of comparable benchmarks.
+
+\paragraph{Results \& analysis.} As shown in \cref{fig:qualitative}, \agent is capable of generating high-quality responses, which encompass two features: \textbf{1) Precisely grounded to the 3D scenes.} The task plan proposed by \agent involves concrete objects related to the 3D scene, as well as plausible actions regarding these objects. \textbf{2) Rich informative spatial relations.} The entities in \agent's responses often accompany detailed depictions. Such information helps identify specific objects in complex 3D scenes and affords considerable assistance to humans.
+
+\begin{table*}
+\begin{minipage}{0.41\linewidth}
+    \centering
+    \captionof{table}{Quantitative results of \agent trained with different data configurations. \textit{w/o Align}: without alignment stage. \textit{ScanNet}: tuned on ScanNet scenes only. \textit{w/o Act}: tuned without embodied acting tasks. We report the exact match metrics for QA tasks and sentence similarity for others. \underline{Underlined figures} indicate zero-shot results on novel scenes (3RScan).}
+    \setlength\tabcolsep{3pt}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccccc}
+        \toprule
+     & \multicolumn{3}{c}{ScanNet} & \multicolumn{3}{c}{3RScan} \\
+     \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+         & Scan2Cap & ScanQA & SQA3D & 3RQA & 3RDialog & 3RPlan \\
+        \midrule
+        \rowcolor{color1} \textit{w/o Align} & 62.8 & 22.7 \textcolor{gray}{(45.0)} & \textbf{50.9 \textcolor{gray}{(53.2)}} & 49.7 \textcolor{gray}{(53.7)} & 73.0 & 80.3 \\
+        \rowcolor{color2} \textit{ScanNet} & 64.0 & 24.4 \textbf{\textcolor{gray}{(49.2)}} & 46.8 \textcolor{gray}{(49.5)} & \underline{35.8 \textcolor{gray}{(50.0)}} & \underline{25.5} & \underline{23.4} \\
+        \textit{w/o Act} & \textbf{65.4} & 24.3 \textcolor{gray}{(48.5)} & 50.0 \textcolor{gray}{(52.5)} & \textbf{51.9 \textcolor{gray}{(57.4)}} & \textbf{73.3} & \textbf{81.1} \\
+        \rowcolor{color4} \textit{VLA} & 65.3 & \textbf{25.0} \textcolor{gray}{(48.9)} & 46.2 \textcolor{gray}{(48.3)} & 51.3 \textcolor{gray}{(55.8)} & 72.3 & 77.2 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \label{tab:data_ablation}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\linewidth}
+\centering
+\small
+\setlength\tabcolsep{3pt}
+\captionof{table}{TrueSkill scores with human preference. \textit{Dialg}: dialogue and planning data.}\label{tab:response_trueskill}
+    \resizebox{\linewidth}{!}{
+\begin{tabular}{lccc}
+\toprule
+ & Answerable & Unanswerable & NLP \\
+ \midrule
+ \textit{w/o Dialg} & 24.4$\pm$1.3 & 23.1$\pm$1.4  & 23.4$\pm$1.4 \\
+ \textit{w/ Dialg} & \textbf{25.6}$\pm$\textbf{1.3}  & \textbf{26.8}$\pm$\textbf{1.4} & \textbf{26.6}$\pm$\textbf{1.4} \\
+ \bottomrule 
+\end{tabular}
+}
+\vfill
+\vspace{0.3em}
+\centering
+\small
+\captionof{table}{Answer accuracy (EM) on object-existence questions. \textit{Aug}: augmented data.}\label{tab:data_balance}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lcccccccc}
+    \toprule
+     & \multicolumn{3}{c}{3RScan} & \multicolumn{3}{c}{ScanNet (0-shot)} \\
+     \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+     & Yes & No & Overall & Yes & No & Overall \\
+     \midrule
+    \textit{w/o Aug} & \textbf{1.00} & 0.01 & 0.34 & \textbf{0.98} & 0.16 & 0.43 \\
+    \textit{w/ Aug} & 0.72 & \textbf{0.91} & \textbf{0.85} & 0.88 & \textbf{0.81} & \textbf{0.83} \\
+    \bottomrule
+\end{tabular}
+}
+\end{minipage}
+\hfill
+\begin{minipage}{0.263\linewidth}
+    \centering
+    \captionof{figure}{\label{fig:scaling_law}\agent-instruct test loss with the growth of data and model scale, manifesting the scaling law.}
+    \vspace{0.2em}
+    \includegraphics[width=\linewidth]{figs/scaling_law.pdf}
+\end{minipage}
+\end{table*}
+
+
+\subsection{Embodied Action in 3D World}\label{sec:exp_eai}
+
+\paragraph{Overview.} To probe \agent's capacity of bridging vision-language-acting in the 3D world, we select two canonical embodied AI tasks: embodied navigation (\texttt{ObjNav}) on AI Habitat~\citep{ramrakhya2022habitat} and robotic manipulation on CLIPort~\citep{cliport}.
+Specifically, for CLIPort robotic manipulation, we evaluate \agent on the three tasks listed in~\cref{tab:test_result_act_cliport} including their unseen counterparts, and report the success scores. For \texttt{ObjNav}, 
+we evaluate \agent on the original MP3D \texttt{ObjNav} validation split. Additionally, we test generalization to the validation split of the newly introduced HM3D \texttt{ObjNav} task~\citep{ramakrishnan2021habitat}. We report the success rate and SPL metrics following \citet{ramrakhya2022habitat}. We consider both Habitat-web \citep{ramrakhya2022habitat} (fully supervised) and ZSON \citep{majumdar2022zson} (zero-shot) as baselines.
+
+\paragraph{Results \& analysis.} We present the results of CLIPort manipulation and object navigation in~\cref{tab:test_result_act_cliport,tab:test_result_act_objnav}. Our findings are as follows: 1) In robotic manipulation, \agent is comparable to \sota performances and even better on some challenging {\color{myred}{unseen}} tasks. In particular, \agent directly produces motor commands without inductive bias (\eg, heatmap) that benefit previous methods, showcasing \agent's considerable capacity for learning embodied actions. 2) In \texttt{ObjNav}, \agent achieves a success rate that is comparable to the baselines and has a better SPL on MP3D-val, suggesting that \agent can leverage the object-centric 3D scene input (potentially offering a coarse global map) and take a shorter path to the target. Furthermore, results on HM3D-val confirm \agent's zero-shot generalization to novel scenes. Notably, all baselines are equipped with recurrent modules while \agent only incorporates truncated past actions, which could account for a lower success rate (see discussion in \cref{sec:supp_eai_split}). 3) Overall, the two-stage learning scheme endows \agent with semantic-level generalization (novel objects, \etc) in both manipulation and navigation tasks. We demonstrate the efficacy of tackling embodied acting tasks with a general framework from 3D VL.
+
+\paragraph{Additional results.} We further investigate the perception modules, data regime, and generalization to unseen objects in \texttt{ObjNav} task. See the results in \cref{sec:result_objnav_additional}.
+
+
+
+\vskip -0.15in
+\subsection{More Insights into \agent}\label{sec:ablation}
+
+\paragraph{Overview.} In this section, we aim to offer deeper insights into \agent's characteristics, mainly from the data perspective (model perspective is deferred to \cref{sec:model_ablation}). Specifically, we evaluate \agent when trained with different data configurations, including exact match, sentence similarity, and human rating. We regard \agent instruction-tuned without embodied acting tasks (\textit{w/o Act}) as the default setting. Following \citet{achlioptas2020referit3d}, we use ground-truth object segments in these analyses. We present additional analyses on data in \cref{sec:data_comparison} and model in \cref{sec:model_comparison}.
+
+\paragraph{Alignment stage.} In contrast to complete two-stage training (\textit{w/o Act}), we direct instruction-tune a model without alignment stage (\textit{w/o Align}). The results in \cref{tab:data_ablation} show the consistent impact of alignment. In particular, the benefit of alignment is significant on Scan2Cap since it concerns detailed scene understanding and captioning, which is a primary focus of alignment training. %
+
+\paragraph{Specialist \vs generalist.} We train a specialist on ScanNet scenes (\textit{ScanNet}). As shown in \cref{tab:data_ablation}, \textit{ScanNet} performs slightly worse than \textit{w/o Act} even on ScanNet tasks, and particularly struggles at generalization across scenes (3RQA) and tasks (3RDialog and 3RPlan). This demonstrates the advantage of generalist-style instruction tuning with broad coverage of scenes and tasks.
+
+\paragraph{VL \vs VLA.} We compare \textit{w/o Act} and \textit{VLA}, which differ in whether embodied acting tasks are included for training. The results in \cref{tab:data_ablation} show that incorporating embodied acting tasks could lead to performance drops on 3D VL tasks. This may stem from 1) the gap between language generation and embodied action prediction, and 2) the imbalanced data scale of embodied acting tasks. In contrast to the finding that VL data benefits embodied acting tasks in VLA co-training \citep{brohan2023rt}, our observation implies that embodied acting tasks may harm VL capabilities in turn. How to continually bridge the gap between VL and embodied acting tasks is an important direction for further exploration.
+
+
+\paragraph{Dialogue and planning data.} In contrast to the default model (\textit{w/ Dialg} in \cref{tab:response_trueskill}), we train \agent without dialogue and planning data (\textit{w/o Dialg}). We design an evaluation set with three types of questions (Answerable, Unanswerable, and NLP) and evaluate with TrueSkill~\citep{graepel2007bayesian} according to human preference (see details in \cref{sec:dialog_planning}). The results in \cref{tab:response_trueskill} confirm more hallucinations (less preferred by users on ``Unanswerable'') and worse NLP skills for \textit{w/o Dialg}. This is probably because 1) the diverse conversations in our dialogue data can help cultivate flexible responses to complex instructions, and 2) our planning data can offer scene-grounded commonsense knowledge and also encourage detailed coherent text.
+
+
+
+\paragraph{Data balancing.} We find imbalanced data could induce hallucination in \agent, \eg, it tends to respond with ``Yes'' when asked ``Is there something in this room?''. To address this, we augment the 3RScanQA data with more negative samples where non-existent objects are queried. We also design an evaluation set with different types (Yes and No) of object-existence questions (see details in \cref{sec:data_balancing}). Results in \cref{tab:data_balance} demonstrate that we can effectively mitigate the hallucination problem by balancing the tuning data. Moreover, the benefit of augmenting 3RScan data can transfer to ScanNet scenes in a zero-shot manner.
+
+
+
+
+
+
+
+
+
+\subsection{Scaling Law Analysis}\label{sec:exp_scaling}
+
+\paragraph{Settings.} 
+We study the scaling effect~\citep{kaplan2020scaling,reed2022generalist} of data and model in \agent by tracking the instruction-tuning loss on the test set with the growth of data scale. In addition to the default Vicuna-7B, we incorporate two LLMs at different scales: OPT-1.3B \citep{zhang2022opt} and Vicuna-13B \citep{vicuna2023}. For Vicuna-7B, we also probe the influence of alignment (Scratch \vs Aligned).
+
+
+\paragraph{Results \& analysis.} From the test loss curves in \cref{fig:scaling_law}, we have the following findings: \textbf{1) The instruction tuning of \agent conforms to the scaling law}~\citep{kaplan2020scaling,reed2022generalist}. We observe that all curves decrease log-linearly with the data scale. \textbf{2) Scaling up LLM leads to consistent improvements.} Aligned Vicuna-7B shows significantly lower losses than Aligned OPT-1.3B. In contrast, despite the consistent improvements, the gap between Aligned Vicuna-7B and Vicuna-13B appears less significant, suggesting potential saturation if we continue to scale up the LLM. This indicates the scalability of \agent and the necessity of scaling up data to match the model capacity. \textbf{3) Alignment leads to consistent improvements.} Aligned Vicuna-7B shows consistently lower losses than Scratch Vicuna-7B, which corresponds to the inferior performances of \textit{w/o Align} in \cref{tab:data_ablation}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+
+
+
+
+\input{related_work}
+
+\section{Conclusions}\label{sec:conclusion}
+The proposed agent \agent extends the current generalist ability of \ac{llm} from text towards the 3D world and embodied tasks. It is a crucial initial step towards building embodied generalist agents. Nonetheless, there are also limitations, \eg, generalization to novel scenes, and a notable gap between VL learning and embodied action control. In light of this work, we identify several promising directions that hold the potential for substantial advancement: (1) enhancing the 3D \ac{vl} understanding capability by leveraging larger-scale VL data from richer 3D domains; (2) continually bridging the gap between 3D \ac{vl} and embodied action, as our experiments reveal the efficacy of their joint learning; (3) investigating the issues of safety and alignment in the context of embodied generalist agents, particularly given that our scaling law analysis suggests significant enhancements through scaling on data and model.
+
+\section*{Impact Statement}
+This work introduces LEO, an embodied multi-modal generalist agent designed to extend machine learning capabilities into the 3D realm, marking a significant advance in the field. The potential societal implications of LEO are manifold, touching on robotics, AR/VR, assistive technologies, and environmental planning. Ethically, it underscores the importance of responsible AI development, emphasizing safety, privacy, and fairness in automated decision-making. As LEO ventures into new territories of human-machine interaction, it prompts a re-evaluation of ethical frameworks to ensure that advancement contributes positively to society. While the immediate societal consequences of our work align with the goals of advancing machine learning, we acknowledge the necessity of ongoing ethical consideration as applications of LEO evolve.
+
+
+\section*{Acknowledgements}
+This work is supported in part by the National Science and Technology Major Project (2022ZD0114900).
+
+
+\bibliography{ref}
+\bibliographystyle{icml2024}
+
+\clearpage
+\onecolumn
+\appendix
+\input{appendix}
+
+\end{document}

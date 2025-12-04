@@ -1,0 +1,63 @@
+\def\name{ZipIt!}
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% \definecolor{zipcolor}{HTML}{EA4335}
+% \definecolor{wavg}{HTML}{4285F4}
+% \definecolor{gitrebasin}{HTML}{46BDC6}
+% \newcommand*\zipcolor{\color{zipcolor}}
+% \newcommand*\wavg{\color{wavg}}
+% \newcommand*\gitrebasin{\color{gitrebasin}}
+
+\makeatletter
+\newcommand{\printfnsymbol}[1]{%
+  \textsuperscript{\@fnsymbol{#1}}%
+}
+\makeatother
+
+\newlength\savewidth\newcommand\shline{\noalign{\global\savewidth\arrayrulewidth
+  \global\arrayrulewidth 0.75pt}\hline\noalign{\global\arrayrulewidth\savewidth}}
+\newcommand{\tablestyle}[2]{\setlength{\tabcolsep}{#1}\renewcommand{\arraystretch}{#2}\centering\footnotesize}
+\renewcommand{\paragraph}[1]{\vspace{1.25mm}\noindent\textbf{#1}}
+\newcommand\blfootnote[1]{\begingroup\renewcommand\thefootnote{}\footnote{#1}\addtocounter{footnote}{-1}\endgroup}
+
+\newcolumntype{x}[1]{>{\centering\arraybackslash}p{#1pt}}
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1pt}}
+\newcolumntype{z}[1]{>{\raggedleft\arraybackslash}p{#1pt}}
+
+\newcommand{\app}{\raise.17ex\hbox{$\scriptstyle\sim$}}
+\newcommand{\mypm}[1]{\color{gray}{\tiny{$\pm$#1}}}
+\newcommand{\x}{{\times}}
+\definecolor{deemph}{gray}{0.6}
+\newcommand{\gc}[1]{\textcolor{deemph}{#1}}
+\definecolor{defaultcolor}{gray}{.9}
+\newcommand{\default}[1]{\cellcolor{defaultcolor}{#1}}
+\newcommand{\authorskip}{\hspace{2.5mm}}
+
+\definecolor{dt}{HTML}{ADCAD8}
+\definecolor{dt2}{HTML}{cddfe7}
+\newcommand{\ots}[1]{\textcolor{dt}{#1}}
+\newcommand{\otsmodel}[1]{\cellcolor{dt2}{#1}}
+
+\definecolor{modelacolor}{HTML}{85200c}
+\definecolor{modelbcolor}{HTML}{0b5394}
+\definecolor{modelccolor}{HTML}{351c75}
+\definecolor{modeldcolor}{HTML}{664d00}
+
+\newcommand{\modela}{\textcolor{modelacolor}}
+\newcommand{\modelb}{\textcolor{modelbcolor}}
+\newcommand{\modelc}{\textcolor{modelccolor}}
+\newcommand{\modeld}{\textcolor{modeldcolor}}
+
+% \newcommand{\checkmark}{{\ding{52}}}%
+\newcommand{\xmark}{\text{\ding{55}}}%
+
+
+\newcommand{\scolorbox}[2]{{\setlength{\fboxsep}{2pt}\colorbox{#1}{#2}}}
+
+
+\newcommand{\conf}[1]{\gc{\tiny{{$\pm$#1}}}}
+\newcommand{\unit}[1]{{\scriptsize{{$\,$#1}}}}
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+\let\cite\citep

@@ -1,0 +1,71 @@
+
+%##################################################################################################
+\begin{table*}[t]
+\centering
+\subfloat[
+    \textbf{CIFAR-10 (5+5)} VGG11 ($1\times$ width).
+    \label{tab:cifar5+5}
+]{
+\centering
+\begin{minipage}{0.47\linewidth}{
+\begin{center}
+\resizebox{\textwidth}{!}{
+    \tablestyle{5pt}{1.1}
+\begin{tabular}{y{53}x{40}|x{30}x{30}x{30}x{30}}
+    & & \multicolumn{4}{c}{Accuracies (\%)}\\
+    Method & FLOPs (G) & Joint & \modela{Task A} & \modelb{Task B} & Avg \\
+    \shline
+    \modela{Model A}                        & {0.15} & {44.6\conf{1.0}} & {89.2\conf{2.0}} & {21.0\conf{1.5}} & {55.1\conf{1.5}} \\
+    \modelb{Model B}                        & {0.15} & {44.0\conf{1.4}} & {23.1\conf{4.5}} & {88.1\conf{2.8}} & {55.6\conf{3.4}} \\
+    \hline
+    W. Avg                                  &  0.15     & {10.2\conf{0.2}}           & {20.8\conf{1.2}}           & {20.9\conf{0.7}}           & {20.9\conf{0.7}} \\
+    Permute                                 &  0.15     & {25.4\conf{1.1}}          & {47.2\conf{1.3}}          & {48.5\conf{12.3}}          & {47.8\conf{5.8}} \\
+    \default{{\bf \name{}}$_\text{22/22}$}  &  0.15     & \textbf{33.2\conf{9.3}}   & \textbf{53.8\conf{14.7}}   & \textbf{59.9\conf{9.6}}   & \textbf{56.5\conf{6.5}} \\
+    \hline
+    \gc{Ensemble}                           & \gc{0.30} & \gc{66.6\conf{2.5}}       & \gc{89.2\conf{2.0}}       & \gc{88.1\conf{2.8}}       &  \gc{88.6\conf{0.5}} \\
+    \default{{\bf \name{}}$_\text{14/22}$}  & {0.17}    & {35.2\conf{6.0}}          & {56.7\conf{13.7}}          & {60.2\conf{15.9}}          & {58.4\conf{5.9}} \\
+    \default{{\bf \name{}}$_\text{7/22}$}   & {0.27}    &  \textbf{44.5\conf{2.9}}  &  \textbf{66.0\conf{4.2}}    & \textbf{65.1\conf{11.2}} & \textbf{65.5\conf{4.1}} \\
+\end{tabular}
+}
+\end{center}
+}\end{minipage}
+}
+\hspace{1em}
+\centering
+\subfloat[
+    \textbf{CIFAR-100 (50+50).} ResNet-20 (16$\times$ width).
+    \label{tab:cifar50+50}
+]{
+\centering
+\begin{minipage}{0.47\linewidth}{
+\begin{center}
+\resizebox{\textwidth}{!}{
+    \tablestyle{5pt}{1.1}
+\begin{tabular}{y{53}x{40}|x{30}x{30}x{30}x{30}}
+        & & \multicolumn{4}{c}{Accuracies (\%)}\\
+        Method & FLOPs (G) & Joint & \modela{Task A} & \modelb{Task B} & Avg \\
+    \shline
+    \modela{Model A}                        & {10.88} & {37.9\conf{0.2}} & {74.15\conf{0.6}} & {1.7\conf{0.3}} & {36.4\conf{0.7}} \\
+    \modelb{Model B}                        & {10.88} & {36.7\conf{1.2}} & {2.2\conf{0.5}} & {75.2\conf{2.3}} & {38.7\conf{1.1}} \\
+    \hline
+    W. Avg                                  &  10.88     & {2.7\conf{0.1}}           & {5.0\conf{3.3}}           & {4.9\conf{1.2}}           & {4.9\conf{0.1}} \\
+    Git Re-Basin$\ddag$                     &  10.88     & {3.1\conf{0.8}}           & {5.8\conf{0.9}}           & {5.3\conf{0.8}}           & {5.6\conf{0.8}}  \\
+    Permute                                 &  10.88     & {20.0\conf{1.3}}          & {30.8\conf{3.3}}          & {32.8\conf{1.6}}          & {31.8\conf{1.7}} \\
+    \default{{\bf \name{}}$_\text{20/20}$}  &  10.88     & \textbf{27.9\conf{1.5}}   & \textbf{40.1\conf{2.4}}   & \textbf{39.7\conf{1.6}}   & \textbf{39.9\conf{1.9}} \\
+    \hline
+    \gc{Ensemble}                           & \gc{21.76} & \gc{60.5\conf{1.0}}       & \gc{74.2\conf{0.6}}       & \gc{75.2\conf{2.3}}       &  \gc{74.7\conf{1.4}} \\
+    \default{{\bf \name{}}$_\text{13/20}$}  & {14.52}    & {38.6\conf{2.4}}          & {51.8\conf{1.6}}          & {52.0\conf{3.5}}          & {51.9\conf{2.4}} \\
+    \default{{\bf \name{}}$_\text{7/20}$}   & {18.14}    &  \textbf{47.0\conf{2.2}}         &  \textbf{60.6\conf{1.2}}         & \textbf{60.5\conf{3.2}}          & \textbf{60.6\conf{2.1}} \\
+\end{tabular}
+}
+\end{center}
+}\end{minipage}
+}
+\caption{\textbf{Cross Entropy Results.} \name{}\ vs. baselines across the architectures.
+on combining a model trained on half the classes (\modela{Task A}) with one trained on the other half (\modelb{Task B}) \textit{without extra training}. We report both joint (10/100-way) and per-task (5/50-way) accuracy.
+\name{}\ \textit{significantly} outperforms its baseline and closes in on the \gc{upper bound} (ensemble accuracy).
+$\ddag$ refers to \cite{ainsworth2022git}
+}
+\label{tab:cifar_results}
+\vspace{-15pt}
+\end{table*}

@@ -1,0 +1,27 @@
+\begin{table}[t!]
+    \centering
+    \caption{Error rate of different number of labels $l$ on CIFAR-100, STL-10, IMDB, and Amazon Review datasets for \textbf{semi-supervised learning}.
+    % We use USB \citep{usb2022} for baseline results.
+    }
+    % \vspace{-0.05in}
+    \label{tab:main-semi}
+    \resizebox{0.95 \textwidth}{!}{%
+    \begin{tabular}{@{}lcc|cc|cc|cc@{}}
+    \toprule
+    \multicolumn{1}{l|}{Datasets} &
+      \multicolumn{2}{c|}{CIFAR-100} &
+      \multicolumn{2}{c|}{STL-10} &
+      \multicolumn{2}{c|}{IMDB} &
+      \multicolumn{2}{c}{Amazon Review} \\ \midrule
+    \multicolumn{1}{l|}{\# Labels $l$}   & 200         & 400        & 40          & 100         & 20         & 100        & 250        & 1000         \\ \midrule
+    \multicolumn{1}{l|}{AdaMatch \citep{berthelot2021adamatch}}    & 22.32\scriptsize{±1.73} & 16.66\scriptsize{±0.62} & 13.64\scriptsize{±2.49}  & \underline{7.62\scriptsize{±1.90}}   & 8.09\scriptsize{±0.99}  & \underline{7.11\scriptsize{±0.20}}    & 45.40\scriptsize{±0.96}   & \textbf{40.16\scriptsize{±0.49}}  \\
+    \multicolumn{1}{l|}{FixMatch \citep{sohn2020fixmatch}}    & 29.60\scriptsize{±0.90}   & 19.56\scriptsize{±0.52} & 16.15\scriptsize{±1.89}  & 8.11\scriptsize{±0.68}  & 7.72\scriptsize{±0.33}  & 7.33\scriptsize{±0.13}  & 47.61\scriptsize{±0.83}  & 43.05\scriptsize{±0.54}  \\
+    \multicolumn{1}{l|}{FlexMatch \citep{zhang2021flexmatch}}   & 26.76\scriptsize{±1.12} & 18.24\scriptsize{±0.36} & 14.40\scriptsize{±3.11}   & 8.17\scriptsize{±0.78}   & 7.82\scriptsize{±0.77}  & 7.41\scriptsize{±0.38}  & 45.73\scriptsize{±1.60}   & 42.25\scriptsize{±0.33}  \\
+    \multicolumn{1}{l|}{CoMatch \citep{li2021comatch}}     & 35.08\scriptsize{±0.69} & 25.35\scriptsize{±0.50}  & 15.12\scriptsize{±1.88}  & 9.56\scriptsize{±1.35}   & \underline{7.44\scriptsize{±0.30}}   & 7.72\scriptsize{±1.14}   &  48.76\scriptsize{±0.90}   & 43.36\scriptsize{±0.21} \\
+    \multicolumn{1}{l|}{SimMatch \citep{zheng2022simmatch}}    & 23.78\scriptsize{±1.08} & 17.06\scriptsize{±0.78} & \underline{11.77\scriptsize{±3.20}}  & \textbf{7.55\scriptsize{±1.86}}  & 7.93\scriptsize{±0.55}  & \textbf{7.08\scriptsize{±0.33}}  & 45.91\scriptsize{±0.95}  & 42.21\scriptsize{±0.30}  \\
+    \multicolumn{1}{l|}{FreeMatch \citep{wang2023freematch}}   & \textbf{21.40\scriptsize{±0.30}}   & \textbf{15.65\scriptsize{±0.26}} & 12.73\scriptsize{±3.22}  & 8.52\scriptsize{±0.53}   & 8.94\scriptsize{±0.21}  & 7.95\scriptsize{±0.45} & 46.41\scriptsize{±0.60}  & 42.64\scriptsize{±0.06} \\
+    \multicolumn{1}{l|}{SoftMatch \citep{chen2023softmatch}}   & 22.67\scriptsize{±1.32} & 16.84\scriptsize{±0.66} & 13.55\scriptsize{±3.16}  & 7.84\scriptsize{±1.72}   & 7.76\scriptsize{±0.58}  & 7.97\scriptsize{±0.72}  & \underline{45.29\scriptsize{±0.95}}  & \underline{42.21\scriptsize{±0.20}} \\ \midrule
+    \multicolumn{1}{l|}{Ours} & \underline{22.06\scriptsize{±1.06}} & \underline{16.40\scriptsize{±0.54}} & \textbf{11.09\scriptsize{±0.71}}        & 8.10\scriptsize{±1.02}          & \textbf{7.32\scriptsize{±0.12}} & 7.64\scriptsize{±0.67}  & \textbf{43.96\scriptsize{±0.32}} & 42.32\scriptsize{±0.02}      \\ \bottomrule
+    \end{tabular}%
+    }
+\end{table}

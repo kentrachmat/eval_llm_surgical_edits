@@ -1,0 +1,43 @@
+% 2) ablation study:
+% search times, each components
+
+
+\begin{table}[h]
+\small
+\centering
+\begin{minipage}{.45\linewidth}
+\centering
+
+    \begin{tabular}{cl|c|c}
+    \toprule
+        \multicolumn{2}{c|}{\texttt{Method}}         & \texttt{Threshold}  & \texttt{Acc}\\
+        % \hline
+        \midrule
+           &   Edit distance	               & $20$ & $86.8$ \\
+           &   Edit distance	             & $50$ & $87.0$\\
+           &  Cosine Similarity	            & $0.7$ & $86.3$\\
+           & Model-based	& N/A	& $86.7$ \\
+        \bottomrule
+    \end{tabular}
+\vspace{2mm}
+\caption*{(a) Ablation on the choice of state merge functions.}
+% \caption{First Table: Ablation study on GSM8K test set.}
+\end{minipage}%
+\begin{minipage}{.55\linewidth}
+\centering
+
+    \begin{tabular}{cl|c}
+    \toprule
+        \multicolumn{2}{c|}{\texttt{\#Trajetory}}         & \texttt{Acc}\\
+        \midrule
+           &   $1$	                & $85.9$ \\
+           &   $4$	           & $86.5$\\
+           &  $8$	       & $86.7$\\
+        \bottomrule
+    \end{tabular}
+\vspace{2mm}
+\caption*{(b) Ablation on the number of trajectories.}
+\end{minipage}
+\caption{\textbf{(a)}: Ablation studies on the choice of heuristic/model-based functions in state merge on GSM8K with base Llama2-70b. The model used in the model-based state merge is Llama-2-70b-chat. \textbf{(b)}: Ablation studies of the number of rollout trajectories in fast-rollout estimation on GSM8K with base Llama2-70b.}
+\label{table:ablation_sm}
+\end{table}

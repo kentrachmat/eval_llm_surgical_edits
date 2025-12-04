@@ -1,0 +1,302 @@
+% Useful Commands
+\newcommand{\vv}{{\mathbf{v}}}
+\newcommand{\vvP}{{\mathbf{v'}}}
+\newcommand{\vvPP}{{\mathbf{v''}}}
+\newcommand{\vW}{{\mathbf{W}}}
+\newcommand{\vWP}{{\mathbf{W'}}}
+\newcommand{\vWPP}{{\mathbf{W''}}}
+\newcommand{\thetar}{\bm{\theta}_r}
+\newcommand{\thetah}{\bm{\theta}_h}
+% Reduced Commands
+\newcommand{\vvR}{{H_{m\rightarrow r}^v(\mathbf{v})}}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert} % define a "\norm" macro
+
+\section{A Tighter Bound for Linear Mode Connectivity}\label{ap:Theorem}
+In this section we demonstrate that merging models by supporting feature merges both \textit{across} and \textit{within} each, yields a tighter bound than Theorem 3.1 in \citep{entezari2021role} in its limited setting.
+We first introduce necessary background from prior work, including Theorem 3.1 and a particular formalization for within-model merging borrowed from~\citep{simsek2021geometry}.
+Second, we introduce Theorem 1, which produces a tighter bound on Theorem 3.1 when merging within models is allowed, and prove its validity (Section~\ref{ap:TheoremDef} \&~\ref{ap:Theorem_proof}). 
+Third, we provably extend Theorem 1 to a less restrictive setting, retaining its bounds (Section~\ref{ap:theorem1_extended}).
+
+\subsection{Background}\label{ap:Theorem_background}
+We first introduce Theorem 3.1 from \citep{entezari2021role}. Second, we formalize a restricted version of within-model merging necessary for our proof using the definitions from~\cite{simsek2021geometry}. 
+
+\subsubsection{Thoerem 3.1}\label{ap:theorem3.1}
+\paragraph{The Theorem. } Let $f_{\{\vv,\vW\}}(x)=\vv^T\sigma(\vW x)$, $f_{\{\vvP,\vWP\}}(x)=\vv'^T\sigma(\vW' x)$ be two fully-connected networks with $h$ hidden units where $\sigma(\cdot)$ is ReLU activation, $\vv\in\mathbb{R}^h$ and $\vW\in\mathbb{R}^{h\times d}$ are the parameters and $x\in\mathbb{R}^d$ is the input. If each element of $\vW$ and $\vWP$ is sampled uniformly from $[-1/\sqrt{d},1/\sqrt{d}]$ and each element of $\vv$ and $\vvP$ is sampled uniformly from $[-1/\sqrt{h},1/\sqrt{h}]$, then for any $x\in\mathbb{R}^d$ such that $\norm{x}_2=\sqrt{d}$, with probability $1-\delta$ over $\vW,\vWP, \vv, \vvP$, there exist a permutation such that
+
+\begin{equation}
+    |f_{\{\alpha\vv + (1-\alpha)\vvPP, \alpha\vW+(1-\alpha)\vWPP\}}(x) - \alpha f_{\{\vv,\vW\}}(x) - (1-\alpha)f_{\{\vvP,\vWP\}}(x)| = \Tilde{O}(h^{-\frac{1}{2d+4}})\label{eq:perm_LMC}
+\end{equation}
+
+where $\vvPP,\vWPP$ are permuted version of $\vvP,\vWP$, $\alpha\in[0,1]$ is an arbitrary interpolation constant, and the left-hand-side of the equality is the amount an interpolated model differs in output compared to the interpolation of the original models. \citep{entezari2021role} show that minimizing this quantity is analogous to minimizing the barrier (as defined by~\citet{entezari2021role}) in this setting. 
+This is important because it states that achieving a zero output difference is equivalent to achieving zero-barrier, which implies that two models are linearly mode connected (LMC). 
+
+\paragraph{Implications} Theorem 3.1 states that given any two two-layer models with different random initializations, there exists a permutation for one model such that applying the permutation makes it linearly mode connected to the second with high probability, given that the networks are \textit{wide enough} (i.e. $h$ is large enough). In other words, it states that any two randomly initialized two-layer networks are LMC modulo permutation with high likelihood. \citet{entezari2021role} use this result to conjecture that most well-trained neural networks with the same architecture and trained on the same task are also LMC modulo permutation with high likelihood. 
+
+Notably however, permutations only allow for merging \textit{across} models. We will show how adding the ability to merge \textit{within} models leads to a tighter bound than Theorem 3.1 with the same likelihood.%, or analogously the same bound but with higher likelihood. 
+
+
+% \paragraph{Preserving Function Invariance Beyond Permutations.} 
+\subsubsection{A Restricted Formalization of Merging Within Models}\label{ap:reducible_def}
+\paragraph{The Formalization. }
+Let $\bm{\theta}_h=\{\vv,\vW\}$ represent a parameter-set such that $f_{\{\vv,\vW\}}=f_{\bm{\theta}_h}$, and likewise let $\bm{\theta'}_h=\{\vvP,\vWP\}, \text{ s.t. }, f_{\{\vvP,\vWP\}}=f_{\bm{\theta'}_h}$. 
+Given $\thetah$, let $\Theta_h$ denote the set of all parameter-sets with functional equivalence to $\thetah$.
+This means that $\forall \theta\in\Theta_h\text{, and }\forall x\in\{x\in\mathbb{R}^d|\  \norm{x}_2=\sqrt{d}\}, f_{\bm{\theta}}(x)=f_{\bm{\thetah}}(x)$.
+Similarly, let $\Theta_h'$ be the set of all parameter-sets with functional equivalence to $\thetah'$.
+Following $\bm{\theta_h}$, let $\bm{\theta}_r$ be an arbitrary parameter-set for $f$ which has $r$ hidden units instead. Assume $\bm{\theta}_h$ can be reduced to some $\bm{\theta}_r, r\leq h$ in a function-invariant manner using the definition of zero-type neurons from \citep{simsek2021geometry}. This means that there are $h-r$ total combinations of (1) rows in $\vW$ that are copies of one another whose corresponding $\vv$ elements \textit{sum to $0$}, and (2) some zero-elements in $\vv$. Thus, following \citet{simsek2021geometry} there exists a function-and-loss-preserving affine transformation that reduces $\bm{\theta}_h$ to $\bm{\theta}_r$. 
+% We restrict our attention to cases where this function is linear and 
+We denote this function as $M_{h\rightarrow r}\in\mathbb{R}^{r\times h}$, with $M_{h\rightarrow r}(\bm{\theta}_h)=\bm{\theta}_r$. Note that when $r=h$, $M_{h\rightarrow r}$ can simply be the identity transformation.
+
+By definition, $\thetah$ lies in the expansion manifold of $\thetar$ \citep{simsek2021geometry}. 
+This means there is a similarly defined affine transformation $U_{r\rightarrow h}\in\mathbb{R}^{h\times r}$ that can expand $\thetar$ back to arbitrary $\bm{\Tilde{\theta}_h}\in\Theta_h$ lying on the expansion manifold. 
+One simple way is to extend $\thetar$ to $\bm{\Tilde{\theta}_h}$ by filling the remaining $h-r$ $\vv$ elements with $0$ and the $h-r$ $\vW$ rows with arbitrary values. 
+% Under the definition, these $h-r$ neurons whose incoming weight vector copies from $\vW$ and outgoing $\vv$ elements sum to zero would be considered zero-type neurons.
+Because the associated $\vv$ elements for each $\vW$ row are zero, the values of each row don't impact the function output.
+% Under the definition, these $h-r$ elements would be considered zero-type neurons.
+Note that because $h\geq r$, $U_{r\rightarrow h}$ can assign $\thetar$ into arbitrary new indices in $\thetah$. 
+Thus, $U_{r\rightarrow h}$ act as both a \textit{permutation and expansion} transformation. 
+Let $T=U\circ M=U_{r\rightarrow h}(M_{h\rightarrow r}(\thetah))$ be the coupling of the reduction and expansion affine-transformations that produce new networks of width $h$ from $\thetar$. 
+By definition, any $T$ is a permutation when $M$ is the identity and $U$ is the permutation matrix. 
+For the remainder of this section, we assume that $T$ further contains a permutation (i.e. $T=P\circ U\circ M$ for some permutation matrix $P\in\mathbb{R}^{h\times h}$).
+
+We will leverage the concept of zero-type neurons presented in \citep{simsek2021geometry} to obtain a tighter bound on Theorem 3.1. 
+
+\paragraph{A Note on Novelty.} While we borrow ideas from \citet{simsek2021geometry}, our Theorem is a differs in theoretical application. 
+First, \citet{simsek2021geometry} restrict their attention to overall connectivity across points within expansion manifolds. 
+% They do not explore the existence of direct-linear connectivity between two arbitrary points as in Theorem 3.1. 
+This is important because our Theorem and proof do not require models to lie on the \textit{same} expansion manifold to be linearly mode connected. 
+% They can instead be \textit{disconnected} over each-other's manifold. 
+% Second, we seek direct-linear connectivity instead of polygonal chains. 
+Second, our models need not be reducible to the same $r$. 
+That is, we allow for arbitrary reducibility between any two network parameter-sets. 
+% Third, our setting involves a different set of models than those studied in \citet{simsek2021geometry}. 
+Our theorem also differs from Theorem 3.1 in \citep{entezari2021role} in that we extend function-invariant transformations beyond the permutation matrix, and show that tighter bounds are achievable in the process. Furthermore, we show that uniformity assumptions may be relaxed while retaining the same bounds (Section \ref{ap:theorem1_extended}).
+
+% Let $\Omega_{r\rightarrow h}(\thetar)$ denote the expansion manifold (defined in \citep{simsek2021geometry}) of $\thetar$. For simplicity, we restrict each point in the expansion manifold to be a linear transformation of $\thetar$. We define this transformation by $U_{r\rightarrow h}\in\mathbb{R}^{h\times r}$, which expands $\thetar$ from $r$ back to width $h$. One way this can be done is 
+
+% If $M_{h\rightarrow r}(\thetah)=\thetar$ then $\thetah$ lies in the expansion manifold of $\thetar$ as defined in \citep{simsek2021geometry}. This means that
+
+% Under certain activations such as ReLU, we can generalize Definition 3.1 with another reducible property. More specifically, any rows in $\vW$ whose outputs are a linear combination of each other after activation can also be reduced. I.e., if there exists a set $\mathbb{S}$ of rows in $\vW$ such that $\forall x\in\mathbb{R}^d\ \exists j\notin\mathbb{S}, \sigma(\vW_j x) = \sum_{i\in \mathbb{S}} \vv_i\sigma(\vW_i x)$ where $\vv_i\in\mathbb{R}_+$ are scalar weights, then $\bm{\theta}_h$ is also reducible. 
+
+% A second observation is that for any $M_{h\rightarrow r}\in\mathbb{R}^{r\times h}$, we can define a complementary linear transformation $U_{r\rightarrow h}\in\mathbb{R}^{h\times r}$ that expands $\bm{\theta}_r$ back to some $\bm{\theta}_h$ while preserving function and loss. One intuitive way this can be done is by copying $h-r$ arbitrary elements with appropriate normalization in $\bm{\theta}_r$ to fill $\thetah$. An even simpler way is to extend $\thetar$ to $\thetah$ by filling the remaining $h-r$ width parameters with $0$. We can do this by assigning $h-r$ elements of $\vv$ to be $0$, and then fill their corresponding $h-r$ rows of $\vW$ with any arbitrary values. Note that because $h\geq r$, $U_{r\rightarrow h}$ can assign $\thetar$ into arbitrary new indices in $\thetah$. Thus, $U_{r\rightarrow h}$ act as both a \textit{permutation and expansion} transformation. 
+% Let $T=U\circ M=U_{r\rightarrow h}(M_{h\rightarrow r}(\thetah))$ be the linear coupling of the reduction and extension linear-transformations that produce new networks of width $h$ from $\thetah$. By definition, any $T$ is a permutation when $M$ is the identity and $U$ is the permutation matrix. For the remainder of this section, we assume that $T$ further contains a permutation (i.e. $T=P\circ U\circ M$ for some permutation matrix $P\in\mathbb{R}^{h\times h}$).
+
+\subsection{A theoretical Result}\label{ap:TheoremDef}
+We now introduce Theorem 1, an extension of Theoerem 3.1 that yields a strictly tighter bound when the transformations $T$ from Section~\ref{ap:reducible_def} are included and $r < h$, and exactly as tight when $r=h$. We leave the proof to the next section. 
+
+\paragraph{Theorem 1.} 
+Let $f_{\{\vv,\vW\}}(x)=\vv^T\sigma(\vW x)$, $f_{\{\vvP,\vWP\}}(x)=\vv'^T\sigma(\vW' x)$ be two fully-connected networks with $h$ hidden units where $\sigma(\cdot)$ is ReLU activation, $\vv\in\mathbb{R}^h$ and $\vW\in\mathbb{R}^{h\times d}$ are the parameters and $x\in\mathbb{R}^d$ is the input. If each element of $\vW$ and $\vWP$ is sampled uniformly from $[-1/\sqrt{d},1/\sqrt{d}]$ and each element of $\vv$ and $\vvP$ is sampled uniformly from $[-1/\sqrt{h},1/\sqrt{h}]$, then for any $x\in\mathbb{R}^d$ such that $\norm{x}_2=\sqrt{d}$, with probability $1-\delta$ over $\vW,\vWP, \vv, \vvP$, there exist transformations $T,T'$ such that
+\begin{align}
+    &|f_{\{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}', \alpha\Tilde{\vW}+(1-\alpha)\Tilde{\vW}'\}}(x) - \alpha f_{\{\vv,\vW\}}(x) - (1-\alpha)f_{\{\vv',\vW'\}}(x)| \nonumber \\
+    &\leq\begin{cases}
+            \Tilde{O}\left(\left(\frac{h^2}{(r+r')-h}\right)^{-\frac{1}{2d+4}}\right) & \text{, }(r+r')-h > 0 \\
+            0 &\text{, otherwise}
+        \end{cases}\label{eq:T_LMC}
+\end{align}
+where $\Tilde{\vv},\Tilde{\vW}$ are transformed versions of $\vv,\vW$ from $T$ and $\Tilde{\vv}',\Tilde{\vW}'$ are transformed versions of $\vvP,\vWP$ from $T'$ respectively. $0 < r, r' \leq h$ are the hidden unit amounts each network can be reduced to via its respective $M,M'$ transformation before being expanded back to width $h$ via $P\circ U,P'\circ U'$, where $P,P'$ are permutation matrices.
+
+\paragraph{Implications.} Theorem 1 states that when redundancy exists and can be leveraged in a network, one can find a transformation that yields strictly lower barrier than with permutation with any $h$. Moreover, it approaches zero-barrier faster with increase in $h$ compared to permutations. Although it only explicitly holds for random initializations---like Theorem 3.1, this theoretical intuition is supported by our experimental observations. For instance it explains why algorithms like \name{} appear to converge to the ensemble exponentially faster than permutation methods in Figure \ref{fig:variations}\hyperref[fig:variations]{b}). The ensemble achieves zero-barrier, and \name{} is faster to approach it than permutation counterparts because it can reduce models with minimal deduction in performance. 
+% Similar to \citet{entezari2021role}, we leave the extension to the NTK regime \citet{jacot2021ntk} to future work.
+
+
+
+\subsection{Theorem 1 Proof}\label{ap:Theorem_proof}
+We now derive our proposed Theorem 1. Theorem 1 is very similar to Theorem 3.1--- we just add the reducibility property from Section~\ref{ap:reducible_def}.
+Thus, our derivation is nearly identical to their Appendix D proof.
+We fully derive the novel components of Theorem 1 for clarity, while referring to Appendix D in \cite{entezari2021role} for the remaining identical derivations to avoid redundancy.
+
+% Thus, we can make use of most of the scaffolding in Theorem 3.1's proof (Please see page 21-23 of \cite{entezari2021role}). 
+Let $\thetah=\{\vv,\vW\}$ and $\thetah'=\{\vvP,\vWP\}$ respectively as defined in Section~\ref{ap:Theorem_background}. Suppose each can be reduced to some $\thetar,\thetar'$ respectively with $r\leq h$, via an appropriate $M_{h\rightarrow r}, M_{h\rightarrow r'}$ transformation. Further, let $U_{r\rightarrow h}, U_{r'\rightarrow h}$ be as defined in Section~\ref{ap:Theorem_background}, expanding $M_{h\rightarrow r}(\thetah), M_{h\rightarrow r'}(\thetah)$ back to width $h$ by filling in all $h-r, h-r'$ dimensions in $\vv,\vvP$ with $0$ respectively and all $h-r, h-r'$ dimensions in $\vW,\vWP$ with some specific values. 
+Finally, let $T,T'$ be transformations defined in Section~\ref{ap:Theorem_background} with $T=P\circ U\circ M, T'=P'\circ U'\circ M'$ respectively. 
+
+Let $\Tilde{\bm{\theta}_h}=T(\thetah)$, $\Tilde{\bm{\theta}_h'}=T'(\thetah')$ be the new parameter-sets obtained from $T, T'$ respectively, and let $\Tilde{\bm{\theta}_h}=\{\Tilde{\vv},\Tilde{\vW}\}$ and $\Tilde{\bm{\theta}_h'}=\{\Tilde{\vvP},\Tilde{\vWP}\}$. 
+By definition, $\Tilde{\bm{\theta}_h}\in\Theta_h$, and $\Tilde{\bm{\theta}_h'}\in\Theta_h'$. 
+From the definitions of $T,T'$, $\vW$ has $h-r$ zero $\Tilde{\vv}$ elements and $\vWP$ has $h-r'$ zero-$\Tilde{\vv}'$ elements.
+Now, let us suppose that the corresponding $ h-r$ rows in $\Tilde{\vW}$ are set to copy rows in $\Tilde{\vWP}$, and similarly $h-r'$ rows in $\Tilde{\vWP}$ rows are set to copy rows in $\Tilde{\vW}$.
+Now, interpolating between any non-zero element and a zero-element is equivalent to simply scaling the non-zero element: $z: \alpha 0 + (1-\alpha)z=(1-\alpha)z$. 
+Thus, so long as $h\leq (h-r) + (h-r')$, we can achieve \textit{perfect} interpolation by placing $h-r$ elements from $\Tilde{\bm{\theta}}_h'$ into 
+the zero-elements of $\Tilde{\bm{\theta}}_h$ and $h-(h-r) \leq h-r'$ elements from $\Tilde{\bm{\theta}}_h$ into the zero-elements of $\Tilde{\bm{\theta}}_h'$. 
+This yields the zero-part of our piece-wise bound.
+% Thus, we can place up to $h-r$ elements from $\Tilde{\bm{\theta}}_h'$ into the zero-elements of $\Tilde{\bm{\theta}}_h$ and $h-r'$ zero-elements from $\Tilde{\bm{\theta}}_h'$ into the elements of $\Tilde{\bm{\theta}}_h$, obtaining perfect interpolation for $(h-r) + (h-r')=2h-(r+r')$ elements.
+% This leaves just $h-(2h-(r+r'))=h-2h+(r+r')=(r+r')-h$ within each model that must be matched.
+% Now we have two cases to consider. The first is when $(r+r')-h \leq 0$, while the second is when $(r+r')-h > 0$. If the first case is true, then we trivially obtain a bound of zero. This is because $P\circ U$ can just place $M(\thetah)$ into the first $r$-dimensions of $h$, and $P'\circ U'$ can just place $M'(\thetah')$ into the last $r'$-dimensions of $h$. The proof for the second case is more involved, and is continued below.
+However, the proof is more involved for the second case when $h > (h-r) + (h-r') \rightarrow (r+r') - h > 0$. We continue the proof for this case below.
+
+% Thus, we can obtain $\max(h-r,h-r')=h-(r+r')-h$ matching of elements in $\Tilde{\bm{\theta}}_h, \Tilde{\bm{\theta}}_h'$ with perfect interpolation. 
+% This leaves just $(r+r')-h$ elements within each model that must be matched. 
+
+First, note that we only need to worry about the $(r+r') - h$ rows in $\vW,\vWP$ that cannot necessarily be matched with perfect interpolation as shown above. 
+Let $\mathbb{K}\text{ , and } \mathbb{K}'$ be the set of these rows for each network respectively, where $|\mathbb{K}|=|\mathbb{K}'|=(r+r')-h$. These are the only rows within the two models that must still be considered. 
+For any given $\xi>0$, we consider the set $S_\xi = \{-1/\sqrt{d}+\xi, -1/\sqrt{d}+3\xi,\ldots,1/\sqrt{d}-\xi\}^d$, a discretization of the $\mathbb{R}^{d}$ which has size $(\frac{1}{\xi\sqrt{d}})^d$\footnote{Like \cite{entezari2021role}, we choose $\xi$ such that it is a factor of $1/\sqrt{d}$.}. For any $s\in S_\xi$, let $C_s(\Tilde{\vW})$ be the set of indices of rows in $\mathbb{K}$ of $\Tilde{\vW}$ that are closest in Euclidean distance to $s$ than any other element in $S_\xi$:
+\begin{align*}
+    C_s(\Tilde{\vW}) &= \{i|\bm{w}_i\in\mathbb{K}, s=\text{arg min}_{s'\in S_\xi} \norm{\mathbf{w}_i - s'}_\infty\} \\
+    C_s(\Tilde{\vW}') &= \{i|\bm{w}_i\in\mathbb{K}', s=\text{arg min}_{s'\in S_\xi} \norm{\mathbf{w}_i - s'}_\infty\}
+\end{align*}
+where for simplicity we assume that arg min returns a single element. 
+These are the same definitions and assumptions as in \cite{entezari2021role}.
+
+% In other words, $C_s(\Tilde{\vW})$ represents the set of rows in $\mathbb{K}$ from $\Tilde{\vW}$ that are within an $\xi$-ball of a particular $s$ over the euclidean metric space. 
+Now for every $s\in\mathcal{S}$ consider a random 1-1 matching (permutation) of elements in $C_s(\Tilde{\vW})\text{ and }C_s(\Tilde{\vW}')$.
+Whenever $|C_s(\Tilde{\vW})|\neq |C_s(\Tilde{\vW}')|$, we will inevitably have unmatched indices because permutations only allow 1-1 mappings. Let $I\text{, and }I'$ denote the set of total unmatched indices from $\mathbb{K}\text{, and }\mathbb{K}'$ respectively. If $|C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')| \geq 0$, we add these extra indices that are not matched to $I$ and otherwise we add them to $I'$. Because $\mathbb{K}\text{ , and } \mathbb{K}'$ are the same size, $|I|=|I'|$ after adding all unmatched indices across all $C_s$. 
+% $| |C_s(\Tilde{\vW})|- |C_s(\Tilde{\vW}')| |$ unmatched indices. Denote $I, I'$ as the set of total unmatched elements in $\Tilde{\bm{\theta}}_h\text{, and } \Tilde{\bm{\theta}}_h'$ respectively. 
+Thus, by definition $|I|=|I'|\leq (r+r')-h$. 
+
+% The rest of the derivation is very similar to that of \citet{entezari2021role}, and thus the remainder of our language is extremely similar. However, we are \textit{significantly more thorough}. 
+Pick an arbitrary $s\in\mathcal{S}$. Since each element of $\mathbb{K}$ and $\mathbb{K}'$ is sampled uniformly from $[-1/\sqrt{d},1/\sqrt{d}]$, for each row in the respective sets, the probability of being assigned to each $s\in\mathcal{S}_\xi$ is a multinomial distribution with equal probability for each $s$: $\sfrac{1}{|\mathcal{S}_\xi|}$. Pick an arbitrary $s$.  $|C_s(\Tilde{\vW})|$ is the sum over all indicator variables $W_i^s=\mathbbm{1}\{w_i\in C_s(\Tilde{\vW})\}$, and the expected value of this sum, $E|[C_s(\Tilde{\vW})|] = \sfrac{[(r+r')-h]}{|\mathcal{S}_\xi|}$ as there are $(r+r')-h$ total rows. Let $(r+r')-h=n$. Since each $W_i^s$ is between $[0,1]$, we can use Hoeffding's Inequality to bound the size of $C_s(\Tilde{\vW})$ with high probability
+% the probability of being assigned $s$ follows a Bernoulli distribution with probability: $\sfrac{1}{|\mathcal{S}_\xi|}$. $|C_s(\Tilde{\vW})|$ is the number of rows in $\vW$ that happen to be closest to $s$, or the number (sum) of random variables with value $1$ when sampled from the Bernoulli over $s$. Thus, we can use Hoeffding's Inequality for the special case of sum of Bernoulli random variables to bound the size of $C_s(\Tilde{\vW})$ with probability $\sfrac{\delta}{3}$:
+\begin{align}
+    P(|S_n - E[S_n]| \geq t) \leq 2\exp\left(\frac{-2t^2}{n}\right) && (\text{Hoeffding's Inequality})\label{eq:hoeffding_cs} \\
+    P(||C_s(\Tilde{\vW})| - E[|C_s(\Tilde{\vW})|]| \geq t) \leq 2\exp\left(\frac{-2t^2}{n}\right) && \because S_n = |C_s(\Tilde{\vW})| \\
+    P\left(||C_s(\Tilde{\vW})| - \frac{(r+r')-h}{|\mathcal{S}_\xi|}| \geq t\right) \leq 2\exp\left(\frac{-2t^2}{n}\right) \\
+    P\left(||C_s(\Tilde{\vW})| - \frac{(r+r')-h}{|\mathcal{S}_\xi|}| \geq t\right) \leq 2\exp\left(\frac{-2t^2}{(r+r')-h}\right) && \because n=(r+r')-h\label{eq:cs_bound}
+\end{align}
+
+Let $n=(r+r')-h$. By taking a union bound over all elements of $\mathbb{K}$ and $\mathbb{K}'$, with probability $1-\delta/3$, the following holds for all choices of $s$:
+\begin{equation}
+    \frac{n}{|S_\xi|} - \sqrt{\frac{n}{2}\log{(12|S_\xi|/\delta)}} \leq |C_s(\Tilde{\vW})|, |C_s(\Tilde{\vW}')| \leq \frac{n}{|S_\xi|} + \sqrt{\frac{n}{2}\log{(12|S_\xi|/\delta)}}\label{eq:c_bound}
+\end{equation}
+Note this derivation almost exactly follows \cite{entezari2021role}, except that we have $n \leq h$, yielding a tighter size-bound. 
+
+% Eq. (\ref{eq:cs_bound}) holds with probability of $\sfrac{\delta}{3}$, so $P(| |C_s(\Tilde{\vW})| - \frac{(r+r')-h}{|S_{\xi}|}| \leq t)$ holds with probability  $1-\delta/3$. Using $\sfrac{\delta}{3}$ and simplifying, we can an upper and lower bound for the size of $C_s(\Tilde{\vW})$:
+
+% This bound holds for each $s$. Because this Eq. (\ref{eq:cs_bound}) holds with probability of $\sfrac{\delta}{3}$, $P(| |C_s(\Tilde{\vW})| - \frac{(r+r')-h}{|S_{\xi}|}| \leq t)$ holds with probability  $1-\delta/3$. Using $\sfrac{\delta}{3}$, we can rewrite the inequality \textit{only in terms of $\delta$} rather than $t$. First, we set the upperbound to $\sfrac{\delta}{3}$ and solve for $t$:
+
+% $\sfrac{(r+r')-h}{|\mathcal{S}_\xi|}$. Given any $s\in\mathcal{S}_\xi$, we can use Hoeffding's Inequality with probability $\sfrac{\delta}{3}$ and $\forall t\geq 0$:
+
+% \begin{align}
+%     P(| |C_s(\Tilde{\vW})| - E[C_s(\Tilde{\vW})]| \geq t) \leq 2\exp(\frac{-2t^2}{(r+r')-h}) \\
+% \end{align}
+
+% Thus, with probability $1-\delta/3$, $P(| |C_s(\Tilde{\vW})| - \frac{(r+r')-h}{|S_{\xi}|}| \leq t)$. Rewriting the right hand side with respect to $t$:
+% \begin{align}
+%     &2\exp(\frac{-2t^2}{n}) = \delta/3 \\
+%     &\frac{-2t^2}{n} = \log{(\delta/6)} \\
+%     &\frac{2t^2}{n} = \log{(6/\delta)} \\
+%     &2t^2 = (n)\log{(6/\delta)} \\
+%     &t = \sqrt{\frac{n}{2}\log{(6/\delta)}} \\
+%     &t \leq \sqrt{\frac{n}{2}\log{(12|S_\xi|/\delta)}}\label{eq:t} && (\log(6/\delta) \leq  \log((12|S_\xi|/\delta))
+% \end{align}
+
+% Now because with probability $1-\sfrac{\delta}{3}$, $P(| |C_s(\Tilde{\vW})| - \frac{n}{|S_{\xi}|}| \leq t)$ holds, we can substitute equation~\ref{eq:t} for $t$ and obtain bounds on only the size of $C_s(\Tilde{\vW})$ that hold with probability $1-\sfrac{\delta}{3}$:
+
+% Substituting equation \ref{eq:t} into the above probability, we obtain the following bounds:
+% \begin{align}
+%     ||C_s(\Tilde{\vW})| - \frac{n}{|S_{\xi}|}| &\leq t \\
+%     | |C_s(\Tilde{\vW})| - \frac{n}{|S_{\xi}|}| &\leq \sqrt{\frac{n}{2}\log{(12|S_\xi|/\delta)}} \\
+%     \frac{n}{|S_\xi|} - \sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}&\leq |C_s(\Tilde{\vW})|
+%     \leq \frac{n}{|S_\xi|} + \sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}\label{eq:c_bound}
+% \end{align}
+
+% It is trivial to see that with probability $1-\delta/3$, $\forall s\in\mathcal{S}_\xi$ the same bounds exist for $C_s(\Tilde{\vW}')$. This observation allows us to upperbound the cardinality of their difference, which in turn will enable us to bound $|I|,|I'|$ respectively. To get there though, we first bound $||C_s(\Tilde{\vW})|- |C_s(\Tilde{\vW}')||$:
+
+Using Eq. (\ref{eq:c_bound}), we can obtain a bound on the cardinality differences between $C_s(\Tilde{\vW})$ and $C_s(\Tilde{\vW}')$ by subtracting the minimum value of one from the maximum value of the other:
+\begin{align}
+    ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')|| &\leq \sup(|C_s(\Tilde{\vW})|) - \inf(|C_s(\Tilde{\vW})|) \\
+    ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')|| &\leq \left(\frac{n}{|S_\xi|} + \sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}\right)\notag \\
+    &- \left(\frac{n}{|S_\xi|} - \sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}\right) \\
+    ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')|| &\leq 2\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}\label{eq:single_c_diff}
+\end{align}
+
+Using Eq. (\ref{eq:single_c_diff}) we can bound the size of $I,I'$ with probability $1-\sfrac{\delta}{3}$ as follows:
+\begin{align}
+    \sum_{s\in S_\xi} ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')| &\leq \sum_{s\in S_\xi} 2\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)} \\
+    \sum_{s\in S_\xi} ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')| &\leq 2|S_\xi|\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)} \\
+    |I| + |I'| = \sum_{s\in S_\xi} ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')| &\leq 2|S_\xi|\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)} \\
+    |I| = |I'| = \frac{1}{2} \sum_{s\in S_\xi} ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')| &\leq |S_\xi|\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)} && \because |I|=|I'|\label{eq:I_bound}
+\end{align}
+Note, our Eq. (\ref{eq:I_bound}) equivalent to Eq. (6) in \cite{entezari2021role}, but in terms of $n$ instead of $h$. 
+
+The remainder of our derivation exactly follows (and achieves identical bounds to) \cite{entezari2021role} until directly after their substitution of $\xi$. To avoid writing an identical derivation, we refer readers to their derivation following Eq. (6) in their Appendix D until the substitution of $\xi$, and instead pick up immediately before the substitution of $\xi$:
+
+Let $\epsilon\geq 0$ denote the value of $|f_{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}', \alpha\vW+(1-\alpha)\Tilde{\vW}'\}}(x) - \alpha f_{\{\vv,\vW\}}(x) - (1-\alpha)f_{\{\vvP,\vWP\}}(x)|$.
+Following the derivation of \cite{entezari2021role}, we bound $\epsilon$ as follows:
+\begin{align}
+    &\epsilon = |f_{\{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}'\}, \{\alpha\vW+(1-\alpha)\Tilde{\vW}'\}}(x) - \alpha f_{\{\vv,\vW\}}(x) - (1-\alpha)f_{\{\vvP,\vWP\}}(x)|\notag \\
+    &\leq \sqrt{2\log(12/\delta)\log(12h/\delta)\left(\frac{|I|}{h} + \xi^2 d\right)}
+\end{align}
+Setting $\xi=\epsilon/\sqrt{4d\log(12/\delta)\log(12h/\delta)}$ gives the following bound on $h$:
+\begin{align*}
+    h&\leq \frac{4\log(12/\delta)\log(12h/\delta)|I|}{\epsilon^2} \\
+    &\leq \frac{4\log(12/\delta)\log(12h/\delta)|S_\xi|\sqrt{ \frac{n}{2} \log(12|S_\xi|/\delta)}}{\epsilon^2}
+\end{align*}
+
+Therefore, we have:
+\begin{align}
+    h^2&\leq \left(\frac{4\log(12/\delta)\log(12h/\delta)|S_\xi|\sqrt{ \frac{n}{2} \log(12|S_\xi|/\delta)}}{\epsilon^2}\right)^2 \\
+    &\leq \left(\frac{4\log(12/\delta)\log(12h/\delta)|S_\xi|\sqrt{\log(12|S_\xi|/\delta)}}{\epsilon^2}\right)^2 \left(\frac{n}{2}\right) && \because |S_\xi)| = \left(\frac{1}{\xi\sqrt{d}}\right)^d \\
+    &\leq \left(\frac{4\log(12/\delta)\log(12h/\delta)}{\epsilon^2}\right)^{d+2}(\log(12/\delta) + d\log(1/\epsilon))(n) \\
+    \frac{h^2}{n} &\leq \left(\frac{4\log(12/\delta)\log(12h/\delta)}{\epsilon^2}\right)^{d+2}(\log(12/\delta) + d\log(1/\epsilon))\label{eq:end_of_proof}
+\end{align}
+
+Using the inequality in equation (\ref{eq:end_of_proof}), we have $\epsilon = \Tilde{O}((\frac{h^2}{n})^{-\frac{1}{2d+4}})=\Tilde{O}((\frac{h^2}{r+r'-h})^{-\frac{1}{2d+4}})$. 
+
+Thus, we obtain the following piece-wise bound over the barrier: 
+\begin{align*}
+    &|f_{\{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}', \alpha\Tilde{\vW}+(1-\alpha)\Tilde{\vW}'\}}(x) - \alpha f_{\{\Tilde{\vv},\Tilde{\vW}\}}(x) - (1-\alpha)f_{\{\Tilde{\vv}',\Tilde{\vW}'\}}(x)| \nonumber \\
+    &\leq\begin{cases}
+            \Tilde{O}\left(\left(\frac{h^2}{(r+r')-h}\right)^{-\frac{1}{2d+4}}\right) & \text{, }(r+r')-h > 0 \\
+            0 &\text{, otherwise}
+        \end{cases}
+\end{align*} $\hfill\square$
+
+\subsection{Uniformity is not needed: An Extension of Theorem 1}
+Although Theorem 1 demonstrates a tighter bound compared to Theorem 3.1 is possible when merging within a model is allowed, its reliance on $\vW,\vv,\vWP,\vvP$ being uniform random variables is unnecessary. Instead, we can assume that $\vW,\vWP$ are sampled from an arbitrary probability distribution that is bounded on $[-1/\sqrt{d}, 1/\sqrt{d}]$. Similarly, assume that $\vv,\vvP$ is sampled from an arbitrary probability distribution that is both centered and bounded on $[-1/\sqrt{h}, 1/\sqrt{h}]$. Note how for both $\vv\text{, and }\vW$ \textit{any continuous probability distribution is valid}, so long as it satisfies the stated conditions. We formalize this as follows:
+
+\paragraph{Theorem 1.1.}\label{ap:theorem1_extended}
+Let $f_{\vv,\vW}(x)=\vv^T\sigma(\vW x)$, $f_{\vvP,\vWP}(x)=\vv'^T\sigma(\vW' x)$ be two fully-connected networks with $h$ hidden units where $\sigma(\cdot)$ is ReLU activation, $\vv\in\mathbb{R}^h$ and $\vW\in\mathbb{R}^{h\times d}$ are the parameters and $x\in\mathbb{R}^d$ is the input. If each element of $\vW$ and $\vWP$ is sampled from an \textit{continuous probability distribution that is bounded} on $[-1/\sqrt{d},1/\sqrt{d}]$, and each element of $\vv$ and $\vvP$ is sampled from an \textit{continuous probability distribution that is centered and bounded} on $[-1/\sqrt{h},1/\sqrt{h}]$, then for any $x\in\mathbb{R}^d$ such that $\norm{x}_2=\sqrt{d}$, with probability $1-\delta$ over $\vW,\vWP, \vv, \vvP$, there exist transformations $T,T'$ such that
+\begin{align}
+    &|f_{\{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}', \alpha\Tilde{\vW}+(1-\alpha)\Tilde{\vW}'\}}(x) - \alpha f_{\{\vv,\vW\}}(x) - (1-\alpha)f_{\{\vv',\vW'\}}(x)| \nonumber \\
+    &\leq\begin{cases}
+            \Tilde{O}\left(\left(\frac{h^2}{(r+r')-h}\right)^{-\frac{1}{2d+4}}\right) & \text{, }(r+r')-h > 0 \\
+            0 &\text{, otherwise}
+        \end{cases}\label{eq:T_LMC_Extended}
+\end{align}
+where $\Tilde{\vv},\Tilde{\vW}$ are transformed versions of $\vv,\vW$ from $T$ and $\Tilde{\vv}',\Tilde{\vW}'$ are transformed versions of $\vvP,\vWP$ from $T'$ respectively. $0 < r, r' \leq h$ are the hidden unit amounts each network can be reduced to via its respective $M,M'$ transformation before being expanded back to width $h$ via $U,U'$.
+
+\paragraph{Proof.} 
+The proof for Theorem 1.1 is takes a very similar form to Theorem 1, with two differences. For what follows, we assume the same notation and definitions as in Section \ref{ap:Theorem_proof} up to Eq. (\ref{eq:hoeffding_cs}), with one change: each element of $\mathbb{K},\mathbb{K}'$ need not be assigned to each $s\in S_\xi$ with equal probability. 
+
+Despite this change, for a given $s\in S_\xi$, we can use the Hoeffding's Inequality to bound the size of $C_s(\Tilde{\vW})$ with high probability:
+\begin{align}
+    P(|S_n - E[S_n]| \geq t) \leq 2\exp\left(\frac{-2t^2}{n}\right) \\
+    P(||C_s(\Tilde{\vW})| - E[|C_s(\Tilde{\vW})|]| \geq t) \leq 2\exp\left(\frac{-2t^2}{n}\right) \\
+\end{align}
+Despite $E[|C_s(\Tilde{\vW})|]$ no longer being equal for each $s$, we can take the union bound (1) over the rows of $\Tilde{\vW}, \Tilde{\vW}'$ and (2) for each $s\in S_\xi$ to obtain,
+\begin{equation}
+    ||C_s(\Tilde{\vW})| - |C_s(\Tilde{\vW}')|| \leq 2\sqrt{\frac{n}{2}\log(12|S_\xi|/\delta)}
+\end{equation}
+with probability $1-\sfrac{\delta}{3}$. Thus, we achieve the same bound on the size of $I,I'$ as in Section \ref{ap:Theorem_proof}. 
+
+The second difference is that $\Tilde{\vv}$ is no longer sampled uniformly from $[-1/\sqrt{h}, 1/\sqrt{h}]$. However, this does not affect anything because we assume $E[\Tilde{\vv}]=0$.
+Noting these changes, we can follow the derivation in Section \ref{ap:Theorem_proof} and achieve the same bounds.
+
+% The first minor change is that when $\vW,\vWP$ are not uniformly distributed, $s\in\mathcal{S}_\xi$ is \textit{no longer} a multinomial distribution with equal probability for each $s$. Instead, it is a $s\in\mathcal{S}_\xi$ is a multinomial distribution with \textit{unequal} probability for each $s$. This means that $C_s(\vW),C_s(\vWP)$ are no longer the sum of i.i.d random variables. Instead, they are just the sum of \textit{independent} random variables. However, this has no effect on the Hoeffding's Inequality (it does not require i.i.d.) in Eq. (\ref{eq:hoeffding_cs}), and we achieve the same result.
+
+% The second minor change is that $\Tilde{\vv}$ is no longer sampled uniformly from $[-1/\sqrt{h}, 1/\sqrt{h}]$. However, this does not affect anything because we assume $E[\Tilde{\vv}]=0$.
+
+% These are the sole changes necessary to make to Section \ref{ap:Theorem_proof}, in order to prove Theorem 1.1.
+
+\subsection{Simplifying variables in Theorem 1}
+Theorem 1 can be simplified to match its introduction in Section~\ref{sec:approach}. First, let $\tau,\tau'$ denote the proportions of features from $h$ that are reduced under the $M,M'$ transformation in each model. By definition, $\tau,\tau'\in[0,1]$. Then, we can define $r\text{, and }r'$ in terms of $\tau,\tau'\text{, and }h$:
+\begin{equation*}
+    r=h(1-\tau)\text{, and }r'=h(1-\tau')
+\end{equation*}
+This means $(r+r')-h=h(1-\tau-\tau')\leq h(1-2\min(\tau,\tau'))$. Let $\Gamma=\min(\tau,\tau')$, then we achieve $h(1-2\Gamma)$ in the denominator of our bound, which simplifies to what is written in Section~\ref{sec:approach}.
+
+% This can be done by letting $r=\Gamma h, r'=\Gamma'h$, where $\Gamma,\Gamma'\in[0,1]$ are proportions 
+
+% \subsection{Theorem 2}\label{ap:Theorem2}
+% We can further extend Theorem 1 to guarantee no-barrier when $h$ is sufficiently large. 
+
+% \paragraph{Theorem 2. } Let all notation be defined as in Theorem 1. When $h\geq r+r'$, there exist $T,T'$ such that:
+% \begin{equation}
+%     |f_{\alpha\Tilde{\vv} + (1-\alpha)\Tilde{\vv}', \alpha\Tilde{\vW}+(1-\alpha)\Tilde{\vW}'}(x) - \alpha f_{\Tilde{\vv},\Tilde{\vW}}(x) - (1-\alpha)f_{\Tilde{\vv}',\Tilde{\vW}'}(x)| = 0\label{eq:necessary_width}
+% \end{equation}
+% In other words, so long as sufficient reducibility exists between each model for a given $h$, we can always achieve zero-barrier in this setting. Although the setting is limited, its implications are vast. We summarize these in the following lemma:
+
+% \paragraph{Lemma 1.} Let \modela{Model A} and \modelb{Model B} with arbitrary (but same) architecture trained \modela{Dataset A} and \modelb{Dataset B} respectively, with \modela{Dataset A} and \modelb{Dataset B} being not necessarily different datasets. Assume the architecture of each model scales width-wise via a factor of $z$ (i.e., the number of hidden units in each layer is multiplied by $z$). Call such architectures $z$-wide. Suppose \modela{Model A} and \modelb{Model B} are $h$-wide. If \modela{Model A} can be reduced to be $r$-wide, \modela{Model B} can be reduced to be $r'$-wide, and $h\geq r+r'$, then there exists $\modela{T},\modelb{T}$ on each model respectively such that zero-barrier is achieved. 
+
+% \subsection{Theorem 2 Proof.}\label{ap:Theorem2_proof}
+% The proof of Theorem 2 is simple. Using the notation from Section~\ref{ap:Theorem_proof}, let $T=P\circ U\circ M$, $T'=P'\circ U'\circ M'$, and $h\geq r+r'$. Define $M,M'$ such that $M_{h\rightarrow r}(\modela{\thetah})=\modela{\thetar}$ and $M_{h\rightarrow r'}(\modelb{\thetah})=\modelb{\thetar}$. Then, we can just define $P\circ U$ to place $\modela{\thetar}$ in the first $r$-dimensions of $h$, and $P'\circ U'$ to place $\modelb{\thetar}$ in the remaining $r'$-dimensions of $h$. This immediately gives us perfect interpolation, and therefore zero-barrier. 
+
+% \subsection{Theorem 2 Footnote Reference}\label{ap:Theorem2_footnote}
+% Let two models (denote their parameters by $\thetah, \thetah'$ respectively) be trained on different tasks. If $T(\thetah)=\thetah$, $T(\thetah')=\thetah'$, and $U,U'$ extend $M,M'$ respectively via zero-elements, a permutation between the models is guaranteed to exist. Please refer to Appendix~\ref{ap:Theorem2_proof} for the proof---this is a trivial extension. It suffices that finding such models in the wild is exceedingly rare. 

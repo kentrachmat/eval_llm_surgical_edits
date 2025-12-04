@@ -1,0 +1,266 @@
+\begin{figure*}[!h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/diagrams/envs.pdf}
+  \caption{
+    Visualizations of the environments we study. The top row shows an observation in the environment. The bottom row shows the associated instruction in that episode.
+  }
+  \label{fig:envs}
+\end{figure*}
+
+\section{Environment Details}
+\label{sec:env-details}
+An overview of the environments is visualized in \Cref{fig:envs}. This figure visualizes the training observations input to the agent. 
+We run experiments on 5 environments, and each environment in turn consists of multiple tasks.
+We arrive at the task count of \taskcount in the main paper through 45 tasks in \metaworld, 34 in \calvin, 20 in \habpick where we count each object goal as a different task, 10 in \langR for each of the evaluation splits, and 5 in BabyAI.
+The task count for \langR is conservative since technically it consists of 282 instruction templates, each of which corresponds to a distinct task and goal.
+
+\subsection{\metaworld}
+\textbf{Tasks}: We use the ML-45 benchmark from \metaworld~\cite{metaworld}. Each of the 45 tasks are specified with a fixed language instruction. We use the task descriptions from Appendix Section A of \citet{metaworld}.
+
+\textbf{Observation Space}: $ 200 \times 200$ RGB images from a fixed camera position. 
+To render the visual observations, we only use the ``corner4" camera position as this gives an unobstructed view of the robot in most of the tasks. 
+
+\textbf{Action Space}: 4DoF continuous control of the arm and gripper. The first 3 dimensions specify the relative end-effector translation. The last dimension specifies the desired gripper state.
+
+\textbf{Training}: We use 40 start and goal configurations for each of the tasks. 
+We generate 500 demonstrations for each of the 45 tasks. We use the scripted policies from~\citet{metaworld}. At each step we add Gaussian noise $ \mathcal{N}(0, 0.1)$ to the actions produced by the scripted policy before executing it in the environment.  We generate 500 successful trajectories per task, resulting in $ 45 \cdot 500 = 22.5k$ total trajectories.
+
+\textbf{Evaluation}: We evaluate performance on 10 unseen start and goal configurations for each of the 45 tasks.
+So in total, we evaluate on 450 unseen configurations and report the average performance over these 450 episodes.
+
+\subsection{\calvin}
+\textbf{Tasks}: We use the \calvin $ ABC \rightarrow D$ dataset split. 
+
+\textbf{Observation Space}: $ 200 \times 200$ RGB observations from the fixed camera view. 
+
+\textbf{Action Space}: 7DoF continuous control of the arm and gripper. The first 6 dimensions specify the relative position and rotation of the end-effector. The final dimension is a binary indicator for if the gripper should be open or closed.
+We hold out $ 1024$ subsequences of the policy context length from these trajectories for reporting validation performance during the SFT process. 
+
+\textbf{Training}: 
+We use the 17,871 demonstrations provided in the CALVIN $ ABC \rightarrow D$ dataset. 
+These demonstrations are in 3 different table backgrounds. 
+This also includes 1,088 demonstrations for validation. 
+
+\textbf{Evaluation}: 
+We report performance on the $ D$ split. 
+This evaluation scene is a different color than that encountered during training. 
+All the start positions and goals are also different.
+Many of the language instructions are also unseen from training.
+We report the average performance over the 1,000 evaluation sequences. 
+We report the success of the first task completed in the sequence.
+
+\subsection{\Habpick}
+\textbf{Tasks}: We use the same Pick task as in Habitat 2.0 Geometric Goal object rearrangement~\cite{szot2021habitat,habitatrearrangechallenge2022}, except we provide the agent the name of the object to rearrange rather than the starting coordinates of the object and increase the observation resolution. 
+The task is successful when the agent picks up the object and returns the end-effector within a fixed offset to a ``resting position" in front of the robot.
+The task ends in failure if the agent excessively collides with the scene, drops the object, or picks up the wrong object. 
+The agent starts within 2 meters of the object and facing towards the receptacle but with random noise $ \mathcal{N}(0, 1.57)$ applied to the direction of facing directly at the receptacle.
+The maximum number of steps per episode is 300 steps.
+
+\textbf{Observation Space}: A $ 336 \times 336$ head-mounted RGB camera. 
+
+\textbf{Action Space}: The action space is 10DoF control of the arm, base and gripper. The first 2 dimensions control the linear and angular velocity of the base. The next 7 dimensions control the relative joint offsets of the arm. The final dimension controls whether the suction gripper is engaged or not. 
+
+\textbf{Training}: 
+We first train a privileged policy with RL to complete the task. This policy takes as input the egocentric depth image and the ground truth position of the target object to pick up. We collect $ 20k$ successful trajectories.
+
+\textbf{Evaluation}: 
+We evaluate on the test episodes from \citet{habitatrearrangechallenge2022} which are $ 1,000$ episodes in unseen home layouts.
+
+\subsection{BabyAI}
+\textbf{Tasks}: 
+The tasks all occur in a $ 6 \times 6$ grid populated with interactable objects. 
+We use the task definitions from \citet{carta2023grounding}. This consists of the following 5 instruction templates: ``Go to $ <$object$>$", ``Pick up $<$object$>$", ``Put $<$object A$ >$ next to $ <$object B$>$,", ``Pick up $<$object A$>$ then go to $<$object B$>$ and Go to $<$object B$>$ after pick up $<$object A$>$", ``Unlock $<$door$>$". 
+The maximum number of steps per episode is 50 steps.
+
+\textbf{Observation Space}: $ 200 \times 200$ RGB observation as a top down of the $ 6 \times 6$ scene.
+Note this is a more challenging observation space than prior gridworld navigation tasks that provide the current view as a compact entity specific array~\cite{babyai_iclr19} or by a language description~\cite{carta2023grounding}. 
+
+\textbf{Action Space}: 
+The action space consists of 6 actions consisting of: turn left, turn right, move forward, pick, drop and toggle. 
+
+\textbf{Training}: 
+We collect 1,000 demonstrations for each of the 5 templates. We randomly sample an instruction and starting state configuration for every demonstration. We use the expert planner from \citet{babyai_iclr19} to generate the demonstrations. 
+
+\textbf{Evaluation}: 
+We report performance on the unseen synonyms generalization test, described in Section 4.2 of \citet{carta2023grounding}.
+We evaluate on 200 episodes per template type, giving 1000 total evaluation episodes.
+
+\subsection{\LangR}
+\textbf{Tasks}: An agent starts in an unseen house and must complete a rearrangement task from a language instruction. 
+
+\textbf{Observation Space}: The agent has a $ 336 \times 336$ head-mounted RGB camera. We increase the camera resolution from $ 256 \times 256 $ in the original \langR task to match the input resolution of the \llava CLIP encoder.
+
+\textbf{Action Space}: We use the same action space as from the original \langR benchmark \citet{szot2023large}. The agent can select between 70 high-level skills that include picking up objects by name, navigating to receptacles, placing on receptacles by name, and opening and closing receptacles by name.
+
+\textbf{Training}: Since \langR does not provide any demonstrations and due to the emphasis on exploration in the problem, they are not readily obtainable, even with oracle planners. Therefore, we opt to train policies with reinforcement learning from the environment reward provided by the \langR task.
+
+\textbf{Evaluation}: We evaluate on all 10 evaluation datasets from \langR consisting of 1,000 evaluation episodes on unseen scenes. 
+
+
+\subsection{Task Groupings}
+\label{sec:task-groupings} 
+In \Cref{sec:experiments} we breakdown the performance on CALVIN and MetaWorld for task groupings. Each of the task groupings consists of multiple tasks from the benchmark. We grouped tasks in the following way:
+
+\textbf{MetaWorld}: 
+\begin{itemize}[itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt,parsep=0pt,leftmargin=*]
+\item Articulated: ``door-close", ``door-open", ``drawer-close", ``drawer-open", ``faucet-open", ``faucet-close", ``handle-press-side", ``handle-press", ``window-open", ``window-close"
+\item Press: ``button-press-topdown", ``button-press-topdown-wall", ``button-press", ``button-press-wall", ``coffee-button"
+\item Push: ``plate-slide", ``plate-slide-side", ``plate-slide-back", ``plate-slide-back-side", ``push-back", ``push", ``push-wall", ``stick-push", ``sweep-into", ``sweep", ``soccer", ``coffee-push"
+\item Pick: ``assembly", ``basketball", ``dial-turn", ``disassemble", ``hammer", ``peg-insert-side", ``peg-unplug-side", ``pick-out-of-hole", ``pick-place", ``pick-place-wall", ``reach", ``reach-wall", ``shelf-place"
+\item Pull: ``coffee-pull", ``handle-pull-side", ``handle-pull", ``lever-pull", ``stick-pull"
+\end{itemize}
+
+\textbf{CALVIN}: 
+\begin{itemize}[itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt,parsep=0pt,leftmargin=*]
+\item Articulated: ``move slider left", ``open drawer", ``close drawer", ``move slider right"
+\item Press: ``turn off led", ``turn on led", ``turn on lightbulb", ``turn off lightbulb"
+\item Lift: ``lift blue block slider", ``lift pink block table", ``lift red block slider", ``lift red block table", ``lift pink block slider", ``lift blue block table"
+\item Push: ``push pink block right", ``push blue block right", ``push red block left", ``push pink block left", ``push red block right", ``push blue block left", ``push into drawer"
+\item Rotate: ``rotate red block right", ``rotate red block left", ``rotate pink block left", ``rotate pink block right", ``rotate blue block right", ``rotate blue block left"
+\end{itemize}
+
+\section{Further Policy Details}
+\label{sec:method-details} 
+
+\subsection{Prompt Details}
+
+
+In addition to inputting the task instruction to the LLM, we also format the instruction with a prompt. We base our prompt off the prompt used in \llava. For all continuous control tasks, we use the prompt template ``Prompt: control the robot. USER: $<$INSTRUCTION$>$ ASSISTANT: ". 
+For discrete action space tasks, we describe the available actions to the agent in the prompt as well. For BabyAI, this is the prompt template ``Prompt: Control the red triangle to complete the instruction using left, right, forward, pick, drop and toggle. USER: $<$INSTRUCTION$>$ ASSISTANT: ". For \langR, this is the prompt template ``Prompt: You are a home robot assistant. Your possible actions are: pick object, place receptacle, nav receptacle, open receptacle, close receptacle, STOP. - Objects: ball, clamp, hammer, screwdriver, padlock, scissors, block, drill, spatula, knife, spoon, plate, sponge, cleanser, plum, pear, peach, apple, lemon, can, box, banana, strawberry, lego, cube, book, bowl, cup, mug, orange, lid, toy, wrench. - Receptacles: chair, black table, brown table, TV stand, sink, right counter, left counter, sofa, fridge, left drawer, right drawer, middle drawer. USER: $<$INSTRUCTION$>$ ASSISTANT: ".
+
+
+
+\subsection{Action Space Adapter Details}
+\label{sec:asa-details} 
+
+We use the same \asa details between all environments. We detail the architecture and training decisions for the different \asas when applicable. 
+
+\textbf{\vq}: Use a codebook size of 512 with 512 dimensions per codebook element. 
+These 512 tokens are mapped to token indices $ 31000-31512$ from the \llama language modeling head.
+The encoder and decoder networks for predicting the latent and decoding from the latent are 4 layer MLP networks with hidden size 2048 using ReLU activations. The \vq network is trained on the actions in the same dataset used to train the policy. 
+The network is trained with MSE loss to reconstruct the original actions. 
+We \vq network for 3 epochs over the dataset.
+
+\textbf{\rvq}: Use all the same details as \vq, but with a Residual-VQ that uses 2 codebooks. 
+
+\textbf{\mlp}: We use a 2 layer MLP network with a hidden size of 2048 and ReLU activations. We use this same MLP network architecture for discrete and continuous action space tasks. In the robot manipulation tasks, we also found it useful to include the robot proprioception as input to the MLP network and included this as input to the network layer. The robot proprioception consists of the robot robot joint angles and the gripper state. This \asa requires no separate training. 
+
+\textbf{\unif}: In the tasks we consider, the actions are already normalized to be in $ [-1,1]$. We then create $ 512$ evenly spaced bins within this interval and assign each action dimension based on which bin it is within. Like with \vq, we assign the 512 tokens to indices $ 31000-31512$ from the \llama language modeling head. This \asa requires no separate training.
+
+\textbf{\lang}: Starting from the same semantic tokenization as with \semlang, we remap each token to the token corresponding to a digit ``0" to ``9". Therefore, the token count per action is the same between \lang and \semlang, but the \lang action tokens have no semantic meaning being just digits.
+
+\subsection{Training and Architecture Details}
+\label{sec:training-details} 
+\label{sec:architecture-details} 
+\label{sec:hyperparams} 
+
+We use all pretrained components from \llava. For the visual token downsampler, we use a 2 layer Perceiver network~\cite{jaegle2021perceiver} with 4 output latents and hidden size 4096. 
+
+We detail the hyperparameters used for imitation learning in in \Cref{table:hyperparams}. We trained with the HuggingFace Transformers library~\cite{wolf2019huggingface}, PyTorch~\cite{paszke2019pytorch}, DeepSpeed~\cite{rasley2020deepspeed}. 
+For reinforcement learning, we use learning rate $ 3e^{-4}$, $ 32$ steps per rollout. $ 18$ parallel environment workers per GPU, an entropy coefficient of $ 0.01 $, 2 epochs over the data batch per rollout, 6 PPO minibatches, a maximum gradient norm of 0.2 and $ \gamma = 0.99$. 
+
+We train the \calvin, \metaworld and \habpick imitation learning results on a 4xA40 GPU setup. We train the \langR and BabyAI experiments on a 8xA100-80GB GPU setup. 
+
+We train the LLM weights with LoRA and fine tune the entire \asa and downsampler module. For LoRA we use rank value 128, alpha parameter $ 32$ and dropout $ 0.1$.
+
+
+\begin{table}
+\rowcolors{1}{white}{lightgray}
+  \centering
+  \input{tables/hyperparams}
+  \caption{
+    Hyperparameters for all imitation learning experiments. Most hyperparameters are the same between environments but the number of training epochs, context length and batch size per GPU are adjusted to fit the need for history, environment dataset size and task complexity.
+  }
+  \label{table:hyperparams} 
+\end{table}
+
+
+\section{Qualitative Results}
+See \Cref{fig:qual-results} for qualitative results of results from \Cref{fig:vlm-disc}. The \rvq \asa is visualized for Meta-World, CALVIN and Habitat Pick. \semlang is visualized for Language Rearrangement.
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/mw_succ.jpg}
+        \caption{The robot successfully picks the stick and pushes the box to the goal position.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/mw_fail.jpg}
+        \caption{The robot only partially lifts the handle and fails to lift it up all the way.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/calvin_succ.jpg}
+        \caption{The robot grasps the pink block and lifts it to the goal height.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/calvin_fail.jpg}
+        \caption{The robot attempts to grasp the blue block but grasps too high, failing to pick the block.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/hab_succ.jpg}
+        \caption{The robot moves closer to the cleaner bottle with its base and moves the arm to grasp the cleaner. It then returns the end-effector to the resting position to successfully end the task.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/hab_fail.jpg}
+        \caption{The robot correctly finds the lemon in the sink, but the tight sink receptacle results in the arm colliding with the sink and the episode terminating due to excessive collisions.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/lang_succ.jpg}
+        \caption{The robot searches the house, eventually finds the mug and then brings it to the blue table.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/qual/lang_fail.jpg}
+        \caption{The robot picks the strawberry navigates to the counter area, but puts the strawberry on the right counter as opposed to the correct receptacle of the sink.}
+    \end{subfigure}
+    \caption{
+        Qualitative visualizations of successes and failures from the results in Figure 1 of the main paper. The RVQ action space adapter is visualized for Meta-World, CALVIN and Habitat Pick. SemLang is visualized for Language Rearrangement.
+    }
+    \label{fig:qual-results} 
+\end{figure*}
+
+\section{Per-Task Breakdown}
+\label{sec:per-task} 
+
+In this section, we show results for each environment by task type. \Cref{table:langr_full_results} shows performance on Language Rearrangement for each of the evaluation datasets. \Cref{table:calvin-full} shows performance on \calvin for each of the \calvin tasks. \Cref{table:babyai-full} shows performance on BabyAI for each of the BabyAI instruction types. \Cref{table:metaworld-full} shows performance on \metaworld for each of the 45 \metaworld task types.
+
+\begin{table}[h!] 
+  \resizebox{\columnwidth}{!}{
+      \begin{tabular}{l|ccc|ccccccccccc|}
+        \toprule
+        & \multicolumn{3}{c|}{Aggregated} & \multicolumn{11}{c|}{Per Dataset Breakdown} \\
+        & \textbf{Total} & \textbf{Behavior} & \textbf{Paraphrastic} & \textbf{Train} & \textbf{Scene} & \textbf{Instruct} & \textbf{Novel} & \textbf{Multiple} & \textbf{Referring} & \textbf{Context} & \textbf{Irrelevant} & \textbf{Multiple} & \textbf{Spatial} & \textbf{Conditional} \\
+        & & \textbf{Generalization} & \textbf{Robustness} & & & \textbf{Rephrasing} & \textbf{Objects} & \textbf{Rearrange} & \textbf{Expressions} & & \textbf{Text} & \textbf{Objects} & & \textbf{Instructs} \\
+        \midrule \midrule
+        \input{tables/langR_full} 
+      \end{tabular}
+  }
+  \caption{
+    Evaluation results at 20M steps of RL training for all results in Language Rearrangement. We show averages and standard deviations over 2 random seeds of full policy training.
+  }
+  \label{table:langr_full_results} 
+\end{table}
+
+\begin{table}[h!] 
+  \centering
+    \input{tables/calvin_full}
+  \caption{Breakdown on every \calvin task. Note there are not an equal proportion of all tasks in the evaluation dataset.}
+  \label{table:calvin-full} 
+\end{table}
+
+\begin{table}[h!] 
+  \centering
+    \input{tables/gflan_full}
+  \caption{Breakdown on every BabyAI task.}
+  \label{table:babyai-full} 
+\end{table}
+
+
+
+\begin{table}[h!] 
+  \centering
+    \input{tables/metaworld_full}
+  \caption{Breakdown on every \metaworld task.}
+  \label{table:metaworld-full} 
+\end{table}
+
+

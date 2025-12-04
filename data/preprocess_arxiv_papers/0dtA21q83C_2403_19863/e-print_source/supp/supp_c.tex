@@ -1,0 +1,242 @@
+\subsection{Additional Experiments}
+\label{supp_sec:additional_exp}
+
+
+\subsubsection{Feature Decodability on C-CIFAR10}
+\label{supp_sec:decodability_cifar}
+
+Analogous to \cref{fig:depth_effect} in the main paper, \cref{fig:training_dynamics_cifar} illustrates the variation in feature decodability for corruption (bias) and object (core) in the C-CIFAR10 dataset as ERM training advances. We chose ResNet 20 as the deep network and a 3-layer CNN as the shallow network since these are the architectures used for DeNetDM. The training dynamics show a similar trend to those observed in ColoredMNIST concerning bias and core attributes. As training progresses, corruption (bias) becomes highly decodable by both deep and shallow networks, with the deep branch slightly outperforming the shallow branch. However, the object attribute (core) is more decodable by the shallow network as training progresses, during the initial training dynamics. These observations align with the early training dynamics observed in CMNIST.
+
+\begin{figure}
+    \centering
+     \includegraphics[width=0.5\textwidth]{figures/rebutal/training_dynamics_cifar10.pdf}
+    \caption{Early training dynamics of DeNetDM on C-CIFAR10 dataset.}
+   \label{fig:training_dynamics_cifar}
+\end{figure} 
+   
+\subsection{Generalization to other tasks}
+We evaluate the performance of DeNetDM on the CivilComments dataset \cite{pmlr-v139-koh21a}, which involves natural language debiasing. The task requires classifying online comments as toxic or non-toxic, with labels spuriously correlated with mentions of certain demographic identities. As shown in \cref{tab:worst_group_acc_civil}, our approach performs comparably to state-of-the-art methods. Due to the constrained rebuttal timeline, we just applied our model out of the box, without any reasonable hyperparameter tuning. The observations illustrate the applicability of DeNetDM to domains beyond vision.
+
+\begin{table}[h]
+\caption{Worst group accuracy (\%) comparison between different methods on CivilComments dataset.}
+\label{tab:worst_group_acc_civil}
+\centering
+\resizebox{0.4\textwidth}{!}{
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{Worst Group Acc (\%)} \\
+\midrule
+ERM & 58.6 (1.7) \\
+JTT & 69.3 (-) \\
+LfF & 58.3 (0.5) \\
+LC & 70.3 (1.2) \\
+DeNetDM (ours) & 68.33 (-) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+
+\subsubsection{Effect of depth modulation} 
+To validate our hypothesis on the significance of network depth in DeNetDM, we conduct an ablation by setting the same depth for both branches and compare it with the default DeNetDM, where one branch is deeper than the other. We focus on the first stage of DeNetDM training for 5 different random seeds, reporting the averaged test accuracy on bias-aligned and bias-conflicting points for individual branches in \cref{tab:effect-depth-difference}. Branch 1 and Branch 2 in \cref{tab:effect-depth-difference} correspond to the deep and shallow branches in DeNetDM, respectively. We ignore the second stage of training since our focus was primarily on the segregation of bias and core attributes. An interesting observation is the significant standard deviation in accuracies when the branches have the same depth, observed in both datasets. This phenomenon occurs because in such a configuration, DeNetDM loses its ability to clearly distinguish between branches. This is due to the similarity in feature decodability of bias and core attributes across both branches, as discussed in \cref{sec:linear_decodability_analysis}. As a result, DeNetDM may distribute information across multiple branches or still separate core and bias attributes, but the specific branch capturing core attributes varies with different initialization.
+In contrast, when depths are unequal, the deeper branch tends to focus on aligned points, disregarding conflicting ones, as seen in the test accuracies provided in \cref{tab:effect-depth-difference}. Additionally, the shallow branch emphasizes capturing core attributes, consistently enhancing conflicting accuracy. This shows the pivotal role of depth modulation in the DeNetDM framework for effectively segregating bias and core attributes.
+
+\begin{table*}[ht]
+% \centering
+  \caption{Performance of DeNetDM using different network depths for the two branches of DeNetDM.}
+  \label{tab:effect-depth-difference}
+    \centering
+    % \resizebox{0.9\textwidth}{0.3\textwidth}{
+    \begin{tabular}{lccccc}
+      \toprule
+      Dataset & Depth & Branch & Conflicting & Aligned\\
+       & (Branch 1, Branch 2) &  & Accuracy (\%) & Accuracy (\%) \\
+      \midrule
+      \multirow{4}{*}{CMNIST} & \multirow{2}{*}{(5, 5)} & Branch 1 & \textbf{44.94 (22.25)} & 74.85 (12.71) \\
+      & & Branch 2 & 17.25 (7.89) & \textbf{88.57 (9.50)} \\
+      \cmidrule{2-5}
+      & \multirow{2}{*}{(5, 3)} & Branch 1 & 1.921 (0.29) & \textbf{99.92 (0.25)}\\
+      & & Branch 2 & \textbf{83.17 (0.96)} & 88.25 (2.254) \\
+      \midrule
+       \multirow{4}{*}{C-CIFAR10} & \multirow{2}{*}{(ResNet-20, ResNet-20)} & Branch 1 & 19.54 (11.16) & 85.83 (8.19) \\
+      & & Branch 2 & \textbf{24.42 (16.93)} & \textbf{86.95 (11.04)}\\
+      \cmidrule{2-5}
+      & \multirow{2}{*}{(ResNet-20, 3-layer CNN)} & Branch 1 & 3.0 (1.29) & \textbf{99.34 (0.47)}\\
+      & & Branch 2 & \textbf{38.52 (0.99)} & 76.72 (2.19)\\
+      \bottomrule
+    \end{tabular}
+  % }
+
+\end{table*}
+
+
+
+
+\subsubsection{Effect of loss components on CMNIST}
+\label{subsec:cmnist_loss_effect}
+The primary text, constrained by spatial limitations, only includes an ablation study detailing the effect of individual loss components of DeNetDM on the C-CIFAR10 dataset. However, this section extends the scope of our analysis to encompass the CMNIST dataset and the results are summarized in \cref{table:ablation-loss-components_CMNIST}. The proposed approach exhibits a similar trend as observed in the case of C-CIFAR10 (presented in \cref{sec:ablation studies}).
+
+  \begin{table*}[ht]
+\caption{Ablation study of different losses used in DeNetDM on CMNIST dataset.}
+\label{table:ablation-loss-components_CMNIST}
+\centering
+\resizebox{0.9\textwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{c c c c c c}
+\toprule
+{$\mathcal{L}_\text{CE}$} & {$\mathcal{L}_\text{dist}$} & { $\mathcal{L}_t$ }& {Accuracy (\%)} & {Conflicting} & {Aligned} \\
+ (Stage-1) & (Stage-2) & (Stage-2) &  & Accuracy (\%) & Accuracy (\%) \\
+\midrule
+{\cmark} & {-} & {-} & {81.61} & {83.28} & {89.66} \\
+{\cmark} & {-} & {\cmark} & {82.96} & {81.53} & {95.85} \\
+{\cmark} & {\cmark} & {-} & {84.05} & {83.41} & {89.86} \\
+{\cmark} & {\cmark} & {\cmark} & {84.97} & {84.44} & {89.17} \\
+\bottomrule
+\end{tabular}
+}
+  \end{table*} 
+
+\subsubsection{Depth vs. Number of parameters}
+DeNetDM employs depth modulation as its principal strategy for mitigating bias. We investigate the influence of the number of parameters of both branches on DeNetDM performance. We opt for the optimal configuration of the proposed approach on C-CIFAR10 and conducted an ablation study, employing ResNet-20 ($\depth(\phi_b) = 20$) as the deep network and a 3-layer CNN ($\depth(\phi_d) = 3$) as the shallow network. We explore three scenarios where $\left | \phi_b \right | < \left | \phi_d \right |$, $\left | \phi_b \right | \approx \left | \phi_d \right |$, and $\left | \phi_b \right | > \left | \phi_d \right |$. The first stage of DeNetDM training is then performed to analyze learning in the deep and shallow models in each of the cases, and the results are presented in \cref{tab:capacity_depth}. As indicated in \cref{tab:capacity_depth}, the shallow model exhibits increased resilience to spurious correlations, while the deep model captures bias in all three cases. This suggests that DeNetDM effectively segregates bias and core attributes regardless of the number of parameters in both branches. Interestingly, a notable finding is that the shallow model exhibits better robustness against correlations when the shallow branch possesses a greater number of parameters compared to the deep model, as evident from \cref{tab:capacity_depth}.
+
+The findings for CMNIST mirror those observed for C-CIFAR10 as presented in \cref{tab:capacity_depth_additional}: the shallow branch demonstrates robustness to spurious correlations, whereas the deep branch consistently assimilates bias irrespective of the number of parameters in both branches. These consistent patterns across datasets reinforce the efficacy of DeNetDM in distinguishing between bias and core attributes.
+
+\begin{table*}[ht]
+\caption{Ablation study on the number of parameters of deep and shallow branches in DeNetDM using C-CIFAR10 dataset.}
+\label{tab:capacity_depth}
+\centering
+% \resizebox{0.9\columnwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{cccccc}
+\toprule
+Case & Branch &  Conflict (\%) & Align (\%)\\
+\midrule
+$\phi_b > \phi_d$ & $\phi_b$ & 3.08 & \textbf{96.8} \\
+                 & $\phi_d$ & \textbf{29.78} & 62.61  \\
+\midrule
+$\phi_b \approx \phi_d$ & $\phi_b$ & 3.48 & \textbf{95.91} \\
+                        & $\phi_d$ & \textbf{28.64} & 64.32  \\
+\midrule
+$\phi_b < \phi_d$ & $\phi_b$ & 2.04 & \textbf{99.01} \\
+                 & $\phi_d$ & \textbf{39.05} & 67.68  \\
+\bottomrule
+\end{tabular}
+% }
+\end{table*}
+
+\begin{table*}[ht]
+\caption{Ablation study on the number of parameters of deep and shallow branches in DeNetDM using CMNIST dataset.}
+\label{tab:capacity_depth_additional}
+\centering
+% \resizebox{0.5\columnwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{cccccc}
+\toprule
+Case & Branch &  Conflicting Accuracy (\%) & Aligned Accuracy (\%)\\
+\midrule
+                 
+$\phi_b < \phi_d$ & $\phi_b$ & 11.90 & \textbf{99.93} \\
+                 & $\phi_d$ & \textbf{83.89} & 88.78 &   \\
+\midrule
+$\phi_b \approx \phi_d$ & $\phi_b$ & 11.87 & \textbf{99.90} \\
+                       & $\phi_d$ & \textbf{83.07}  & 89.09 &  \\
+\midrule
+$\phi_b > \phi_d$ & $\phi_b$ & 10.79 & \textbf{98.26} \\
+                 & $\phi_d$ & \textbf{83.32} & 88.61 &   \\
+
+\bottomrule
+\end{tabular}
+% }
+\end{table*}
+ 
+\subsubsection{Effect  of Network Depth  on DeNetDM}
+In the main text, we have illustrated how the variation in network depth affects the performance of DeNetDM.We provide an in-depth analysis in this section. As observed in the first three rows of \cref{tab:performance_comparison}, as the difference in network depth of deep and shallow progressively increases, the performance of the debiased model increases monotonically. Further, when we decrease the difference in depth of shallow and deep branches (rows 3 and 4) the performance decreases to 80.42\% compared to 87.37\%. Similar performance degradation can be seen when we increase the depth of the shallow network from 4 to 6 (rows 5 and 6). Hence, DeNetDM is able to distinguish bias and core attributes better when there is a significant difference between the depths of shallow and deep branches. This aligns with the observations presented in \cref{sec:linear_decodability_analysis} of the main text (Effect of depth modulation).
+
+\begin{table*}[ht]
+\caption{Performance comparison of DeNetDM for various depths of shallow and deep branches.}
+\label{tab:performance_comparison}
+\centering
+
+
+% Adjust the font size here if needed, for example, \small or \footnotesize
+% \resizebox{0.5\columnwidth}{!}{ % Resize table to fit the column width
+\begin{tabular}{cccccc}
+\toprule
+{Depth (Shallow, Deep)} & {Conflicting Accuracy (\%)} & {Aligned  Accuracy(\%)} \\
+\midrule
+(3, 4) & 72.2  & 98.33 \\
+(3, 5) & 80.46 & 92.87 \\
+(3, 7) & 87.37 & 93.62 \\
+(6, 7) & 80.42 & 96.45 \\
+(4, 8) & 91.19 & 94.62 \\
+(6, 8) & 69.55 & 93.83 \\
+\bottomrule
+\end{tabular}
+% }
+\end{table*}
+
+\subsubsection{Performance on varying bias-conflicting ratios} 
+We perform experiments on the CMNIST dataset with bias-conflicting ratios of 10\% and 20\% to evaluate our method's efficacy across a broader range of ratios. The findings, presented in \cref{tab:cmnist_conflict}, show that DeNetDM performs as expected, effectively capturing core attributes in the shallow branch for varied bias ratios.
+
+
+\begin{table*}
+\caption{Results on CMNIST with wider bias conflicting ratios.}
+\label{tab:cmnist_conflict}
+\centering
+% \resizebox{0.5\columnwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{cccccc}
+\toprule
+Bias ratio & Branch &  Conflicting Accuracy (\%) & Aligned Accuracy (\%)\\
+\midrule 
+\multirow{2}{*}{10\%} & Deep & 1.84(0.5) & \textbf{99.14(0.2)} \\
+                 & Shallow & \textbf{93.12(0.8)} & 96.47(1.3) &   \\
+
+\midrule
+
+\multirow{2}{*}{20\%} & Deep & 3.23(2.8) & \textbf{97.93(2.1)} \\
+                 & Shallow & \textbf{94.49(2.4)} & 97.51(3.4) &   \\
+
+\bottomrule
+
+\end{tabular}
+% }
+\end{table*}
+
+\begin{table*}[ht]
+  \caption{Comparison of the performance of DeNetDM using different network depths for the two branches of DeNetDM.}
+  \label{tab:effect-depth}
+    \centering
+    \begin{tabular}{cccc}
+      \toprule
+      Depth (Branch 1, Branch 2) & Branch & Conflicting Accuracy (\%) & Aligned Accuracy (\%) \\
+      \midrule
+      \multirow{2}{*}{(ResNet-50, ResNet-32)} & Branch 1 & 3.48 (0.98) & \textbf{97.15 (2.10)} \\
+                                              & Branch 2 & \textbf{30.88 (1.22)} & 81.72 (0.73) \\
+      \multirow{2}{*}{(ResNet-50, ResNet-8)}  & Branch 1 & 9.38 (1.52) & \textbf{98.60 (0.86)} \\
+                                              & Branch 2 & \textbf{20.32 (1.90)} & 59.94 (2.61) \\
+      \bottomrule
+    \end{tabular}
+\end{table*}
+
+\subsubsection{Early training dynamics in ResNet architectures}
+\label{subsec:early_resnet}
+We also examine the early training dynamics of ResNet-8, ResNet-32, and ResNet-50, akin to \cref{fig:training_dynamics_erm} in C-CIFAR10 dataset to assess the scalability of DeNetDM to larger ResNet models. After 200 iterations, texture (bias) decodability in all architectures neared 99\%, while core attribute decodability for ResNet-8, ResNet-32, and ResNet-50 was 18.74\%, 24.32\%, and 12.91\%, respectively. This aligns with our hypothesis that ResNet-50 would prefer texture attribute over core when paired with ResNet-8 or ResNet-32. To confirm, we tested two setups: (1) ResNet-8 and ResNet-50, and (2) ResNet-32 and ResNet-50. The results, shown in \cref{tab:effect-depth}, indicate high bias-aligned accuracy for ResNet-50 and high bias-conflicting accuracy for ResNet-8 and ResNet-32 respectively. Since ResNet-50 has lower core attribute decodability than ResNet-8 and ResNet-32, it favors bias attributes, while the shallow branches capture core attributes. This experimental results suggest DeNetDM's applicability to diverse, complex and larger models / architectures.
+
+
+
+% \begin{table*}
+%   \caption{Comparison of the performance of DeNetDM using different network depths for the two branches of DeNetDM.}
+%   \label{tab:effect-depth}
+%     \centering
+%     \begin{tabular}{lccccc}
+%       \toprule
+%       Depth & Branch & Conflicting & Aligned\\
+%        & (Branch 1, Branch 2) &  & Accuracy (\%) & Accuracy (\%) \\
+%       \cmidrule{2-5}
+%       & \multirow{2}{*}{(ResNet-50, ResNet-32)} & Branch 1 & 3.48 (0.98) & \textbf{97.15 (2.10)}\\
+%       & & Branch 2 & \textbf{30.88 (1.22) } & 81.72 (0.73)\\
+%       \cmidrule{2-5}
+%       & \multirow{2}{*}{(ResNet-50, ResNet-8)} & Branch 1 & 9.38 (1.52) & \textbf{98.60 (0.86)}\\
+%       & & Branch 2 & \textbf{20.32 (1.90)} & 59.94 (2.61)\\
+%       \bottomrule
+%     \end{tabular}
+% \end{table*}
+
+

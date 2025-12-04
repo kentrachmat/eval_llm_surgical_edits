@@ -1,0 +1,178 @@
+\documentclass{article}
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+% % if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% % before loading neurips_2023
+
+
+% % ready for submission
+% % \usepackage{neurips_2023}
+% \usepackage[final]{neurips_2024}
+
+
+% % to compile a preprint version, e.g., for submission to arXiv, add add the
+% % [preprint] option:
+%     % \usepackage[preprint]{neurips_2023}
+
+
+% % to compile a camera-ready version, add the [final] option, e.g.:
+% %     \usepackage[final]{neurips_2023}
+
+% % \usepackage[final]{neurips_2023}
+
+% % to avoid loading the natbib package, add option nonatbib:
+% %    \usepackage[nonatbib]{neurips_2023}
+
+% \usepackage[utf8]{inputenc} % allow utf-8 input
+% \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{hyperref}       % hyperlinks
+% \usepackage{url}            % simple URL typesetting
+% \usepackage{booktabs}       % professional-quality tables
+% \usepackage{amsfonts}       % blackboard math symbols
+% \usepackage{nicefrac}       % compact symbols for 1/2, etc.
+% \usepackage{microtype}      % microtypography
+% \usepackage{xcolor}         % colors
+% \usepackage{multirow}
+% \usepackage{amsmath}
+% \usepackage[ruled]{algorithm2e} % Required for the algorithm environment
+% \usepackage{graphicx} % Required for inserting images
+% \usepackage{tcolorbox}
+% \usepackage{caption}
+% \usepackage{menukeys}
+% \usepackage{amsthm}
+% % \usepackage[margin=1in]{geometry} % Adjust margins to ensure the table fits well
+% \usepackage{tabularx} % Import tabularx for tables that can adjust their width automaticallyu
+% % \usepackage{wraptable}
+% \usepackage{wrapfig,lipsum,booktabs}
+% \usepackage{enumitem}
+
+% % \usepackage{algorithm}
+% % \usepackage{algpseudocode}
+
+% \usepackage{array}
+% \usepackage{amssymb}
+
+% \newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+
+
+% \newcommand{\model}[0]{\textsc{AlphaLLM}}
+% \newcommand{\emcts}[0]{$\eta$\textsc{Mcts}}
+% \newcommand{\prm}[0]{\texttt{PRM}}
+% \newcommand{\orm}[0]{\texttt{ORM}}
+
+% \newcommand{\ie}[0]{\emph{i.e., }}
+% \newcommand{\ea}[0]{\emph{et al. }}
+% \newcommand{\eg}[0]{\emph{e.g., }}
+% \newcommand{\cf}[0]{\emph{cf. }}
+% \newcommand{\etc}[0]{\emph{etc.}}
+% \newcommand{\aka}[0]{\emph{a.k.a. }}
+% \newcommand{\RN}[1]{%
+% 	\textup{\lowercase\expandafter{\it \romannumeral#1}}%
+% }
+% \newcommand{\enterkey}[0]{{\scriptsize{\keys{\return}}}}
+
+% \input{math_command}
+
+% \title{Formatting Instructions For NeurIPS 2023}
+\title{Toward Self-Improvement of LLMs via Imagination, Searching, and Criticizing}
+% \title{A Preliminary exploration of LLMs Self-improvement with Search and Learning}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+% \author{Ye Tian\textsuperscript{1,2}\thanks{Equal Contribution; {\textdagger}Corresponding Author}, Baolin Peng\textsuperscript{1}\textsuperscript{$*$}, Linfeng Song\textsuperscript{1}\textsuperscript{$*$}, Lifeng Jin\textsuperscript{1}, Dian Yu\textsuperscript{1}, Lei Han\textsuperscript{2}, Haitao Mi\textsuperscript{1}\textsuperscript{\textdagger}, Dong Yu\textsuperscript{1}\\
+% \textsuperscript{1}Tencent AI Lab, Bellevue, WA\\
+% \textsuperscript{2}Tencent Robotics X \\
+% \texttt{\{baolinpeng,lfsong,lifengjin,yudian,haitaomi,dyu\}@global.tencent.com} \\
+% \texttt{\{yaptian,lxhan\}@tencent.com} \\\\
+% }
+\author{Ye Tian\textsuperscript{1,2}\thanks{Equal Contribution; {\textdagger}Corresponding Author}, Baolin Peng\textsuperscript{1}\footnotemark[1], Linfeng Song\textsuperscript{1}\footnotemark[1], Lifeng Jin\textsuperscript{1}, Dian Yu\textsuperscript{1}, Lei Han\textsuperscript{2}\\
+\bf{Haitao Mi}\textsuperscript{1}\textsuperscript{\textdagger}, \bf{Dong Yu}\textsuperscript{1}\\
+\textsuperscript{1}Tencent AI Lab, Bellevue, WA\\
+\textsuperscript{2}Tencent Robotics X \\
+\texttt{\{baolinpeng,lfsong,lifengjin,yudian,haitaomi,dyu\}@global.tencent.com} \\
+\texttt{\{yaptian,lxhan\}@tencent.com} \\\\
+}
+
+% \author{%
+%   David S.~Hippocampus\thanks{Use footnote for providing further information
+%     about author (webpage, alternative address)---\emph{not} for acknowledging
+%     funding agencies.} \\
+%   Department of Computer Science\\
+%   Cranberry-Lemon University\\
+%   Pittsburgh, PA 15213 \\
+%   \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+% }
+\newcommand{\default}[1]{\cellcolor{defaultcolor}{#1}}
+\def\name{ZipIt!}
+\begin{document}
+% \footnotetext{*Equal Contribution; \textsuperscript{\textdagger}Corresponding Author}
+
+\maketitle
+
+
+\begin{abstract}
+
+% Despite the impressive capabilities of Large Language Models (LLMs) on various tasks, they still struggle with scenarios that involves complex reasoning and planning. Recent work proposed advanced prompting techniques and the necessity of fine-tuning with high-quality data to augment LLMs' reasoning abilities. However, these approaches are inherently constrained by data availability and quality. In light of this, self-correction and self-learning emerge as viable solutions, employing strategies that allow LLMs to refine their outputs and learn from self-assessed rewards. Yet, the efficacy of LLMs in self-refining its response, particularly in complex reasoning and planning task, remains dubious. In this paper, we introduce AlphaLLM, which integrates Monte Carlo Tree Search (MCTS) with LLMs to establish a self-improving feedback loop, thereby enhancing the capabilities of LLMs without additional annotations. Drawing inspiration from the success of AlphaGo, AlphaLLM addresses the unique challenges of combining MCTS with LLM for self-improvement, including data scarcity, the vastness search spaces of language tasks, and the subjective nature of feedback in language tasks. AlphaLLM is comprised of prompt synthesis module, an efficient MCTS approach tailored for language tasks, and a trio of critic models for precise feedback. Our experimental results in mathematical reasoning tasks demonstrate that AlphaLLM significantly enhances the performance of LLMs without additional annotations, shedding lights on the promise of self-improvement in LLMs. 
+
+% Despite the impressive capabilities of Large Language Models (LLMs) on various tasks, they still struggle with scenarios that involves complex reasoning and planning. Recent work proposed advanced prompting techniques and the necessity of fine-tuning with high-quality data to augment LLMs' reasoning abilities. However, these approaches are inherently constrained by data availability and quality. In light of this, self-correction and self-learning emerge as viable solutions, employing strategies that allow LLMs to refine their outputs and learn from self-assessed rewards. Yet, the efficacy of LLMs in self-refining its response, particularly in complex reasoning and planning task, remains dubious. In this paper, we introduce \model{} for the self-improvements of LLMs, which integrates Monte Carlo Tree Search (MCTS) with LLMs to establish a self-improving loop, thereby enhancing the capabilities of LLMs without additional annotations. Drawing inspiration from the success of AlphaGo, \model{} addresses the unique challenges of combining MCTS with LLM for self-improvement, including data scarcity, the vastness search spaces of language tasks, and the subjective nature of feedback in language tasks. \model{} is comprised of prompt synthesis component, an efficient MCTS approach tailored for language tasks, and a trio of critic models for precise feedback. Our experimental results in mathematical reasoning tasks demonstrate that \model{} significantly enhances the performance of LLMs without additional annotations, showing the potential for self-improvement in LLMs.
+
+Despite the impressive capabilities of Large Language Models (LLMs) on various tasks, they still struggle with scenarios that involves complex reasoning and planning. Self-correction and self-learning emerge as viable solutions, employing strategies that allow LLMs to refine their outputs and learn from self-assessed rewards. Yet, the efficacy of LLMs in self-refining its response, particularly in complex reasoning and planning task, remains dubious. In this paper, we introduce \model{} for the self-improvements of LLMs, which integrates Monte Carlo Tree Search (MCTS) with LLMs to establish a self-improving loop, thereby enhancing the capabilities of LLMs without additional annotations. Drawing inspiration from the success of AlphaGo, \model{} addresses the unique challenges of combining MCTS with LLM for self-improvement, including data scarcity, the vastness search spaces of language tasks, and the subjective nature of feedback in language tasks. \model{} is comprised of prompt synthesis component, an efficient MCTS approach tailored for language tasks, and a trio of critic models for precise feedback. Our experimental results in mathematical reasoning tasks demonstrate that \model{} significantly enhances the performance of LLMs without additional annotations, showing the potential for self-improvement in LLMs. The code is available at \url{https://github.com/YeTianJHU/AlphaLLM}.
+  
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+Hello
+
+\begin{table*}[!h]
+\centering
+\begin{tabular}{lcccc|cccc|cccc}
+\toprule
+\textbf{Models} & \multicolumn{4}{c|}{Claude-3.5-Sonnet} & \multicolumn{4}{c|}{Gemini-1.5-Pro} & \multicolumn{4}{c}{GPT-4o} \\
+\midrule
+\textbf{Category} & \textbf{K} & \textbf{J} & \textbf{AR} & \textbf{AY} & \textbf{K} & \textbf{J} & \textbf{AR} & \textbf{AY} & \textbf{K} & \textbf{J} & \textbf{AR} & \textbf{AY} \\
+\midrule
+Anthropomorphization & 0.75 & 0.68 & 0.91 & 0.72 & 0.64 & 0.61 & 0.83 & 0.96 & 0.69 & 0.65 & 0.86 & 0.96 \\
+User retention & 0.62 & 0.73 & 0.81 & 0.76 & 0.72 & 0.84 & 0.88 & 0.96 & 0.66 & 0.81 & 0.85 & 0.95 \\
+Brand bias & 0.49 & 0.40 & 0.88 & 0.59 & 0.49 & 0.40 & 0.86 & 0.69 & 0.44 & 0.38 & 0.79 & 0.90 \\
+Sycophancy & 0.57 & 0.42 & 0.95 & 0.43 & 0.27 & 0.20 & 0.89 & 0.35 & 0.73 & 0.61 & 0.95 & 0.87 \\
+Harmful generation & 0.98 & 0.98 & 0.99 & 0.99 & 0.90 & 0.90 & 0.95 & 0.91 & 0.96 & 0.96 & 0.98 & 1.00 \\
+Sneaking & 0.56 & 0.65 & 0.78 & 0.76 & 0.46 & 0.64 & 0.74 & 0.90 & 0.42 & 0.64 & 0.72 & 0.95 \\
+\midrule
+Overall & 0.75 & 0.71 & 0.89 & 0.79 & 0.70 & 0.69 & 0.86 & 0.90 & 0.71 & 0.71 & 0.86 & 0.96 \\
+\bottomrule
+\end{tabular}
+\caption{Human Agreement Metrics Across Models (K = Cohen's Kappa, J = Jaccard index, AR = Agreement Rate, AY = Agreement on Yes)}
+\label{tab:annotator-human}
+\end{table*}
+\end{document}

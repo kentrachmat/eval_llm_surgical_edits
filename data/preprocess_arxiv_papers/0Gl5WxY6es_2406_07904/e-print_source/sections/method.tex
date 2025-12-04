@@ -1,0 +1,91 @@
+\section{Method}
+
+In order to solve an embodied task, an agent learning in an interactive environment must select a decision from a set of valid actions. 
+For example, an action space could be a set of keyboard presses for a video game or a real-valued vector that controls a robotic manipulator.
+Our work studies how to best adapt a \vlm, which is originally trained to output text tokens, to instead model actions from a given environment. 
+We refer to the module that bridges a \vlm with a certain action space as an \emph{\asalong} (ASA) (see \Cref{fig:method}). 
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{figures/diagrams/method.pdf}
+  \caption{
+    Generic architecture studied here for adapting \vlms for action-specific decision making. The \vlm takes the embedding of the task instruction, prompt, and visual tokens as input. The \vlm then autoregressively predicts a sequence of $ m$ action tokens. These action tokens are then decoded into an environment-specific action.
+  }
+  \label{fig:method}
+\end{figure*}
+
+\subsection{Problem Setting}
+Our analysis focuses on language-specified tasks with visual observations.
+Specifically, we consider a goal-specified Partially-Observable Markov Decision Process (POMDP)~\cite{Bel} that has an observation space $ \mathcal{O}$, action space $ \mathcal{A}$,  and goal space $ \mathcal{G}$. For brevity, we omit other elements of the MDP. In our setting, $ \mathcal{G}$ is a textual description of the task to solve. $\mathcal{O}$ consists of RGB visual perception and agent proprioception. We consider a range of different action spaces $\mathcal{A}$ that broadly fall into two categories -- discrete and continuous.
+The primary objective is to learn a language-conditioned policy that maps observations and the instruction text to an action $ \pi(a|o, g)$. 
+As later described in \cref{sec:training}, we learn this policy through supervised fine tuning from expert demonstrations or reinforcement learning that maximizes the expected discounted cumulative reward of the POMDP.
+
+\subsection{From Vision and Language to Action}
+\label{sec:asa} 
+
+The process studied here for adapting \vlms for decision making is illustrated in \Cref{fig:method}. 
+The \vlm policy takes as input a textual instruction describing the downstream task, a sequence of past observations in the task and outputs an action in the agent's action space.
+In the bottom left of \cref{fig:method}, the task description, as well as the environment description, are first encoded to produce language embeddings. 
+To these embeddings, the \vlm then appends a sequence of visual embeddings from the current observation $o_t$. 
+Since visual embeddings can often be comprised of a large number of tokens (the popular LLaVA-1.5 model~\cite{llava} has 556), we introduce a downsampling layer to enable the \vlm to attend over a longer history of observations. 
+In practice, we take the downsampling layer to be a Perceiver model~\cite{jaegle2021perceiver}, a learnable transformation that reduces the number of tokens from the visual encoder before being used as input to the \vlm. 
+
+The sequence of language and visual embeddings is passed through the \vlm, whose final hidden state $h_t^1$ encodes the entire input. 
+The \asa, whose trainable parameters are denoted $\theta$, is comprised of three parts: (1) an adapter head, (2) an adapter embedding, and (3) an adapter decoder. 
+The hidden state is first passed through the adapter head to produce action tokens $u_t^1=A_\theta(h_t^1)$. 
+The action tokens are then embedded using the action embedding into $E_\theta(u_t^1)$, and passed autoregressively through the \vlm to produce further hidden embeddings $h_t^2,\ldots, u_t^m$ and associated action tokens $u_t^2, \ldots, u_t^m$, resulting in total $m$ tokens per time step. 
+The predicted action tokens are then decoded into the final action $a_t$ by the adapter decoder, which produces the final action $a_t=D_\theta(u_t^1,..,u_t^m)$. 
+As $a_t\in \mathcal{A}$, it is then executed in the environment to produce $o_{t+1}$, and the process continues. 
+
+Next, we describe possible ASA implementations for discrete and continuous action spaces.
+
+\subsubsection{Discrete Action Spaces}
+\label{sec:disc-action}
+
+We define the following action spaces adapters for a discrete action space $\mathcal{A}$:
+
+\textbf{Categorical Prediction (\mlp)}: Implement the action space adapter as an MLP network, which predicts the logits of a categorical distribution over environment actions from the \vlm hidden state. The adapter head is an MLP that maps the hidden state $ h^{1}$ directly to an action $ a \in \mathcal{A}$. This amounts to producing a single action token $u^1$, which directly corresponds to the action $a$, with the action decoder being an identity map. Both the adapter head and token embeddings are initialized from scratch. This type of ASA is used by~\cite{szot2023large}. 
+
+\textbf{Semantic Language (\semlang)}: The action space adapter predicts natural language text that maps to a discrete action. First, each action $ a \in \mathcal{A}$ is described with freeform text tokenized as $(l_1, \dots , l_m)$. The \vlm then autoregressively predicts a sequence of $ m$ tokens, which are then decoded by the adapter decoder to the corresponding action. For example, in an action space choosing a high-level skill $ a$ could be described as ``pick apple", which is tokenized as $ [5839, 26163] $ with the \llama tokenizer. The \vlm then must sequentially predict token $ 5839$, then token $ 26163$ to call this action. Sequences of tokens corresponding to invalid actions are either avoided entirely with the token filter described in \cref{sec:training} or treated as a no-op. Both the adapter head and the token embeddings are re-used to be the pretrained LLM's language head and embedding layer, respectively, meaning no additional parameters over the pretrained \vlm are added. This type of ASA is used by~\cite{driess2023palm}.
+
+\textbf{Non-Semantic Language (\lang)}: Actions are mapped to language tokens, but instead of semantically meaningful descriptions of the actions as with \semlang, the actions are mapped to sequences of numbers. For example, ``pick apple" is represented with the string ``5 3". The policy must then output the tokens corresponding to this text to call this pick action. Note that we can pick any text for this mapping and the choice of integers is arbitrary. However, the selected text is not semantically representative of the action.
+
+
+\subsubsection{Continuous Action Space Adaptors}
+\label{sec:cont-action}
+We define the following four \asas for a continuous $D$-dimensional action space $\mathcal{A}$: the first \asa predicts in the original action space while the other three use tokenization. At training time, we learn a policy to predict these action tokens from the \asa. At test time, we employ an action decoder that maps these action tokens to actions in the original space $\mathcal{A}$.
+
+\textbf{Continuous Regression (\mlp)}: Regress to the original continuous action from the MLLM hidden state $h_t^1$. This is achieved via a single-layer MLP network, which is trained using MSE loss. This \asa is used by \cite{li2023vision,shi2023unleashing}.
+
+\textbf{Uniform Action Tokenization (\unif)}: The simplest approach is to use uniform binning of the action space. In particular, we express each action as a sequence of $D$ tokens by quantizing each of the $D$ action dimensions into one out of $K$ uniform bins:
+\[
+\textrm{Uniform(a)} = (k_1\ldots k_D)\quad\textrm{such that}\quad a_d\in \textrm{bin}(k_d, d)
+\]
+where $\textrm{bin}(k, d)$ denotes the $k^\textrm{th}$ bin along the $d^\textrm{th}$ action dimension. If $m_d$ and $M_d$ denote the lower and upper bounds respectively of the $d^\textrm{th}$ action dimension, then its definition reads $\textrm{bin}(k, d) = [m_d + k\frac{M_d - m_d}{K}, m_d + (k+1)\frac{M_d - m_d}{K}] $. At test time, we decode predicted action tokens to the center of the corresponding bins for each dimension. This type of ASA is used by~\cite{brohan2023rt}. 
+
+\textbf{Vector Quantized Tokenization (\vq)}: To adapt the tokenization to the particular action space, we propose to use learned tokenization. In particular, we express each action as a single token that corresponds to the closest action code from a learned codebook $V$. Using encoder network $ f_\theta$ that maps actions to a latent embedding space:
+\[
+\textrm{VQ}(a) = (k_1) \quad\textrm{where}\quad k_1 = \arg\min_{k}||f_\theta(a) - v_k||_2^2
+\]
+where $v_k\in V$. The codebook $V$ of size $K$ is learned over an offline dataset $\mathcal{D}$ of actions using a VQ-VAE~\cite{van2017neural} trained with the mean-squared error for action reconstruction and commitment loss.
+We overwrite $ K$ infrequently used tokens from the LLM vocabulary to represent $ V$. We defer the full details of this tokenization process to \Cref{sec:asa-details}.
+
+\textbf{Residual Vector Quantized Tokenization (\rvq)}: Precise control requires precise action modeling that can suffer after tokenization. To increase the precision of a learned tokenization, we further investigate the use of a sequence of several action tokens as in Uniform. Similar to VQ, these tokens are from $M$ action codebooks $V_m, m\in\{1, \ldots, M\}$. However, each codebook models the residual space obtained after modeling the action using preceding codebooks, thus each subsequent token captures increasingly finer action information:
+\[
+  \textrm{RVQ}(a) = (k_1, \ldots k_M)\quad\textrm{where}\quad k_m = \arg\min_k \norm*{ \left(  f_\theta(a)-\sum_{i=1}^{m-1}v^i_{k_i} \right) - v^m_k}_2^{2}
+\]
+where $v_k^i\in V_i$ is the $k^\textrm{th}$ code from the $i^\textrm{th}$ codebook. Such tokenization can be learned using Residual VQ-VAE~\citep[RVQ-VAE,][]{lee2022autoregressive} on an offline dataset of actions. The actual number of token sequences we can represent is $K^M$. Hence, RVQ presents the opportunity to exponentially increase the action space quantization without having to drastically increase the size of the learned individual codebooks.
+
+
+\subsection{Training}
+\label{sec:training} 
+We use LLaVA-1.5-7B~\cite{llava} as the base \vlm. We finetune the \vlm with interactive (i.e., action-labeled) data to make it more suited for interacting with a embodied and interactive environment.
+
+\textbf{Supervised Fine Tuning (SFT) with Expert Demonstrations:} We finetune the \vlm for interactive tasks using a dataset of expert demonstrations. Each demonstration contains (1) a language description of the task, (2) a sequence of observations, and (3) a sequence of actions that successfully solve the task. 
+Note that in this work, we are primarily interested in learning imitation policies from offline data, which can be extended to offline reinforcement learning if per-timestep rewards are included in the dataset. 
+Specifically, we train the \vlm with supervised learning to predict the expert actions from the observations and language description in the data. 
+While the pre-trained LLM and the visual encoder remain frozen, we finetune the \asa, the visual downsampler, and parts of the LLM with LoRA~\cite{hu2021lora}. 
+In total, the model has $ \approx 100M$ learnable LLM parameters and $ \approx 40M$ learnable downsampler and \asa parameters. The learned tokenization schemes (\rvq and \vq) have an additional pre-training phase, where the VAE models are first trained on actions from the offline dataset and then frozen to prevent further updates in later stages.
+
+\textbf{Reinforcement Learning (RL) from Environment Feedback} We can also optionally finetune the \vlm to optimize an environment reward using RL. However, predicting actions in the \vlm token space dramatically increases the number of possible action predictions, with many possible predictions corresponding to no valid action. For example, there are 32,000 tokens in the \llama text tokenizer, giving $ 32,000^{m}$ possible predictions by the model with $ m$ tokens per action. This makes exploration difficult in RL as only a small fraction of the possible actions are valid. We therefore use a \emph{token filter} to restrict the autoregressive sampling to only be from token sequences corresponding to valid actions. The token filter is a function $ M(l_t^{1}, \dots, l_t^{j-1}) $ that produces a binary mask over all tokens to represent valid tokens for the $ j$th decoding step. 
+

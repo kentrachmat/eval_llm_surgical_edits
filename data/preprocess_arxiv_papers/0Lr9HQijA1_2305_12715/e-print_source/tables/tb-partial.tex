@@ -1,0 +1,27 @@
+\begin{table}[t!]
+    \centering
+    \caption{Accuracy of different partial ratio $q$ on CIFAR-10, CIFAR-100, and CUB-200 for \textbf{partial label learning}. 
+    % Results of the baseline methods are copied from \citep{wang2022pico}. 
+    The best and the second best results are indicated in \textbf{bold} and \underline{underline} respectively.}
+    % \vspace{-0.05in}
+    \label{tab:main-partial}
+    \resizebox{0.8 \textwidth}{!}{%
+    \begin{tabular}{@{}l|ccc|ccc|c@{}}
+    \toprule
+    Dataset          & \multicolumn{3}{c|}{CIFAR-10}        & \multicolumn{3}{c|}{CIFAR-100}       & CUB-200     \\ \midrule
+    Partial Ratio $q$   & 0.1        & 0.3        & 0.5        & 0.01       & 0.05       & 0.1        & 0.05       \\ \midrule
+    Fully-Supervised & \multicolumn{3}{c|}{94.91\scriptsize{±0.07}}     & \multicolumn{3}{c|}{73.56\scriptsize{±0.10}}      & -           \\ \midrule
+    LWS  \citep{wen2021leveraged}            & 90.30\scriptsize{±0.60} & 88.99\scriptsize{±1.43} & 86.16\scriptsize{±0.85} & 65.78\scriptsize{±0.02} & 59.56\scriptsize{±0.33} & 53.53\scriptsize{±0.08} & 39.74\scriptsize{±0.47}                     \\
+    PRODEN  \citep{lv2020progressive}         & 90.24\scriptsize{±0.32} & 89.38\scriptsize{±0.31} & 87.78\scriptsize{±0.07} & 62.60\scriptsize{±0.02} & 60.73\scriptsize{±0.03} & 56.80\scriptsize{±0.29} & 62.56\scriptsize{±0.10}                   \\
+    CC  \citep{Feng2020ProvablyCP}             & 82.30\scriptsize{±0.21} & 79.08\scriptsize{±0.07} & 74.05\scriptsize{±0.35} & 49.76\scriptsize{±0.45} & 47.62\scriptsize{±0.08} & 35.72\scriptsize{±0.47} & 55.61\scriptsize{±0.02}                      \\
+    MSE  \citep{feng2020learning}            & 79.97\scriptsize{±0.45} & 75.65\scriptsize{±0.28} & 67.09\scriptsize{±0.66} & 49.17\scriptsize{±0.05} & 46.02\scriptsize{±1.82} & 43.81\scriptsize{±0.49} & 22.07\scriptsize{±2.36}                     \\
+    EXP   \citep{feng2020learning}          & 79.23\scriptsize{±0.10} & 75.79\scriptsize{±0.21} & 70.34\scriptsize{±1.32} & 44.45\scriptsize{±1.50} & 41.05\scriptsize{±1.40} & 29.27\scriptsize{±2.81} & 9.44\scriptsize{±2.32}     \\
+    PiCO    \citep{wang2022pico}         & \underline{94.39\scriptsize{±0.18}} & \underline{94.18\scriptsize{±0.12}} & \underline{93.58\scriptsize{±0.06}} & \underline{73.09\scriptsize{±0.34}} & \underline{72.74\scriptsize{±0.30}} & \underline{69.91\scriptsize{±0.24}} & \textbf{72.17\scriptsize{±0.72}}                  \\ 
+    % RCR    \citep{revisitpllwu22l}         & - & \underline{9.18\scriptsize{±0.12}} & \underline{93.58\scriptsize{±0.06}} & \underline{73.09\scriptsize{±0.34}} & \underline{72.74\scriptsize{±0.30}} & \underline{69.91\scriptsize{±0.24}} & \textbf{72.17\scriptsize{±0.72}}                  \\ 
+    \midrule
+    % PiCO+   \citep{wang2022pico+}         & 95.99\scriptsize{±0.03} & 95.73\scriptsize{±0.10} & 95.33\scriptsize{±0.06} & 76.29\scriptsize{±0.42} & 76.17\scriptsize{±0.18} & 75.55\scriptsize{±0.21} & 72.05\scriptsize{±0.80} & 75.38\scriptsize{±0.52}                     \\ \midrule
+    Ours & \textbf{96.37\scriptsize{±0.08}} & \textbf{96.26\scriptsize{±0.03}} & \textbf{95.91\scriptsize{±0.05}} & \textbf{75.31\scriptsize{±0.19}} & \textbf{74.58\scriptsize{±0.03}} & \textbf{74.00\scriptsize{±0.02}} &  \underline{70.77\scriptsize{±0.29}}   \\ \bottomrule
+    \end{tabular}%
+    }
+\vspace{-0.1in}
+\end{table}

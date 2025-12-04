@@ -1,0 +1,1074 @@
+
+\RequirePackage{etex}
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2025_conference,times}
+
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{etex}
+\usepackage[etex=true,export]{adjustbox}
+\usepackage{url}
+\usepackage{marvosym}
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\usepackage[colorlinks,
+            linkcolor=magenta,
+            anchorcolor=blue,
+            citecolor=gray
+            ]{hyperref}
+\definecolor{emphypurple}{rgb}{0.302, 0.055, 0.659}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{pifont}
+\usepackage{soul}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{wrapfig}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{makecell}
+\usepackage{amssymb,mathrsfs,amsmath}
+\usepackage{amsmath, bm}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{lipsum}
+\usepackage{comment}
+
+\usepackage{enumitem}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{csquotes}
+\definecolor{warningcolor}{RGB}{255, 0, 0}
+
+\definecolor{xred}{HTML}{BD4242}
+\definecolor{xblue}{HTML}{C7A085}
+\definecolor{xblues}{HTML}{52B256}
+\definecolor{xgreen}{HTML}{52B256}
+\definecolor{xpurple}{HTML}{7F52B2}
+\definecolor{xorange}{HTML}{FD9337}
+\definecolor{xdotted}{HTML}{999999}
+\definecolor{xgray}{HTML}{777777}
+\definecolor{xcyan}{HTML}{80F5DC}
+\definecolor{xpink}{HTML}{f690ea}
+\definecolor{xgraycyan}{HTML}{82bceb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc}
+
+\usepackage[most]{tcolorbox}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dd}[2]{\frac{d#1}{d#2}}
+\newcommand{\ppsame}[2]{\frac{\partial^2 #1}{\partial #2^{2}}}
+\newcommand{\ppdiff}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}}
+\newcommand{\hh}[2]{\frac{\partial^{2} #1}{\partial #2^{2}}}
+\newcommand{\hhe}[3]{(\frac{\partial^{2} #1}{\partial #2^{2}})\Bigr|_{\substack{#3}}}
+\newcommand{\grad}{\nabla}
+\newcommand{\hess}{\nabla^{2}}
+\newcommand{\hessat}[3]{\nabla^{2}_{#1}#2\Bigr|_{\substack{#3}}}
+\newcommand{\gradD}{\mathcal{D}}
+\newcommand{\ts}{\mathcal{T}}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\pretrainedmodel}{\texttt{LaMDA}~}%
+\newcommand{\efficacyhigh}{\textcolor{green}{\cmark\cmark}}
+\newcommand{\efficacymed}{\textcolor{orange}{\cmark}}
+\newcommand{\efficacylow}{\textcolor{red}{\xmark}}
+
+\usepackage[final]{pdfpages}
+\definecolor{deepred}{RGB}{119,0,0}
+\definecolor{deepblue}{RGB}{0,0,119}
+
+\newcommand{\CycleReviewer}{\textcolor{deepred}{CycleReviewer }}
+\newcommand{\CycleResearcher}{\textcolor{deepblue}{CycleResearcher }}
+\newcommand{\method}{Iterative SimPO }
+
+\usepackage{todonotes}
+\usepackage{xcolor}
+
+\newcommand{\wjdd}[1]{\todo[linecolor=cyan,backgroundcolor=cyan!25,bordercolor=cyan,size=\scriptsize]{(Jindong) #1}}
+\newcommand{\wjd}[1]{{\color{cyan}{[(Jindong) #1]}}}
+
+\tcbset{
+	common/.style n args={2}{
+		colframe={#1},
+		colback={#1!5},
+		colbacktitle={#1},
+		lower separated=false,
+		coltitle=white,
+		boxrule=1pt,
+		fonttitle=\bfseries,
+		enhanced,
+		breakable,
+		top=8pt,
+		before skip=8pt,
+		attach boxed title to top left={
+			yshift=-0.25cm,
+			xshift=0.38cm,
+		},
+		boxed title style={
+			boxrule=0pt,
+			colframe=white,
+			arc=5pt,
+			outer arc=4pt,
+		},
+		separator sign={~~},
+		overlay unbroken and last={
+			\node[text=white, align=right, rounded corners, fill=#1, xshift=-4mm, minimum height=6mm, anchor=east] at (frame.south east) {#2};
+		}
+	},
+	defstyle/.style={
+		common={xpurple}{$\bm{\pi}$},
+	},
+	theoremstyle/.style={
+		common={xgraycyan}{$\star$},
+	},
+	proofstyle/.style={
+		common={xgreen}{\textbf{QED}},
+	},
+	examplestyle/.style={
+		common={xblue}{\textbf{?}},
+	},
+    examplestyles/.style={
+		common={xblues}{$\bigstar$},
+	},
+	notestyle/.style={
+		common={xred}{$\bigstar$},
+	},
+	challangestyle/.style={
+		common={xorange}{\textbf{?}},
+	},
+}
+
+\newtcbtheorem{definition}{Definition}{defstyle}{def}
+\newtcbtheorem{theorem}{Experiments Setup}{theoremstyle}{theorem}
+\newtcbtheorem{proof}{Proof}{proofstyle}{proof}
+\newtcbtheorem{example}{Motivation}{examplestyle}{example}
+\newtcbtheorem{examples}{Motivation}{examplestyle}{example}
+\newtcbtheorem{note}{Main Idea}{notestyle}{note}
+\newtcbtheorem{challange}{Challange}{challangestyle}{challange}
+
+
+\lstset{
+language = Python,
+aboveskip=-7pt,
+belowskip=-5pt,
+%背景色と透過度
+backgroundcolor={},
+%枠外に行った時の自動改行
+breaklines = true,
+%自動改行後のインデント量(デフォルトでは20[pt])
+breakindent = 10pt,
+%標準の書体
+basicstyle = \ttfamily\scriptsize,
+%コメントの書体
+commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+%関数名等の色の設定
+classoffset = 0,
+%キーワード(int, ifなど)の書体
+keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+%表示する文字の書体
+stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+%枠 "t"は上に線を記載, "T"は上に二重線を記載
+%他オプション：leftline，topline，bottomline，lines，single，shadowbox
+%frame = TBrl,
+%frameまでの間隔(行番号とプログラムの間)
+%framesep = 5pt,
+%行番号の位置
+%numbers = left,
+%行番号の間隔
+%stepnumber = 1,
+%行番号の書体
+%numberstyle = \tiny,
+%タブの大きさ
+tabsize = 4,
+%キャプションの場所("tb"ならば上下両方に記載)
+captionpos = t
+}
+% to compile a camera-ready version, add the [final] option, e.g.:
+%\usepackage[final]{neurips_2022}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2022}
+
+
+
+\title{CycleResearcher: Improving Automated Research via Automated Review
+\\ {\color{warningcolor} \normalsize WARNING: This work is not advocating the use of LLMs for paper writing.}}
+
+
+%\wjdd{add to the title: of Language Models?}
+
+
+%A Novel Self-rewarding Framework for Automated Scientific Discover
+
+%\title{ResearchBench: Towards }
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+\author{Yixuan Weng$^{1,2*}$, Minjun Zhu$^{2,3}$\thanks{Equal Contribution}, Guangsheng Bao$^{2,3}$, Hongbo Zhang$^{2,3}$, Jindong Wang$^{4}$ \\
+\textbf{Yue Zhang$^{1,2\dagger}$}, \textbf{Linyi Yang$^{5}$\thanks{Corresponding Authors. Supported by Research Center for Industries of the Future, Westlake University.}} \\
+$^{1}$Research Center for Industries of the Future, Westlake University\\$^{2}$School of Engineering, Westlake University $^{3}$Zhejiang University $^{4}$ William\&Mary\\ $^{5}$University College London\\
+\texttt{wengsyx@gmail.com}, \texttt{yanglinyiucd@gmail.com}\\
+\texttt{zhuminjun,baoguangsheng,zhanghongbo,zhangyue@westlake.edu.cn}}
+
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy 
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+%LLMs已经具有了PhD水平的专业知识，那么我们怎样促使语言模型发挥出PhD水平的研究能力（主要问题，Self-Reward训练）？并且如何衡量语言模型的研究能力（评价指标）？如何避免这种研究能力的滥用（水印+Fast-Detect-GPT）
+
+\maketitle
+
+\begin{abstract}
+
+The automation of scientific discovery has been a long-standing goal within the research community, driven by the potential to accelerate knowledge creation. While significant progress has been made using commercial large language models (LLMs) as research assistants or idea generators, the possibility of automating the entire research process with open-source LLMs remains largely unexplored. This paper explores the feasibility of using open-source post-trained LLMs as autonomous agents capable of performing the full cycle of automated research and review, from literature review and manuscript preparation to peer review and paper refinement. Our iterative preference training framework consists of CycleResearcher, which conducts research tasks, and CycleReviewer, which simulates the peer review process, providing iterative feedback via reinforcement learning. To train these models, we develop two new datasets, Review-5k and Research-14k, reflecting real-world machine learning research and peer review dynamics. Our results demonstrate that CycleReviewer achieves promising performance with a 26.89\% reduction in mean absolute error (MAE) compared to individual human reviewers in predicting paper scores, indicating the potential of LLMs to effectively assist expert-level research evaluation. In research, the papers generated by the CycleResearcher model achieved a score of 5.36 in simulated peer reviews, showing some competitiveness in terms of simulated review scores compared to the preprint level of 5.24 from human experts, while still having room for improvement compared to the accepted paper level of 5.69. This work represents a significant step toward fully automated scientific inquiry, providing ethical safeguards and exploring AI-driven research capabilities. The code, dataset and model weight are released at \url{https://wengsyx.github.io/Researcher/}.
+
+%Enabling LLMs to improve their capability of scientific discovery \CycleReviewer，\CycleResearcher
+%面向科学发现的自动化长期以来吸引着研究者，大型语言模型逐渐展现主导科学发现的潜力。在我们的科研社区中，存在以：投稿(Submission)，peer preview，修正 这样的有帮助和有益社区的科研闭环。受此启发，我们设计了一套LLM进行研究-评价-提升的自我反馈强化学习方式，进一步探索了以LLM为主导的Agent在科学发现中具有多少的潜力。首先，我们精心设计构建了一组有监督微调数据集，从三年以来大量被接收的机器学习论文出发，Reviewer-5k模拟了完整的同行评审过程，Research-8k模拟了一个真实研究者在研究过程中的一系列中间过程和论文结果。然后，我们提出了一个综合的多角度研究水平评估框架，包括通过“ResearchArena”与人类论文进行比较，和利用我们训练的审稿模型CycleReviewer而进行的模拟同行评审评估。一方面它们能对研究的质量进行客观评估，另一方面其能够模拟真实同行评审的环境并提供相应的奖励。在此基础上，我们建立了CycleResearcher Agent，它在监督训练的基础上，模拟真实研究的环境中通过强化学习以用来自主地进行全面地研究工作，包括文献综述理解，假设制定，实验设计和手稿准备。我们的工作证明了LLM具有超越个体专家水平的审稿评分能力，在审稿评分的MAE指标上相比人类水平提升了26.89%。我们还进一步地提升了Agent的自主研究水平，这标志着迈向全自动科学探究迈出了重要一步。
+
+%Automating scientific discovery has long captured researchers' interest, and large language models (LLMs) are increasingly demonstrating their potential to lead this process. Within our scientific community, a beneficial cycle exists, characterized by submission, peer review, and \textcolor[RGB]{0,0,139}{Refinement}. Inspired by this, we have designed a self-feedback reinforcement learning framework using LLMs to explore their capabilities as agents in scientific discovery. Initially, we meticulously constructed a supervised fine-tuning dataset derived from a substantial collection of accepted machine-learning papers over the past three years. The Review-5k dataset simulates the complete peer review process, while the Research-8k dataset reflects the various stages and outcomes encountered by real researchers. We then introduced a comprehensive evaluation framework for research quality, incorporating a comparison with human-generated papers through "ResearchArena," alongside simulated peer review assessments using our trained review model, CycleReviewer. This dual approach not only offers objective evaluations of research quality but also mimics the real peer review environment, providing corresponding rewards. Building on this foundation, we developed the CycleResearcher Agent, which autonomously conducts thorough research tasks—ranging from literature review to hypothesis formulation, experimental design, and manuscript preparation—using reinforcement learning in a simulated research environment. Our findings demonstrate that LLMs can surpass individual expert-level review scoring, achieving a 26.89\% improvement in mean absolute error (MAE) compared to human reviewers. Additionally, we further enhanced the agent's autonomous research capabilities, marking a significant step toward fully automated scientific inquiry.
+
+\end{abstract}
+
+\section{Introduction}
+
+%\emph{While large language models (LLMs) are advanced, they currently cannot match the research proficiency of human experts with PhDs in machine learning.} -- Generated by GPT-o1-preview
+
+Automating general scientific discovery has been a long-standing ambition of the research community, dating back to the late 1970s and 1980s \citep{lenat1977automated, lenat1983eurisko, langley1987scientific} with the advent of computer science. In the field of AI, researchers have envisioned automating scientific research using AI itself \citep{hutter2001towards,radensky2024scideator}. The recent emergence of large language models (LLMs) has opened new possibilities for this endeavor \citep{wang2023scientific,lu2024ai}, demonstrating their capacity to not only process but also contribute meaningfully to scientific research. Most current efforts have relied on commercial LLMs to build agents that propose research ideas \citep{wang2023scimon,yang2023large,radensky2024scideator,baek2024researchagent,liu2024towards}, as an assistant to conduct experiments \citep{du2024llms,yang2024collaborative,li2024mlrcopilotautonomousmachinelearning}, or act as an AI scientist capable of generating automated open-ended scientific publications \citep{lu2024ai,taniguchi2024collectivepredictivecodingmodel}. 
+To date, the challenge of automating the entire scientific discovery process remains largely unresolved, particularly when it comes to generating and refining research outputs that meet the high standards of peer-reviewed work. Moreover, few efforts address the integration of iterative feedback, which is essential for maintaining academic soundness and novelty. Current models often struggle to adapt across the full spectrum of research stages, highlighting gaps in their ability to conduct comprehensive, multi-step scientific discovery.
+
+Central to the scientific process is the iterative cycle of submission, peer review, and refinement -- an established mechanism that maintains the quality and integrity of academic work \citep{smith2006peer,boughton2018research}. Feedback from reviewers and peers plays a critical role in this cycle, offering insights that help researchers refine their work and improve its rigor and impact. Drawing inspiration from this cyclical process, we propose a novel framework that post-trains LLMs as autonomous agents to simulate the full loop of the scientific discovery process. Our approach, built entirely on open-source models, aims to replicate the real-world dynamic of research development and peer review processes. By leveraging trainable models, we enable the utilization of the iterative preference training mechanism \citep{yuan2024self} using sampling examples through reinforcement learning. Our objective is to determine whether LLMs can actively contribute to each stage of scientific inquiry, from literature review and idea generation to experimental design, manuscript preparation, peer review and paper refinement.
+
+Automating the entire research lifecycle, \cite{oberg2022teaching} presents a significant challenge to current agent-based methods \citep{lu2024ai,si2024can,yang2024collaborative}, which predominantly rely on commercial models. Consequently, these methods cannot be effectively modeled as policy optimization problems using reinforcement learning. While self-correction methods \citep{weng-etal-2023-large,yuan2024self,lee2024rlaifvsrlhfscaling} have been developed to enhance reasoning performance by assessing the quality of LLM outcomes, they have not yet been adopted in the domain of paper writing, which demands more complex evaluations from multiple perspectives. Our research addresses this gap by introducing an iterative post-training framework. The central research question we pose is: ``\emph{How can we automate the Research-Review-Refinement process by post-training LLMs}?'' So that automated research can be improved according to feedback from automated reviews. 
+% Generating research papers that require high soundness and novelty in a long document form poses new challenges in not only technical but also engineering practicability.
+
+We build a novel iterative training framework \citep{pang2024iterative} that contains two core components: the policy model (namely CycleResearcher) and the reward model (namely CycleReviewer) ranging in size -- from 12B to 123B -- based on Mistral \citep{jiang2023mistral} and Qwen 2.5 \citep{yang2024qwen2,qwen2.5}.In our framework, CycleResearcher acts as a scientific thinker, responsible for reading literature, identifying research problems, proposing solutions, and designing experiments, while specific experiment execution is delegated to specialized code models. In particular, the policy model performs a variety of research tasks ... for paper generation\footnote{Our current implementation delegates experiment execution to code generation models, allowing CycleResearcher to focus on high-level research planning and analysis. Notably, the \textit{experimental results} generated by CycleResearcher in this work are fabricated and do not represent real experimental data.}. The reward model, on the other hand, simulates the peer review process, evaluating the quality of the research output and providing feedback that informs reinforcement learning rewards. In the virtual RL environment, to accelerate training, we require the \textit{experimental results} to be fabricated instead of conducting actual experiments
+
+To illustrate our framework's operation, when exploring the topic of ``Hacking Rewards of VLMs,'' we first fed fine-tuned CycleResearcher with a set of relevant published papers to inspire it to propose novel ideas. After generating a batch of first-round papers corresponding with those ideas, fine-tuned CycleReviewer evaluates them to generate pairwise preference samples, which are used to optimize the policy model using SimPO \citep{meng2024simposimplepreferenceoptimization}, this process is repeated.
+
+For training our models, we construct two large-scale, publicly available datasets: Review-5k and Research-14k (described in Section \ref{sec:dataset}), which contain peer review and accepted papers from major ML conferences (e.g., ICLR, ICML, NeurIPS). For testing, we take both subjective human evaluation and objective model-based evaluations to assess the quality of CycleReviewer and CycleResearcher. Our experiments show that CycleReviewer demonstrates promising capabilities in supporting the peer review process, while CycleResearcher exhibits consistent performance in research ideation and experimental design compared to API-based agents \citep{lu2024ai}. We also acknowledge that the generalizability across research domains remains a challenge for current LLMs. Our contributions can be summarized as:
+
+
+\begin{itemize}[leftmargin=2em]
+\setlength\itemsep{0em}
+    \item We introduce an iterative reinforcement learning framework that automates the entire research lifecycle, which mirrors the real-world Research-Review-Refinement cycle. Our framework includes \textit{CycleResearcher}, a policy model for research tasks, and \textit{CycleReviewer}, a reward model simulating peer reviews. This framework enables large language models (LLMs) to iteratively improve research outputs through a Research-Review-Refinement cycle.
+    
+    \item We release two large-scale datasets, \textit{Review-5k} and \textit{Research-14k}, which are publicly available and designed to capture the complexity of both peer review and research paper generation in machine learning. These datasets provide valuable resources for evaluating and training models in academic paper generation and review.
+    
+    \item We demonstrate that the CycleResearcher model can generate papers with an average quality level close to human-written preprints, achieving an acceptance rate of 31.07\%. Furthermore, our \textit{CycleReviewer} model shows encouraging results with a 26.89\% improvement in MAE compared to individual reviewers, suggesting the potential of automated research assessment in mean absolute error (MAE) in research evaluation tasks, setting a new benchmark for automated research assessment.
+\end{itemize}
+
+% In response to the \textbf{ethical consideration} of automatic paper generation, we present a well-established text detection tool to distinguish whether the paper is generated by LLMs and more than 98\% of submissions can be detected accurately.
+%We also acknowledge that the generalizability across research domains remains a challenge for current LLMs.
+
+%Additionally, the iterative training approach not only enhances the model’s performance but also enables it to autonomously complete research tasks with minimal human intervention. 
+
+%To the best of our knowledge, our work demonstrates the first iterative training framework to automate the full cycle of scientific research. We offer a comprehensive analysis for both academic ML paper and peer review generations, propose two high-quality resources, and present an automatic detection tool to safeguard academic integrity. 
+
+%Our empirical findings reveal the efficiency of using iterative preference training methods, especially in self-improving the generation quality in terms of professionalism and novelty, shedding light on future research in automated scientific discovery. 
+
+\section{Dataset Construction}%\wjdd{Did we check the copyright issues from all paper/review providers to make sure that these data can be used for research purposes and even open-sourced? We should clearly state this in somewhere of the paper; otherwise it will trigger some ethical issues.}
+\label{sec:dataset}
+
+In this section, We present an overview of how we collect a substantial corpus of academic papers and organize them into the \textbf{Review-5k} and \textbf{Research-14k} training dataset. As illustrated in Figure \ref{fig:dataconstruction}, we introduce structured outline extraction and segmentation to assist the LLM in planning before generating research papers. \textbf{Notably, we will only make our datasets publicly available for those papers, which receive written consent from publishers (See in Appendix \ref{app:license}).}
+
+%It is important to note that while our focus is on computer science, particularly machine learning, this approach is adaptable to other scientific fields.
+
+\begin{figure}[t]
+    \centering
+\includegraphics[width=\textwidth]{dataset_figure.pdf}
+    \vspace{-0.7cm}
+    \caption{Data Construction pipeline of the Research-14k dataset and Review-5k dataset. The Review-8k dataset includes both the \textbf{main text (M)} and \textbf{outlines (O)} of research papers, covering key components such as motivation, methods, experimental setup, and results. The Research-5k dataset provides 3 reviews and 1 meta-review for each paper}
+    \vspace{-0.4cm}
+    \label{fig:dataconstruction}
+\end{figure}
+
+\subsection{Review-5k}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\textwidth]{reference_free_review.pdf}
+%     \caption{review method}
+%     \label{fig:review_method}
+% \end{figure}
+
+In order to collect a high-quality review dataset, we first gather paper information (including title, abstract, and PDF data) along with the corresponding review comments from ICLR 2024. This ensures that all papers are evaluated according to a consistent standard. We then attempt to retrieve the permitted LaTeX files from ArXiv. If the LaTeX files are unavailable, we use MagicDoc to convert the retrieved PDFs into markdown format. Then, inspired by the traditional peer review process, where a group of reviewers evaluates a paper, followed by a senior reviewer who synthesizes their feedback and makes the final decision, we collect each data point including key components: 1) summary of the work, 2) identified strengths and weaknesses, and 3) questions for clarification, along with 4) numerical scores for soundness, presentation, contribution, and an overall rating. Finally, we leave a dataset named Review-5k, containing 4,991 papers collected from ICLR 2024, comprising over 16,000 reviewer comments. Finally, we split our dataset into mutually exclusive training/testing sets, we keep 4,189 paper reviews for training and 782 samples for testing. 
+
+\subsection{Research-14k}
+
+The research-14k dataset aims to capture structured outlines and detailed main text from academic papers. The data construction process involves three steps: \textbf{(1)}. we first compile a list of accepted papers from major international machine learning conferences, such as ICLR, NeurIPS, ICML, ACL, EMNLP, CVPR, and ICCV, spanning from 2022 to 2024. Using Semantic Scholar\footnote{\url{https://www.semanticscholar.org/}}, we retrieve the corresponding ArXiv links and LaTeX-format files for each paper, gathering a total of 14,911 papers. The main text of these papers is then pre-processed using rule-based filtering to remove irrelevant content such as comments (``$\%$'') and acknowledgments. \textbf{(2)}. Since the academic value of a research paper depends on its background, we also use the Semantic Scholar API to retrieve the cited works from the bib file and add their abstracts to it. \textbf{(3)}. Finally, we organize the main body of each paper into outlines and separate sections to help the model better understand the research process. We use the Mistral-Large-2 model \citep{jiang2023mistral} to extract outline information from the paper, following the outline structure shown in Figure \ref{fig:dataconstruction}, and concatenate each outline with its corresponding section. These components form the complete fine-tuning dataset, where the input consists of detailed reference files and the output contains the paper outlines and main text.
+
+%\begin{wrapfigure}{t}{0.44\textwidth}
+%\begin{center}
+%\vspace{-0.4cm}
+%\includegraphics[width=0.44\textwidth]{dataset_length.pdf}
+%\end{center}
+%\vspace{-0.4cm}
+%\caption{Output length comparison between Research-8k and Alpaca datasets, showing significantly longer outputs %in Research-8k.}
+%\vspace{-0.cm}
+%\label{fig:scalability}
+%\end{wrapfigure}
+
+After filtering papers that do not meet the requirements, the final dataset, Research-14k, includes 12,696 training samples and 802 test samples. It covers nearly all significant machine learning papers from the past three years and ensures that all collected papers are open-access. The training and test sets are split chronologically, with test papers published later than the training ones. This dataset is used for supervised fine-tuning to enable the LLM to generate well-structured academic papers. Additionally, Research-14k is a long-output dataset, with an average output length of 28K tokens. 
+
+
+
+% 自动化的同行评审有助于处理大量的论文。对于人类论文而言，高质量的自动化评审，一方面能够提供早期反馈和质量控制，减少偏见和确定局限性，并且减少审查过程中带来的人为偏见。另一方面有助于引导读者在数十万篇论文（例如arxiv上发表的论文数量从2022年的185692增长到2023年的208493）中找到高质量论文。而对于AI自动化的论文而言，考虑到合格的专家研究者很难大规模招募，评估标准可能非常主观，如果能够客观且可重复地评价当前的AI与人类专家的水平差异，将有助于更好的检验AI Agent是否有可能达到甚至超越人类水准的研究水平。在这个Section中我们围绕两个有参考评价和无参考评价两个角度，精心设计了一个客观的评价标准来对AI为主导的研究方案进行评价。值得注意的是，对于无参考评价方法而言，其也可以被用于大规模地评价人类论文，在保证负责任和充足披露的前提下。
+
+%It is worth noting that in the "Experiment Execution and Results" sections, an additional LLM or human is required as an experimenter to execute the experiments, while all other parts can be generated in a single output.
+
+
+
+% To further improve the research quality of the CycleResearcher Agent, we designed an Iterative preference optimization alignment method that simulates the peer rebuttal process as a reward mechanism, iteratively optimizing the agent to continuously improve the quality of generated papers. This design simulates the real-world literature review process, requiring research to be conducted based on these latest references. For the CycleResearcher Agent, trained in Section 3.2, we input the knowledge base of references, generating both main texts $M$ and outlines $O$. All $M$ collectively form a complete academic paper, including key research steps such as research planning, writing various paper sections, designing experiments, and analyzing results. The generated $M$ are evaluated using the CycleReviewer described in Section 2.2.
+
+% As illustrated in Figure \ref{fig:method}, we modeled the paper generation process as a policy optimization problem, aiming to achieve the optimal generation strategy for the CycleResearcher Agent using a preference optimization method. 
+
+\section{Iterative Training Framework}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=.9\textwidth]{method_figure.pdf}
+    \vspace{-0.25cm}
+    \caption{\textbf{Iterative Training Framework}. The CycleResearcher model generates Outline (O) and main texts (M) to organize papers, which are evaluated by the CycleReviewer and constructed into preference pairs based on rewards. This whole procedure is then iteratively refined, resulting in progressively enhanced research abilities with each iteration.}
+    \vspace{-0.4cm}
+    \label{fig:method}
+\end{figure}
+% 因为具体的实验实施超出这篇文章的scope，我们采用AI直接模拟生成了实验部分，并将这一问题的解决留给未来工作。
+
+We use the iterative Simple Preference Optimization (SimPO) \citep{meng2024simposimplepreferenceoptimization} framework to replicate the Research-Review-Refinement cycle typical in academic research. As mentioned in the introduction, we primarily focus on the development of ideas and the writing process, while the execution of actual experiments \citep{liu2024towards,zhu2024mossenablingcodedrivenevolution,Hu2024AutomatedDO} is beyond the scope of this work. The process begins with initializing two models: a baseline language model fine-tuned for academic writing (the CycleResearcher), and an LLM specialized in evaluating research papers (the CycleReviewer).
+
+As illustrated in Figure \ref{fig:method}, each iteration encompasses two primary phases: (1) The CycleResearcher model simulates key research steps, including literature review, hypothesis formulation, experimental design, and paper writing, culminating in the production of an academic paper. (2) Subsequently, the CycleReviewer model simulates a peer review process based on the generated paper, providing comprehensive feedback and quantitative scores. To facilitate iterative improvement, we implement a resampling procedure after each round, generating new preference data based on paper scores, which is then utilized to train the models for the subsequent iteration. 
+%以上内容可能要删掉
+
+
+%This approach is designed to progressively enhance CycleResearcher's complex research skills, with the ultimate goal of developing an agent capable of conducting automated scientific research.
+
+
+% Given the reference literature set, (1) the CycleResearcher model simulates key research steps including literature review, hypothesis formulation, experimental design, and paper writing, ultimately producing an academic paper. (2) The CycleReviewer model then simulates peer review based on the paper, providing feedback and scores. We employ an iterative SimPO preference optimization framework to emulate the Research-Reviewer-\textcolor[RGB]{0,0,139}{Refinement} cycle in academic communities. 
+
+% 在每一个迭代，
+
+
+% This approach is designed to progressively enhance CycleResearcher's complex research skills, with the ultimate goal of developing an agent capable of conducting automated scientific research.
+%我们的研究架构旨在通过迭代的对齐实现LLM自动进行科研论文写作的过程。如图所示，给定一组参考文献，(1)researcher将会模拟文献综述、提出假设、设计实验、撰写论文等科研关键步骤，并输出学术论文。(2)然后由reviewer基于论文模拟同行评审，并反馈审稿意见以及分数。我们使用iterative SimPO的偏好优化框架来模拟学术社区中的多轮rebuttal环节，希望逐步提升WhizRsearcher掌握复杂的研究技能，最终成为一个能够自动进行科研的智能体。
+
+\subsection{Reward Model: CycleReviewer}
+\label{sec:model1}
+
+We train CycleReviewer as the Generative Reward model on the Review-5k Dataset. To accurately reflect the academic peer review process, we establish a streamlined evaluation workflow: \vspace{-0.1cm} \begin{equation} \text{Paper} \rightarrow R_1, R_2, \dots, R_n \rightarrow \text{SR}, \end{equation} 
+
+Where the research paper ($\text{Paper}$) is reviewed by multiple reviewers ($R_1, R_2, \dots, R_n$). Each reviewer's opinion is then summarized by a Senior Reviewer ($\text{SR}$), forming the final decision.
+
+The input to the \textit{CycleReviewer} model is a complete research paper. Upon receiving the paper, the model generates sequential feedback and scores for key aspects including Strengths, Weaknesses, Soundness, Presentation, Contribution, and an Overall Score. The Overall Score is rated on a scale from 1 to 10, where 1 represents the lowest score and 10 the highest, with 5 indicating the paper is borderline for rejection and 6 suggesting it is near acceptance. The output of the model includes both the Overall Score and a recommendation labelled as the ``Final Suggestion.'' The CycleReviewer simulates the review process across multiple reviewers, producing a set of Overall Scores. The final output is the average of these scores, representing the overall evaluation of the paper by the system.
+
+\paragraph{Settings.} We use the Mistral-Large-2 model with LoRA-GA \citep{wang2024loragalowrankadaptationgradient} on an 8x H100 80G cluster, with a learning rate of 1e-5 and a batch size of 4x8, for 12 epochs on the Reviewer-5k dataset. To ensure diversity in the generated reviews, \textit{CycleReviewer} starts by simulating the feedback from the reviewer with the lowest rating, gradually progressing to the highest-rated reviewer. This approach ensures that a range of perspectives, from more critical to more favorable, are considered before the senior reviewer delivers the final assessment.
+
+\subsection{Policy model: CycleResearcher}
+\label{sec:model2}
+
+The CycleResearcher model is trained on Research-14k, and the process begins with a literature review, where the input bib file contains all references and their corresponding abstracts. After gaining a comprehensive understanding of the research background, the model moves on to manuscript preparation. In this stage, generating outlines and main text alternates to ensure a logical flow. First, the model generates the motivations and main ideas in the outline and then follows up by producing the title, abstract, introduction, and method sections in the main text. Next, it outlines the experimental setup and results, and subsequently generates the experimental design and simulated results in the main text, where it also incorporates discussions. In the virtual RL environment, to accelerate training, we require the ``experimental results'' to be fabricated instead of conducting actual experiments. Finally, the model analyzes the experimental results and formulates the conclusion. Once all sections of the main text are generated, they are combined into a complete paper in LaTeX format. Notably, each part of the research paper in Research-14k is precisely segmented. Finally, the generated paper $P$ is evaluated using the CycleReviewer, as described in Section \ref{sec:model1}.
+
+% For training the policy model, we input the knowledge base of references, generating both main texts $M$ and outlines $O$. All $M$ collectively form a complete academic paper, including key research steps such as research planning, writing various paper sections, designing experiments, and analyzing results. The generated $M$ are evaluated using the CycleReviewer described in Section \ref{review}. 
+
+% \paragraph{Main Content Generation and literature review.}
+
+% \paragraph{Reference Generation.}
+
+
+\paragraph{Settings.} To build the policy model, we select widely used open-source LLMs: Mistral-Nemo-12B, Qwen2.5-Instruct-72B, and Mistral-Large-2 123B. All models are trained using 8x H100 GPUs and DeepSpeed + ZeRO2 \citep{rajbhandari2020zeromemoryoptimizationstraining,10.1145/3394486.3406703}. We maximized context length by setting the 12B model to 32K tokens, while the 72B and 123B models were set to 24K tokens. Given memory constraints, samples exceeding the preset context length are randomly truncated. We use a batch size of $2 \times 8$, a learning rate of $4e^{-5}$, and train for a total of 12,000 steps. These models support context windows up to 128K tokens, making them suitable for planning research projects and writing research papers.  In response, we contribute three versions of policy models: CycleResearcher-12B, CycleResearcher-72B, and CycleResearcher-123B. During the reinforcement learning phase, we used a learning rate of 5e-7. For the 12B model, we used a text length of 18K, while for the 72B and 123B models, the maximum text length was 10K, with truncation applied from the end. Each iteration trains for one epoch using data obtained through sampling.
+
+% 为了达到最先进的水平，我们的训练基于三个最新的SoTA开源模型：Mistral-Nemo-12B、Qwen2.5-Instruct-72B和Mistral-Large-2 123B。这些模型均为经过指令微调的模型，支持长达128K Token的上下文窗口，使其适合规划研究方案与撰写研究论文。我们对这些模型训练了三个版本：CycleResearcher-12B、CycleResearcher-72B和CycleResearcher-123B。
+
+% 所有模型均使用8xH100 80G GPU和DeepSpeed+ZeRO2进行训练。我们尽可能设置较长的上下文长度，12B模型选择32K，而72B和123B模型选择24K。在训练过程中，我们对模型权重使用fp8量化，并采用LoRA-GA进行训练，这是一种性能与全量微调相当的LoRA方法。考虑到显存问题，训练中对于超出预设上下文的样本进行随机截断。训练使用的批量大小为$2\times8$，学习率为4e-5，总训练步数为12000步。
+
+
+\subsection{Iterative SimPO}
+
+We design an Iterative preference optimization alignment method \citep{xiong2024iterativepreferencelearninghuman,liu2024iterativelengthregularizeddirectpreference} that simulates the peer review process as a reward mechanism. To construct a preference-pair dataset, we first collected 4,152 recent machine learning papers published on arXiv, retaining only the reference sections as the knowledge base. Then we sampled three times from the CycleResearcher with a temperature of 0.4 and processed the results into standard LaTeX-style texts ${M_1, M_2, M_3}$. Next, the CycleReviewer model simulated discussions among multiple reviewers, providing detailed evaluations of various aspects of the papers (e.g., novelty, methods, experimental design, result analysis). The average score $r_i$ from all simulated reviewers was assigned to each output $M_i$. We then selected the output with the highest reward value as the positive sample $y_w$ and the one with the lowest reward value as the negative sample $y_l$, forming a preference-pair dataset $D_0 = {(x, y_w, y_l)}$.
+
+
+\paragraph{Policy Optimization.} Instead of using the iterative DPO training framework \citep{pang2024iterative}, we adopt the SimPO as the base method for saving computational costs. To mitigate overfitting, we sample one-third of the full dataset in each round. Then, we generate a series of models $P_1, \dots, P_T$, where each model $P_{t+1}$ is created using the preference data $D_t$ generated from the model $P_t$. With the preference-pair dataset, we trained a new policy model $\pi_{\theta}$ from $P_t$ to $P_{t+1}$. $P_1$ was initialized from the original fine-tuned CycleResearcher model using instruction tuning.
+
+%Direct Preference Optimization (DPO) \citep{rafailov2023direct} is one of the most common offline preference optimization methods. Instead of directly learning an explicit reward function, DPO transforms the loss function on the reward into a loss function on the policy, extracting the optimal policy in closed form using preferences, while still optimizing under existing models of human preferences, such as the Bradley-Terry model \citep{david1963method}. 
+
+SimPO builds upon DPO \citep{rafailov2023direct}, which is one of the most common offline preference optimization methods. It introduces a length-normalized reward function aligned with the generation target, thereby eliminating dependence on a reference model $\pi_{\text{ref}}$, which reduces memory and computation requirements. The reward function for SimPO is as follows:
+\begin{equation}
+r_{\text{Simpo}}(x, y) = \frac{\beta}{|y|} \log \pi_\theta(y \mid x) = \frac{\beta}{|y|} \sum_{i=1}^{|y|} \log \pi_\theta(y_i \mid x, y_{<i}),
+\end{equation}
+where $\pi_\theta$ is the policy model, $|y|$ represents the length of the generated sequence, and $\beta$ is a constant controlling the scaling of reward differences. SimPO also introduces a target reward margin $\gamma > 0$ to help differentiate between winning and losing responses. The objective for SimPO is as follows: 
+\begin{equation}
+\mathcal{L}_{\text{SimPO}}(\pi_\theta) = -\mathbb{E}_{(x,y_w,y_l)\sim\mathcal{D}}\left[\log\sigma\left(\frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma\right)\right]
+\end{equation}
+%In long-text training, resource savings are critical, so we adopt SimPO. Additionally, 
+
+Considering that the models used in the research process may involve complex reasoning and mathematical calculations, we combine the SimPO loss learned from preference pairs with the negative log-likelihood (NLL) loss to stabilize training \citep{pang2024iterative}. The loss function for each preference pair is as follows:
+
+\begin{equation*}
+\mathcal{L}_{\text{Our}}(\pi_\theta) = -\mathbb{E}_{(x,y_w,y_l)\sim\mathcal{D}}\left[\log\sigma\left(\frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma\right)\right]
+\end{equation*}
+\begin{equation}
+- \lambda \mathbb{E}_{(x, y_w) \sim \mathcal{D}_{\text{NLL}}}\left[ \log \pi_\theta(y_w \mid x) \right].
+\end{equation}
+
+Here, the hyperparameter $\lambda$ balances the two loss terms. Each round of training resamples and optimizes based on the previous round’s results, enabling an approximate online policy optimization process, which allows the CycleResearcher to continuously adapt to evolving publication standards. 
+
+%and methods, simulating the dynamic feedback loop in real environments.
+
+
+\subsection{Safeguard Academic Integrity}
+
+\begin{comment}
+\begin{wrapfigure}{t}{0.46\textwidth}
+\begin{center}
+\vspace{-0.6cm}
+\includegraphics[width=0.46\textwidth]{detect_chart.pdf}
+\end{center}
+\vspace{-0.4cm}
+\caption{We used Fast-Detect-GPT to evaluate the detection accuracy of our model. The evaluation was conducted using 500 human-written papers/review results and 500 model-generated texts. The detection accuracy was then calculated and analyzed.}
+\vspace{-0.cm}
+\label{fig:scalability}
+\end{wrapfigure}    
+\end{comment}
+
+Beyond automating the research process, we are also concerned with safeguarding academic integrity. We aim to prevent the misuse of LLMs in the research community. To achieve that, we adopt the Fast-DetectGPT \citep{bao2024fast}, which aims to use the metric of conditional probability curvature to determine whether the paper submission is generated by LLMs.  Specifically, we use Llama-3-8B \citep{dubey2024llama3herdmodels} as the scoring model and determine if a paper was generated by an LLM by comparing the conditional probability curvature with a predefined threshold $\epsilon$. If the curvature of a paper is larger than the threshold, we classify the paper as LLM-generated, otherwise human-written. 
+
+\begin{comment}
+    Given a paper $x$ and a scoring model $p_{\theta}$, we calculate the \emph{conditional probability curvature} as:
+\begin{equation}
+    \mathbf{d}(x, p_{\theta}) = \frac{\log p_{\theta}(x|x) - \Tilde{\mu}}{\Tilde{\sigma}}, 
+\label{eq:sample-discrepancy}
+\end{equation}
+where
+\begin{equation}
+    \Tilde{\mu} = \mathbb{E}_{\Tilde{x}\sim p_{\theta}(\Tilde{x}|x)} \left[ \log p_{\theta}(\Tilde{x}|x) \right] \quad \textrm{and} \quad \Tilde{\sigma}^2 = \mathbb{E}_{\Tilde{x}\sim p_{\theta}(\Tilde{x}|x)} \left[ (\log p_{\theta}(\Tilde{x}|x) - \Tilde{\mu})^2 \right]. 
+\label{eq:curvature}    
+\end{equation}
+The calculation of the expected score $\Tilde{\mu}$ and variance $\Tilde{\sigma}^2$ relies on a conditional probability function 
+\begin{equation}
+    p_{\theta}(\Tilde{x}|x) = \prod_j p_{\theta}(\Tilde{x}_j|x_{<j}),
+\end{equation}
+which represents the predictive distribution of the scoring model taking the text sequence $x$ as its input.
+\end{comment}
+
+
+
+%We determine the threshold $\epsilon$ empirically using a development experiment.
+
+
+\section{Experiments}
+
+% \subsection{Experimental Setup}
+
+% \textbf{Evaluation Metrics for CycleReviewer}
+
+% \textbf{Evaluation Metrics for CycleResearcher}
+
+% \textbf{Baselines}
+
+% \textbf{Settings}
+
+%在本节中，我们通过实验来评估我们整体框架的有效性，我们具体解决以下研究问题：
+% CycleReviewer能否准确地评价一篇论文的好坏程度？
+% 相比起过去的工作，CycleResearcher Agent提供了怎样的优势？
+% CycleResearcher Agent距离PhD的研究水平还有多远？
+% 我们如何避免CycleReviewer和CycleResearcher模型的滥用？
+
+
+% 我们首先
+
+\subsection{Experiments on Paper Review Generation}
+
+
+\paragraph{Evaluation Metrics.}
+
+Evaluating reviewer performance is inherently difficult because the true quality of submissions is unknown. To address this challenge, we use Proxy Mean Squared Error (Proxy MSE) and Proxy Mean Absolute Error (Proxy MAE) to assess the accuracy of individual review scores \citep{su2024analysisicml2023ranking}, detailed in Appendix \ref{sec:D}. For each paper, the conventional MSE and MAE for a review score $r$ are defined as $E\left[(r - \text{ground truth})^2\right]$ and $E\left[|r - \text{ground truth}|\right]$, which are unobservable due to the unknown true quality. Therefore, we introduce a proxy evaluation method using an independent, unbiased estimator as a stand-in for the ground truth score. Assuming we have $n$ human experts with scores $R = {r_1, r_2, \dots, r_n}$, we treat each reviewer's score $r_i$ as an unbiased estimator of the true quality. We define $r'_i = \text{mean}(R \setminus {r_i})$, which serves as an unbiased estimator excluding $r_i$. Thus, we measure the quality of $r_i$ using $\text{Proxy MSE} = (r_i - r'_i)^2$ and $\text{Proxy MAE} = |r_i - r'_i|$. Simply put, for each submission, we use the average of the other $n-1$ reviewers' scores as an estimator of the true score.
+
+
+% Evaluating the performance of reviewers is a challenge due to the unknown ground truth quality of submissions. To address this challenge, we take the Proxy Mean Squared Error (Proxy MSE) and Proxy Mean Absolute Error (Proxy MAE) to assess the accuracy of individual review scores, the details reason shown in Appendix \ref{sec:D}. 对于每篇论文，对于一个待评价的审稿分数 r，the conventional MSE and MAE are defined as $E(r - ground truth)^2$和$E|r - ground truth|$, which are not observable. 因此proxy 的评价方法是引入一个独立的，且被假设为ground truth 的无偏估计的estimator来替代ground truth score。 我们采用一样的设定，对于n个human expert，分数为$R = {r_1,r_2,...,r_n}$, 我们假设所有审稿人的分数都是独立的，并且所有审稿人的$r_i$都被看做是groud truth的无偏估计 \citep{}。我们定义$r'_i = mean(R\{r_i})$, $r'_i$也是ground truth的一个无偏估计。因此我们采用 $\text{Proxy MSE} = (r_i - r'_i)^2$ 和$\text{Proxy MAE} = |\hat{r} - r'_i|$ 来衡量$r_i$的质量。In simple terms, 对于每一个submission，我们都选择n-1个human expert的均分作为真实分数的estimator。
+
+Our evaluation on the Reviewer-5k test set (average rating 5.53) uses this proxy approach for fair comparison. In the $n-1$ mode, we randomly select one reviewer and use the average of remaining scores as the proxy ground truth. We apply this methodology to evaluate both human experts and closed-source models, including the AI Scientist review system \citep{lu2024ai} with one-shot reviews, self-reflection \citep{shinn2023reflexion}, and ensembled reviews.
+
+%By using the average of other scores as a proxy for the true quality, these metrics allow us to estimate the accuracy of a reviewer’s score. Although the average is not the true score, it helps reduce individual bias. This approach enables the evaluation of human accuracy in scoring submissions, providing insights into the reliability and consistency of peer reviews.
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\textwidth]{reviewer_chart.pdf}
+%     \caption{Comparison of CycleReviewer with various models and human experts on Scores Proxy MSE, Scores Proxy MAE, Decision Accuracy and Decision Macro F1. For the calculation of Human Expert scores, we chose the average score from other human reviewers as the Golden Truth, while the scores for other LLMs used the average score of all human reviewers as the Golden Truth.}
+%     \label{fig:reviewer}
+% \end{figure}
+
+
+\begin{wraptable}{r}{0.68\textwidth}
+\centering
+\vspace{-0.7cm}
+\caption{Comparison of automated models on generating review.}
+
+\scalebox{0.59}{
+\begin{tabular}{l|cc|cc|cc}
+\toprule
+\multirow{2}{*}{Method} & \multicolumn{2}{c|}{Proxy (Reviewer=$n-1$)} & \multicolumn{2}{c|}{Proxy (Reviewer=$n$)}& \multicolumn{2}{c}{Decision} \\
+& MSE $\downarrow$ & MAE $\downarrow$ & MSE $\downarrow$ & MAE $\downarrow$ & Accuracy $\uparrow$ & Macro F1 $\uparrow$ \\
+\midrule
+\textbf{Expert Individual} & 2.34 & 1.16 & - & - & \textbf{75.40\%} & \textbf{75.39} \\
+\midrule
+GPT-4o-mini & 3.44 & 1.53 & 2.98 & 1.40 & 53.06\% & 34.72 \\
+GLM-4 & 4.45 & 1.81 & 3.91 & 1.70 & 49.49\% & 33.10 \\
+DeepSpeek-2.5 & 4.62 & 1.83 & 3.72 & 1.64 & 45.11\% & 39.98 \\
+Gemini-1.5-pro & 3.02 & 1.34 & 2.56 & 1.23 & 50.98\% & 50.75 \\
+Claude-3.5-Sonnet & 6.40 & 2.23 & 5.62 & 2.12 & 48.05\% & 32.44 \\
+GPT-4o & 6.61 & 2.24 & 6.53 & 2.30 & 52.58\% & 34.51 \\
+\textbf{CycleReviewer (123B)} & \cellcolor[HTML]{F9EBE3}\textbf{1.43} & \cellcolor[HTML]{F9EBE3}\textbf{0.92} & \cellcolor[HTML]{F9EBE3}\textbf{1.25} & \cellcolor[HTML]{F9EBE3}\textbf{0.87} & \cellcolor[HTML]{F9EBE3}\textbf{74.24\%} & \cellcolor[HTML]{F9EBE3}\textbf{73.99} \\
+\bottomrule
+\end{tabular}}
+\label{tab:reviewmodel-comparison}
+\end{wraptable}
+
+\paragraph{CycleReviewer introduces better quality of review.}
+
+Table \ref{tab:reviewmodel-comparison} presents the performance comparison across various models. CycleReviewer demonstrates encouraging results in peer review tasks compared to both proprietary systems and individual human reviewers. Our model shows a 48.77\% reduction in Proxy MSE and a 26.89\% reduction in Proxy MAE when compared to individual reviewers' scores. These metrics suggest that CycleReviewer can provide consistent scoring that complements human expertise. With a decision accuracy of 74.24\%, the model demonstrates competitive performance compared to other closed-source systems. These results suggest that our model can provide consistent scoring that complements human expertise, showing potential advantages over AI Scientist systems \citep{lu2024ai} in generating reliable evaluation scores. However, we emphasize that these metrics focus on score consistency rather than capturing the full complexity of expert review, where human insight remains invaluable.
+\subsection{The Importance of Research Lifecycle Simulation}
+\begin{table}[h!]
+\centering
+\vspace{-0.5cm}
+\caption{The evaluation results of a series of papers assessed by CycleReviewer. The range of these scores is 1-10. The CycleReviewer simulates a group of reviewers, and we report the average score for the lowest Overall Score, the average score for the highest Overall Score, and the overall average score. \textsuperscript{$\dagger$} indicates that all these papers were actually accepted for publication. }
+\vspace{0.1cm}
+\label{tab:score_classify}
+\scalebox{0.77}{
+\begin{tabular}{l|c|ccc|r}
+\toprule[.5pt]
+\multirow{2}{*}{Paper Type} & \multirow{2}{*}{Source} &\multicolumn{3}{|c|}{Overall Score Metrics} & \multirow{2}{*}{Accept Rate} \\ \cline{3-5} 
+                        & &\multicolumn{1}{|c}{Avg Min Score $\uparrow$}& Avg Max Score $\uparrow$ & Avg Score $\uparrow$&  \\ 
+                        
+\midrule[1.5pt]
+Conference Accept Papers&Human Expert  & \textbf{3.91} & \textbf{6.98} & \textbf{5.69} & \textbf{100.00\%}\textsuperscript{$\dagger$} \\
+\midrule[0.5pt]
+Preprint Papers&Human Expert   & 3.24 & 6.62 & 5.24 & 29.63\% \\
+
+
+AI Scientist  & AI & 2.20 & 5.70 & 4.31 & \textit{0.00\%} \\
+\textbf{CycleResearcher-12B (Ours)} & AI  & \cellcolor[HTML]{F9EBE3}3.47 & \cellcolor[HTML]{F9EBE3}\textbf{6.75} & \cellcolor[HTML]{F9EBE3}5.36 & \cellcolor[HTML]{F9EBE3}\textbf{35.13\%} \\
+\textbf{CycleResearcher-72B (Ours)} & AI & \cellcolor[HTML]{F9EBE3}\textbf{3.65}& \cellcolor[HTML]{F9EBE3}6.58 & \cellcolor[HTML]{F9EBE3}\textbf{5.38} & \cellcolor[HTML]{F9EBE3}33.64\% \\ 
+\textbf{CycleResearcher-123B (Ours)} & AI & \cellcolor[HTML]{F9EBE3}3.30& \cellcolor[HTML]{F9EBE3}6.45 & \cellcolor[HTML]{F9EBE3}5.15 & \cellcolor[HTML]{F9EBE3}24.28\% \\ 
+\bottomrule[1.5pt]
+\end{tabular}
+}
+\end{table}
+
+
+\begin{table}[t]
+\centering
+\vspace{-0.3cm}
+\caption{The evaluation results of papers reviewed by CycleReviewer across three criteria: Soundness, Presentation, and Contribution. The range of these scores is 1-4.}
+\vspace{0.1cm}
+\scalebox{0.68}{
+\begin{tabular}{l|c|ccc|ccc|ccc}
+\toprule[.5pt]
+\multirow{2}{*}{Paper Type} & \multirow{2}{*}{Source} & \multicolumn{3}{c|}{Soundness Score} & \multicolumn{3}{c|}{Presentation Score} & \multicolumn{3}{c}{Contribution Score} \\ 
+\cline{3-11}
+                        & & Min. $\uparrow$ & Max. $\uparrow$ & Avg. $\uparrow$ & Min.  $\uparrow$ & Max. $\uparrow$ & Avg.  $\uparrow$ &  Min. $\uparrow$ & Max. $\uparrow$ & Avg. $\uparrow$ \\ 
+                        
+\midrule[1.5pt]
+Conference Accept Papers & Human Expert  & \textbf{2.03} & \textbf{3.21} & \textbf{2.83} & \textbf{2.24} & \textbf{3.35} & \textbf{2.91} & \textbf{1.94} & \textbf{3.17} & \textbf{2.72} \\
+\midrule[0.5pt]
+Preprint Papers          & Human Expert  & 1.76 & 3.16 & 2.70 & 2.07 & 3.28 & 2.80 & 1.75 & \textbf{3.13} & 2.57 \\
+AI Scientist    & AI            & 1.20 & 3.10 & 2.48 & 1.70 & \textbf{3.40} & 2.69 & 1.30 & 2.90 & 2.15 \\
+
+\textbf{CycleResearcher-12B (Ours)}  & AI            & \cellcolor[HTML]{F9EBE3}1.73 & \cellcolor[HTML]{F9EBE3}\textbf{3.17} & \cellcolor[HTML]{F9EBE3}\textbf{2.71} & \cellcolor[HTML]{F9EBE3}1.91 & \cellcolor[HTML]{F9EBE3}3.24 & \cellcolor[HTML]{F9EBE3}2.70 & \cellcolor[HTML]{F9EBE3}1.68 & \cellcolor[HTML]{F9EBE3}3.07 & \cellcolor[HTML]{F9EBE3}\textbf{2.60} \\
+
+
+\textbf{CycleResearcher-72B (Ours)} & AI            & \cellcolor[HTML]{F9EBE3}\textbf{1.86} & \cellcolor[HTML]{F9EBE3}3.13 & \cellcolor[HTML]{F9EBE3}\textbf{2.71} & \cellcolor[HTML]{F9EBE3}\textbf{2.19} & \cellcolor[HTML]{F9EBE3}3.31 & \cellcolor[HTML]{F9EBE3}\textbf{2.88} & \cellcolor[HTML]{F9EBE3}\textbf{1.81} & \cellcolor[HTML]{F9EBE3}3.04 & \cellcolor[HTML]{F9EBE3}2.55 \\
+
+\textbf{CycleResearcher-123B (Ours)} & AI            & \cellcolor[HTML]{F9EBE3}1.74 & \cellcolor[HTML]{F9EBE3}3.14 & \cellcolor[HTML]{F9EBE3}2.69 & \cellcolor[HTML]{F9EBE3}2.10 & \cellcolor[HTML]{F9EBE3}3.31 & \cellcolor[HTML]{F9EBE3}2.83 & \cellcolor[HTML]{F9EBE3}1.72 & \cellcolor[HTML]{F9EBE3}3.08 & \cellcolor[HTML]{F9EBE3}2.53 \\
+
+\bottomrule[1.5pt]
+\end{tabular}
+}
+\vspace{-0.2cm}
+\label{tab:score_res}
+\end{table}
+Table \ref{tab:score_classify} presents the results of CycleResearcher, which simulates a program committee review process, evaluating papers across the entire score range and ultimately providing a final acceptance decision based on simulated reviews. We report the average scores for the lowest-scoring reviewer, the highest-scoring reviewer, and the overall score. For accepted papers, we use the test set of Research-14k, where all papers have been accepted, serving as a benchmark for human expert standards. For preprint papers, we evaluate 955 submissions from arXiv (Sep. 2024) in the domains of cs.ML, cs.CV, and cs.LG. Additionally, we evaluate the AI Scientist with a collection of 10 research papers generated by GPT-4o and Claude-3.5.
+
+\textbf{CycleResearcher consistently performs better than AI Scientist in terms of automated review metrics.} Table \ref{tab:score_classify} shows that CycleResearcher-12B achieves an average score of 5.36, approaching the 5.69 average scores for conference-accepted papers and surpassing AI Scientist's score of 4.31. Notably, it achieves an acceptance rate of 35.13\%, which is significantly higher than AI Scientist's 0\% acceptance rate, demonstrating its superior ability to produce research-quality output.
+
+The comparison across soundness, presentation, and contribution further illustrates the advantages of CycleResearcher. The CycleResearcher-12B achieves an average soundness score of 2.71, surpassing AI Scientist (with GPT-4o)'s 2.48 and closely matching the 2.83 of accepted papers. For presentation and contribution, it attains average scores of 2.70 and 2.60 respectively, outperforming AI Scientist's scores in both metrics (2.69 and 2.15). In contrast, AI Scientist shows significant limitations, particularly in minimum scores for soundness (1.20) and contribution (1.30), indicating less consistency in producing quality research. Our model demonstrates greater reliability, with higher minimum scores across all metrics (soundness: 1.73, presentation: 1.91, contribution: 1.68) compared to AI Scientist. These results underscore our model's effectiveness in addressing the challenges of ensuring quality and consistency in AI-generated research.
+
+\begin{wraptable}{r}{0.42\textwidth}
+\centering
+\vspace{-0.7cm}
+\caption{Ablation study of different variations of CycleResearcher-12B.}
+\vspace{0.1cm}
+\renewcommand{\arraystretch}{1}
+\setlength{\tabcolsep}{6pt}
+\scalebox{0.75}{
+\begin{tabular}{l|r|r}
+\toprule[.5pt]
+\textbf{Method} & \textbf{Avg Score $\uparrow$} & \textbf{Accept Rate $\uparrow$} \\ 
+\midrule[1.5pt]
+\rowcolor[HTML]{F9EBE3} 
+\textbf{CycleResearcher}  & \cellcolor[HTML]{F9EBE3}\textbf{5.36} & \cellcolor[HTML]{F9EBE3}\textbf{35.14\%} \\
+\midrule[.8pt]
+\textbf{w/o RL}        & $_{\textcolor{red}{(-0.24)}}5.12$           & $_{\textcolor{red}{(-5.34\%)}}29.80\%$ \\
+\textbf{w/o Iterative}  & $_{\textcolor{red}{(-0.15)}}5.21$           & $_{\textcolor{red}{(-2.23\%)}}32.91\%$ \\
+\textbf{w/o NLL}       & $_{\textcolor{red}{(-0.45)}}4.91$           & $_{\textcolor{red}{(-23.11\%)}}12.03\%$ \\
+
+\bottomrule[1.5pt]
+\end{tabular}}
+
+
+\label{tab:score_res_mod}
+\end{wraptable}
+
+\textbf{Rejection sampling improves the quality of generated papers in terms of automated review metrics} in Figure \ref{fig:reject}. Rejection sampling is especially valuable in the context of academic paper generation, where the cost of producing research plans and papers using language models is relatively low compared to other stages of research. As the number of generated papers increases from 1 to 100, the average score rises from approximately 5.36 to 7.02, surpassing both preprint papers (5.24) and accepted papers (5.69). The average maximum score improves from 6.72 to 8.02, while the average minimum score increases substantially from 3.52 to 6.01, both exceeding the preprint paper baseline. These findings indicate that larger sample sizes enable the model to consistently generate higher-quality research papers, making rejection sampling an effective strategy to enhance overall paper quality in terms of soundness, presentation, and contribution. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{reject_charts.pdf}
+    \vspace{-0.6cm}
+    \caption{Performance improvement through rejection sampling in generated papers. The graphs show the average, max, and min scores across different numbers of generated papers (1, 5, 10, 50, 100) from CycleResearcher-12B. The red stars represent the performance of the generated papers, showing consistent improvements as the number of samples increases.}
+    \vspace{-0.3cm}
+    \label{fig:reject}
+\end{figure}
+
+\textbf{Ablation Study} in Table \ref{tab:score_res_mod}. When Reinforcement Learning is removed, leaving only the initial version with supervised training, the average score drops to 5.12, with an acceptance rate of 29.80\%. Removing the iterative training process results in a score of 5.21 and a slightly higher acceptance rate of 32.91\%. When Negative Log-Likelihood (NLL) loss is removed, the results decrease significantly. This causes issues such as repetitive text generation and significant errors in the produced content, with the average score dropping sharply to 4.91 and the acceptance rate plummeting to \textbf{12.03\%.} These results highlight the importance of RL, iterative training, and NLL in maintaining the quality and stability of generated research papers in terms of automated review metrics. Overcoming these challenges is essential for developing robust models capable of producing academic content that performs well in automated reviews.
+
+
+\subsection{Human Evaluation}
+\begin{wraptable}{r}{0.65\textwidth}
+\vspace{-0.7cm}
+\centering
+\caption{Human evaluation scores. ICLR'24 scores are collected from the Review-5K test set and Research-14k.}
+\small
+\renewcommand{\arraystretch}{1.3} 
+\setlength{\tabcolsep}{4pt} 
+\scalebox{0.7}{
+\begin{tabular}{l|c|ccc}
+\toprule[1pt]
+\textbf{Papers} & \textbf{Avg. Overall} & \textbf{Avg. Soundness} & \textbf{Avg. Presentation} & \textbf{Avg. Contribution} \\ 
+\midrule[1.5pt]
+ICLR'24 Accepted & {\large 6.4} & - & - & - \\
+ICLR'24 Submitted & {\large 5.5} & - & - & - \\
+\midrule[1pt]
+AI Scientist & {\large 3.6}  & {\large 2.2} & {\large 2.6} & {\large 1.8} \\
+CycleResearcher& \cellcolor[HTML]{F9EBE3}{\large \textbf{4.8}}  & \cellcolor[HTML]{F9EBE3}{\large \textbf{2.6}} & \cellcolor[HTML]{F9EBE3}{\large \textbf{2.8}} & \cellcolor[HTML]{F9EBE3}{\large \textbf{2.2}} \\
+\bottomrule[1pt]
+\end{tabular}}
+\label{tab:human_evaluation}
+\end{wraptable}
+
+To rigorously validate CycleResearcher's performance, we conducted a human evaluation study involving three NLP experts. These experts, each with a strong publication record (average 1,110 Google Scholar citations) and prior experience as reviewers for top-tier NLP conferences, were recruited for this task. To ensure relevance and expertise-based assessment, we carefully selected papers for each reviewer that aligned closely with their research interests. Prior to evaluation, all papers were converted from PDF to Markdown format, and manually checked to fix formatting issues (e.g., figure/table layout). Crucially, all identifying author information was anonymized, providing reviewers only with the main text of each paper. Each expert then evaluated 20 papers in total: 10 generated by CycleResearcher-12B (using N=100 rejection sampling) and 10 by AI Scientist (with 50 initial ideas and 3 refinement iterations). The evaluation process spanned one week, during which reviewers were instructed to strictly adhere to the ICLR 2024 review guidelines. We explicitly asked them to evaluate papers based on standard academic criteria, including soundness, presentation, and contribution, and to provide detailed comments and scores for each paper. Furthermore, we specifically directed reviewers to critically assess the experimental design and methodology of each paper, and to flag any potential flaws or inconsistencies they identified. As detailed in Table \ref{tab:human_evaluation}, the human evaluation scores indicate that CycleResearcher outperformed AI Scientist across all measured dimensions (average overall score of 4.8 vs. 3.6). However, CycleResearcher's performance still remained below the average scores for both ICLR 2024 submissions (5.54) and accepted papers (6.44), suggesting room for further improvement. Nonetheless, the results demonstrate meaningful progress in automated research paper generation, with CycleResearcher showing particular strengths in presentation (2.8) and soundness (2.6) relative to the baseline system.
+
+
+\subsection{Ethical Safeguard}
+\begin{wraptable}{r}{0.47\textwidth}
+\centering
+\vspace{-0.6cm}
+\caption{Detect Performance Comparison in Different Formats. The human samples are from the test sets of Research-14k and Reviewer-5k.}
+\vspace{0.1cm}
+\small
+%\renewcommand{\arraystretch}{1.3} 
+%\setlength{\tabcolsep}{4pt} 
+\scalebox{0.73}{
+\begin{tabular}{lccc}
+\toprule[1pt]
+\textbf{Model} & \textbf{Format} & \textbf{Accuracy} & \textbf{F1 Score} \\ 
+\midrule[1.5pt]
+\textbf{CycleReviewer-123B}        & Review & 95.14\%    & 94.89      \\
+\textbf{CycleResearcher-12B}  & Research  & 98.38\%    & 98.37     \\
+\textbf{CycleResearcher-72B} & Research  & 97.52\%    & 97.49      \\ 
+\textbf{CycleResearcher-123B} & Research  & 98.88\%    & 98.87      \\ 
+\bottomrule[1pt]
+\end{tabular}}
+\label{tab:model_detect}
+\end{wraptable}
+To ensure the responsible use of our models, we implemented the Fast-DetectGPT method to classify whether a paper is machine-generated. Table \ref{tab:model_detect} shows the performance of our detection tool across different formats, achieving over 95\% accuracy for review contents and nearly 99\% accuracy for paper texts. This ensures that any outputs generated by CycleResearcher or CycleReviewer can be accurately identified, thus protecting the integrity of the research community.
+
+
+
+
+
+
+\section{Related Work}
+
+% LLM for Research. 近年来，一些研究探索了将语言模型用于科研任务的创意生成，例如通过迭代增强新颖性\citep{wang2023scimon}、多智能体协作写作\citep{baek2024researchagent}以及多模块检索 \citep{yang2023large}来改进研究思路的生成。这些工作旨在提升人工智能在创造性任务中的新颖性和多样性。\citet{si2024can}对语言模型生成想法的任务进行了全面的人类评估。\citet{wang2024autosurvey} 提出用LLM自动撰写survey论文。此外，LLM还被用于自动化研究过程:\citet{huang2024mlagentbench}提出了一个用于评估LLM在编写代码解决机器学习问题方面的能力的基准；\citet{wang2023scimon}等人利用LLM提出了基于科学文献检索的方法。AI Scientist \citep{lu2024ai}项目提供了第一个完全自动化、以提示词驱动的研究管道，实现了研究想法的自动生成和执行。然而，这些基于提示词的方法在生成想法的多样性和实用性方面可能存在不足。为此，我们创建了一个迭代改进的自奖励训练管道，得到了ScientistsAgent模型，达到了更高水平的研究方案生成。
+
+% LLM for Science Discovery. 人工智能辅助科学发现 \citep{langley1987scientific,langley2024integrated} 的传统由来已久，早在上个世纪，AI就被应用于化学\citep{buchanan1981dendral}、合成生物学\citep{jumper2021highly,hayes2024simulating}、材料发现\citep{pyzer2022accelerating,merchant2023scaling}和数学 \citep{romera2024mathematical}等领域。随着神经网络的发展 \citep{lecun2015deep}，越来越多的研究者专注于AI4Science \citep{ai4science2023impact,li2024ai4r,yakaboski2023ai}。在这些研究中，AI通常用于分析现有数据，寻找新的见解，但主要是被动地在单一领域内搜索，并未涉及以AI为主导的科学发现过程，例如研究思路的构思、论文撰写和同行评审优化等。我们的工作旨在探究基于LLM的AI系统能否成为科学发现的主导者。
+
+% 研究论文的评价。在科学出版过程中使用人工智能工具引起了广泛关注 \citep{bao2021predicting,liu2023reviewergpt,liang2024can,d2024marg,}，包括总结研究论文内容\citep{collins2017supervised}、检测不准确之处 \citep{nuijten2016prevalence}以及识别公平性差异\citep{zhang2022investigating}。\citet{hosseini2023fighting}等人进行了小规模的定性实验，评估ChatGPT在同行评审过程中的有效性；\citet{robertson2023gpt4}等人邀请10名参与者评估GPT-4在协助同行评议方面的益处 。\citet{lu2024ai}和\citet{tyser2024ai}使用GPT-4对科学论文的全文PDF进行了评价。然而，当LLM-as-a-judge时，即使是最强大的模型，如GPT-4 \citep{achiam2023gpt}和Gemini \citep{reid2024gemini}，仍然落后于经过专门训练的奖励模型在RewardBench中 \citep{lambert2024rewardbench}。相比之下，我们采用了更长的链式思维（CoT） \citep{wei2022chain} 推理过程训练了一个Generative Reward Model \citep{zhang2024generative}，模拟完整的同行评审模式，利用LLM依次模拟从最低评分到最高评分的审稿人，在审稿过程中填写摘要、优点和缺点，并在最后阶段模拟主审提供最终决定和主要理由。
+
+\textbf{LLMs for Research.} In recent years, several studies have explored using language models for creative tasks in research, such as multi-agent collaborative writing \citep{baek2024researchagent} and multi-module retrieval \citep{yang2023large} to improve research idea generation. These works aim to boost the novelty and diversity of AI in creative tasks. \citet{si2024can} conducted a comprehensive human evaluation of the task of idea generation by language models. \citet{wang2024autosurvey} proposed using LLMs to automatically write survey papers. Additionally, LLMs have been used to automate the research process: \citet{huang2024mlagentbench} introduced a benchmark for evaluating LLMs in coding solutions for machine learning problems; \citet{wang2023scimon} proposed a method leveraging LLMs for scientific literature retrieval. The AI Scientist project \citep{lu2024ai} introduced a fully automated, prompt-driven research pipeline. However, prompt-based methods often fail to generate ideas that are both diverse and practical, limiting their real-world application. To address this, we developed an iterative self-rewarding framework that enables the LLM to refine its ideas continuously, enhancing both diversity and practicality in research proposal generation.
+
+\textbf{LLMs for Science Discovery.} The tradition of AI-assisted scientific discovery \citep{langley1987scientific,langley2024integrated} has a long history. As early as the last century, AI was applied in fields such as chemistry \citep{buchanan1981dendral}, synthetic biology \citep{jumper2021highly,hayes2024simulating}, material discovery \citep{pyzer2022accelerating,merchant2023scaling}, and mathematics \citep{romera2024mathematical}. With the development of neural networks \citep{lecun2015deep}, more researchers have focused on AI4Science \citep{ai4science2023impact,li2024ai4r,yakaboski2023ai}. 
+AI is mainly used for data analysis within a single domain, playing a passive role without driving scientific discovery. The key challenge is enabling AI to go beyond analysis and actively contribute to generating new research ideas, which demands advanced reasoning and creativity. Our work builds on AI’s historical role in science, aiming to shift AI from a supporting tool to a leader in scientific discovery.
+
+\textbf{Automated Evaluation of Research Papers.} The use of AI tools in the scientific publishing process has garnered widespread attention \citep{bao2021predicting,liu2023reviewergpt,liang2024can,d2024marg}, including summarizing research paper content \citep{collins2017supervised}, detecting inaccuracies \citep{nuijten2016prevalence}, and identifying fairness disparities \citep{zhang2022investigating}. \citet{hosseini2023fighting} conducted small-scale qualitative experiments to evaluate the effectiveness of ChatGPT in the peer review process, while \citet{robertson2023gpt4} invited 10 participants to assess the benefits of GPT-4 in assisting with peer review. \citet{lu2024ai} and \citet{tyser2024ai} used GPT-4 to evaluate full-text PDFs of scientific papers. However, when LLMs act as judges, even the most advanced models, such as GPT-4 \citep{achiam2023gpt} and Gemini \citep{reid2024gemini}, still lag behind reward models specifically trained for the task, as seen in RewardBench \citep{lambert2024rewardbench}. This gap highlights the challenge of achieving human-level judgment and reasoning in AI-driven peer reviews. In contrast, we train a Generative Reward Model \citep{zhang2024generative} to simulate a comprehensive peer review. Our CycleReviewer simulates reviewers with varying perspectives, documenting summaries, strengths, and weaknesses. In the final stage, a primary reviewer consolidates these insights to deliver the final decision.
+
+%\section{Ethical Considerations and Limitations}
+
+%\wjd{There should definitely be a discussion section on potential ethical issues of the paper}
+
+%\wjd{and limitations. I can name a limitation, which is that we only focus on latex contents but not including the figures, tables, and equations.}
+
+
+\section{Conclusion}
+
+In this paper, we introduced a novel framework for automating the entire research lifecycle using large language models (LLMs). Our approach combines CycleResearcher, a policy model designed to autonomously conduct scientific research, and CycleReviewer, a reward model that simulates the peer review process. Through the integration of Iterative SimPO, we enable the models to self-improve over multiple research-review-refinement cycles. To facilitate this, we constructed two new datasets, Review-5k and Research-14k, which capture the complexities of peer review and research paper writing in machine learning. CycleReviewer shows superior scoring consistency compared to evaluated closed-source models, while CycleResearcher generates papers approaching human preprint quality in simulated reviews, with competitive acceptance rates. These results indicate the feasibility of using LLMs to contribute meaningfully to both the scientific discovery and peer review processes. As we move forward, the potential of LLMs to transform research practices is vast. We hope this work sparks further investigation into how AI can assist researchers, while maintaining the highest standards of academic integrity and ethical responsibility.
+
+
+
+% 数据收集
+%对于训练Reviewer-Model的数据，来自ICLR2024的4189条论文审稿意见，总计包括16208个审稿人的意见，每一个意见包括Soundness，Presentation和Contribution分数，以及论文的强项和弱项，并在最后会对论文给予1-10的评分，其中5是boardline reject，6是boardline accept。整个训练集中的平均分数是5.38. 测试集则是选用了随机选取的781个样本，其中包含3025个样本，均分是5.53
+
+%对于训练Research-Model的数据，SFT数据来自公开访问的，从2022年至今的，6943条论文latex风格数据。具体来说包括nips2022，iclr2023，icml2023，nips2023，emnlp2023，acl2023，cvpr2023，iclr2024，icml2024，acl2024，cvpr2024的论文，这些论文的最晚时间截至2024年3月。同时我们对这些数据进行了处理，首先提取出论文的动机和主要思路。并且让语言模型提前列出了论文中提到的每个实验的设置和实验的结果。在训练过程中，我们以参考文献作为输入，并且要求模型以分而治之的方式，先得到一篇论文的动机和主要实验，然后开始写引言，方法和相关工作。训练集平均每个论文包含58.01个参考文献，每篇论文正文包含5911.03字。对于测试集，我们选用了2024年4月以来被相关会议接受的802篇论文，平均每篇论文包含50.98篇参考文献，平均字数达到6161.81字
+
+% 实验设计
+
+% 1. Reviewer-Model（命名为CycleReviewer）实验，我们从ICLR2024中收集了7000个论文的30000条评论，其中80%用于训练模型，剩余20%用于测试CycleReviewer的性能。实验指标包括最终接受准确率，平均分差值，最低分差值和最高分差值。我们在三个模型（Llama-3.1-8B，Llama-3.1-70B和Mistral-Large-2）中进行了实验，最高的Mistral-Large-2的预测最终接受准确率是75%。这是一种Generated Reward Model,被要求从低分到高分依次生成审稿意见，最后输出审稿结果。
+
+% 2. Generated Reward Model对比实验（如果有时间可以做的话），过去对于Reward Model往往采用Classifiers方式，Generated RM并不是最优解，一种解释是现有的benchmark并不够难，所以我们可以在这方面进行实验，最好能证明Generated Reward Model在论文审稿任务上是超过Classifiers方法了。
+
+% 3. 主要实验，评价指标包括平均分，最高分，最低分，接受率。其中包括接受论文组（来自ICLR，NIPS，ICML等2024年4月以后的论文集），arxiv论文组（来自2024年8月26号至9月11号的全部ML领域arxiv论文），AI Sciencetist论文组和我们的方法（包括SFT，SimPO等）
+
+% 4. 分析实验，此处会有三个图，分别是Soundness，Presentation和Contribution实验。每一个都会包括平均分，最高分，最低分三组指标.
+
+\section*{Acknowledgement}
+
+We want to express huge thanks to our reviewers who gave us insightful suggestions and helped us complete a more comprehensive ethical consideration checklist. Yixuan Weng, Minjun Zhu, Guangsheng Bao, Hongbo Zhang, Linyi Yang, and Yue Zhang have been supported by the Research Program No. WU2023C020 of Research Center for Industries of the Future, Westlake University. Jindong Wang is supported by the Commonwealth Cyber Initiative (CCI). Correspondence to Linyi Yang (\url{yanglinyiucd@gmail.com}) and Yue Zhang (\url{zhangyue@westlake.edu.cn}).
+
+We thank the AI Scientist \citep{lu2024ai} for providing the foundational code required for \textit{automated experiments} in our work.
+
+\section*{Ethical Considerations}
+
+While our primary objective is to advance research automation via LLMs, it is crucial to clarify that we are not advocating for their misuse in academic paper generation. Recognizing the potential ethical risks associated with CycleResearcher and CycleReviewer models, we have implemented comprehensive safeguards.
+Our high-performance detection tool can identify AI-generated submissions with accuracy exceeding 95\%, and all model outputs include embedded watermarks with clear disclosure statements. The licensing framework requires institutional affiliation disclosure and enables publishers to verify model access when concerns arise, while protecting user privacy. All papers must include a clear disclosure:
+\begin{displayquote}
+
+\textit{This paper was written with the assistance of CycleResearcher, including but not limited to the introduction, related work, experimental design, and experimental results sections. A portion of the content may have been generated using large language models (LLMs).}
+\end{displayquote}
+
+We extensively tested for potential misuse through red-teaming exercises, evaluating scenarios like cyber-attacks or harmful content generation. To prevent unlawful information dissemination, we implemented SafetyLock \citep{zhu2024locking} before releasing open-source weights.
+
+
+The impact on the scientific community warrants careful consideration. On the positive side, our framework can accelerate scientific discovery by automating routine research tasks and enabling rapid hypothesis validation. It could particularly benefit resource-constrained researchers by providing sophisticated research assistance. However, we acknowledge concerns about potential academic integrity issues and the risk of flooding venues with AI-generated papers. To address this, we've developed a streamlined detection framework that can identify AI-generated content within approximately 2 seconds, making it practical for widespread deployment in submission systems.
+
+
+
+To ensure accountability and responsible use, we've implemented a comprehensive licensing and monitoring system. Users must disclose their institutional affiliations and explicitly declare their intended use cases before accessing the models. Our licensing agreement includes a novel disclosure mechanism that balances transparency with privacy - when publishers have legitimate concerns about potential misuse, they can submit queries to verify if specific authors have accessed our models within a given timeframe. This verification process is designed to protect user privacy while maintaining academic integrity, as it only confirms model access without revealing specific usage details. Additionally, all users must agree not to utilize the models for official peer reviews or submissions without full disclosure of AI involvement.
+
+
+
+To prevent the proliferation of low-quality research content, we advocate for a comprehensive disclosure and verification framework. We strongly encourage publishers to require authors to declare their use of LLMs in research - a practice already being adopted by major conferences including NeurIPS 2024, ICLR 2025, and ACL. Our detection tool complements this policy by enabling rapid verification of AI-generated content within 2 seconds. When discrepancies are found between author declarations and detection results, publishers can either request clarification or decline review. This system, combined with our licensing framework that tracks model access, creates a robust accountability mechanism. Moreover, our work aligns with the community's goal of maintaining research quality - CycleResearcher is designed to help researchers produce substantive, well-validated contributions rather than increasing paper volume, complementing existing peer review processes in filtering out low-quality submissions.
+
+
+
+We envision these technologies as augmenting rather than replacing human researchers, particularly in accelerating routine aspects of research while allowing scientists to focus on creative and critical thinking. To support this vision, we're developing collaborative frameworks where CycleResearcher serves as an intelligent research assistant, generating hypotheses and experimental designs that human researchers can refine and validate. This approach maintains the social and collaborative nature of scientific inquiry while leveraging AI's capabilities to enhance research productivity. Additionally, we've established guidelines for appropriate use in academic settings, in Appendix \ref{appropriate}, including recommendations for how departments and institutions can integrate these tools while maintaining research quality and fostering meaningful human collaboration.
+
+By implementing these measures, we aim to contribute positively to the research community, fostering innovation while ensuring ethical responsibility in the development and application of LLMs for scientific discovery.
+
+\section*{Reproducibility Statement}
+
+We have made extensive efforts to ensure the reproducibility of all results presented in this paper. Firstly, the models discussed in this work, including CycleResearcher and CycleReviewer, will be made available as open-source, along with detailed documentation for setup and usage (See in Section \ref{sec:model1}, Section \ref{sec:model2}, and Appendix \ref{appendix:model}). We provide the training datasets—Review-5k and Research-14k—which will be made publicly accessible to enable researchers to replicate the training process. Each dataset is accompanied by clear instructions regarding its collection, preprocessing steps, and structure (See in Section \ref{sec:dataset}). 
+
+Additionally, we have included a thorough description of the model architectures, training procedures, and hyperparameters used in our experiments. Furthermore, we conducted all experiments using publicly available hardware and commonly used deep learning frameworks such as DeepSpeed. To further enhance transparency, we have included a detailed breakdown of evaluation metrics, such as Proxy MAE and Proxy MSE, to ensure that our performance claims can be independently verified. All code, datasets, and model weights will be released with a clear license to promote widespread reproducibility and ethical usage.
+
+\bibliography{iclr2025_conference}
+\bibliographystyle{iclr2025_conference}
+
+\appendix
+\section{Guidelines for Responsible Model Usage}
+\label{appropriate}
+
+\subsection{CycleReviewer}
+For CycleReviewer deployment, we recommend a hierarchical review framework that enhances traditional peer review processes while maintaining human oversight. In major conferences, after receiving initial scores from CycleReviewer, Area Chairs (ACs) make preliminary accept/reject recommendations. When significant discrepancies exist between CycleReviewer's evaluation and AC recommendations, Senior Area Chairs (SACs) can request additional AC review without specifying the source of the concern. This system effectively flags submissions requiring careful examination while preserving the integrity of the review process.
+
+CycleReviewer can also enhance award selection processes, particularly for Best Paper designations. Traditional selection mechanisms, where papers with high average scores or AC nominations form the candidate pool, can sometimes lead to controversial outcomes, as reviewers drawn from limited pools may exhibit strong biases. Given CycleReviewer's training on large-scale review data, it can provide a standardized evaluation metric. When substantial score differences exist between human reviewers and CycleReviewer, award committees should exercise additional caution in their deliberations. Furthermore, CycleReviewer can assist in prioritizing emergency reviewer recruitment, particularly for submissions with low confidence scores or significant score variations, helping maintain trust in the peer review system.
+
+\subsection{CycleResearcher}
+For CycleResearcher implementation, we recommend a systematic approach that maximizes the model's capabilities while ensuring research quality:
+
+Hypothesis Generation and Refinement: We recommend using CycleResearcher in an iterative cycle for hypothesis development. First, generate multiple candidate hypotheses through broad exploration of the literature and potential research directions. Then, use the model to analyze each hypothesis's feasibility, testing requirements, and potential impact. Finally, employ CycleResearcher to identify potential weaknesses and refinements needed for each hypothesis. This process should be repeated until a robust, well-defined hypothesis emerges.
+
+Experimental Design and Validation: The model should be used to develop comprehensive experimental protocols that include multiple control conditions and account for various confounding variables. We suggest using CycleResearcher to generate at least three variations of each experimental design, focusing on different methodological approaches or measurement techniques. These designs should then be critically evaluated for their ability to falsify the hypothesis, statistical power, and practical feasibility. For computational research, CycleResearcher can help design ablation studies and identify appropriate baselines. For empirical research, it can suggest methods to control for various biases and ensure reproducibility.
+
+Results Analysis and Interpretation: CycleResearcher should be employed to analyze results from multiple perspectives. First, use it to generate various interpretations of the data, including potential alternative explanations. Then, leverage its literature knowledge to connect findings with existing theories and identify potential contradictions or alignments with previous work. Finally, use the model to suggest additional experiments or analyses that could strengthen or challenge the conclusions drawn.
+
+Collaboration and Integration: To maximize research quality, we recommend integrating CycleResearcher into existing research workflows gradually. Begin with using it for literature review and hypothesis generation, then expand to experimental design as confidence in the tool grows. Maintain regular human oversight and discussion of the model's suggestions, treating it as a sophisticated research assistant rather than an autonomous researcher. Document all model-generated suggestions and maintain a clear record of which aspects of the research were AI-assisted versus human-directed.
+
+These guidelines aim to harness CycleResearcher's capabilities while maintaining scientific rigor and research integrity. We emphasize that the model should be used as a tool to augment human research capabilities rather than as a replacement for human scientific judgment.
+
+\section{Limitations}
+
+Our models are text-only transformer models \citep{NIPS2017_3f5ee243}, focused on handling LaTeX-style text content, but it does not include specific image information. While our models focus on the processes of research planning and academic writing, the envisioned LLM-led scientific discovery does not imply an isolated deployment. Instead, it should function as part of an integrated system. Crucially, human researchers or other agents are still needed to execute the experiments designed by the models and provide corresponding experimental details. We explicitly state that all experimental results mentioned in the generated papers within this work were fabricated by the CycleResearcher model (\textbf{Hallucinated}). Rather than based on real experimental data. This is significantly different from the real scientific research process, which limits the capability of our models in generating verifiable and reproducible scientific knowledge. For future research, we plan to introduce human researchers as experimenters who will collaborate with CycleResearcher in executing actual research plans. On the other hand, to address this issue, in our open-source code repository, we will integrate code from AI Scientist  \citep{lu2024ai} and combine it with our models to achieve scientific discovery tasks across all stages to a certain extent. In Appendix \ref{app:example}, we have included a paper featuring real-world experiments where the idea, methodology, and experimental design come from CycleResearcher, while the implementation of the experiments was carried out by AI Scientist using GPT-o1. For more details, please refer to Appendix \ref{app:inference}.
+
+While our framework's core architecture is designed to be domain-agnostic, focusing on universal academic qualities like methodological soundness and clarity of presentation, its current implementation is primarily optimized for machine learning research. This domain specificity stems from practical considerations: machine learning offers abundant high-quality training data through open-access papers and peer reviews. Expanding to other scientific fields would require domain-specific training data and careful adaptation of evaluation criteria. We envision future collaborations with publishers and domain experts to access larger, more cohesive training datasets from diverse fields and adapt our framework accordingly. CycleResearcher's knowledge is updated only up to April 2024, but it has been trained to understand and develop new research plans based on references. This approach partially mitigates the limitations caused by outdated knowledge. However, for CycleReviewer, it is currently an offline model with its most recent knowledge updated until January 2024. This poses challenges in assessing novelty for newer papers and may result in incorrect references or outdated information. In future work, we aim to integrate retrieval-augmented generation (RAG) \citep{NEURIPS2020_6b493230} or other knowledge-enhancement techniques to improve its ability to assess research novelty and accuracy.
+
+Another limitation we recognize is the potential issue of reward hacking, where the policy model could exploit loopholes in the reward model to maximize rewards without genuinely improving the quality of the generated research. Since the policy model and the reward model are not updated simultaneously, this creates a risk where the policy model learns to produce outputs that satisfy the reward criteria but do not necessarily reflect true academic rigor or novelty. For instance, the model might focus on superficial aspects of writing or repeat certain patterns that are disproportionately rewarded by the reward model. This shortcut behavior could undermine the long-term goal of fostering high-quality research output. In future work, we plan to address this by synchronizing updates between the policy and reward models, ensuring that the policy evolves alongside the reward criteria.
+\section{License}
+\label{app:license}
+\subsection{Data Collection Permissions}
+The original paper data and corresponding review comment data used to construct Review-5K are sourced from OpenReview, with a portion of papers originating from ArXiv. Data from OpenReview is distributed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license, which permits us to copy and modify the review comment data. Research-14K data from ArXiv may include licenses such as CC BY 4.0 (Creative Commons Attribution), CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike), CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike), and CC Zero. Given that we have not modified the original papers, our usage is compliant with the original agreements. We do not claim copyright over these material.
+
+\subsection{Distribution of Data and Models}
+We acknowledge that the current datasets and models may contain biases or exhibit hallucinations, such as deviating from real-world physical laws or fabricating experimental results. To mitigate the potential negative consequences of open-sourcing, we have taken the following measures:
+
+\begin{itemize}
+    \item Review-5K and Research-14K Datasets: We have applied a specific license to these datasets. While we are open-sourcing them, we prohibit their use in training any model intended for real-world applications, especially in scenarios that could harm the community.
+    \item CycleReviewer and CycleResearcher Models: We prohibit the use of these models in real-world peer review scenarios and the use of content generated by the CycleResearcher model in submissions without explicit disclosure.
+\end{itemize}
+
+
+All users are expected to adhere to our usage guidelines and make every effort to avoid causing any negative impact on the community.
+
+\section{Additional Experiments}
+
+\subsection{Distribution Analysis of Review Scores}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{minscore.pdf}
+\includegraphics[width=\textwidth]{maxscore.pdf}
+
+\caption{Distribution comparison between human reviewers and CycleReviewer scores. (a) Minimum score distributions show similar trimodal patterns, indicating consistent identification of paper weaknesses. (b) Maximum score distributions demonstrate aligned peaks at high-quality ranges, suggesting comparable recognition of exceptional work. (c) Average score distributions exhibit matching spread and variance, reflecting similar overall evaluation patterns.}
+\label{fig:score_dist}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{avgscore.pdf}
+\caption{Distribution comparison between human reviewers and CycleReviewer scores.  Average score distributions exhibit matching spread and variance, reflecting similar overall evaluation patterns.}
+\label{fig:score_dist2}
+\end{figure}
+
+To validate that CycleReviewer provides meaningful evaluations rather than simply defaulting to median scores, we conducted a comprehensive analysis of score distributions between human reviewers and our model. As illustrated in Figure \ref{fig:score_dist}, the distribution patterns of CycleReviewer closely mirror those of human reviewers across minimum, maximum, and average scores, demonstrating its ability to make nuanced quality assessments.
+
+For minimum scores (Figure \ref{fig:score_dist}a), both human reviewers and CycleReviewer show a clear trimodal distribution, with peaks around scores of 3, 5, and 6. This pattern indicates that CycleReviewer has learned to identify significant weaknesses in papers warranting lower scores, rather than defaulting to safe, middle-range evaluations. The maximum score distributions (Figure \ref{fig:score_dist}b) exhibit similar alignment, with both systems showing major peaks in the 6 and 8 ranges, suggesting that CycleReviewer can recognize and reward exceptional papers with appropriately high scores.
+
+Most notably, the average score distributions (Figure \ref{fig:score_dist2}) demonstrate remarkable similarity in their overall shape and variance. Both distributions show a broad spread from 4.0 to 7.0, with primary peaks around 5 and secondary peaks near 6. Furthermore, the presence of papers receiving both very high (>7.0) and very low (<4.0) average scores from CycleReviewer demonstrates its ability to make strong evaluative judgments rather than hedging toward central tendencies.
+
+These distribution patterns provide strong evidence that CycleReviewer has learned to make meaningful quality assessments aligned with human reviewer behavior, rather than simply optimizing for evaluation metrics through conservative, median-centric scoring. The model appears to have captured the complex, multi-faceted nature of paper evaluation, reflecting similar patterns of discrimination and judgment as human experts.
+
+\subsection{Further Analysis of CycleResearcher Performance}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{combined_charts.pdf}
+    \caption{We used the CycleReviewer model to test various paper collections, obtaining scores for Soundness, Presentation, and Contribution.}
+    \label{fig:reviewer2}
+\end{figure}
+
+
+In Figure \ref{fig:reviewer2}, we present a detailed comparison of our CycleResearcher models (12B, 72B, and 123B variants) against the baseline AI Scientist model, evaluated on three key dimensions: soundness, presentation, and contribution. Across these dimensions, all CycleResearcher variants consistently outperform the AI Scientist model, demonstrating significant progress in narrowing the gap between AI-generated research and human expert evaluations.
+
+Focusing first on the \textbf{soundness} score, both CycleResearcher-12B and CycleResearcher-72B achieve an average score of 2.71, surpassing the AI Scientist's 2.48 and closely approaching the preprint papers' score of 2.70. CycleResearcher-123B performs similarly with an average score of 2.70. Notably, CycleResearcher-72B achieves the highest minimum soundness score of 1.86, followed by CycleResearcher-123B at 1.78 and CycleResearcher-12B at 1.73, all significantly outperforming AI Scientist's 1.20. In terms of maximum soundness scores, CycleResearcher-12B leads with 3.17, closely followed by CycleResearcher-72B at 3.13 and CycleResearcher-123B at 3.10, approaching the accepted papers' benchmark of 3.21.
+
+The \textbf{presentation} dimension showcases even stronger performance. CycleResearcher-72B and CycleResearcher-123B particularly excel here, achieving average presentation scores of 2.88 and 2.86 respectively, which approach the accepted paper score of 2.91 and significantly surpass both the preprint paper baseline (2.80) and AI Scientist (2.69). The 72B and 123B variants also demonstrate remarkable consistency with minimum presentation scores of 2.19 and 2.20 respectively, substantially higher than AI Scientist's 1.70. Maximum presentation scores remain competitive, with CycleResearcher-72B reaching 3.31 and CycleResearcher-123B achieving 3.27.
+
+In terms of \textbf{contribution}, which measures research novelty and impact, CycleResearcher-12B leads with an average score of 2.60, followed by CycleResearcher-72B at 2.55 and CycleResearcher-123B at 2.53. All variants surpass the AI Scientist's score of 2.15 and approach the preprint papers' score of 2.57. CycleResearcher-72B demonstrates particularly strong consistency with the highest minimum contribution score of 1.81, while maximum contribution scores remain competitive across all variants (3.07, 3.04, and 3.05 for 12B, 72B, and 123B respectively).
+
+These results demonstrate that all CycleResearcher variants significantly outperform the AI Scientist baseline across all evaluation dimensions. Particularly noteworthy is the strong performance of the 72B variant in presentation and consistency metrics, while the 12B variant excels in contribution scores. The 123B variant shows balanced performance across all metrics, particularly in presentation scores. These findings highlight the effectiveness of our iterative training approach and the importance of model scaling in achieving robust research generation capabilities.
+
+\subsection{Literature Review Experiment}
+
+In this subsection, we evaluate the ability of LLMs to generate research papers with substantial and relevant literature citations. Properly citing a wide range of references is essential in academic writing, as it not only demonstrates a comprehensive understanding of the field but also provides a basis for supporting claims and arguments. Therefore, we compare the quantity of references included in papers generated by CycleResearcher-12B and AI Scientist.
+
+
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{10pt}
+\caption{Comparison of average references included in papers generated by CycleResearcher-12B and AI Scientist.}
+\vspace{0.3cm}
+\label{tab:references_inclusion}
+\scalebox{0.67}{
+\begin{tabular}{l|c|r}
+\toprule[1pt]
+\textbf{Method} & \textbf{Avg References Included $\uparrow$} & \textbf{Improvement Ratio} \\ 
+\midrule[1.5pt]
+\rowcolor[HTML]{F9EBE3} 
+\textbf{CycleResearcher-12B}  & \cellcolor[HTML]{F9EBE3}\textbf{37.8} & \cellcolor[HTML]{F9EBE3}\textbf{4.61x} \\
+\midrule[.8pt]
+\textbf{AI Scientist (GPT-4o)} & 8.2 & 1.00x \\
+\bottomrule[1.5pt]
+\end{tabular}}
+\vspace{0.2cm}
+
+\end{table}
+
+The results in Table \ref{tab:references_inclusion} clearly demonstrate that CycleResearcher-12B outperforms AI Scientist in terms of reference inclusion, improving the quantity of cited references by over four times. This improvement underscores the model’s enhanced capacity to integrate and cite relevant work, ultimately leading to higher-quality research outputs that are better grounded in the academic literature. Specifically, our model benefits from the inclusion of structured input from reference bib files and corresponding abstracts, allowing it to better understand and cite the necessary literature for building a strong foundation of related work.
+
+\section{Proxy MSE as an Evaluation Metric}
+\label{sec:D}
+In peer review, one of the key challenges is assessing the accuracy of review scores in estimating the true quality of a submission, since the ground truth is unknown. To overcome this limitation, we use proxy metrics such as Proxy Mean Squared Error (Proxy MSE) and Proxy Mean Absolute Error (Proxy MAE) to evaluate the performance of review scores, denoted as $y$. These proxy metrics provide a meaningful approximation by leveraging the assumption that multiple independent review scores for the same submission can act as unbiased estimators of its true quality.
+
+\subsection{Proxy MSE Derivation}
+
+Let $y_1, y_2, \ldots, y_n$ represent the review scores given by $n$ independent reviewers. For any submission, assume that $y_1$ is the review score of interest (i.e., the score we are evaluating), and that the average of the remaining scores $y_2, y_3, \ldots, y_n$ is a reasonable proxy for the ``true'' score of the submission. Denote this average as $\bar{y}'$, defined as:
+
+\begin{equation}
+    \bar{y}' = \frac{1}{n-1} \sum_{i=2}^{n} y_i
+\end{equation}
+
+Now, to evaluate the performance of the score $y_1$, we compute its Proxy MSE, which measures the squared difference between $y_1$ and the proxy $\bar{y}'$:
+
+\begin{equation}
+    \text{Proxy MSE} = (y_1 - \bar{y}')^2
+\end{equation}
+
+This gives us an approximation of how far $y_1$ deviates from the true score, assuming that $\bar{y}'$ reasonably estimates the submission's quality.
+
+\subsection{Unbiasedness and Bias of Proxy MSE}
+
+Although $\bar{y}'$ is not the true ground truth, it is an unbiased estimator when multiple independent scores are available. The expectation of Proxy MSE can be expressed as:
+
+\begin{equation}
+    \mathbb{E}[(y_1 - \bar{y}')^2] = \mathbb{E}[(y_1 - \mathbb{E}[\bar{y}'])^2] + \text{Var}(\bar{y}')
+\end{equation}
+
+Here, the bias in Proxy MSE is equal to the variance of $\bar{y}'$, which we refer to as the ``noisy target.'' This additional variance causes an upward bias in Proxy MSE compared to the true Mean Squared Error (MSE) with respect to the ground truth. Despite this bias, Proxy MSE still allows for meaningful comparisons between different estimators.
+
+\subsection{Comparing Two Estimators with Proxy MSE}
+
+For two review scores $y_1$ and $\tilde{y}_1$, we can still use Proxy MSE to compare their accuracy. The difference in their Proxy MSEs can be computed as:
+
+\begin{equation}
+    \mathbb{E}[(y_1 - \bar{y}')^2 - (\tilde{y}_1 - \bar{y}')^2] = \mathbb{E}[(y_1 - \mathbb{E}[\bar{y}'])^2 - (\tilde{y}_1 - \mathbb{E}[\bar{y}'])^2]
+\end{equation}
+
+Because the variance of the proxy target $\bar{y}'$ cancels out, the difference in Proxy MSE reflects the difference in MSE between the two estimators. Thus, if $y_1$ has a smaller Proxy MSE than $\tilde{y}_1$, we can conclude that $y_1$ is a better estimator of the submission's true quality in expectation.
+
+\subsection{Implications for Human Review Accuracy}
+
+By applying Proxy MSE, we can quantitatively assess the accuracy of human reviewers in scoring submissions. Since human judgments can vary significantly, Proxy MSE offers a robust framework for identifying which review scores are closer to the true quality of the submission. It allows us to evaluate the consistency and reliability of different reviewers' scores, which is crucial for improving the peer review process and ensuring more accurate decisions in conference paper acceptance.
+
+\section{Model Card}
+\label{appendix:model}
+
+
+
+We provide a detailed description of the models used in this work, shown in Table \ref{tab:models} specifically focusing on their key characteristics and configurations. These models are designed to tackle complex research-driven tasks.
+
+\begin{table*}[h]
+\centering
+\caption{Models. Description of the models evaluated in this effort.}
+\vspace{0.3cm}
+\label{tab:models}
+\resizebox{0.98\textwidth}{!}{
+\begin{tabular}{lccccccc}
+\midrule \midrule
+Model & Model Creator & Modality & \# Parameters & \# Hidden Layers &\# Vocab Size & \#Window Size & Knowledge Date \\
+\midrule
+% AI21 (3) (1)
+
+
+% Google (2) (2)
+WhizResearcher-12B & Mistral-Nemo & Text & 12B &40&131072& 128K & 2024.4\\
+WhizResearcher-72B & QWEN-2.5 & Text & 72B &80&152064& 128K & 2024.4\\
+WhizResearcher-123B & Mistral-Large-2 & Text & 12B & 88&32768&128K & 2024.4\\
+\midrule
+WhizReviewer-123B & Mistral-Large-2 & Text & 12B &  88&32768&128K & 2023.12\\
+
+
+\midrule \midrule
+\end{tabular}}
+
+\end{table*}
+
+\section{Additional Experimental}
+
+\subsection{Analysis of Reward Exploitation}
+
+To investigate potential reward exploitation in our framework, we conducted additional experiments focusing on the robustness of CycleResearcher's performance across different reward models. A critical concern in reinforcement learning systems is whether the policy model truly learns desirable behaviors or merely exploits patterns in the reward model used during training.
+
+\begin{table}[h]
+\centering
+\caption{Performance comparison with independent reward model evaluation}
+\label{tab:reward_exploit}
+\begin{tabular}{l|cccc}
+\toprule
+Model Configuration & Avg Min Score & Avg Max Score & Avg Score & Accept Rate \\
+\midrule
+Original Evaluation & 3.52 & 6.72 & 5.36 & 31.07\% \\
+Independent Reward & 3.38 & 6.65 & 5.29 & 28.65\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+To address this concern, we trained an independent reward model using only the Review-5k test set on Mistral-Large-2, ensuring complete isolation from our training reward model. The results, shown in Table \ref{tab:reward_exploit}, demonstrate relatively minor performance differences ($\Delta = 0.14$ in average score, $\Delta = 2.42\%$ in accept rate), suggesting that CycleResearcher has learned genuine research capabilities rather than merely exploiting specific reward patterns. However, we acknowledge that the slight performance degradation with the independent reward model warrants further investigation. Future work could explore techniques such as ensemble reward models or adversarial training to further strengthen robustness against reward exploitation.
+
+These findings provide encouraging evidence for the reliability of our framework while highlighting the importance of continued vigilance against reward hacking in automated research systems.
+
+\section{Synergistic Integration of CycleResearcher with AI-Powered Experimentation for Scientific Discovery}
+\label{app:inference}
+
+To realize a truly comprehensive and automated scientific discovery pipeline, the CycleResearcher framework can be effectively enhanced by integrating AI-powered experimentation capabilities, potentially leveraging systems like AI Scientist  \citep{lu2024ai} for specific tasks. This synergistic approach creates a powerful workflow that leverages the unique strengths of CycleResearcher's research planning, manuscript generation, and iterative refinement alongside AI's potential for assisting with real-world or simulated experimentation. By carefully orchestrating these capabilities, researchers can achieve a more holistic and efficient approach to scientific inquiry, accelerating the pace of discovery and innovation.
+
+The integrated workflow commences with Retriever initiating the research process by undertaking a comprehensive literature review and knowledge synthesis. Tasked with a specific research topic and provided with relevant bibliographic resources, Retriever employs its semantic search capabilities, powered by Semantic Scholar API, to delve deeply into the existing body of knowledge.  Retriever meticulously identifies both foundational, "classic" publications and cutting-edge, "frontier" research, providing a nuanced understanding of the field's historical context and current research landscape. This knowledge graph, capturing inter-paper citations and thematic relationships, serves as a robust foundation for subsequent research planning and hypothesis generation within CycleResearcher's core modules.
+
+Building upon the knowledge foundation, CycleResearcher takes center stage to orchestrate the subsequent research phases. This module extracts key insights and trends from the literature review, transforming the knowledge graph into a structured research paper outline. This outline meticulously delineates the essential components of a scientific manuscript, encompassing the research motivation, clearly defined objectives, a comprehensive methodological approach, and a detailed experimental design. The structured nature of this outline ensures a logical flow for the ensuing manuscript generation and provides a blueprint for the experimental phase. Crucially, CycleResearcher can generate experimental designs in a machine-readable JSON format, setting the stage for automated or AI-assisted experiment execution.
+
+The experimental execution phase is where the integration with AI-powered experimentation becomes particularly relevant. CycleResearcher transmits the JSON-formatted experimental design to a dedicated code execution module (AI Scientist). Here, the system can be configured to operate in different modes depending on the desired level of automation and access to external tools. In a fully automated scenario, this module could leverage AI code generation capabilities, potentially drawing upon technologies similar to those explored in AI Scientist, to translate the experimental plan into executable code. This might involve employing AI models to generate or modify code based on the experimental design, allowing for autonomous execution of computational experiments. Alternatively, in a more hybrid approach, CycleResearcher could generate detailed experimental protocols and instructions, while delegating the actual code execution and potentially even code generation assistance to external AI systems or human experimenters. Regardless of the specific implementation, the experimental execution module gathers results which. These results are then meticulously integrated into the paper's experimental section, providing data-driven support for the research claims and informing subsequent analysis and refinement within CycleResearcher's workflow.
+
+Finally, to ensure the rigor and quality of the generated research, the integrated system leverages CycleReviewer's automated peer review simulation. The completed manuscript is submitted to CycleReviewer, which acts as a virtual panel of expert reviewers, providing critical feedback that guides iterative improvement. This feedback loop, inherent to CycleResearcher's design, ensures continuous refinement of the research output. This synergistic integration of CycleResearcher with AI-powered experimentation capabilities, whether through direct code generation or human-AI collaboration, represents a significant step towards realizing a more versatile and efficient scientific discovery process, capable of accelerating research across diverse domains.
+\newpage
+
+%\includepdf[pages=-]{CycleResearcher_papers/SarcLarge.pdf}
+
+
+%\includepdf[pages=-]{CycleResearcher_papers/SUP_VPR.pdf}
+\section{Examples}
+\label{app:example}
+\subsection{Unveiling Generalization Gaps: A Quantitative Analysis of Neural Network Learning Dynamics}
+\input{grokking.tex}
+\includepdf[pages=-]{CycleResearcher_papers/grokking.pdf}
+
+%\subsection{World GPT: An Auto-Regressive World Model for Reinforcement Learning}
+%\input{world_gpt.tex}
+
+%\includepdf[pages=-]{CycleResearcher_papers/World_GPT.pdf}
+%\subsection{The Other Side of Foundation Models for Reinforcement Learning: Hacking Rewards with Vision-Language Models}
+%\input{hack_reward.tex}
+
+%\includepdf[pages=-]{CycleResearcher_papers/Hark_reward.pdf}
+\end{document}

@@ -1,0 +1,43 @@
+\section{Prior Work Comparison}
+\label{sec:prior-work} 
+
+In this section we expand on the differences between the prior work in action space adaptation mentioned in \Cref{sec:related-work} and our investigation. 
+\Cref{table:prior-work} compares our investigation to prior work along several key dimensions. We emphasize that unlike prior works, ours studies a variety of action space adapters under a greater diversity of environments. 
+
+\begin{table}
+\resizebox{\columnwidth}{!}{
+  \begin{tabular}{lp{6cm}p{3cm}p{5cm}llc}
+    \toprule
+    Work & Environments & Best \asa & Other \asas Studied & Action Space Types & Training & Using LLM/VLM? \\
+    \midrule
+    RoboFlamingo~\cite{li2023vision} & CALVIN & MLP & - & Continuous & BC & \greencheck \\
+    Lamo~\cite{shi2023unleashing} & Franka Kitchen, Atari, MuJoCo & MLP & - & Continuous, Discrete & Offline-RL & \greencheck \\
+    GFlan~\cite{carta2023grounding} & BabyAI & Sem Lang (scoring) & - & Discrete & Online RL & \greencheck \\
+    RT-2~\cite{brohan2023rt} & Internal & Uniform & - & Continuous & BC & \greencheck \\
+    LLaRP~\cite{szot2023large} & Language Rearrangement & MLP & - & Discrete & Online-RL & \greencheck \\
+    VQ-BeT~\cite{lee2024behavior} & PushT, Multimodal Ant, BlockPush, Franka Kitchen, nuScenes, PlayKitchen & RVQ+MLP & - & Continuous & BC & \redx \\
+    Ours & Language Rearrangement, Baby AI, MetaWorld, CALVIN, Habitat Skills & RVQ/ Sem-Lang & MLP, VQ, Uniform, Non-Sem, Non-Sem Comp &Continuous, Discrete & Online-RL, BC & \greencheck \\
+    \bottomrule \\
+  \end{tabular} 
+}
+\caption{
+  Comparing our investigation to prior work. 
+  Prior work typically analyzes a single action adapter in a single environment. 
+  We study a variety of action adapters across a variety of environments. 
+}
+\label{table:prior-work} 
+\end{table}
+
+\subsection{Empirical Comparison to Prior Work}
+\label{sec:prior-work-exp} 
+We report performance on standard benchmarks which prior work has also extensively studied. However, even within the benchmarks there are differences in training algorithms and sensor input assumptions that make direct comparison to prior work difficult. Regardless of these differences, we study different \asas for \vlms in a consistent experimental setting. We also describe differences between the empirical setups of ours and prior works that perform well on these benchmarks.
+
+\textbf{\metaworld} (\vlm+\rvq 84\% success rate on ML-45): To the best of our knowledge, our $ 84\%$ is the highest reported on \metaworld ML-45 so far. \citet{anand2021procedural} operates under similar sensor assumptions and achieves $ 77\%$ success with MuZero~\cite{schrittwieser2020mastering}. DualMind~\cite{wei2023imitation} achieves $ 79\%$ success rate on ML-45 and outperforms other generalist agents like Gato~\cite{reed2022generalist}. However, DualMind uses privileged simulator information about the joint states and object positions while we only use RGB visual observations.
+
+\textbf{\calvin} (\vlm+\rvq 72\% success rate): RoboFlamingo achieves a higher $ 82\%$ success rate on the same $ ABC \rightarrow D$ task. However, RoboFlamingo uses the OpenFlamingo VLM while we use \llava. RoboFlamingo use the gripper and fixed camera while we only use the fixed camera. 
+More recent work like 3D Diffuser Actor~\cite{ke20243d} practically solves the $ ABC \rightarrow D$ task, achieving $ 96 \%$ success rate. However, this work uses depth inputs, and a diffusion model policy that predicts keypoints for the end-effector rather than underlying actions. 
+Our work uses only RGB visuals, uses a \vlm policy and predicts relative end-effector poses rather than keypoints.
+
+\textbf{\langR} (\semlang 51\% success rate): This outperforms the prior highest reported number of $ 42 \%$ on the overall evaluation set from LLaRP~\cite{szot2023large}. 
+
+\textbf{BabyAI} (\semlang 40\% success rate): GFlan~\cite{carta2023grounding} achieves $ 55\%$ success on the same evaluation split. However, the GFlan policy takes as input a ground truth language description of the state, while our policies take as input a $ 200\times 200$ RGB top down rendering of the environment. GFlan also trains the policy with reinforcement learning while we train with supervised learning. 

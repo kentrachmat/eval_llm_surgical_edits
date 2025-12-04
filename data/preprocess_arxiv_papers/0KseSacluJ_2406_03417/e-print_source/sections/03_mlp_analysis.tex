@@ -1,0 +1,64 @@
+\section{Analysis of Fitting SDFs of Local Patches}
+In this section, we provide an analysis of fitting local surfaces. Following prior works~\cite{Ohtake2003MultilevelPO, xiong2014shading, erens1993perception, wallace1981three}, we simplify local surfaces as quadratic patches. Additionally, we note that some works approximate local surfaces with linear patches~\cite{kolluri2008provably, wang2018adaptive}. However, to handle the geometry details, it usually requires extremely high~\cite{wang2018adaptive} or infinite resolution~\cite{kolluri2008provably} during local surface partition. Approximating local surfaces with quadratic patch is more practival.
+
+
+\subsection{Importance of Non-linearity}
+\label{sec: motivation_quadratic_mlp}
+
+A quadratic surface patch can be represented by $\bs{f}(u,v) = (u,v, \frac{1}{2}(a u^2 + c v^2 + 2b uv))$, where $u^2 + v^2 \leq r^2$ for locality, and $a,b,c$ are parameters for controlling the shape of the quadratic patch. The following proposition characterizes the SDF of a point $\bs{p}$ to $\bs{f}$.
+
+\begin{proposition}
+For each point $\bs{p} = (x,y,z)^T$ in the neighborhood of the origin $\bs{o}$, the signed distance function from $\bs{p}$ to $\bs{f}(u,v)$ can be approximated as
+\begin{equation}
+d(\bs{p}, \bs{f}(u,v)) \approx z - \frac{1}{2}(a x^2 + c y^2 + 2b xy).
+\label{SDF:Approx}   
+\end{equation}
+where the approximation omits third-and-higher order terms in $x$, $y$, and $z$.
+\label{Prop:SDF:Approx}
+\end{proposition}
+
+\noindent\textsl{Proof:} See Appendix~\ref{Proof:Prop:SDF:Approx}.
+
+Prop.~\ref{SDF:Approx} suggests that the SDF is non-linear. However, a shallow MLP using ReLU activation is piecewise linear, where the ReLU activation functions essentially decompose the input space into subspaces and the function in each subspace is still linear. This motivates the use of quadratic layers instead of linear layers (Sec.~\ref{sec: MLP}).
+
+To hold generality, in Appendix~\ref{Proof:Prop:SDF:Approx2}, we also analyze the local surface that can not be simplified as a single quadratic patch, i.e. sharp edges as the intersection of two quadratic patches.
+
+
+\subsection{Difficulty of Fitting Transformation Information}
+\label{sec: difficaulty}
+We demonstrate the difficulty of recovering the transformation information of quadratic patches during geometry fitting.
+
+
+\noindent\textbf{Aligned Quadratic Patches.} Same as the previous section, we define the SDF of a quadratic local patch as $z - \frac{1}{2}(ax^2 + cy^2 + 2bxy)$, where the quadratic patch is axis-aligned. Consider a set of samples $\{((x_i,y_i,z_i), d_i),1\leq i \leq n\}$ from this quadratic patch, where $(x_i,y_i,z_i)$ is the location of the point $\bs{p}_i$, $d_i$ is the SDF value, and $n$ is the number of samples. To fit the surface from the samples, we solve the optimization problem as 
+\begin{equation}
+\argmin_{a,b,c} \sum\limits_{i=1}^n \big(z_i - \frac{1}{2}(ax_i^2 + cy_i^2 + 2bx_iy_i)-d_i\big)^2    
+\end{equation}
+which is a convex problem that has a unique global optimal. 
+
+\noindent\textbf{Unaligned Quadratic Patches.}
+Consider transforming the quadratic patch with a random rigid transformation $(R,\bs{t})$. This quadratic patch is not axis-aligned. In this case, the SDF function is given by $z'-\frac{1}{2}(a{x'}^2 + c{y'}^2 + 2bx'y')$ where $(x',y',z') = R(x,y,z) + \bs{t}$. To fit the surface from the samples, we solve the optimization problem as 
+\begin{equation}
+\argmin_{a,b,c,R,\bs{t}} \sum\limits_{i=1}^n \big(z_i' - \frac{1}{2}(a{x_i'}^2 + c{y_i'}^2 + 2b{x_i'}{y_i'})-d_i\big)^2, \quad \left( 
+\begin{array}{c}
+x_i' \\
+y_i' \\
+z_i'
+\end{array}
+\right)= R\left( \begin{array}{c}
+x_i \\
+y_i \\
+z_i
+\end{array}\right) + \bs{t}.
+\label{Eq:Non:Convex}
+\end{equation}
+
+In this case, (\ref{Eq:Non:Convex}) becomes non-convex and has local minima. We defer a detailed characterization of the local minima of (\ref{Eq:Non:Convex}) to Appendix~\ref{Analysis:Non:Convex}. 
+
+In general, this non-convex problem makes geometry fitting non-trivial. It motivates the use of the Coordinate Field to explicitly model the transformation information and disentangle the transformation information of local patches from its geometry (Sec.~\ref{sec: representation}).
+
+
+
+
+
+
+

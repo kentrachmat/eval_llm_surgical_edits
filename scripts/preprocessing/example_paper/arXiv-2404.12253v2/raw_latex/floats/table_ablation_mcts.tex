@@ -1,0 +1,20 @@
+% 2) ablation study:
+% search times, each components
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{cl|c}
+        \multicolumn{2}{c|}{Method}         & GSM8K \\
+        \hline
+        \multicolumn{2}{l|}{MCTS}           & $84.9$ \\
+        \hline
+           & + Step reward                  & $85.9$ \\
+           & ~~+ Fast-rollout               & $86.5$ \\
+           & ~~~~+ State merge              & $87.0$ \\
+           & ~~~~~~+ Large $r=230$          & $88.9$ \\
+        \hline
+    \end{tabular}
+    \vspace{4mm}
+    \caption{Ablation study over GSM8K test set.}
+    \label{tab:ablation_result}
+\end{table}

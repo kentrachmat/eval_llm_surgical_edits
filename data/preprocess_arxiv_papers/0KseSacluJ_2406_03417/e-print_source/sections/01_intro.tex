@@ -1,0 +1,37 @@
+\section{Introduction}
+
+% backgrund, problem of locality-based methods
+In the realm of geometry modeling, neural implicit shape representations have become a powerful tool~\cite{DBLP:conf/cvpr/ParkFSNL19,DBLP:conf/cvpr/ChenZ19, DBLP:conf/eccv/ChabraLISSLN20, DBLP:conf/icml/GroppYHAL20, DBLP:conf/nips/TancikSMFRSRBN20,DBLP:conf/nips/SitzmannMBLW20, DBLP:conf/iclr/AtzmonL21}. These representations typically use latent codes to represent shapes and employ multilayer perceptions (MLPs) to decode their Signed Distance Functions (SDFs).
+Early works in this field use a single latent code to represent an entire shape~\cite{DBLP:conf/cvpr/ParkFSNL19}. Nevertheless, the decoded SDFs usually lack geometry details.
+To improve the shape modeling quality, recent approaches have introduced local-based designs~\cite{DBLP:conf/eccv/ChabraLISSLN20, liu2021octsurf, tang2021octfield}. By decomposing an entire shape into many local surfaces, the shape modeling task becomes effortless -- local surfaces are in simpler geometry which are easier to represent. Despite the progress, the local-aware design significantly increases the number of parameters, as each local surface is represented by one or even multiple latent codes. Thus, proposing a neural surface representation that is both \textit{accurate and compact} is necessary.
+
+
+% analysis of local shape reveals blabla
+To achieve this goal, we argue it is important to understand the properties of local surfaces. Following prior works~\cite{Ohtake2003MultilevelPO, xiong2014shading, erens1993perception, wallace1981three}, we approximate the local geometry with quadratic patches~\cite{books/daglib/0090942} and perform analysis. Results show the feasibility of fitting the geometry of a specific category of quadratic patches. In detail, the quadratic patches are aligned with the coordinate system defined by the normal, principal directions, and principal curvatures of quadratic patch~\cite{books/daglib/0090942, Ohtake2003MultilevelPO}.  However, when the quadratic patches are not aligned -- they are freely transformed with random rotations and translations in 3D, mimicking real local surfaces -- the optimization will be easily trapped into local minima. This analysis reveals the difficulty of jointly recovering transformation information and geometry of local patches.
+
+
+\begin{figure*}[t]
+\centering
+% \includegraphics[scale=0.295,bb=630 0 660 390]{images/teaser2.pdf}
+\includegraphics[width=\linewidth]{images/teaser2.pdf}
+\caption{\small{\textbf{\modelname{} is a local geometry-aware shape representation.}
+(Left) \modelname{} divides a shape into non-overlapping local patches, where each local patch is represented by an MLP-based Signed Distance Function. (Right) \modelname{} introduces Coordinate Field, which attaches a coordinate frame to each local patch. It transforms local patches from the world coordinate system to an aligned coordinate system, reducing shape complexity.}}
+\vspace{-0.1in}
+\label{fig: teaser}
+\end{figure*}
+
+
+% key idea
+Based on the analysis, we propose \modelname{}, a novel local geometry-aware neural surface representation. The key insight of \modelname{} is \textbf{decomposing the transformation information of local shapes from its geometry}. As shown in Fig.~\ref{fig: teaser}, we associate each local surface with a learnable coordinate frame, which forms a Coordinate Field. We use the Coordinate Field to transform all local surfaces into an aligned coordinate system, reducing their spatial complexity. Thus, the geometry space of local surfaces becomes more compact, where the MLP-based neural SDFs are easier to learn.
+
+
+% use explicit frame representation, geometry-awareness
+An important design aspect is how to represent the Coordinate Field. Departing from the implicit-based representations, we use an explicit representation.  Specifically, the coordinate frame of each local surface is parameterized by a rotation and a translation, forming a 6 Degree-of-Freedom pose. Moreover, we initialize the rotation using the estimated normal, principal direction, and principal curvature of a local surface. This design makes \modelname{} local geometry-aware and facilitates the learning of Coordinate Fields.
+
+
+% quadratic mlp
+To better represent local surfaces' geometry, we introduce quadratic layers to the MLP. Prior works typically employ ReLU-based MLP with shallow layers and limited hidden size~\cite{DBLP:conf/cvpr/ParkFSNL19, DBLP:conf/eccv/ChabraLISSLN20}. Thus, the MLP is piece-wise linear~\cite{lin2020constructing} and cannot represent the distribution of local surfaces well. We demonstrate a simple quadratic layer improves the geometry modeling capability.
+
+% task and performance
+\modelname{} is a generalizable shape representation. After training on a curated dataset, it can represent arbitrary shapes that belong to any novel category. We evaluate \modelname{} on novel shape instances from both seen (training) and unseen categories, encompassing both synthetic and real shapes. Results show that \modelname{} outperforms prior arts, reducing the chamfer distance by $50\%$ on instances from both seen and unseen categories. Moreover, \modelname{} achieves comparable results with prior work using $70\%$ less parameters.
+In addition, we demonstrate that \modelname{}, which uses a single shared MLP for all shapes, achieves comparable results with methods that overfit a specific model for each testing shape.

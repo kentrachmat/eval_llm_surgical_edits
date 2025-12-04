@@ -1,0 +1,42 @@
+We approach the sequential decision-making problem with techniques from generative modeling. In particular, our data specification of trajectory-return pairs omits step-wise rewards, based on the belief that the step-wise reward function is only a proxy of the trajectory return. However, step-wise rewards are indispensable input to classical decision-making algorithms. Accumulating the rewards from the current step to the future gives us the $RTG$, which naturally hints the future progress of the trajectory. How is temporal consistency enforced in our model without the assistance of the $RTG$s?
+
+Without loss of generality, consider the trajectory distribution conditioned on a single return value $y$. The MLE objective is equivalent to minimizing the KL divergence between the data distribution and model distribution,
+$\KL(\pdata^y(\tau)\| p_{\theta}^y(\tau))$. Here, $\pdata$ denotes the data distribution and $p_\theta$ denotes the model distribution. 
+MLE upon autoregressive modeling imposes additional inductive biases by transforming the objective to $\KL(p_{\mathcal{D},\text{AR}}^y(\tau)\| p_{\theta, \text{AR}}^y(\tau))$, which is reduced to next-token prediction for behavior cloning and transition model estimation: 
+\begin{align*}  \sum_{t=1}^{H}\!\underbrace{\KL(\pdata^y(a_t|s_{1:t},\!a_{1:t-1})\|p_{\theta}^y(a_t|s_{1:t},\!a_{1:t-1}))}_{\text{behavior cloning}}
+\!+\!\sum_{t=1}^{H}\!\underbrace{\KL(\pdata^y(s_{t+1}|s_{1:t},\!a_{1:t})\| p_{\theta}^y(s_{t+1}|s_{1:t},\!a_{1:t}))}_{\text{transition model estimation}}.
+\end{align*}
+However, behavior cloning is believed to suffer from drifting errors since it ignores \textit{covariate shifts} in future steps~\citep{ross2010efficient}. This concern is unique to sequential decision-making, as the agent cannot control the next state from a stochastic environment, like generating the next text token. 
+
+This temporal consistency issue could be alleviated by additionally modeling the sequence of $RTG$. Denote $\rho = (RTG_0, RTG_1, ... RTG_H)$. Modeling the joint distribution is to minimize
+\begin{equation}
+\label{eq:rtg}
+\begin{split}
+    &\KL(\pdata^y(\tau, \rho)\| p_{\theta}^y(\tau, \rho))=\KL(\pdata^y(\tau)\| p_{\theta}^y(\tau))+\KL(\pdata^y(\rho|\tau)\| p_{\theta}^y(\rho|\tau)) \\
+    =&\KL(p_{\mathcal{D}, \text{AR}}^y(\tau)\| p_{\theta, \text{AR}}^y(\tau))+\E_{\pdata^y(\tau)}[\sum\nolimits_{t=1}^{H}\underbrace{\KL(\pdata^y(RTG_t|\tau)\| p_{\theta}^y(RTG_t|\tau))}_{\text{RTG prediction}}].
+\end{split}
+\end{equation}
+% \todo{For $\pdata^y$ and $p_\theta^y$, $p^y(a_t|s_{0:t}, a_{0:t-1})=\E_{p(RTG_{0:t}|\tau)}[p^y(a_t|s_{0:t}, a_{0:t-1}, RTG_{0:t})]$}.
+Note that the \emph{RTG prediction} term is conditioned on the entire trajectory, including the future steps. Minimizing this additional KL divergence correlates predicted $RTG$s with hindsight trajectory-to-go. 
+
+Our modeling of the latent trajectory variable $z$ provides an alternative solution to the temporal consistency issue. \cref{eq:grad} is minimizing the KL divergence
+\begin{equation}
+\label{eq:plan}
+\begin{split}
+    &\KL(\pdata^y(\tau, z)\| p_{\theta}^y(\tau, z))=\KL(\pdata^y(\tau)\| p_{\theta}^y(\tau))+\KL(p_{\bar{\theta}}^y(z|\tau)\| p_{\theta}^y(z|\tau))\\
+    =&\KL(p_{\mathcal{D}, \text{AR}}^y(\tau)\| p_{\theta, \text{AR}}^y(\tau)) +\E_{\pdata^y(\tau)}[\underbrace{\KL(p_{\bar{\theta}}^y(z|\tau)\| p_{\theta}^y(z|\tau))}_{\text{plan prediction}}],
+\end{split}
+\end{equation}
+where $p_{\bar{\theta}}^y(z|\tau)={p^y_\mathcal{D}(\tau, z)}/{p^y_\mathcal{D}(\tau)}$ and $\bar\theta=\theta$ highlights these distributions have the same parameterization as $p_{{\theta}}^y$ but are wrapped with \texttt{stop\_grad()} operator when calculating gradients for $\theta$~\citep{han2017abp}.
+% ; $p^y(a_t|s_{0:t}, a_{0:t-1})=\E_{p_\theta(z|\tau)}[p^y(a_t|s_{0:t}, a_{0:t-1}, z)]$ for $\pdata^y$ and $p_\theta^y$.  
+Comparing \cref{eq:rtg,eq:plan}, it is now clear that $z$ plays a similar role as $RTG$ in promoting temporal consistency in autoregressive models. Uniquely, $p_{\bar{\theta}}^y(z|\tau)$ is the temporal abstraction intrinsic to the model, in contrast to step-wise rewards. From a sequential decision-making perspective, $z$ is effectively a \textit{plan} that the agent is persistent to. From a generative modeling perspective, $z$ from different trajectory modes would decompose the density $p^y(a_{t}|s_{0:t}, a_{0:t-1})$, relieving the burden of learning the autoregressive policy $p_{\beta}(a_{t}|s_{0:t}, a_{0:t-1}, z)$. 
+
+One caveat is that the \textit{transition model estimation} should not be conditioned on $y$. Mixing up more trajectory regimes could provide additional regularization for its estimation and generalization. Actually, environment stochasticity is a more concerning issue for autoregressive \textit{behavior cloning}, as highlighted by \citet{yang2022dichotomy, paster2022you, vstrupl2022upside, brandfonbrener2022does, villaflor2022addressing, eysenbach2022imitating}. Among them, \citet{yang2022dichotomy} pinpoints the issue by viewing $RTG$s as deterministic latent trajectory variables, closely related to what we present here. 
+% We can rearrange our autoregressive MLE objective to become an ELBO~\citep{kingma2013auto}
+% \begin{equation*}
+%     \E_{\pdata^y(\tau)}[\E_{p_{\bar{\theta}}^y(z|\tau)}[\log p_\theta(a_t|s_{0:t}, a_{0:t-1}, z))]-D_{KL}(p_{\bar{\theta}}^y(z|\tau)|p_\theta(z))]
+% \end{equation*}
+Uniquely, the latent variable $z$ in our model is inherently multi-modal (hence very non-deterministic) and ignorant of step-wise rewards. We postulate that the overfitting issue might be mitigated. This is validated by our empirical study inspired by~\citet{paster2022you}. 
+
+Although \textit{RTG prediction} and \textit{plan prediction} both promote temporal consistency, they function very differently when mixing trajectories from multiple return-conditioned regimes. \textit{RTG prediction} is a supervised learning over the joint distribution $\pdata(\tau, \rho)$. Simply mixing trajectories from multiple regimes can't encourage generalization to trajectories that are \textit{stitched} with those in the dataset. \citet{yamagata2023q} propose to resolve this by replacing $RTG$ with $RTG^Q$. Intuitively, this augments the distribution $\pdata(\tau, \rho)$ with $\pdata(\tau', \rho^Q)$, where $\tau'$ denotes trajectories covered by the offline dynamic programming, such as Q learning, and $\rho^Q= (RTG_0^Q, RTG_1^Q, ... Q_H)$. It significantly improves tasks requiring trajectory \textit{stitching}. 
+Conversely, \textit{plan prediction} is an unsupervised learning as it samples from $\pdata(\tau, y)p_{\bar\theta}(z|\tau, y)$. As $z$ contains more trajectory-related information than step-wise $RTG$s, trajectories lying outside of $\pdata(\tau, \rho)$ may be in-distribution for $\pdata(\tau, y)p_{\bar\theta}(z|\tau, y)$. The return prediction training further shapes the representation of $z$, which can be benefited from denser coverage of $y$. With more return values covered, we may count on neural networks' strong interpolation capability to shift the trajectory distribution with $y$-conditioning. 

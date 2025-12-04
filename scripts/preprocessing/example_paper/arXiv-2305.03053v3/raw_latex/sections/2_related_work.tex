@@ -1,0 +1,72 @@
+
+\section{Related Work} \label{sec:related_work}
+Model merging combines the weights of two or more models into a one. Our work differs from prior work in that we adapt mode connectivity techniques to target models trained on disjoint tasks (Fig.~\ref{fig:concept_and_capabilities}).
+ 
+
+\paragraph{Merging Finetuned Models.}
+If two models are finetuned from the same pretrained checkpoint, they often lie in the same error basin \cite{neyshabur2020being}. 
+Several works~\cite{huang2017snapshot,izmailov2018averaging,von2020neural,wortsman2022robust,ilharco2022patching,donyehiya2023cold} have exploited this property to average together the weights of a model at different stages of training. 
+\citet{tarvainen2017mean,cai2021exponential,grill2020bootstrap,caron2021emerging,baevski2022data2vec} use an ``exponential moving average'' of training checkpoints as a teacher for self-supervised learning.
+Other works merge models initialized from the same pretrained base, but that were finetuned independently, either by simply averaging their weights \cite{mcmahan2017communication,wortsman2022model,choshen2022fusing,rame2022recycling}, permuting one model to the other \cite{ashmore2015method,yurochkin2019bayesian,wang2020federated}, combining meaningful weight regions \cite{ilharco2022editing, gueta2023knowledge,yadav2023resolving,sung2023empirical}, or maximizing an objective \cite{matena2021merging}. Our setting differs, as we do not assume the same initialization.
+
+\vspace{-0.2em}
+\paragraph{Merging Differently Initialized Models.}
+Merging models with different initializations is a much more challenging problem. 
+Works in this space often rely on \textit{mode connectivity} \cite{freeman2016topology,garipov2018loss,draxler2018essentially,frankle2020linear}, attempting to interpolate between models along a low loss path (e.g., \citet{tatro2020optimizing,singh2020model,liu2022deep}).
+Most recent work follow the intuition, later formalized by \citet{entezari2021role}, that models permuted to the same loss basin can be merged by averaging their weights. Most notably, Git Re-Basin \cite{ainsworth2022git} permutes models
+% locally, primarily
+by comparing the similarity between their weights. REPAIR \cite{jordan2022repair} improves the accuracy of Git Re-Basin by instead computing the correlation between their intermediate layer feature activations, and adding several batch norms to the network. \citet{pena2022re} find permutations using global rather than local optimization, though they don't support skip connections.
+% Interestingly, an alternative method using the Hessian of the forward features \cite{he2018multi} exists, which outperforms other permutation-based approaches (\citet{entezari2021role} Appendix B). However, the most recent work  in this area \cite{ainsworth2022git,jordan2022repair} do not use this technique, so we operate in the (more limited) correlation-based domain of \citet{jordan2022repair}.
+% \citet{he2018multi} uses the Hessian of the forward features to merge models of different tasks but with intermediate finetuning.\footnote{Note: \citet{he2018multi} claim to include experiments without retraining, but according to their code they perform sequential iterations of merging and finetuning for each merged layer. Their ``without retraining'' experiments mean the \textit{most recent} merged layer isn't finetuned, but the rest are.}
+Some of these works (e.g., \citet{singh2020model,ainsworth2022git}) evaluate on on a setting where each model sees varying numbers of instances per class. And \citet{pena2022re} evaluates on a continual learning setting with disjoint categories, but their method requires training optimization.
+Similarly, \citet{he2018multi} merges models of different tasks, but requires jointly finetuning after each layer merge.
+As far as we are aware, we present the first \textit{general method} to successfully merge models trained on disjoint tasks \textit{without additional training}.
+
+% Nevertheless, all prior work only consider merging \textit{across} models. Instead, we merge both \textit{within} and \textit{across} models \textit{without retraining}.
+ 
+ % Unlike prior work, however, we present a \textit{general method} to merge both \textit{within} and \textit{across} multiple models trained on disjoint tasks \textit{without retraining}.
+ 
+ % Our focus in this work is to present a \textit{general method} of merging models trained on disjoint tasks \textit{without retraining} by allowing features to be merged \textit{within} models.
+ % To our knowledge, we are the first to present a \textit{general method} to successfully merge models trained on disjoint tasks \textit{without training} by allowing features to be merged \textit{within} models.
+
+% Some of these works (e.g., \citet{singh2020model,ainsworth2022git,liu2022deep}) evaluate on on a setting where each model sees varying numbers of instances per class. And \citet{pena2022re} evaluates on a continual learning setting where models are given disjoint categories, but their method requires training optimization and does not support skip connections.
+
+% Finally, an alternative method using the Hessian of the features \cite{he2018multi} exists, which outperforms correlation-based approaches (\citet{}
+
+% \textcolor{red}{Finally, \citet{he2018multi}.} s
+% As far as we are aware, we present the first \textit{general method} to successfully merge models trained on disjoint tasks \textit{without retraining}.
+
+
+% \paragraph{new draft of related works work in progress by Jakob}
+% Models of increasing size are being trained as pre-trained checkpoints for downstream tasks (citation). Model soups (citation) took many fine-tuned models from the same pre-trained checkpoint and linearly averaged them to achieve better performance on the fine-tuning task. Other works have recombined and again fine-tuned to improve accuracy and robustness (citation to Model Ratatouille, ColD fusion?, Fusing Finetuned models for better pretraining?, knowledge is a region in weight space for FT models [TODO: check notes for if these are the right to cite]). Along the lines of experimenting with fine-tuned models from the same pre-trained checkpoint, prior works experiment with the addition of different weight vectors to represent performance different tasks (editing Models with task arithmetic, resolving interference when merging models? [TODO: check citation]).
+
+% A very relevant work "Multi-Task Zipping via Layer-wise Neuron Sharing" (citation) seeks to merge models' weights depending on which neurons in the models represent shared information. This work differs in that they increase the model's footprint, and don't allow for intra model merging. (These are not really limitations, as they increase the accuracy substantially for this prior work, Need to discuss in person about this work for how to best address it in the paper.)
+
+% Mechanistic Mode Connectivity should be looked at more closely. Didn't have time.
+
+% Patching open vocab didn't look at no time.
+
+
+
+
+% %%%%%%%%%%% Prior version 9/23/2023
+
+% \section{Related Work} \label{sec:related_work}
+% Model merging combines the weights of two or more models into a single set of weights.
+% % in a useful way. 
+% Our work differs from prior work by explicitly targeting models that have been trained on disjoint tasks (Fig.~\ref{fig:concept_and_capabilities}).
+% % In this work, we explicitly target models that have been trained on disjoint tasks (Fig.~\ref{fig:concept_and_capabilities}), which differs from prior work.
+
+% \paragraph{Merging Finetuned Models.}
+% If two models are finetuned from the same pretrained checkpoint, they often lie in the same error basin \cite{neyshabur2020being}. 
+% Several works~\cite{huang2017snapshot,izmailov2018averaging,von2020neural,wortsman2022robust} have exploited this property to average together the weights of a model while training. 
+% \cite{tarvainen2017mean,cai2021exponential,grill2020bootstrap,caron2021emerging,baevski2022data2vec} use an ``exponential moving average'' of training checkpoints as a teacher for self-supervised learning.
+% Other works merge models initialized from the same pretrained base, but that were fine-tuned independently, either by simply averaging their weights \cite{mcmahan2017communication,wortsman2022model}, permuting one model to the other \cite{ashmore2015method,yurochkin2019bayesian,wang2020federated}, or maximizing some objective \cite{matena2021merging}. Our setting differs, as we do not assume the same initialization.
+
+% \vspace{-0.2em}
+% \paragraph{Merging Differently Initialized Models.}
+% Merging models with different initializations is a much more challenging problem. 
+% Works in this space often rely on \textit{\textcolor{red}{linear} mode connectivity} \cite{freeman2016topology,garipov2018loss,draxler2018essentially,frankle2020linear}, attempting to interpolate between models along a low loss path (e.g., \citet{tatro2020optimizing,singh2020model,liu2022deep}). The most popular approach follows
+% the intuition, later formalized by \citet{entezari2021role}, that models permuted to the same loss basin can be merged by averaging their wights. Most notably, Git Re-Basin \cite{ainsworth2022git} permutes models
+% % locally, primarily
+% by comparing the similarity between their weights. REPAIR \cite{jordan2022repair} improves the accuracy of Git Re-Basin by instead computing the similarity between their intermediate layer feature activations, and adding several batch norms to the network. \cite{pena2022re} finds permutations using global rather than local optimization, though the method doesn't generalize well to modern architectures. Some of these works (e.g., \citet{singh2020model,ainsworth2022git,liu2022deep}) evaluate on on a setting where each model sees varying numbers of instances per class. And one concurrent work \cite{pena2022re} evaluates on a continual learning setting where models are given disjoint categories, but their method requires optimization and does not support skip connections. As far as we are aware, we present the first \textit{general method} to successfully merge models trained on disjoint tasks \textit{without retraining}.

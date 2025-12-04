@@ -1,0 +1,166 @@
+\documentclass{article}
+% \documentclass[preprint]{article}
+
+% ready for submission
+% \usepackage{neurips_2024}
+\usepackage[preprint,nonatbib]{neurips_2024}
+
+% \usepackage{graphicx}
+% \usepackage[utf8]{inputenc} % allow utf-8 input
+% \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% %\usepackage{hyperref}       % hyperlinks
+% \usepackage{url}            % simple URL typesetting
+% % \usepackage{booktabs}       % professional-quality tables
+% \usepackage{amsfonts}       % blackboard math symbols
+% \usepackage{nicefrac}       % compact symbols for 1/2, etc.
+% \usepackage{microtype}      % microtypography
+% \usepackage[utf8]{inputenc}
+% % \usepackage{geometry}
+% % \usepackage{graphics}
+% \usepackage{multirow}
+% \usepackage{rotating}
+% % \usepackage[caption=false]{subfig}
+% \usepackage{verbatim}
+% % \usepackage{booktabs}
+% \usepackage{array}
+% \usepackage{textcomp, gensymb}
+% \usepackage{diagbox}
+% \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{url}            % simple URL typesetting
+% % \usepackage{booktabs}       % professional-quality tables
+% \usepackage{amsfonts}       % blackboard math symbols
+% \usepackage{nicefrac}       % compact symbols for 1/2, etc.
+% \usepackage{microtype}      % microtypography
+% \usepackage{setspace}
+% % \usepackage{geometry}
+% % \usepackage{graphics}
+% \usepackage{multirow}
+% \usepackage{amssymb}
+% \usepackage{diagbox}
+% \usepackage{mathtools}
+% \usepackage{wrapfig}
+% \usepackage{diagbox} 
+% \usepackage{wrapfig,lipsum,booktabs}
+% \usepackage{caption}
+% \usepackage{appendix}
+% \usepackage{enumitem}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{multirow}
+\usepackage{graphics}
+\usepackage{appendix}
+\usepackage{graphicx}
+
+
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+%\usepackage[table]{xcolor}
+\definecolor{citecolor}{RGB}{0,113,188}
+%\definecolor{citecolor}{HTML}{0071bc}
+\usepackage{colortbl}
+% \usepackage{booktabs} % For \hline and \shline (if defined)
+\usepackage{amsmath} % For math and text formatting
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{caption}
+
+\usepackage[pagebackref=false,breaklinks=true,letterpaper=true,citecolor=citecolor,colorlinks,bookmarks=false]{hyperref}
+% \usepackage{hyperref}
+\definecolor{tblue}{RGB}{80,80,245}
+\definecolor{tred}{RGB}{250,100,100}
+\definecolor{golden}{RGB}{204,209,23}
+\definecolor{green}{RGB}{15,108,16}
+\newcommand{\hanwen}[1]{{\color{magenta}[hanwen: #1]}}
+\newcommand{\SRnote}[1]{{\color{blue}[\textbf{SR}: #1]}}
+\newcommand{\KGnote}[1]{{\color{red}[\textbf{KG}: #1]}}
+
+\newcommand{\SR}[1]{{\color{black}#1}}
+\newcommand{\KG}[1]{{\color{black}#1}}
+\newcommand{\HJ}[1]{{\color{black}#1}}
+
+\newcommand{\cc}[1]{{\color{cyan}#1}} % content to clear
+
+\newcommand{\ve}[1]{\mathbf{#1}} % for displaying a vector
+\newcommand{\ma}[1]{\mathrm{#1}} % for displaying a matrix
+
+\newcolumntype{x}[1]{>{\centering\arraybackslash}p{#1pt}}
+
+\newcommand{\bd}[1]{\textbf{#1}}
+\newcommand{\app}{\raise.17ex\hbox{$\scriptstyle\sim$}}
+\newcommand{\ncdot}{{\mkern 0mu\cdot\mkern 0mu}}
+\def\x{$\times$}
+\newcommand{\dt}[1]{\fontsize{8pt}{.1em}\selectfont \emph{#1}}
+\newlength\savewidth\newcommand\shline{\noalign{\global\savewidth\arrayrulewidth
+  \global\arrayrulewidth 1pt}\hline\noalign{\global\arrayrulewidth\savewidth}}
+\newcommand{\tablestyle}[2]{\setlength{\tabcolsep}{#1}\renewcommand{\arraystretch}{#2}\centering\footnotesize}
+
+\newcommand{\customfootnotetext}[2]{{% Group to localize change to footnote
+  \renewcommand{\thefootnote}{#1}% Update footnote counter representation
+  \footnotetext[0]{#2}}}% Print footnote text
+\newcommand{\padcell}{\cellcolor{citecolor!10}}
+\newcommand{\padcellred}{\cellcolor{red!10}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% \usepackage{amssymb}% http://ctan.org/pkg/amssymb
+% \usepackage{pifont}% http://ctan.org/pkg/pifont
+
+\newcommand{\cmark}{\color{green}\ding{51}}%
+\newcommand{\xmark}{\color{red}\ding{55}}%
+
+\definecolor{tgreen}{RGB}{32,178,170}
+\newcommand{\green}[1]{{\color{tgreen}#1}}
+
+\newcommand{\tablefirst}{\cellcolor{gray!20}}
+\newcommand{\modelname}{CoFie}
+
+\input{macros}
+
+
+\title{\textit{\modelname{}}: Learning Compact Neural Surface Representations with \underline{Co}ordinate \underline{Fie}lds}
+
+
+\author{Hanwen Jiang\quad Haitao Yang\quad Georgios Pavlakos\quad Qixing Huang\\
+ Department of Computer Science, The University of Texas at Austin
+ \\{\tt\small \hspace{1mm}\{hwjiang,yanght,pavlakos,huangqx\}@cs.utexas.edu}\\
+}
+
+\begin{document}
+
+\maketitle
+
+\vspace{0.05in}
+
+\begin{abstract}
+    This paper introduces \modelname{}, a novel local geometry-aware neural surface representation. \modelname{} is motivated by the theoretical analysis of local SDFs with quadratic approximation. We find that local shapes are highly compressive in an aligned coordinate frame defined by the normal and tangent directions of local shapes. Accordingly, we introduce Coordinate Field, which is a composition of coordinate frames of all local shapes. The Coordinate Field is optimizable and is used to transform the local shapes from the world coordinate frame to the aligned shape coordinate frame. It largely reduces the complexity of local shapes and benefits the learning of MLP-based implicit representations. Moreover, we introduce quadratic layers into the MLP to enhance expressiveness concerning local shape geometry. \modelname{} is a generalizable surface representation. It is trained on a curated set of 3D shapes and works on novel shape instances during testing. When using the same amount of parameters with prior works, CoFie reduces the shape error by $48\%$ and $56\%$ on novel instances of both training and unseen shape categories. Moreover, \modelname{} demonstrates comparable performance to prior works when using only $70\%$ fewer parameters. Code and model can be found here: \href{https://hwjiang1510.github.io/CoFie/}{https://hwjiang1510.github.io/CoFie/}
+\end{abstract}
+
+\vspace{0.05in}
+
+\input{sections/01_intro}
+\input{sections/02_related_work}
+\input{sections/03_mlp_analysis}
+\input{sections/04_method}
+\input{sections/05_results}
+\input{sections/06_conclusion}
+
+
+{\small 
+\bibliographystyle{plain}
+\bibliography{egbib}
+}
+
+
+\appendix
+\clearpage
+\appendixpage
+\input{sections/07_appendix}
+
+
+\end{document}

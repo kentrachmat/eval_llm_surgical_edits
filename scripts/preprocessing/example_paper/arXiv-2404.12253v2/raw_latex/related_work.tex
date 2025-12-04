@@ -1,0 +1,22 @@
+
+\paragraph{Search with LLM}
+Effective search strategy has been shown crucial for tasks that involve complex reasoning and planning, such as go \citep{silver2016mastering} and math reasoning \citep{gsm8k,math}.
+For math reasoning tasks, various search methods have been studied.
+One direction of research \citep{zhu2024deductive,xie2024self} designed beam search with dynamic pruning, where beam items of low quality are pruned.
+Another line of work \citep{yao2024tree,long2023large,besta2024graph,hao2023reasoning,feng2023alphazero} maintains a tree or a graph that represents the current progress of solving the input question where potential branches are iteratively expanded.
+Both our approach and \cite{feng2023alphazero} are based on the MCTS algorithm, while one main difference is how to define a search step: \cite{feng2023alphazero} fix a search step to be either a token or a sentence, while our approach is more flexible on deciding steps.
+We have also carefully designed the MCTS process, incorporating multiple critique signals to guide the search more effectively and introducing adaptive search parameters for improved state exploration.
+As the result, our approach achieves much better performances.
+
+\paragraph{LLM Self-improving}
+Being a key to the success of scalable oversight \citep{bowman2022measuring},
+self-improving for LLM aims to align the LLM to human preference and values mainly using the supervision from the knowledge inside the LLM \citep{zelikman2022star,zelikman2024quiet}.
+One crucial part of self-improving is how to obtain reliable signal of critique to distinguish between good responses from the LLM and bad ones.
+Initial work \citep{bai2022constitutional,wang2022self} first asks the LLM to generate input queries of diverse tasks and the corresponding outputs.
+They then rely on hand-crafted heuristic rules to filter out redundant or low-quality data pairs (e.g. the query is too long or too short). 
+Since it is non-trivial to compose effective heuristic rule, later work \citep{sun2023principle,li2023self,guo2024human} proposes a few general principles or judging criteria and ask the LLM itself to evaluate the quality its responses based on these guidance, hoping that LLMs can automatically designate these principles into each data point to better guide data filtering. However, this requires LLMs to have strong abilities to apply these principles for each specific case and make correct judgements. Different from previous work, we propose to leverage the supervision from MCTS for LLM self-improvement: taking the outputs of MCTS to continue train the LLM. This is because the outputs from MCTS are usually in much better quality then standard nucleus sampling, and the large gap ensure that the LLM can self improve.
+
+% Another line of research explores cheaply available knowledge.
+% Some \citep{saunders2022self,wang2023shepherd} collects large-scale critique data from question-and-answer websites (e.g., stack exchange) for continue pretraining, while others \citep{gou2023critic} utilize external tools to provide more fine-grained guidance.
+% The goal of both directions is to enhance critique ability of the LLM for self-improving.
+% Our approach based on MCTS is intuitively orthogonal to this line of research.

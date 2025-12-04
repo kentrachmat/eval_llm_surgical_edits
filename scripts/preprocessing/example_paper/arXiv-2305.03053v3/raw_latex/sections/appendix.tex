@@ -1,0 +1,96 @@
+\section{Partial Zipping}\label{ap:partial_zipping}
+In Fig.~\ref{fig:varying_partial_zip} we plot the average per task accuracy by the number of layers zipped in ResNet-20$\times$8 for CIFAR-100 (50+50) and ResNet-50 for ImageNet-1k (200+200). 
+Note that to avoid adding extra unmerge modules into the network, our stopping point while unzipping has to be the end of a stage. 
+
+In Table~\ref{tab:partialzip_corrs}, we show the average neuron correlations at each partial-zipping stage between the layers of ResNet-20 ($8\times$) models trained on the CIFAR-100 (50+50) task. 
+We collect results using the same models used in Table \ref{tab:cifar50+50}, and compute correlations as described in Section \ref{sec:approach}.
+Overall, we find the correlations between models consistently decreases through successive partial zipping locations. 
+This corroborates the finding of \citet{kornblith2019similarity} that model layers become increasingly dissimilar with depth, as they encode more task-specific features. 
+Coupling Table \ref{tab:partialzip_corrs} with Figure \ref{fig:partial_zip_cifar100}, we observe a direct correlation between layer-(dis)similarities and performance decrease.
+This illustrates the importance of layer similarity between two networks and strong performance.
+\input{figures/12_alg_partial_zip}
+
+\input{figures/A9_partial_zip_corrs}
+
+
+
+\section{Data Usage} \label{ap:data_usage}
+In our approach, we use a sample of the training set in order to compute activations and match features together. For the main paper, we used the full training set for CIFAR, 1\% of the training set for ImageNet, and the number of images in the smallest training set for the Multi-Dataset classification experiment (so that we could use the same number of images from each dataset). In each case, we used the same data augmentations from training.
+
+That begs the question: how much data do we actually need, and how necessary are data augmentations?
+Here we ablate the amount of data used for our CIFAR-100 (50+50) ResNet-20 ($8\times$ width) and ImageNet (200+200) Resnet-50 (\sfrac{22}{50} layers) experiments. 
+In Fig.~\ref{fig:data_usage}, we test how much data is actually necessary to obtain a good accuracy on CIFAR and ImageNet with or without data augmentation.
+
+\input{figures/A0_data_usage}
+
+We ultimately find that the amount of data doesn't actually matter that much. In the main paper, we use the entire training set for CIFAR-100 with a batch size of 500 (100 batches, or 50,000 images), but it seems like as little as 2 batches (100 images) produces the same result. Similarly on ImageNet, using 0.05\% of the data (640 images) produces the same result as 5\% (64,048 images).
+
+In fact, the main consideration is whether or not to use data augmentation. For less diverse datasets like CIFAR-100, data augmentation seems essential (giving an almost 4\% boost in average task accuracy), and well above the variance of results without augmentation. However, for ImageNet, which has much more diverse images, data augmentation actually hurts slightly on average---though the two are within variance. Note that despite this result, for consistency we use data augmentation in \textit{all} experiments.
+
+
+\section{Zip Propagation Details} \label{ap:prop_rules}
+In the main paper we described general rules for zip propagation---namely, propagate through layers until you reach a module with a weight matrix. Here, we describe rules more concretely for each layer type needed to define most convnets.
+
+\paragraph{Linear.} Apply \modelc{$M_i$} and \modelc{$U_i$}. Stop propagation.
+
+\paragraph{Conv.} Apply \modelc{$M_i$} and \modelc{$U_i$} to each kernel location (i.e., move the $k\times k$ kernel dimensions to the batch dimension). Stop propagation.
+
+\paragraph{BatchNorm.} Apply \modelc{$M_i$} to all parameters (weight, bias, mean, variance), squaring it for the variance term. Continue propagation. As \citet{jordan2022repair} points out, we cannot compute the correct variance without knowing the covariance between the two models (which we don't have access to). Thus, we reset batch norms after merging to evaluate the variance correctly. 
+
+\paragraph{LayerNorm.} Apply \modelc{$M_i$} to all parameters (weight, bias). Continue propagation. Since LayerNorm computes mean and standard deviation on the fly, we don't need to do anything special.
+
+\paragraph{ReLU.} Nothing to merge. Continue propagation. Note that passing the merge matrix unchanged through the ReLU layers is an approximation, since we're using a linear merge operation on nonlinear features. Addressing this issue could be an interesting topic for future work, as even the permute and add approach of prior work has this issue (ReLU is invariant to permutation, but certainly not adding). 
+
+\paragraph{Avg / Max Pool.} Nothing to Merge. Continue propagation.
+
+\paragraph{Skip Connection.} Continue propagation through every input to the skip connection (using the same \modelc{$M_i$} and \modelc{$U_i$} for each).
+
+
+\section{Cross Entropy on CIFAR}
+\input{figures/A1_cifar50_logits}
+In the main paper, we train our CIFAR models with a CLIP \cite{radford2021learning} loss (using CLIP embeddings of class names as targets). This ensures that the output spaces of the two models are aligned, which is necessary to get good accuracy for prior work that merge the entire model together. 
+
+\paragraph{ResNet.} In Tab.~\ref{tab:cifar_ce_results}, we show results for CIFAR-100 (50+50) where we train with the normal one-hot targets (i.e., like we did for ImageNet), instead. Immediately, we see that accuracies of the merged models are much lower across the board, with no method able to outperform just using one of the original models when merging the entire network. In fact, Git Re-Basin \cite{ainsworth2022git} does almost no better than weight averaging, which gets close to random accuracy. While \name{}\ without partial zipping also performs worse than the original models, it still greatly outperforms all prior work. And with partial zipping, \name{}\ is able to exceed the accuracy of the original models.
+
+Thus, in the case of using cross-entropy loss, partial zipping is extremely important. Merging the entire model as in prior work fails, since the later layers of the model are incompatible with each other due to each model having a different output space. Partial zipping, on the other hand, can mitigate that issue.
+
+
+\input{figures/A2_cifar5_vgg_logits}
+\paragraph{VGG.}\label{ap:vgg}
+In the main paper, we use ResNets for each experiment, since they are easy to train and produce strong results. However, in principle \name{}\ can work on any architecture. For completeness, in Tab.~\ref{tab:cifar5_vgg11w1_results}, we show results on the CIFAR-10 (5+5) setting with VGG11 ($1\times$ width). Note that this is a much smaller and weaker model than the ResNet-20s we use in the main paper, so its results on CIFAR-10 aren't as strong. Furthermore, we conducted this experiment with a cross entropy loss, so merging the entire model performs worse than the original models.
+
+Despite this, we observe a very similar trend to the ResNet-20 models in that \name{}\ outperforms all baselines and that partial zipping is important for reaching the accuracy of the original models (in this case, matching not exceeding). In fact, these results continue a more general trend in that \name{}\ greatly benefits from larger model scales, making effective use of the extra capacity. In this case, the scale of the model is quite small, so there is not as much room in the weights to store the potentially disjoint features of both models.
+
+
+\input{figures/A6_imagenet_scale}
+\section{ImageNet with 1.5x Width}
+In the main paper, we show that \name{}\ scales very well with increased width of the model for the CIFAR-100 (50+50) setting. While CIFAR-100 is a challenging dataset on its own, the natural question is if that same trend occurs the much harder ImageNet-1k (200+200) setting.
+
+In Tab.~\ref{tab:imagenet200x5width}, we test this by comparing \name{}\ on the original $1\times$ width ResNet-50 in the main paper with a $1.5\times$ width one.
+In all cases, except for the fully zipped model (likely because of the Cross-Entropy loss), \name{}\ enjoys a large jump in performance from the extra width. For 37 layers, 33.1\% joint accuracy becomes 49.0\%. For 22 layers, 55.8\% becomes 64.1\%. And for 10 layers, 60.9\% becomes 66.8\%, now only 1\% away from the ensemble. Thus, even in this much more challenging setting, \name{}\ is able to make full use of the extra model capacity.
+
+\section{Merging models with different output modalities} \label{appendix:semantic_segmentation}
+\input{figures/A7_voc_imagenet}
+In this experiment we use \name{}\ to merge two models with different initializations trained on different tasks with \textit{different} output modalities: semantic segmentation and image classification. 
+Specifically, we merge the ResNet-50 backbone of a DeepLabV3 \citep{chen2017deeplabv3} model finetuned on the Pascal VOC \citep{Everingham10pascalvoc} dataset, with a ResNet-50 model trained on ImageNet-1k.
+While the DeepLabV3 backbone was itself pre-trained on ImageNet-1k, it was further finetuned on Pascal VOC and does not share the initialization of our classification model. Table~\ref{tab:voc_imagenet_results} shows the results of combining the two ResNet-50 models with \name{}\ at various partial merging locations. 
+% We conduct a hyperparameter search over a held-out validation set sampled from each task's validation data to find the optimal $\alpha\text{, and }\beta$ for \name{}\ at each merge location. 
+We evaluate the performance of each merged by reporting its ImageNet-1k accuracy, and its Pascal VOC mIoU as is standard. 
+Overall, we observe that \name{}\ is capable of merging nearly half the number of ResNet-50 layers between both models while still maintaining good performance on \textit{both tasks}, all \textit{without any training}.
+
+
+
+\input{sections/appendix_theory_v3}
+
+\section{Experiments in Settings of Concurrent Works}
+Table \ref{tab:cifar5_ce_results} shows the results of merging $16\times$ width ResNet20 models trained with cross-entropy loss on the CIAR5+5 task. 
+This setting is equivalent to that of Table 2 from the concurrent work of \citep{yamada2023revisiting}, except for two important differences.
+First, \citet{yamada2023revisiting} add the REPAIR \citet{jordan2022repair} algorithm to each merging method, which significantly improves the performance of each merging algorithm by adding new parameters to the merged model. 
+\input{figures/A8_cifar5_logits}
+Second, \citet{yamada2023revisiting} include merging methods that require training in their Table 2. 
+In contrast, we report the performance of each merging method using its original capabilities (i.e., without REPAIR), and without any training (as it is outside our setting). 
+Thus, all results shown in Table \ref{tab:cifar5_ce_results} are a lower-bound to what is achievable either with REPAIR, or with training. 
+To make Table \ref{tab:cifar5_ce_results} as close to Table 2 in \citep{yamada2023revisiting} as possible, we report ``Joint Acc'' as the average of each method's logits for the ensemble. 
+To the best of our knowledge, ``Joint Acc'' is thus the same metric used by \citep{yamada2023revisiting}.
+Overall, we observe that \name{}\ fully-merged outperforms the nearest baseline by over 20\% in ``Joint Acc'', and zipping up to the classification layers (\name{}$_{19/20}$) \textit{nearly matches} the ensemble ``Task Avg.'' accuracy without requiring \textit{any training}.
+Interestingly, Git Re-Basin performs especially poorly in this setting, likely requiring REPAIR to achieve the performance reported in Table 2 by \citep{yamada2023revisiting}. 

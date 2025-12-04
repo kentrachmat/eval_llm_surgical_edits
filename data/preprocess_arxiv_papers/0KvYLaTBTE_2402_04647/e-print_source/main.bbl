@@ -1,0 +1,223 @@
+\begin{thebibliography}{43}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ajay et~al.(2021)Ajay, Kumar, Agrawal, Levine, and Nachum]{ajay2021opal}
+Anurag Ajay, Aviral Kumar, Pulkit Agrawal, Sergey Levine, and Ofir Nachum.
+\newblock Opal: Offline primitive discovery for accelerating offline reinforcement learning.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem[Brandfonbrener et~al.(2022)Brandfonbrener, Bietti, Buckman, Laroche, and Bruna]{brandfonbrener2022does}
+David Brandfonbrener, Alberto Bietti, Jacob Buckman, Romain Laroche, and Joan Bruna.
+\newblock When does return-conditioned supervised learning work for offline reinforcement learning?
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~35, pages 1542--1553, 2022.
+
+\bibitem[Chen et~al.(2021)Chen, Lu, Rajeswaran, Lee, Grover, Laskin, Abbeel, Srinivas, and Mordatch]{chen2021decision}
+Lili Chen, Kevin Lu, Aravind Rajeswaran, Kimin Lee, Aditya Grover, Misha Laskin, Pieter Abbeel, Aravind Srinivas, and Igor Mordatch.
+\newblock Decision transformer: Reinforcement learning via sequence modeling.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~34, pages 15084--15097, 2021.
+
+\bibitem[Cheng et~al.(2022)Cheng, Xie, Jiang, and Agarwal]{cheng2022adversarially}
+Ching-An Cheng, Tengyang Xie, Nan Jiang, and Alekh Agarwal.
+\newblock Adversarially trained actor critic for offline reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 3852--3878, 2022.
+
+\bibitem[Dhariwal and Nichol(2021)]{dhariwal2021diffusion}
+Prafulla Dhariwal and Alexander Nichol.
+\newblock Diffusion models beat gans on image synthesis.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~34, pages 8780--8794, 2021.
+
+\bibitem[Emmons et~al.(2021)Emmons, Eysenbach, Kostrikov, and Levine]{emmons2021rvs}
+Scott Emmons, Benjamin Eysenbach, Ilya Kostrikov, and Sergey Levine.
+\newblock Rvs: What is essential for offline rl via supervised learning?
+\newblock \emph{arXiv preprint arXiv:2112.10751}, 2021.
+
+\bibitem[Eysenbach et~al.(2022)Eysenbach, Udatha, Salakhutdinov, and Levine]{eysenbach2022imitating}
+Benjamin Eysenbach, Soumith Udatha, Russ~R Salakhutdinov, and Sergey Levine.
+\newblock Imitating past successes can be very suboptimal.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~35, pages 6047--6059, 2022.
+
+\bibitem[Freed et~al.(2023)Freed, Venkatraman, Sartoretti, Schneider, and Choset]{freed2023learning}
+Benjamin Freed, Siddarth Venkatraman, Guillaume~Adrien Sartoretti, Jeff Schneider, and Howie Choset.
+\newblock Learning temporally abstractworld models without online experimentation.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 10338--10356, 2023.
+
+\bibitem[Fu et~al.(2020)Fu, Kumar, Nachum, Tucker, and Levine]{fu2020d4rl}
+Justin Fu, Aviral Kumar, Ofir Nachum, George Tucker, and Sergey Levine.
+\newblock D4rl: Datasets for deep data-driven reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2004.07219}, 2020.
+
+\bibitem[Fujimoto and Gu(2021)]{fujimoto2021minimalist}
+Scott Fujimoto and Shixiang~Shane Gu.
+\newblock A minimalist approach to offline reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~34, pages 20132--20145, 2021.
+
+\bibitem[Han et~al.(2017)Han, Lu, Zhu, and Wu]{han2017abp}
+Tian Han, Yang Lu, Song{-}Chun Zhu, and Ying~Nian Wu.
+\newblock Alternating back-propagation for generator network.
+\newblock In \emph{{AAAI} Conference on Artificial Intelligence (AAAI)}, pages 1976--1984, 2017.
+
+\bibitem[Ho and Salimans(2022)]{ho2022classifier}
+Jonathan Ho and Tim Salimans.
+\newblock Classifier-free diffusion guidance.
+\newblock \emph{arXiv preprint arXiv:2207.12598}, 2022.
+
+\bibitem[Ho et~al.(2020)Ho, Jain, and Abbeel]{ho2020denoising}
+Jonathan Ho, Ajay Jain, and Pieter Abbeel.
+\newblock Denoising diffusion probabilistic models.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~33, pages 6840--6851, 2020.
+
+\bibitem[Janner et~al.(2021)Janner, Li, and Levine]{janner2021offline}
+Michael Janner, Qiyang Li, and Sergey Levine.
+\newblock Offline reinforcement learning as one big sequence modeling problem.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~34, pages 1273--1286, 2021.
+
+\bibitem[Janner et~al.(2022)Janner, Du, Tenenbaum, and Levine]{janner2022planning}
+Michael Janner, Yilun Du, Joshua Tenenbaum, and Sergey Levine.
+\newblock Planning with diffusion for flexible behavior synthesis.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 9902--9915, 2022.
+
+\bibitem[Kingma and Welling(2014)]{kingma2013auto}
+Diederik~P. Kingma and Max Welling.
+\newblock Auto-encoding variational bayes.
+\newblock In \emph{International Conference on Learning Representations, (ICLR)}, 2014.
+
+\bibitem[Kong et~al.(2024)Kong, Huang, Xie, Honig, Xu, Xue, Lin, Zhou, Zhong, Zheng, and Wu]{kong2024molecule}
+Deqian Kong, Yuhao Huang, Jianwen Xie, Edouardo Honig, Ming Xu, Shuanghong Xue, Pei Lin, Sanping Zhou, Sheng Zhong, Nanning Zheng, and Ying~Nian Wu.
+\newblock Molecule design by latent prompt transformer.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+
+\bibitem[Kostrikov et~al.(2021)Kostrikov, Nair, and Levine]{kostrikov2021offline}
+Ilya Kostrikov, Ashvin Nair, and Sergey Levine.
+\newblock Offline reinforcement learning with implicit q-learning.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem[Kumar et~al.(2020)Kumar, Zhou, Tucker, and Levine]{kumar2020conservative}
+Aviral Kumar, Aurick Zhou, George Tucker, and Sergey Levine.
+\newblock Conservative q-learning for offline reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~33, pages 1179--1191, 2020.
+
+\bibitem[Lee et~al.(2022)Lee, Nachum, Yang, Lee, Freeman, Guadarrama, Fischer, Xu, Jang, Michalewski, et~al.]{lee2022multi}
+Kuang-Huei Lee, Ofir Nachum, Mengjiao~Sherry Yang, Lisa Lee, Daniel Freeman, Sergio Guadarrama, Ian Fischer, Winnie Xu, Eric Jang, Henryk Michalewski, et~al.
+\newblock Multi-game decision transformers.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~35, pages 27921--27936, 2022.
+
+\bibitem[Lillicrap et~al.(2015)Lillicrap, Hunt, Pritzel, Heess, Erez, Tassa, Silver, and Wierstra]{lillicrap2015continuous}
+Timothy~P Lillicrap, Jonathan~J Hunt, Alexander Pritzel, Nicolas Heess, Tom Erez, Yuval Tassa, David Silver, and Daan Wierstra.
+\newblock Continuous control with deep reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:1509.02971}, 2015.
+
+\bibitem[Lynch et~al.(2020)Lynch, Khansari, Xiao, Kumar, Tompson, Levine, and Sermanet]{lynch2020learning}
+Corey Lynch, Mohi Khansari, Ted Xiao, Vikash Kumar, Jonathan Tompson, Sergey Levine, and Pierre Sermanet.
+\newblock Learning latent plans from play.
+\newblock In \emph{Conference on robot learning (CoRL)}, pages 1113--1132, 2020.
+
+\bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare, Graves, Riedmiller, Fidjeland, Ostrovski, et~al.]{mnih2015human}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei~A Rusu, Joel Veness, Marc~G Bellemare, Alex Graves, Martin Riedmiller, Andreas~K Fidjeland, Georg Ostrovski, et~al.
+\newblock Human-level control through deep reinforcement learning.
+\newblock \emph{Nature}, 518\penalty0 (7540):\penalty0 529--533, 2015.
+
+\bibitem[Neal(2011)]{neal2011mcmc}
+Radford~M Neal.
+\newblock {MCMC} using hamiltonian dynamics.
+\newblock \emph{Handbook of Markov Chain Monte Carlo}, 2, 2011.
+
+\bibitem[Nijkamp et~al.(2020)Nijkamp, Pang, Han, Zhou, Zhu, and Wu]{nijkamp2020learning2}
+Erik Nijkamp, Bo~Pang, Tian Han, Linqi Zhou, Song-Chun Zhu, and Ying~Nian Wu.
+\newblock Learning multi-layer latent variable model via variational optimization of short run mcmc for approximate inference.
+\newblock In \emph{European Conference on Computer Vision (ECCV)}, pages 361--378, 2020.
+
+\bibitem[Osband and Van~Roy(2017)]{osband2017posterior}
+Ian Osband and Benjamin Van~Roy.
+\newblock Why is posterior sampling better than optimism for reinforcement learning?
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 2701--2710, 2017.
+
+\bibitem[Osband et~al.(2013)Osband, Russo, and Van~Roy]{osband2013more}
+Ian Osband, Daniel Russo, and Benjamin Van~Roy.
+\newblock (more) efficient reinforcement learning via posterior sampling.
+\newblock In \emph{Advances in Neural Information Processing Systems (NIPS)}, volume~26, 2013.
+
+\bibitem[Pang et~al.(2020)Pang, Han, Nijkamp, Zhu, and Wu]{pang2020learning}
+Bo~Pang, Tian Han, Erik Nijkamp, Song-Chun Zhu, and Ying~Nian Wu.
+\newblock Learning latent space energy-based prior model.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2020.
+
+\bibitem[Paster et~al.(2022)Paster, McIlraith, and Ba]{paster2022you}
+Keiran Paster, Sheila McIlraith, and Jimmy Ba.
+\newblock You can’t count on luck: Why decision transformers and rvs fail in stochastic environments.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~35, pages 38966--38979, 2022.
+
+\bibitem[Ronneberger et~al.(2015)Ronneberger, Fischer, and Brox]{ronneberger2015u}
+Olaf Ronneberger, Philipp Fischer, and Thomas Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock In \emph{International Conference on Medical Image Computing and Computer-Assisted Intervention (MICCAI)}, pages 234--241, 2015.
+
+\bibitem[Ross and Bagnell(2010)]{ross2010efficient}
+St{\'e}phane Ross and Drew Bagnell.
+\newblock Efficient reductions for imitation learning.
+\newblock In \emph{International Conference on Artificial Intelligence and Statistics (AISTATS)}, pages 661--668, 2010.
+
+\bibitem[{\v{S}}trupl et~al.(2022){\v{S}}trupl, Faccio, Ashley, Schmidhuber, and Srivastava]{vstrupl2022upside}
+Miroslav {\v{S}}trupl, Francesco Faccio, Dylan~R Ashley, J{\"u}rgen Schmidhuber, and Rupesh~Kumar Srivastava.
+\newblock Upside-down reinforcement learning can diverge in stochastic environments with episodic resets.
+\newblock \emph{arXiv preprint arXiv:2205.06595}, 2022.
+
+\bibitem[Sutton and Barto(2018)]{sutton2018reinforcement}
+Richard~S Sutton and Andrew~G Barto.
+\newblock \emph{Reinforcement learning: An introduction}.
+\newblock MIT press, 2018.
+
+\bibitem[Tieleman(2008)]{tieleman2008training}
+Tijmen Tieleman.
+\newblock Training restricted boltzmann machines using approximations to the likelihood gradient.
+\newblock In \emph{International conference on Machine learning (ICML)}, pages 1064--1071, 2008.
+
+\bibitem[Uehara and Sun(2021)]{uehara2021pessimistic}
+Masatoshi Uehara and Wen Sun.
+\newblock Pessimistic model-based offline reinforcement learning under partial coverage.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem[Villaflor et~al.(2022)Villaflor, Huang, Pande, Dolan, and Schneider]{villaflor2022addressing}
+Adam~R Villaflor, Zhe Huang, Swapnil Pande, John~M Dolan, and Jeff Schneider.
+\newblock Addressing optimism bias in sequence modeling for reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 22270--22283, 2022.
+
+\bibitem[Xie et~al.(2016)Xie, Lu, Zhu, and Wu]{xie2016theory}
+Jianwen Xie, Yang Lu, Song{-}Chun Zhu, and Ying~Nian Wu.
+\newblock A theory of generative convnet.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 2635--2644, 2016.
+
+\bibitem[Xie et~al.(2023)Xie, Zhu, Xu, Li, and Li]{XieZXL023}
+Jianwen Xie, Yaxuan Zhu, Yifei Xu, Dingcheng Li, and Ping Li.
+\newblock A tale of two latent flows: Learning latent space normalizing flow with short-run langevin flow for approximate inference.
+\newblock In \emph{{AAAI} Conference on Artificial Intelligence (AAAI)}, pages 10499--10509, 2023.
+
+\bibitem[Xie et~al.(2021)Xie, Cheng, Jiang, Mineiro, and Agarwal]{xie2021bellman}
+Tengyang Xie, Ching-An Cheng, Nan Jiang, Paul Mineiro, and Alekh Agarwal.
+\newblock Bellman-consistent pessimism for offline reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~34, pages 6683--6694, 2021.
+
+\bibitem[Yamagata et~al.(2023)Yamagata, Khalil, and Santos-Rodriguez]{yamagata2023q}
+Taku Yamagata, Ahmed Khalil, and Raul Santos-Rodriguez.
+\newblock Q-learning decision transformer: Leveraging dynamic programming for conditional sequence modelling in offline rl.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 38989--39007, 2023.
+
+\bibitem[Yang et~al.(2022)Yang, Schuurmans, Abbeel, and Nachum]{yang2022dichotomy}
+Sherry Yang, Dale Schuurmans, Pieter Abbeel, and Ofir Nachum.
+\newblock Dichotomy of control: Separating what you can control from what you cannot.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2022.
+
+\bibitem[Zhang et~al.(2022)Zhang, Janner, Li, Rockt{\"a}schel, Grefenstette, Tian, et~al.]{zhang2022efficient}
+Tianjun Zhang, Michael Janner, Yueying Li, Tim Rockt{\"a}schel, Edward Grefenstette, Yuandong Tian, et~al.
+\newblock Efficient planning in a compact latent action space.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2022.
+
+\bibitem[Zheng et~al.(2022)Zheng, Zhang, and Grover]{zheng2022online}
+Qinqing Zheng, Amy Zhang, and Aditya Grover.
+\newblock Online decision transformer.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, pages 27042--27059, 2022.
+
+\end{thebibliography}

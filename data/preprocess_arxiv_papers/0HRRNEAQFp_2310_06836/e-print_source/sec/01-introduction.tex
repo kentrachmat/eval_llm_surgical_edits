@@ -1,0 +1,52 @@
+\section{Introduction}
+\begin{figure*}[t]
+		\centering
+		\includegraphics[height=0.51 \linewidth]{imgs/teaser.pdf}
+		\vspace{-4mm}
+		\caption{ 
+  \textbf{Motivation: What do large vision models know about the 3D scene?} We take Stable Diffusion as an example because Stable Diffusion is generative, and so its output is an image that can be judged directly for verisimilitude.
+  The Stable Diffusion inpainting model is here tasked with inpainting the masked region of the real images. It correctly predicts a shadow consistent with the lighting direction (top), and a supporting structure consistent with the scene geometry (bottom). This indicates that the Stable Diffusion model generation is consistent with the geometry (of the light source direction) and physical (support) properties. These examples are only for illustration 
+  and we probe a general Stable Diffusion network to determine whether there are explicit features for such 3D scene properties.
+		The appendix provides more examples of Stable Diffusion's capability to predict different physical properties of the scene. 
+  }
+  \vspace{-6mm}
+		\label{figure:teaser}
+\end{figure*}
+
+The large-scale pre-trained vision foundation models have achieved great success in computer vision tasks, including classification (CLIP~\cite{Radford2021clip,software_openclip}), segmentation (DINO~\cite{caron2021dino,oquab2023dinov2}), and image generation (VQGAN~\cite{esser2021taming}, Stable Diffusion~\cite{rombach2022high}) with strong generalisation capabilities.
+However, they are mainly trained with 2D images, which are the projection of the 3D physical world.
+This naturally raises the question of to what extent these large-scale vision models have learned about the 3D scene depicted with only the 2D images.
+Our objective in this paper is to investigate this question, and we do this precisely by determining whether features from these large-scale pre-trained vision models can be used to estimate the true geometric and physical properties of the 3D scene.
+If they can, then that is evidence that the 3D scene can be correctly modelled by its 2D projections.
+For example, as an indication that Stable Diffusion is 3D and physics aware, Figure~\ref{figure:teaser} shows the result of the off-the-shelf Stable Diffusion model~\cite{rombach2022high} inpainting masked regions in real images – it correctly predicts shadows and supporting structures.
+
+
+To answer this question, we propose a \emph{general} and \emph{lightweight} evaluation protocol to \emph{systematically} and \emph{efficiently} `probe' a
+pre-trained network on its ability to represent a number of `properties' of the 3D scene and viewpoint. The protocol could be used for any network and any property of interest. We have probed properties including: 3D structure and material of the scene, such as surface layout; lighting, such as object-shadow relationships; and viewpoint dependent relations such as occlusion and depth. 
+
+
+The protocol involves three steps: 
+{\em First}, a suitable real image evaluation dataset is selected that contains ground truth annotations for the property of interest, for example the SOBA dataset~\citep{Wang_2020_soba} is used to probe the understanding of lighting, 
+as it has annotations for object-shadow associations. 
+This provides a train/val/test set for that property; 
+{\em Second}, a grid search is carried out over the layers and time steps of the Stable Diffusion model, and transformer layers for other models, to select the optimal feature for determining that property. The selection involves learning the weights of a simple linear classifier for that property (\emph{e.g.}\ `are these two regions in an object-shadow relationship or not'); 
+{\em Third}, the selected feature (layer, time step) and trained classifier are evaluated on a test set, and its performance answers the question of how well the model
+`understands' that property.
+
+In short, we probe scene geometry, material, support relation, shadow, occlusion and depth, to answer the question ``To what extent do large vision models encode 3D properties of the scene?". 
+We  apply this protocol to a wide range of networks that are trained at large scale, including 
+OpenCLIP~\citep{Radford2021clip,software_openclip}, DINOv1~\citep{caron2021dino}, DINOv2~\citep{oquab2023dinov2}, and VQGAN~\citep{esser2021taming}. This covers networks trained generatively (Stable Diffusion),  with self-supervision (DINOv1 \& DINOv2), with weak supervision (OpenCLIP), and by auto-regression (VQGAN). 
+
+From our investigation, we make three observations: 
+{\em First}, the Stable Diffusion and DINOv2 networks have a good `understanding' of the scene geometry, support relations, the lighting, and the depth of a scene, with Stable Diffusion and DINOv2 having a similar and high prediction performance for these properties.
+However, their prediction of material and occlusion is poorer.
+{\em Second}, Stable Diffusion and DINOv2 generally demonstrate better performance for 3D properties
+than other networks trained at large scale:  OpenCLIP, DINOv1, and VQGAN. 
+ {\em Third},  different time steps of Stable Diffusion features, as well as different transformer layers of DINO/CLIP/VQGAN, perform best for different 3D physical properties.
+
+
+Why is an understanding of the networks' ability to predict 3D properties useful? There are four reasons:
+(1) It begins to answer the scientific question of the extent to which these networks implicitly model the 3D scene;
+(2) The features we determined that are able to predict 3D physical properties can be used for this task, e.g.\ to predict shadow-object associations or support relations. This could either be carried out directly by incorporating them in a prediction network, in the manner of~\cite{zhan2023amodal}; or they can be used indirectly as a means to train a feed forward network to predict the properties~\citep{wu2023datasetdm,wu2023diffumask};
+(3) By knowing what properties Stable Diffusion is not good at, we have a way to spot images generated by Stable Diffusion, as has been done by~\cite{sarkar2023shadows};
+(4) It also reveals which properties the network could be trained further on to improve its 3D modelling,  \emph{e.g.,} via extra supervision for that property.

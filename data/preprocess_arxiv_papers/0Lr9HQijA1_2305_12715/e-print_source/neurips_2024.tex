@@ -1,0 +1,892 @@
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2024
+
+
+% ready for submission
+% \usepackage{neurips_2024}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2024}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+\usepackage[final]{neurips_2024}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2024}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{todonotes}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[capitalize]{cleveref}
+\usepackage{xspace}
+\usepackage{diagbox}
+\usepackage{subfigure}
+\usepackage{bbm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{authblk}
+\usepackage{etoc}
+
+
+\usepackage{enumitem}
+\setlist{leftmargin=8mm}
+
+\usepackage{amsthm}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+
+
+% definitions for todo and note
+\newcommand{\ch}[1]{{\color{blue}{[(CH): #1]}}}
+\newcommand{\chh}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=red,size=\scriptsize]{(CH): #1}}
+\newcommand{\br}[1]{{\color{red}{[(BR): #1]}}}
+\newcommand{\wjdd}[1]{\todo[linecolor=cyan,backgroundcolor=cyan!25,bordercolor=cyan,size=\scriptsize]{(WJD): #1}}
+\newcommand{\wjd}[1]{{\color{cyan}{[(WJD): #1]}}}
+\newcommand{\tr}[1]{{\color{orange}{[(TR): #1]}}}
+\newcommand{\trr}[1]{\todo[linecolor=orange,backgroundcolor=orange!25,bordercolor=red,size=\scriptsize]{(TR): #1}}
+\newcommand{\ank}[1]{{\color{violet}{[(ANK EDIT): #1]}}}
+
+\newcommand{\method}{ILL\xspace}
+
+
+\title{Imprecise Label Learning: A Unified Framework for Learning with Various Imprecise Label Configurations}
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+\author{%
+Hao Chen$^{1}$\thanks{haoc3@andrew.cmu.edu},
+Ankit Shah$^{1}$,
+Jindong Wang$^{2}$,
+Ran Tao$^{1}$,
+Yidong Wang$^{3}$,
+Xiang Li$^{1}$,
+% Xing Xie
+\\
+Xing Xie$^{2}$,
+Masashi Sugiyama$^{4,5}$,
+Rita Singh$^{1}$,
+Bhiksha Raj$^{1,6}$
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+\affil{\small{$^{1}$Carnegie Mellon University, $^{2}$Microsoft Research,$^{3}$Peking University, 
+\\
+$^{4}$ RIKEN AIP, $^{5}$The University of Tokyo, $^{6}$MBZUAI
+}}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+Learning with reduced labeling standards, such as noisy label, partial label, and supplementary unlabeled data, which we generically refer to as \textit{imprecise} label, is a commonplace challenge in machine learning tasks. 
+Previous methods tend to propose specific designs for every emerging imprecise label configuration, which is usually unsustainable when multiple configurations of imprecision coexist. 
+In this paper, we introduce imprecise label learning (ILL), a framework for the unification of learning with various imprecise label configurations.
+ILL leverages expectation-maximization (EM) for modeling the imprecise label information, treating the precise labels as latent variables.
+Instead of approximating the correct labels for training, it considers the entire distribution of all possible labeling entailed by the imprecise information.
+We demonstrate that ILL can seamlessly adapt to partial label learning, semi-supervised learning, noisy label learning, and, more importantly, a mixture of these settings, with closed-form learning objectives derived from the unified EM modeling.
+Notably, ILL surpasses the existing specified techniques for handling imprecise labels, marking the first practical and unified framework with robust and effective performance across various challenging settings.
+We hope our work will inspire further research on this topic, unleashing the full potential of ILL in wider scenarios where precise labels are expensive and complicated to obtain. 
+Code is available at: \url{https://github.com/Hhhhhhao/General-Framework-Weak-Supervision}.
+\end{abstract}
+
+
+
+\section{Introduction}
+
+One of the critical challenges in machine learning is the collection of annotated data for model training \citep{he2016deep, vaswani2017attention, devlin2018bert, dosovitskiy2020image, radford2021learning,openai2023gpt4}. 
+Ideally, every data instance would be fully annotated with precise labels. 
+However, collecting such data can be expensive, time-consuming, and error-prone. 
+Often, the labels can be intrinsically difficult to ascertain precisely. 
+Factors such as a lack of annotator expertise and privacy concerns can also negatively affect the quality and completeness of the annotations. % resulting in incomplete and inaccurate labels.
+
+In an attempt to circumvent this limitation, several methods have been proposed to permit model learning from the data annotated with reduced labeling standards, which are generally easier to obtain.
+We will refer to such labels as \textit{imprecise}. 
+\cref{fig:imp-labels} illustrates some typical mechanisms of label imprecision that are commonly addressed in the literature. 
+Label imprecision requires a modification of the standard supervised training mechanism to build models for each specific case.
+For instance, 
+\emph{partial label learning} (PLL) \citep{cour2011learning,Luo2010LearningFC,Feng2020ProvablyCP,Wang2019AdaptiveGG,wen2021leveraged,revisitpllwu22l,wang2022pico} allows instances to have a set of candidate labels, instead of a single definitive one. 
+% In this setting, the true label is known to be present within the candidate set, but the exact identity remains unknown.  Various techniques have been proposed to effectively learn from this type of partially informative data, including leveraging label correlation \citep{lv2020progressive}, optimizing latent label assignment \citep{Feng2020ProvablyCP, wen2021leveraged, revisitpllwu22l}, and adopting contrastive losses \citep{wang2022pico}.
+\emph{Semi-supervised Learning} (SSL) \citep{lee2013pseudo,samuli2017temporal,berthelot2019mixmatch,berthelot2019remixmatch,sohn2020fixmatch,xie2020self,zhang2021flexmatch,wang2022debiased,wang2023freematch,chen2023softmatch} seeks to enhance the generalization ability when only a small set of labeled data is available, supplemented by a larger unlabeled set.
+% A range of SSL techniques have been developed, including consistency regularization \citep{tarvainen2017mean, miyato2018virtual}, leveraging data augmentation \citep{xie2020unsupervised}, self-training \citep{sohn2020fixmatch,zhang2021flexmatch,wang2023freematch,chen2023softmatch}, and a combination of other learning techniques \citep{berthelot2019mixmatch,berthelot2019remixmatch,li2021comatch,zheng2022simmatch}.
+\emph{Noisy label learning} (NLL) \citep{Xiao2015LearningFM,alan2016noisyicaspps,Goldberger2016TrainingDN,Ghosh2017RobustLF,Han2018CoteachingRT,Zhang2018GeneralizedCE,Li2018LearningTL,Wang2019SymmetricCE,Liu2020EarlyLearningRP,Li2020DivideMixLW,Ma2020NormalizedLF,wei2022self,Zhang2021LearningNT,wei2023fine} deals with noisy scenarios where the labels are corrupted or incorrect. 
+% Researchers have proposed several strategies to address noisy labels, including the utilization of robust loss functions \citep{Ghosh2017RobustLF, Zhang2018GeneralizedCE, Li2018LearningTL, Wang2019SymmetricCE, Ma2020NormalizedLF,bai2021understanding,li2021learning,li2022selective}, noise estimation techniques \citep{Xiao2015LearningFM,Goldberger2016TrainingDN,Liu2020EarlyLearningRP,Zhang2021LearningNT,confidentlearn2021,de2022instance}, and label correction methods \citep{Han2018CoteachingRT, Li2020DivideMixLW, sopliu22w}.
+There is a greater variety of other forms of label imprecision, including crowd-sourcing \citep{ibrahim2023deep,wei2023aggregate}, programmable weak supervision \citep{zhang2022survey,wu2022learning}, and bag-level supervision \citep{ilse2018attention,lu2018minimal,scott2020learning,zhang2020aggre,garg2021mixture,feng2021pointwise}, among others. 
+% \ch{TODO: Add more works about weak labels, crowd-sourcing, multiple instance learning, etc. }
+
+While prior arts have demonstrated success in handling individual configurations of label imprecision, their approaches often differ substantially. They are tailored to a \textit{specific} form of imprecision, as depicted in \cref{fig:pipeline}.
+Such specificity not only imposes the necessity of devising a solution for emerging types of label imprecision scenarios, but also complicates the deployment in practical settings, where the annotations can be highly complex and may involve \textit{multiple coexisting and interleaved} imprecision configurations.
+For instance, considering a scenario where both noisy labels and partial labels appear together, it might be challenging to adapt previous methods in NLL or PLL to this scenario since they either rely on the assumption of definite labels \citep{wei2023aggregate} or the existence of the correct label among label candidates \citep{campagner2021learnability}, thus requiring additional algorithmic design. 
+In fact, a few recent works have attempted to address the combinations of imprecise labels in this way, such as partial noisy label \citep{lian2022arnet,xu2023dali} and semi-supervised partial label learning \citep{wang2019partial,wang2020semi}.
+However, simply utilizing a more sophisticated or ad-hoc design can hardly scale to other settings. 
+% For instance, consider a scenario where the labels are noisy, partially labeled in a semi-supervised setting, which cannot be easily solved by existing approaches.
+% Some recent work has also attempted to address the combinations of imprecise labels, such as partial noisy label learning \citep{lian2022arnet,xu2023dali} and semi-supervised partial label learning \citep{wang2019partial,wang2020semi}.
+% However, their solutions are still inherited from existing frameworks, making it fundamentally challenging to be applied to \emph{any} label configuration.
+% \tr{this sentence is not well explained. Inheriting from existing framework is not a problem and it cannot explain why it is fundamentally challenging to be applied to label configuration.}
+% build a \emph{unified} solution to include \emph{any} label configuration.
+% unless they are designed in an ad-hoc manner due to the variations in annotations.
+In addition, most of these approaches attempt to infer the correct labels given the imprecise information (\textit{e.g.} through consistency with adjacent data \citep{lee2013pseudo,xie2020unsupervised,yao2021instance}, iterative refinement \citep{lv2020progressive,arachie2021constrained}, average over given labels  \citep{hullermeier2015superset,lv2023robustness}, etc., to train the model, which inevitably accumulates error during training.
+% ., and reduces the generalization performance. 
+% \wjdd{What's wrong with this view? Seems they are fine. So the transition here is not smooth.}
+
+
+\begin{figure}[t!]
+    \centering
+    \hfill
+    \subfigure[Full Label]{\label{fig:label_full}\includegraphics[width=0.22\textwidth]{figures/label_full.pdf}}
+    \hfill
+    \subfigure[Partial Label]{\label{fig:label_pll}\includegraphics[width=0.22\textwidth]{figures/label_pll.pdf}}
+    \hfill
+    \subfigure[Semi-Supervised]{\label{fig:label_ssl}\includegraphics[width=0.22\textwidth]{figures/label_ssl.pdf}}
+    \hfill
+    \subfigure[Noisy Label]{\label{fig:label_nll}\includegraphics[width=0.22\textwidth]{figures/label_nll.pdf}}
+    \hfill
+    \vspace{-0.1in}
+    \caption{Illustration of the full label and imprecise label configurations. We use an example dataset of 4 training instances and 3 classes. (a) Full label, the annotation is a single true label; (b) Partial label, the annotation is a label candidate set containing true label; (c) Semi-supervised, only part of the dataset is labeled, and the others are unlabeled; (d) Noisy label, the annotation is mislabeled.}
+    \label{fig:imp-labels}
+\vspace{-0.2in}
+\end{figure}
+
+% \tr{seems like the reason why an EM method could unify the solution of different settings is not well illustrated in the introduction. For example, "Among these prior arts, the unified nature of these imprecise labeling settings is not well addressed. The overall labeling information can be utilized to infer the statistical distribution for the true labels. Thus, a well-designed probabilistic labeling model could unify the solution for different imprecise labeling settings." }
+
+In this paper, we formulate the problem from a different perspective: rather than taking the imprecise label information provided as a potentially noisy or incomplete attempt at assigning labels to instances, we treat it generically as the information that imposes a deterministic or statistical restriction of the actual applicable true labels.
+% that are .\wjdd{This sentence is too long to understand well.}
+We then train the model over the distribution of all possible labeling entailed by the given imprecise information.
+% \ch{TODO: maybe need to highlight difference from naive average-based methods, we ILL proposed weighted average}. 
+More specifically, for a dataset with samples $X$ and imprecise label information $I$, we treat the inaccessible full and precise labels $Y$ as a latent variable.
+The model is then trained to maximize the likelihood of the provided information $I$.
+Since the likelihood computed over the joint probability $P(X, I; \theta) = \sum_{Y}P(X, I, Y; \theta)$ must marginalize out $Y$, the actual information $I$ provided could permit a potentially exponential number of labeling.
+To deal with the resulting challenge of maximizing the logarithm of an expectation, we use the common approach of 
+\emph{expectation-maximization} (EM) 
+\citep{dempster1977maximum}, where the E-step computes the expectation of $P(X, I, Y; \theta)$ given the posterior of current belief $P(Y | X, I; \theta^t)$ at time step $t$ and the M-step maximizes the tight variational lower bound over $P(X, I; \theta)$. 
+The overall framework is thus largely agnostic to the various nature of label imprecision, with the imprecise label only affecting the manner in which the posterior $P(Y| X, I; \theta^t)$ is computed. 
+In fact, current approaches designed for various imprecise label scenarios can be treated as specific instances of our framework. 
+Our approach can serve as a solution towards a \emph{unified and generalized} view for learning with \emph{various} imprecise labels.
+
+
+While there exist earlier attempts on generalized or EM solutions for different (other) imprecise supervisions or fuzzy observations \citep{denoeux2011maximum,hullermeier2014learning,quost2016clustering,van2017theory,gong2020centroid,zhang2020aggre,chiang2023unified,uumwei23a,xie2024weakly}, they usually require additional assumptions and approximations on the imprecise information for learnablility \citep{campagner2021learnability,campagner2023learning}, thus presenting limited scalability on practical settings \citep{quost2016clustering}.
+% A similar formulation has also been explored in the context of collection-level labels in \citep{zhang2020aggre}. \ch{TODO: Need to mentioned more works on EM for weak supervision here, but none of theirs is as complete as ours}
+% The unified framework we propose subsumes all of these and, in the case of noisy labels, also enables the learning of a \textit{noise model}.
+% \wjdd{Don't understand this sentence.} 
+% Moreover, it permits the more practical ``mixed'' style of the training data, where each instance has a different imprecision type.
+% \wjd{How to be ``modest'' enough to let reviewers from these related fields realize that we are not unifying them (no one likes to be unified) nor challenging them... How about changing to ``Towards a unified view of learning under imprecise label configurations''?}
+% \br{Agree with Jindong}
+On the contrary, the unified framework we propose subsumes all of these and naturally extends to the more practical ``mixed'' style of data, where different types of imprecise labels coexist. 
+Moreover, for noisy labels, our framework inherently enables the learning of a \textit{noise model}, as we will show in \cref{sec:instantiate}.
+Through comprehensive experiments, we demonstrate that the proposed imprecise label learning (ILL) framework 
+% seamlessly extends to partial labels, having a limited quantity of labels with unlabeled data, noisy labels, and a mixture of various imprecise labels. 
+% Our ILL 
+not only outperforms previous methods for dealing with single imprecise labels of PLL, NLL, and SSL, but also presents robustness and effectiveness for mixed imprecise label learning (MILL) settings, leveraging the full potential to more challenging scenarios.
+Our contributions are summarized as follows:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item We propose an EM framework towards the unification of learning from \emph{various} imprecise labels.
+    % \br{We propose a unified EM-based framework for learning from data with \emph{any} form of imprecise labels.}
+    \item We establish scalable and consistent state-of-the-art (SOTA) performance with the proposed method on partial label learning, semi-supervised learning, and noisy label learning, demonstrating our method's robustness in more diverse, complex label noise scenarios.
+    \item To the best of our knowledge, our work is the first to show the robustness and effectiveness of a single unified method for handling the mixture of various imprecise labels. 
+\end{itemize}
+
+
+% \begin{figure}[t!]
+%     \centering
+%     \hfill
+%     \subfigure[PLL]{\label{fig:overview_pll}\includegraphics[width=0.24\textwidth]{figures/overview_pll_bar.pdf}}
+%     \hfill
+%     \subfigure[SSL]{\label{fig:overview_ssl}\includegraphics[width=0.24\textwidth]{figures/overview_ssl_bar.pdf}}
+%     \hfill
+%     \subfigure[NLL]{\label{fig:overview_nll}\includegraphics[width=0.24\textwidth]{figures/overview_nll_bar.pdf}}
+%     \hfill
+%     \subfigure[Mixed]{\label{fig:overview_mixed}\includegraphics[width=0.24\textwidth]{figures/overview_mix_bar.pdf}}
+%     \hfill
+%     \vspace{-.1in}
+%     \caption{Overview of results comparison to recent SOTA baselines on benchmarks on partial label learning (PLL), semi-supervised learning (SSL), noisy label learning (NLL), and mixed imprecise label learning (MILL). We report the average accuracy over all settings evaluated for each dataset.}
+%     \label{fig:results_overview}
+% \end{figure}
+
+
+\section{Preliminary}
+\label{sec:preliminary}
+
+\begin{figure}[t!]
+    \centering
+    \hfill
+    \subfigure[Partial Label]{\label{fig:pipe_pll}\includegraphics[width=0.24\textwidth]{figures/pipe_pll.pdf}}
+    \hfill
+    \subfigure[Semi-Supervised]{\label{fig:pipe_ssl}\includegraphics[width=0.24\textwidth]{figures/pipe_ssl.pdf}}
+    \hfill
+    \subfigure[Noisy Label]{\label{fig:pipe_nll}\includegraphics[width=0.24\textwidth]{figures/pipe_nll.pdf}}
+    \hfill
+    \subfigure[Imprecise Label]{\label{fig:pipe_ill}\includegraphics[width=0.24\textwidth]{figures/pipe_ill.pdf}}
+    \hfill
+    \vspace{-0.1in}
+    \caption{Baseline model pipelines for various imprecise label configurations. (a) PiCO \citep{wang2022pico} for partial label learning. (b) FixMatch \citep{sohn2020fixmatch} for semi-supervised learning. (c) SOP \citep{sopliu22w} for noisy label learning. (d) The proposed unified framework. It accommodates \emph{any} imprecise label configurations and also mixed imprecise labels with an EM formulation. 
+    % \wjd{The font sizes in these figures can all be larger.}
+    }
+    \label{fig:pipeline}
+\vspace{-0.1in}
+\end{figure}
+
+
+
+In this section, we illustrate the notations and baselines from different imprecise label settings that adopt various solutions. 
+We will show later how our proposed method generalize and subsumes these prior arts.
+Let $\mathcal{X}$ denote the input space, and $\mathcal{Y} = [C]:= \{1, \dots, C\}$ represent the label space with $C$ distinct labels.
+A fully annotated training dataset of size $N$ is represented as $\mathcal{D} = \{ (\mathbf{x}_i, y_i) \}_{i \in [N]}$. 
+Learning with imprecise labels involves approximating the mapping function $f \circ g: \mathcal{X} \rightarrow \mathcal{Y}$ from a training dataset where the true label $y$ is not fully revealed from the annotation process.
+Here $f$ is the backbone for feature extraction, $g$ refers to the classifier built on top of the features, and the output from $f \circ g$ is the predicted probability $\mathbf{p}(y|\mathbf{x};\theta)$, where $\theta$ is the learnable parameter for $f \circ g$. 
+In this study, we primarily consider three imprecise label configurations (as illustrated in \cref{fig:imp-labels}) and their corresponding representative learning paradigms (as shown in \cref{fig:pipeline}), namely partial label learning, semi-supervised learning, and noisy label learning. 
+% A more comprehensive related work, including other forms of imprecision, is provided in \cref{sec:appen-related}.
+
+\textbf{Partial label learning (PLL)}. 
+PLL aims to learn with a candidate label set $\mathbf{s} \subset \mathcal{Y}$, where the ground truth label $y \in \mathcal{Y}$ is concealed in $\mathbf{s} $. 
+The training data for partial labels thus becomes $\mathcal{D}_{\mathrm{PLL}} = \{ (\mathbf{x}_i, \mathbf{s} _i)\}_{i \in [N]}$. 
+% Label ambiguity remains the essential challenge for PLL, and 
+PiCO \citep{wang2022pico} is a recent contrastive method that employs class prototypes to enhance label disambiguation (as shown in \cref{fig:pipe_pll}). 
+It optimizes the cross-entropy (CE)\footnote{For simplicity, we use $\mathcal{L}_{\mathbf{CE}}$ for labels of the formats of class indices, one-hot vectors, and class probabilities.} loss between the prediction of the augmented training sample $\mathcal{A}_{\mathrm{w}}(\mathbf{x})$ and the disambiguated labels $\hat{\mathbf{s}}$. 
+PiCO learns a set of class prototypes from the features associated with the same pseudo-targets. 
+A contrastive loss, based on MOCO \citep{moco2020}, is employed to better learn the feature space,
+% with a projection multi-layer perceptron (MLP) $h$ \citep{chen2020improved}. 
+% The contrastive objective 
+drawing the projected and normalized features $\mathbf{z}_\mathrm{w}$ and $\mathbf{z}_\mathrm{s}$ 
+% from the backbone and the projection head 
+of the two augmented versions of data $\mathcal{A}_\mathrm{w}(\mathbf{x})$ and $\mathcal{A}_\mathrm{s}(\mathbf{x})$ \footnote{We use $\mathcal{A}_\mathrm{w}$ to indicate the weaker data augmentation and $\mathcal{A}_\mathrm{s}$ to indicate the stronger data augmentation.} closer.
+% together while pushing the negative features further away from a memory queue $\mathcal{M}$ \citep{moco2020} that preserves past features. 
+The objective of PiCO is formulated as:
+\begin{equation}
+    \mathcal{L}_{\mathrm{PiCO}} = \mathcal{L}_{\mathrm{CE}} \left(\mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x});\theta), \hat{\mathbf{s}} \right) + \mathcal{L}_{\mathrm{Cont}} \left( \mathbf{z}_\mathrm{w}, \mathbf{z}_\mathrm{s}, \mathcal{M} \right).
+\label{eq:pico}
+\end{equation}
+
+\textbf{Semi-supervised learning (SSL)}. 
+For SSL, we can define the labeled dataset as $\mathcal{D}_{\mathrm{SSL}}^\mathrm{L} = \{(\mathbf{x}^\mathrm{l}_i, y^\mathrm{l}_i)\}_{i \in [N^\mathrm{L}]}$, and the unlabeled dataset as $\mathcal{D}^\mathrm{U} = \{ \mathbf{x}^\mathrm{u}_j \}_{j \in [N^\mathrm{L} + 1, N^\mathrm{L}+N^\mathrm{U}]}$, with $N^\mathrm{L} \ll N^\mathrm{U}$.
+% SSL's main challenge lies in effectively utilizing the unlabeled data to improve the generalization performance. 
+A general confidence-thresholding based self-training \citep{xie2020unsupervised,sohn2020fixmatch} pipeline for SSL is shown in \cref{fig:pipe_ssl}.
+Consider FixMatch \citep{sohn2020fixmatch} as an example; there are usually two loss components: the supervised CE loss on labeled data and the unsupervised CE loss on unlabeled data. 
+For the unsupervised objective, 
+the pseudo-labels $\hat{y}^\mathrm{u}$ from the network itself are used to train on the unlabeled data. 
+A ``strong-weak'' augmentation \citep{xie2020unsupervised} is commonly adopted.
+%, where pseudo-labels are computed from the weakly-augmented data $\mathcal{A}_\mathrm{w}(\mathbf{x}^\mathrm{u})$. Back-propagation is performed on the strongly-augmented data $\mathcal{A}_\mathrm{s}(\mathbf{x}^\mathrm{u})$. 
+To ensure the quality of the pseudo-labels, only the pseudo-labels whose confidence scores $\hat{p}^\mathrm{u}$ are greater than a threshold $\tau$ are selected to participate in training:
+\begin{equation}
+    \mathcal{L}_{\mathrm{Fix}} = \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}^\mathrm{l});\theta), y^\mathrm{l} \right) + \mathbbm{1}\left( \hat{p}^\mathrm{u} \geq \tau \right) \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x}^\mathrm{u});\theta)  , \hat{y}^\mathrm{u} \right).
+\label{eq:fixmatch}
+\end{equation}
+
+
+\textbf{Noisy label learning (NLL)}. 
+NLL aims at learning with a dataset of corrupted labels, $\mathcal{D}_{\mathrm{NLL}} = \{ (\mathbf{x}_i, \hat{y}_i) \}_{i \in [N]}$.
+% Overfitting to the noisy labels $\hat{y}$ could result in poor generalization performance, even if the training error is optimized towards zero \citep{zhang2016understanding,zhang2021understanding}. 
+% Several strategies to address the noisy labels have been proposed, such as robust loss functions \citep{Ghosh2017RobustLF,Zhang2018GeneralizedCE,Wang2019SymmetricCE} and noise estimation/correction techniques \citep{Han2018CoteachingRT,Li2020DivideMixLW,bai2021understanding,li2021learning,li2022selective}. 
+We illustrate the NLL pipeline (in \cref{fig:pipe_nll}) with the recent sparse over-parameterization (SOP) model \citep{sopliu22w}, where a sparse \textit{noise model} consisting of parameters $\mathbf{u}_i, \mathbf{v}_i \in [-1, 1]^C$ for each sample is adopted. 
+The noise model transforms the network prediction from the true label distribution into the noisy label distribution.
+A CE loss and a mean-squared-error (MSE) loss optimize parameter $\{\mathbf{u}_i\}$ and $\{\mathbf{v}_i\}$ respectively:
+\begin{equation}
+    \mathcal{L}_{\mathrm{SOP}} = \mathcal{L}_{\mathrm{CE}} \left( \phi \left( \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x});\theta) + \mathbf{m} \right), \hat{y} \right) + \mathcal{L}_{\mathrm{MSE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x});\theta) + \mathbf{m}, \hat{y} \right),
+\end{equation}
+where $\phi$ denotes the $L_\infty$ normalization and $\mathbf{m}_i = \mathbf{u}_i \odot \mathbf{u}_i \odot \hat{\mathbf{y}}^{\mathrm{oh}}_i - \mathbf{v}_i \odot \mathbf{v}_i\odot \left(1- \hat{\mathbf{y}}^{\mathrm{oh}}_i \right)$, with $\hat{\mathbf{y}}^{\mathrm{oh}}_i$ referring to the one-hot version of $y_i$. Consistency regularization with strong-weak augmentation and entropy class-balance regularization are additionally utilized for better performance in SOP \citep{sopliu22w}.  
+
+
+% , while ILL is a complete EM view.}
+
+
+
+\section{Imprecise Label Learning}
+
+Although current techniques demonstrate potential in addressing particular forms of imprecise labels, they frequently fall short in adaptability and transferability to more complicated and more realistic scenarios where multiple imprecise label types coexist and interleave. This section first defines the proposed expectation-maximization (EM) formulation for learning with various imprecise labels. Then, we demonstrate that our unified framework seamlessly extends to partial label learning, semi-supervised label learning, noisy label learning, and the more challenging setting of mixed imprecise label learning.
+% , where different imprecise labels coexist simultaneously.
+Connections and generalization to previous pipelines can also be drawn clearly under the proposed EM framework. 
+
+
+\subsection{A Unified Framework for Learning with Imprecise Labels}
+
+% \ch{TODO: change the name mining gold from imrepcise labels, maybe. Talk about previse identification-based and average-based methods are all trying to infer one labeling. Also need to discuss the Robustness work on average-based loss.}
+% \textbf{Mining gold from imprecise labels.} 
+% \wjd{Didn't realize that this phrase brings trouble to us.}
+\textbf{Exploiting information from imprecise labels}.
+The challenge of learning with imprecise labels lies in learning effectively with inaccurate or incomplete annotation information. 
+Per the analysis above, prior works catering to specific individual imprecise labels either explicitly or implicitly attempt to infer the precise labels from the imprecise label information. 
+For example, partial label learning concentrates on the disambiguation of the ground truth label from the label candidates \citep{wang2022pico,lian2022irnet,xu2023dali} or averaging equally over the label candidates \citep{hullermeier2006learning}. 
+In semi-supervised learning, after the model initially learns from the labeled data, the pseudo-labels are treated as correct labels and utilized to conduct self-training on the unlabeled data \citep{arazo2020pseudo,sohn2020fixmatch}.
+Similarly, for noisy label learning,  an integral part that helps mitigate overfitting to random noise is the implementation of an accurate noise model capable of identifying and rectifying the incorrect labels \citep{Li2020DivideMixLW, sopliu22w}, thereby ensuring the reliability of the learning process.
+% and, in turn, facilitating stronger generalizability performance.
+However, inferring the correct labels from the imprecise labels or utilizing the imprecise labels directly can be very challenging and usually leads to errors accumulated during training \citep{arazo2020pseudo,chen2022debiased}, which is also known as the confirmation bias. 
+In this work, we take a different approach: we consider all possible labeling along with their likelihood that the imprecise labels fulfill to train the model, rather than using a single rectified label from the imprecise information. 
+Such an approach also eliminates the requirements for designing different methods for various imprecise labels and provides a unified formulation instead, where closed-form solutions can be derived.
+
+\textbf{A unified framework for learning with imprecise labels (ILL)}.
+Let $\{\mathbf{x}_i\}_{i \in [N]}$ represent the features as realizations from $X$ and $\{y_i\}_{i \in [N]}$ represent their precise labels as realizations from $Y$ for the training data. Ideally, $Y$ would be fully specified for $X$. In the imprecise label scenario, however, $Y$ is not provided; instead we obtain imprecise label information $I$.  
+We view $I$ not as \textit{labels}, but more abstractly as a variable representing the \textit{information} about the labels. From this perspective, the actual labels $Y$ would have a distribution $P(Y|I)$, and $I$ can present in various forms.
+When the information $I$ provided is the precise true label of the data,  $P(Y|I)$ would be a delta distribution, taking a value $1$ at the true label, and $0$ elsewhere. If $I$ represents partial labels, then $P(Y|I)$ would have non-zero value over the candidate labels, and be $0$ elsewhere. 
+When $I$ represents a set of noisy labels, $P(Y|I)$ would represent the distribution of the true labels, given the noisy labels.
+When $I$ does not contain any information, i.e., unlabeled data, $Y$ can take any value. 
+
+By the maximum likelihood estimation (MLE) principle, we must estimate the model to maximize the likelihood of the data/information we have been provided, namely $X$ and $I$. Let $P(X, I; \theta)$ represent a parametric form for the joint distribution of $X$ and $I$\footnote{The actual parameters $\theta$ may apply only to some component such as $P(Y|X; \theta)$ of the overall distribution; we will nonetheless tag the entire distribution $P(X,I; \theta)$ with $\theta$ to indicate that it is dependent on $\theta$ overall.} Explicitly considering the labels $Y$, we have $ P(X, I; \theta) = \sum_Y P(X, Y, I; \theta)$.
+The maximum likelihood principle requires us to find:
+\begin{equation}
+\theta^*  = \argmax_\theta~ \log P(X, I; \theta)  = \argmax_\theta~ \log \sum_Y P(X, Y, I; \theta),
+\label{eq:basic}
+\end{equation}
+with $\theta^*$ denotes the optimal value of $\theta$.
+%[ COMMENT FROM HERE TO  "lower bounds"?]
+\cref{eq:basic} features the log of an expectation and cannot generally be solved in closed-form, and requires iterative hill-climbing solutions. Of these, arguably the most popular is the expectation-maximization (EM) algorithm \citep{dempster1977maximum}, which iteratively maximizes a tight variational lower bound on the log-likelihood. 
+In our case, applying it becomes:
+\begin{equation}
+\begin{split}
+    \theta^{t+1} &= \argmax_{\theta} \mathbb{E}_{Y|X, I;\theta^t} \left[ \log P(X, Y, I; \theta) \right] \\ 
+    &= \argmax_{\theta} \mathbb{E}_{Y|X, I;\theta^t} \left[ \log P(Y | X; \theta) + \log P(I|X,Y;\theta) \right],
+\end{split}
+\label{eq:em}
+\end{equation}
+where $\theta^t$ is the $t^{\rm th}$ estimate of the optimal $\theta$. 
+Note that $P(X;\theta)$ is omitted from \cref{eq:em} since $P(X)$ does not rely on $\theta$.
+The detailed derivation of the variational lower bound is shown in \cref{sec:append-var-lower-bound}.
+There are several implications from \cref{eq:em}. 
+(i) The expectation over the posterior $P(Y|X,I;\theta^t)$ equates to considering \textit{all} labeling entailed by the imprecise label information $I$,  rather than any single (possibly corrected) choice of label. 
+For independent instances setting mostly studied in this paper, we can derive closed-form training objectives from this formulation as shown in \cref{sec:instantiate}.
+% The computing of the posterior conditioned on imprecise label information $I$ can be related to a \emph{non-deterministic finite automaton} (NFA) \citep{hopcroft2001introduction}; details are in Appendix~\ref{sec-append-nfa}. 
+(ii) The property of the second term $\log P(I|X, Y; \theta)$ is dependent on the nature of imprecise label $I$. 
+If $I$ is derivable from true labels $Y$, such as the actual labels or the label candidates, it can be reduced to $P(I|Y)$, \textit{i.e.}, the probability of $I$ is no longer dependent on $X$ or $\theta$ and thus can be ignored from \cref{eq:em}. 
+If $I$ represents the noisy labels, $P(I|X,Y;\theta)$ instead includes a potentially learnable noise model.  
+(iii) It is a general framework towards the unification of any label configuration, including full labels, partial labels, low-resource labels, noisy labels, etc.
+In this work, we specialize the proposed EM framework to PLL, SSL, NLL, and the mixture of them in the following.
+% It seamlessly expands to the formulation of partial label learning, semi-supervised learning, and noisy label learning, and the mixture of them later. 
+% We specialize this solution to each of our scenarios below.
+
+\subsection{Instantiating the Unified EM Formulation}
+\label{sec:instantiate}
+
+% \chh{TODO: this section needs a bit re-write} 
+
+We illustrate how to seamlessly expand the formulation from \cref{eq:em} to partial label learning, semi-supervised learning, noisy label learning, and mixture settings, with derived closed-form loss function\footnote{To formulate the loss function, we convert the problem to minimization of the negative log-likelihood.} for each setting here. 
+The actual imprecise labels only affect the manner in which the posterior $P(Y| X, I; \theta^t)$ is computed for each setting.  
+We show that all learning objectives derived from \cref{eq:em} naturally include a consistency term with the posterior as the soft target.
+We also demonstrate that the proposed unified EM framework closely connects with the prior arts, which reveals the potential reason behind the success of these techniques.
+Note that while we only demonstrate the application of the proposed framework to four settings here, it can also be flexibly extended to other settings. 
+More details of derivation below are shown in \cref{sec:appendix-method}.
+% Note that while we only demonstrate the application of the unified framework to three learning paradigms here, it is flexible and can expand to learning with a mixture of imprecise labels with robust performance, as we will show in \cref{sec:append-derive-instan} and \cref{sec:exp-mixed}.
+
+
+% \chh{take care of random variable and value}
+\textbf{Partial label learning (PLL)}. 
+The imprecise label $I$ for partial labels is defined as the label candidate sets $S$ containing the true labels.
+These partial labels indicate that the posterior $P(Y|X,S;\theta^t)$ can only assign its masses on the candidate labels.
+Since $S$ can be derived from true labels $Y$, $P(S|X, Y;\theta)$ reduces to $P(S|Y)$, and thus can be ignored.
+We also demonstrate with instance dependent partial labels that maintains $P(S|X, Y;\theta)$ in \cref{sec:append-exp-rcr}.
+Defining the label candidates as $\{\mathbf{s}_i\}_{i \in [N]}$ and substituting it in \cref{eq:em}, we have the loss function of PLL derived using ILL framework:
+% \wjdd{can we write it in one line to save space?}
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{PLL}} 
+    % &= \mathbb{E}_{Y|X, S;\theta^t} \left[ -\log P(Y | X; \theta) \right] \\ 
+    = - \sum_{Y \in [C]} P(Y|X, S;\theta^t) \log P(Y | X; \theta) \equiv \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x});\theta),  \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}), \mathbf{s};\theta^t) \right),
+\end{split}
+\label{eq:ill-pll}
+\end{equation}
+where $\mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}), \mathbf{s};\theta^t)$ is the normalized probability that $\sum_{k \in C} p_{k} = 1$, and $p_{k} = 0, \forall k \in \mathbf{s}$. 
+\cref{eq:ill-pll} corresponds exactly to consistency regularization \citep{xie2020unsupervised}, with the normalized predicted probability as the soft pseudo-targets. 
+We use $\mathcal{A}_s$ and $\mathcal{A}_w$ to denote the strong and weak augmentation as stated earlier.
+This realization on PLL shares similar insights as \citep{revisitpllwu22l} which exploits a gradually induced loss weight for PLL on multiple augmentations of the data. 
+However, our framework is much simpler and more concise as shown in \cref{sec:append-exp-rcr}, which does not require additional techniques.
+
+\textbf{Semi-supervised learning (SSL)}
+In SSL, the input $X$ consists of the labeled data $X^\mathrm{L}$ and the unlabeled data $X^\mathrm{U}$. 
+The imprecise label for SSL is realized as the limited number of full labels $Y^\mathrm{L}$ for $X^\mathrm{L}$. 
+The labels $Y^\mathrm{U}$ for unlabeled $X^\mathrm{U}$ are unknown and become the latent variable. 
+Interestingly, for the unlabeled data, there is no constraint on possible labels it can take. 
+The posterior $P(Y^\mathrm{U}|X^{\mathrm{L}}, X^{\mathrm{U}}, Y^{\mathrm{L}}; \theta)$, which is the actual prediction from the network, can be directly utilized as soft targets for self-training. 
+Since $Y^\mathrm{L}$ is conditionally independent with $Y^\mathrm{U}$ given $X$, the second term of \cref{eq:em}: $P(Y^\mathrm{L}|X^\mathrm{L}, X^\mathrm{U}, Y^\mathrm{U};\theta)$, is reduced to $P(Y^\mathrm{L}|X^\mathrm{L};\theta)$, which corresponds to the supervised objective on labeled data.
+The loss function for SSL thus becomes:
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{SSL}} &= - \sum_{Y \in [C]} P(Y^\mathrm{U} | X^\mathrm{U}, X^\mathrm{L}, Y^\mathrm{L};\theta^t) \log P(Y^\mathrm{U} | X^\mathrm{U}, X^\mathrm{L};\theta) - \log P(Y^\mathrm{L} | X^\mathrm{L}; \theta)  \\
+    &\equiv  \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x}^\mathrm{u});\theta)  , \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}^\mathrm{u});\theta^t)  \right) + \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}^\mathrm{l});\theta), y^\mathrm{l} \right)
+\end{split}
+\label{eq:ill-ssl}
+\end{equation}
+The first term corresponds to the unsupervised consistency regularization usually employed in SSL, and the second term refers to the supervised CE loss only on labeled data.
+% While aligning with the common paradigms for SSL, 
+\cref{eq:ill-ssl} has several advantages over the previous methods. 
+It adopts the prediction as soft-targets of all possible labeling on unlabeled data, potentially circumventing the confirmation bias caused by pseudo-labeling and naturally utilizing all unlabeled data which resolves the quantity-quality trade-off commonly existing in SSL \citep{sohn2020fixmatch,chen2023softmatch}.
+It also indicates that previous pseudo-labeling with confidence threshold implicitly conducts the EM optimization, where the maximal probable prediction approximates the expectation, and the degree of the approximation is determined by the threshold $\tau$, rationalizing the effectiveness of dynamic thresholding.
+% Also note that \cref{eq:ill-ssl} 
+
+\textbf{Noisy label learning (NLL)}.
+Things become more complicated here since the noisy labels $\hat{Y}$ do not directly reveal the true information about $Y$, thus $P(\hat{Y}|Y, X;\theta)$ inherently involves a noise model that needs to be learned.  
+We define a simplified instance-independent\footnote{A more complicated instance-dependent noise model $\mathcal{T}(\hat{Y}|Y, X;\omega)$ can also be formulated under our unified framework, but not considered in this work. Also, since we use $\mathcal{T}$ both in forward fashion and backward fashion, it is unidentifiable in this work.} noise transition model $\mathcal{T}(\hat{Y} | Y;\omega)$ with parameters $\omega$, and take a slightly different way to formulate the loss function for NLL from the ILL framework:
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{NLL}} &= - \sum_{Y \in [C]} P(Y | X, \hat{Y}; \theta^t,  \omega^t) \log P(Y | X, \hat{Y}; \theta,  \omega^t) - \log P(\hat{Y} | X; \theta, \omega) \\ 
+    &\equiv \mathcal{L}_{\mathrm{CE}}\left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x}), \hat{y};\theta, \omega^t), 
+    \mathbf{p}(y| \mathcal{A}_\mathrm{w}(\mathbf{x}), \hat{y}; \theta^t, \omega^t) \right) 
+    + \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(\hat{y}|\mathcal{A}_\mathrm{w}(\mathbf{x});\theta,\omega), \hat{y} \right),
+\end{split}
+\end{equation}
+where the parameters $\omega$ and $\theta$ are learned end-to-end. 
+The first term corresponds to the consistency regularization of prediction conditioned on noisy labels and the second term corresponds to the supervised loss on noisy predictions that are converted from the ground truth predictions.
+Both quantities are computed using the noise transition model given the noisy label $\hat{y}$:
+% We compute both quantities using the noise model:
+\begin{equation}
+    \mathbf{p}(y|\mathbf{x}, \hat{y};\theta, \omega^t) \propto \mathbf{p}(y|\mathbf{x};\theta) \mathcal{T}(\hat{y} | y; \omega^t) , \text{and }
+    \mathbf{p}(\hat{y}|\mathbf{x};\theta,\omega) = \sum_{y \in [C]} \mathbf{p}(y|\mathbf{x};\theta)  \mathcal{T}(\hat{y} | y; \omega).
+\label{eq:ill-nll}
+\end{equation}
+% Our formulation for NLL relates to the early work that adopts a noise adaption layer \citep{Goldberger2016TrainingDN}. 
+% We show that even the simplified noise transition model can achieve promising performance in ILL. 
+% Compared to SOP, which adopts a set of parameters for each training sample with $NC$ parameters, our noise model only involves $C^2$ parameters, which is much more efficient\footnote{In most of the cases, $C \ll N$ holds.}.
+% \chh{Perhaps need to add mixture setting here too}
+
+
+\textbf{Mixture imprecise label learning (MILL)}. 
+We additionally consider a more practical setting, mixture of imprecise label learning, with partial labels, noisy labels, and unlabeled data interleaved together. 
+On the unlabeled data, the unsupervised objective is the same as the unsupervised consistency regularization of SSL as shown in \cref{eq:ill-ssl}. 
+The labeled data here present partial and noisy labels $\hat{\mathbf{s}}$.
+Thus the noisy supervised objective in \cref{eq:ill-nll} becomes the supervised consistency regularization as in \cref{eq:ill-pll} of partial label setting to train the noise transition model, and the noisy unsupervised objective becomes the consistency regularization of the prediction conditioned on noisy partial labels. 
+Thus we have the loss function for MILL derived as:
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\mathrm{ILL}}^{\mathrm{MILL}} &=  \mathcal{L}_{\mathrm{CE}}\left(\mathbf{p}\left(y \mid \mathcal{A}_{\mathrm{s}}(\mathbf{x}^l), \hat{\mathbf{s}}^l ; \theta, \omega^t\right), \mathbf{p}\left(y \mid \mathcal{A}_{\mathrm{w}}(\mathbf{x}^l), \hat{\mathbf{s}}^l ; \theta^t, \omega^t\right)\right) \\
+    &+ \mathcal{L}_{\mathrm{CE}}\left(\mathbf{p}\left(\hat{y} \mid \mathcal{A}_{\mathrm{w}}(\mathbf{x}^l) ; \theta, \omega\right), \hat{\mathbf{s}}^l\right) \\
+    &+ \mathcal{L}_{\mathrm{CE}} \left( \mathbf{p}(y|\mathcal{A}_\mathrm{s}(\mathbf{x}^\mathrm{u});\theta)  , \mathbf{p}(y|\mathcal{A}_\mathrm{w}(\mathbf{x}^\mathrm{u});\theta^t)  \right)
+\end{split}
+\end{equation}
+
+We can compute both quantity through the noise transition model:
+\begin{equation}
+    \mathbf{p}(y|\mathbf{x}, \hat{\mathbf{s}};\theta, \omega^t) \propto \mathbf{p}(y|\mathbf{x};\theta) \prod_{\hat{y} \in \hat{\mathbf{s}}} \mathcal{T}(y | \hat{y}; \omega^t) , \text{and }
+    \mathbf{p}(\hat{y} |\mathbf{x};\theta,\omega) = \sum_{y \in [C]} \mathbf{p}(y|\mathbf{x};\theta)  \mathcal{T}(\hat{y} | y; \omega).
+\end{equation}
+
+
+\section{Experiments}
+
+In this section, we conduct extensive experiments to evaluate ILL. 
+Albeit simple, the ILL framework achieves comparable state-of-the-art performance regarding previous methods on partial label learning, semi-supervised learning, and noisy label learning. 
+Moreover, our experiments show that ILL could be easily extended to a more practical setting with a mixture of various imprecise label configurations. 
+For all settings, we additionally adopt an entropy loss for balancing learned cluster sizes \citep{bridle1991unsup,joulin2012convex}, similarly as \citep{sopliu22w, wang2023freematch}. 
+Experiments are conducted with three runs using NVIDIA V100 GPUs.
+% \wjd{How do we justify obtaining the results of comparison methods from their papers instead of implementing in the same codebase?}
+
+
+\subsection{Partial Label Learning}
+
+\textbf{Setup}. 
+Following \citep{wang2022pico}, we evaluate our method on partial label learning setting using CIFAR-10 \citep{krizhevsky2009learning}, CIFAR-100 \citep{krizhevsky2009learning}, and CUB-200 \citep{welinder2010caltech}.
+We generate partially labeled datasets by flipping negative labels to false positive labels with a probability $q$, denoted as a partial ratio. 
+The $C - 1$ negative labels are then uniformly aggregated into the ground truth label to form a set of label candidates. 
+We consider $q \in \{0.1, 0.3, 0.5\}$ for CIFAR-10, $q \in \{0.01, 0.05, 0.1\}$ for CIFAR-100, and $q=0.05$ for CUB-200. 
+We choose six baselines for PLL using ResNet-18 \citep{he2016deep}: LWS \citep{wen2021leveraged}, PRODEN \citep{lv2020progressive}, CC \citep{Feng2020ProvablyCP}, MSE and EXP \citep{feng2020learning}, and PiCO~\citep{wang2022pico}. The detailed hyper-parameters, comparison with the more recent method R-CR \citep{revisitpllwu22l} that utilizes a different training recipe and model \citep{zagoruyko2016wide}, and comparison with instance-dependent partial labels \citep{xu2021instance} are shown in \cref{sec:append-exp-rcr}.
+% The more recent method R-CR \citep{revisitpllwu22l} utilizes a deeper architecture \citep{zagoruyko2016wide}, and the comparison with it is also in .
+% and 1 baseline using Wide-ResNet-34-10 (WRN-34-10): RCR \citep{revisitpllwu22l}.
+% \footnote{The more recent PiCO+ \citep{wang2022pico+}, DALI \citep{xu2023dali}, and R-CR \citep{revisitpllwu22l} achieve better performance than PiCO with either mixup \citep{zhang2017mixup} and deeper architecture \citep{zagoruyko2016wide}, thus not considered here.}.
+
+
+
+\input{tables/tb-partial}
+
+
+\textbf{Results}. The results for PLL are shown in \cref{tab:main-partial}. 
+Our method achieves the best performance compared to the baseline methods. 
+Perhaps more surprisingly, on CIFAR-10 and CIFAR-100, our method even outperforms the fully-supervised reference, indicating the potential better generalization capability using the proposed framework, sharing similar insights as in Wu et al. \cite{revisitpllwu22l}.
+While PiCO adopts a contrastive learning objective, our method still surpasses PiCO by an average of $\mathbf{2.13\%}$ on CIFAR-10 and $\mathbf{2.72\%}$ on CIFAR-100. Our approach can be further enhanced by incorporating contrastive learning objectives, potentially leading to more significant performance.
+
+
+
+\subsection{Semi-Supervised Learning}
+
+\textbf{Setup}. 
+For experiments of SSL, we follow the training and evaluation protocols of USB \citep{usb2022} on image and text classification. 
+To construct the labeled dataset for semi-supervised learning, we uniformly select $l / C$ samples from each class and treat the remaining samples as the unlabeled dataset. 
+We present the results on CIFAR-100 and STL-10 \citep{krizhevsky2009learning} for image classification, and IMDB \citep{maas2011learning} and Amazon Review \citep{mcauley2013hidden} for text classification.
+We compare with the current methods with confidence thresholding, such as FixMatch \citep{sohn2020fixmatch}, AdaMatch \citep{berthelot2021adamatch}, FlexMatch \citep{zhang2021flexmatch}, FreeMatch \citep{wang2023freematch}, and SoftMatch \citep{chen2023softmatch}. 
+We also compare with methods with the contrastive loss, CoMatch \citep{li2021comatch} and SimMatch \citep{zheng2022simmatch}. 
+A full comparison of the USB datasets and hyper-parameters is shown in \cref{sec:append-exp-ssl}. 
+
+
+\input{tables/tb-ssl}
+
+
+\textbf{Results}. 
+We present the results for SSL on \cref{tab:main-semi}. 
+Although no individual SSL algorithm dominates the USB benchmark \citep{usb2022}, our method still shows competitive performance. 
+Notably, our method performs best on STL-10 with 40 labels and Amazon Review with 250 labels, outperforming the previous best by $\mathbf{0.68\%}$ and $\mathbf{1.33\%}$. 
+In the other settings, the performance of our method is also very close to the best-performing methods. 
+More remarkably, our method does not employ any thresholding, re-weighting, or contrastive techniques to achieve current results, demonstrating a significant potential to be further explored. 
+% for even better performance. 
+
+
+
+
+\subsection{Noisy Label Learning}
+
+\textbf{Setup}. 
+We conduct the experiments of NLL following SOP \citep{sopliu22w} on both synthetic symmetric/asymmetric noise on CIFAR-10 and CIFAR-100, and more realistic and larger-scale instance noise on Clothing1M \citep{xiao2015learning}, and WebVision \citep{li2017webvision}. 
+To introduce the synthetic symmetric noise to CIFAR-10 and CIFAR-100, we uniformly flip labels for a probability $\eta$ into other classes. 
+For asymmetric noise, we only randomly flip the labels for particular pairs of classes. 
+The introduced noise is then treated as ground truth labels to train the model.
+We mainly select three previous best methods as baselines: DivideMix \citep{Li2020DivideMixLW}; ELR \citep{Liu2020EarlyLearningRP}; and SOP \citep{sopliu22w}.
+We also include the normal cross-entropy (CE) training and mixup \citep{zhang2017mixup} as baselines. 
+More comparisons of other methods  \citep{Patrini2016MakingDN, Han2018CoteachingRT} and on CIFAR-10N \citep{wei2021learning} with training details and more baselines \citep{jiang2018mentornet,Han2018CoteachingRT} are shown in \cref{sec:append-exp-nll}.
+
+\textbf{Results}. 
+We present the noisy label learning results in \cref{tab:main-noise}. 
+The proposed method is comparable to the previous best methods. 
+On synthetic noise of CIFAR-10, our method demonstrates the best performance on both symmetric noise and asymmetric noise. 
+On CIFAR-100, our method generally produces similar results comparable to SOP. 
+One may notice that our method shows inferior performance on asymmetric noise of CIFAR-100; we argue this is mainly due to the oversimplification of the noise transition model. 
+Our method also achieves the best results on WebVision, outperforming the previous best by $\mathbf{2.05\%}$. 
+On Clothing1M, our results are also very close to DivideMix, which trains for 80 epochs compared to 10 epochs in ours.
+
+% and no doubt further training improves performance. 
+% Noteworthy is that our formulation with a (simplified) noise transition model achieves state-of-the-art noisy label learning performance. 
+% Adopting a more complex instance-dependent noise model can further unleash the potential of the proposed framework on NLL, which is left for future work. 
+% which in turn demonstrates the potential of the proposed framework. 
+
+
+\input{tables/tb-noisy}
+
+
+\subsection{Mixed Imprecise Label Learning}
+\label{sec:exp-mixed}
+
+\textbf{Setup}. 
+We evaluate on CIFAR-10 and CIFAR-100 in a more challenging and realistic setting, the mixture of various imprecise label configurations, with unlabeled, partially labeled, and noisy labeled data existing simultaneously.
+% We select CIFAR-10 and CIFAR-100 as the base datasets, from which 
+We first sample the labeled dataset and treat other samples as the unlabeled.
+On the labeled dataset, we generate partial labels and randomly corrupt the true label of the partial labels.  
+We set $l \in \{1000, 5000, 50000\}$ for CIFAR-10, and $l \in \{5000, 10000, 50000\}$ for CIFAR-100. 
+For partial labels, we set $q \in \{0.1, 0.3, 0.5\}$ for CIFAR-10, and $q \in \{0.01, 0.05, 0.1\}$ for CIFAR-100.
+For noisy labels, we set $\eta \in \{0, 0.1, 0.2, 0.3\}$ for both datasets.
+Since there is no prior work that can handle all settings all at once, we compare on partial noisy label learning with PiCO+ \citep{wang2022pico+}, IRNet \citep{lian2022irnet}, and DALI \citep{xu2023dali}.
+Although there are also prior efforts on partial semi-supervised learning \citep{wang2019partial,wang2020semi}, they do not scale on simple dataset even on CIFAR-10. 
+Thus, we did not include them in comparison. 
+We conduct additional validation of our method on more complex settings for partial noisy labels with unlabeled data to demonstrate its robustness to various imprecise labels.
+
+\textbf{Results}. 
+We report the comparison with partial noisy label learning methods in \cref{tab:main-mix}. 
+Compared to previous methods, the proposed method achieves the best performance.
+Despite the simplicity, our method outperforms PiCO+ and DALI with mixup, showing the effectiveness of dealing with mixed imprecise labels. 
+We also report the results of our methods on more mixed imprecise label configurations in \cref{tab:main-mix-more}. 
+Our method demonstrates significant robustness against various settings of the size of labeled data, partial ratio, and noise ratio.
+Note that this is the first work that naturally deals with all three imprecise label configurations simultaneously, with superior performance than previous methods handling specific types or combinations of label configurations. This indicates the enormous potential of our work in realistic applications for handling more practical and complicated data annotations common in real world applications.
+
+
+\input{tables/tb-mixture}
+
+
+
+\input{tables/tb-more-mixture}
+
+
+\vspace{-.05in}
+\section{Conclusion}
+\vspace{-0.05in}
+
+We present the imprecise label learning (ILL) framework, a unified and consolidated solution for learning from all types of imprecise labels. 
+ILL effectively employs an expectation-maximization (EM) algorithm for maximum likelihood estimation (MLE) of the distribution over the latent ground truth labels $Y$, imprecise label information $I$, and data $X$. 
+It naturally extends and encompasses previous formulations for various imprecise label settings, achieving promising results. 
+Notably, in scenarios where mixed configurations of imprecise labels coexist, our method exhibits substantial robustness against diverse forms of label imprecision.
+The potential \textbf{broader impact} of the ILL framework is substantial. It stands poised to transform domains where obtaining precise labels poses a challenge, offering a simple, unified, and effective approach to such contexts. Beyond the three imprecise label configurations we have demonstrated in this study, the ILL framework shows promise for an extension to more intricate scenarios such as multi-instance learning \citep{ilse2018attention} and multi-label crowd-sourcing learning \citep{ibrahim2023deep}.
+However, it is also crucial to acknowledge the \textbf{limitations} of the ILL framework. Although its effectiveness has been substantiated on relatively smaller-scale datasets, additional empirical validation is necessary to assess its scalability to larger datasets.  Furthermore, our study only considers balanced datasets; thus, the performance of the ILL framework when dealing with imbalanced data and open-set data still remains an open area for future exploration.
+We hope that our study will constitute a significant stride towards a comprehensive solution for imprecise label learning and catalyze further research in this crucial field. 
+
+
+\section*{Acknowledge}
+Masashi Sugiyama was supported by the Institute for AI and Beyond, UTokyo.
+
+
+\newpage
+
+\bibliography{ref}
+\bibliographystyle{unsrt}
+
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\input{appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section*{NeurIPS Paper Checklist}
+
+
+\begin{enumerate}
+
+\item {\bf Claims}
+    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We discussed our contribution in introduction.
+    \item[] Guidelines: 
+    \begin{itemize}
+        \item The answer NA means that the abstract and introduction do not include the claims made in the paper.
+        \item The abstract and/or introduction should clearly state the claims made, including the contributions made in the paper and important assumptions and limitations. A No or NA answer to this question will not be perceived well by the reviewers. 
+        \item The claims made should match theoretical and experimental results, and reflect how much the results can be expected to generalize to other settings. 
+        \item It is fine to include aspirational goals as motivation as long as it is clear that these goals are not attained by the paper. 
+    \end{itemize}
+
+\item {\bf Limitations}
+    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We discussed our limitation in conclusion.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper. 
+        \item The authors are encouraged to create a separate "Limitations" section in their paper.
+        \item The paper should point out any strong assumptions and how robust the results are to violations of these assumptions (e.g., independence assumptions, noiseless settings, model well-specification, asymptotic approximations only holding locally). The authors should reflect on how these assumptions might be violated in practice and what the implications would be.
+        \item The authors should reflect on the scope of the claims made, e.g., if the approach was only tested on a few datasets or with a few runs. In general, empirical results often depend on implicit assumptions, which should be articulated.
+        \item The authors should reflect on the factors that influence the performance of the approach. For example, a facial recognition algorithm may perform poorly when image resolution is low or images are taken in low lighting. Or a speech-to-text system might not be used reliably to provide closed captions for online lectures because it fails to handle technical jargon.
+        \item The authors should discuss the computational efficiency of the proposed algorithms and how they scale with dataset size.
+        \item If applicable, the authors should discuss possible limitations of their approach to address problems of privacy and fairness.
+        \item While the authors might fear that complete honesty about limitations might be used by reviewers as grounds for rejection, a worse outcome might be that reviewers discover limitations that aren't acknowledged in the paper. The authors should use their best judgment and recognize that individual actions in favor of transparency play an important role in developing norms that preserve the integrity of the community. Reviewers will be specifically instructed to not penalize honesty concerning limitations.
+    \end{itemize}
+
+\item {\bf Theory Assumptions and Proofs}
+    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: All are stated in Appendix.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include theoretical results. 
+        \item All the theorems, formulas, and proofs in the paper should be numbered and cross-referenced.
+        \item All assumptions should be clearly stated or referenced in the statement of any theorems.
+        \item The proofs can either appear in the main paper or the supplemental material, but if they appear in the supplemental material, the authors are encouraged to provide a short proof sketch to provide intuition. 
+        \item Inversely, any informal proof provided in the core of the paper should be complemented by formal proofs provided in appendix or supplemental material.
+        \item Theorems and Lemmas that the proof relies upon should be properly referenced. 
+    \end{itemize}
+
+    \item {\bf Experimental Result Reproducibility}
+    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
+    \item[] Answer: \answerYes{}% Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We present all details in both main paper and Appendix.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item If the paper includes experiments, a No answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
+        \item If the contribution is a dataset and/or model, the authors should describe the steps taken to make their results reproducible or verifiable. 
+        \item Depending on the contribution, reproducibility can be accomplished in various ways. For example, if the contribution is a novel architecture, describing the architecture fully might suffice, or if the contribution is a specific model and empirical evaluation, it may be necessary to either make it possible for others to replicate the model with the same dataset, or provide access to the model. In general. releasing code and data is often one good way to accomplish this, but reproducibility can also be provided via detailed instructions for how to replicate the results, access to a hosted model (e.g., in the case of a large language model), releasing of a model checkpoint, or other means that are appropriate to the research performed.
+        \item While NeurIPS does not require releasing code, the conference does require all submissions to provide some reasonable avenue for reproducibility, which may depend on the nature of the contribution. For example
+        \begin{enumerate}
+            \item If the contribution is primarily a new algorithm, the paper should make it clear how to reproduce that algorithm.
+            \item If the contribution is primarily a new model architecture, the paper should describe the architecture clearly and fully.
+            \item If the contribution is a new model (e.g., a large language model), then there should either be a way to access this model for reproducing the results or a way to reproduce the model (e.g., with an open-source dataset or instructions for how to construct the dataset).
+            \item We recognize that reproducibility may be tricky in some cases, in which case authors are welcome to describe the particular way they provide for reproducibility. In the case of closed-source models, it may be that access to the model is limited in some way (e.g., to registered users), but it should be possible for other researchers to have some path to reproducing or verifying the results.
+        \end{enumerate}
+    \end{itemize}
+
+
+\item {\bf Open access to data and code}
+    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We use publically available data and code will be released.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that paper does not include experiments requiring code.
+        \item Please see the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item While we encourage the release of code and data, we understand that this might not be possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not including code, unless this is central to the contribution (e.g., for a new open-source benchmark).
+        \item The instructions should contain the exact command and environment needed to run to reproduce the results. See the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item The authors should provide instructions on data access and preparation, including how to access the raw data, preprocessed data, intermediate data, and generated data, etc.
+        \item The authors should provide scripts to reproduce all experimental results for the new proposed method and baselines. If only a subset of experiments are reproducible, they should state which ones are omitted from the script and why.
+        \item At submission time, to preserve anonymity, the authors should release anonymized versions (if applicable).
+        \item Providing as much information as possible in supplemental material (appended to the paper) is recommended, but including URLs to data and code is permitted.
+    \end{itemize}
+
+
+\item {\bf Experimental Setting/Details}
+    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: All results are obtained with 3 runs using different seeds and error bars are reported.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
+        \item The full details can be provided either with the code, in appendix, or as supplemental material.
+    \end{itemize}
+
+\item {\bf Experiment Statistical Significance}
+    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We report the standard deviation in the results, which are averaged over 3 independent runs across different experiments. 
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The authors should answer "Yes" if the results are accompanied by error bars, confidence intervals, or statistical significance tests, at least for the experiments that support the main claims of the paper.
+        \item The factors of variability that the error bars are capturing should be clearly stated (for example, train/test split, initialization, random drawing of some parameter, or overall run with given experimental conditions).
+        \item The method for calculating the error bars should be explained (closed form formula, call to a library function, bootstrap, etc.)
+        \item The assumptions made should be given (e.g., Normally distributed errors).
+        \item It should be clear whether the error bar is the standard deviation or the standard error of the mean.
+        \item It is OK to report 1-sigma error bars, but one should state it. The authors should preferably report a 2-sigma error bar than state that they have a 96\% CI, if the hypothesis of Normality of errors is not verified.
+        \item For asymmetric distributions, the authors should be careful not to show in tables or figures symmetric error bars that would yield results that are out of range (e.g. negative error rates).
+        \item If error bars are reported in tables or plots, The authors should explain in the text how they were calculated and reference the corresponding figures or tables in the text.
+    \end{itemize}
+
+\item {\bf Experiments Compute Resources}
+    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We showed in experiments.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The paper should indicate the type of compute workers CPU or GPU, internal cluster, or cloud provider, including relevant memory and storage.
+        \item The paper should provide the amount of compute required for each of the individual experimental runs as well as estimate the total compute. 
+        \item The paper should disclose whether the full research project required more compute than the experiments reported in the paper (e.g., preliminary or failed experiments that didn't make it into the paper). 
+    \end{itemize}
+    
+\item {\bf Code Of Ethics}
+    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: All behaviors follows NeurIPS Code of Ethics.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
+        \item If the authors answer No, they should explain the special circumstances that require a deviation from the Code of Ethics.
+        \item The authors should make sure to preserve anonymity (e.g., if there is a special consideration due to laws or regulations in their jurisdiction).
+    \end{itemize}
+
+
+\item {\bf Broader Impacts}
+    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We discussed in conclusion.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that there is no societal impact of the work performed.
+        \item If the authors answer NA or No, they should explain why their work has no societal impact or why the paper does not address societal impact.
+        \item Examples of negative societal impacts include potential malicious or unintended uses (e.g., disinformation, generating fake profiles, surveillance), fairness considerations (e.g., deployment of technologies that could make decisions that unfairly impact specific groups), privacy considerations, and security considerations.
+        \item The conference expects that many papers will be foundational research and not tied to particular applications, let alone deployments. However, if there is a direct path to any negative applications, the authors should point it out. For example, it is legitimate to point out that an improvement in the quality of generative models could be used to generate deepfakes for disinformation. On the other hand, it is not needed to point out that a generic algorithm for optimizing neural networks could enable people to train models that generate Deepfakes faster.
+        \item The authors should consider possible harms that could arise when the technology is being used as intended and functioning correctly, harms that could arise when the technology is being used as intended but gives incorrect results, and harms following from (intentional or unintentional) misuse of the technology.
+        \item If there are negative societal impacts, the authors could also discuss possible mitigation strategies (e.g., gated release of models, providing defenses in addition to attacks, mechanisms for monitoring misuse, mechanisms to monitor how a system learns from feedback over time, improving the efficiency and accessibility of ML).
+    \end{itemize}
+    
+\item {\bf Safeguards}
+    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: NA
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper poses no such risks.
+        \item Released models that have a high risk for misuse or dual-use should be released with necessary safeguards to allow for controlled use of the model, for example by requiring that users adhere to usage guidelines or restrictions to access the model or implementing safety filters. 
+        \item Datasets that have been scraped from the Internet could pose safety risks. The authors should describe how they avoided releasing unsafe images.
+        \item We recognize that providing effective safeguards is challenging, and many papers do not require this, but we encourage authors to take this into account and make a best faith effort.
+    \end{itemize}
+
+\item {\bf Licenses for existing assets}
+    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
+    \item[] Answer:\answerYes{}% Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: We discussed in experiments.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not use existing assets.
+        \item The authors should cite the original paper that produced the code package or dataset.
+        \item The authors should state which version of the asset is used and, if possible, include a URL.
+        \item The name of the license (e.g., CC-BY 4.0) should be included for each asset.
+        \item For scraped data from a particular source (e.g., website), the copyright and terms of service of that source should be provided.
+        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. For popular datasets, \url{paperswithcode.com/datasets} has curated licenses for some datasets. Their licensing guide can help determine the license of a dataset.
+        \item For existing datasets that are re-packaged, both the original license and the license of the derived asset (if it has changed) should be provided.
+        \item If this information is not available online, the authors are encouraged to reach out to the asset's creators.
+    \end{itemize}
+
+\item {\bf New Assets}
+    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: NA
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not release new assets.
+        \item Researchers should communicate the details of the dataset/code/model as part of their submissions via structured templates. This includes details about training, license, limitations, etc. 
+        \item The paper should discuss whether and how consent was obtained from people whose asset is used.
+        \item At submission time, remember to anonymize your assets (if applicable). You can either create an anonymized URL or include an anonymized zip file.
+    \end{itemize}
+
+\item {\bf Crowdsourcing and Research with Human Subjects}
+    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)? 
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: NA.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Including this information in the supplemental material is fine, but if the main contribution of the paper involves human subjects, then as much detail as possible should be included in the main paper. 
+        \item According to the NeurIPS Code of Ethics, workers involved in data collection, curation, or other labor should be paid at least the minimum wage in the country of the data collector. 
+    \end{itemize}
+
+\item {\bf Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects}
+    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: NA.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Depending on the country in which research is conducted, IRB approval (or equivalent) may be required for any human subjects research. If you obtained IRB approval, you should clearly state this in the paper. 
+        \item We recognize that the procedures for this may vary significantly between institutions and locations, and we expect authors to adhere to the NeurIPS Code of Ethics and the guidelines for their institution. 
+        \item For initial submissions, do not include any information that would break anonymity (if applicable), such as the institution conducting the review.
+    \end{itemize}
+
+\end{enumerate}
+
+
+\end{document}

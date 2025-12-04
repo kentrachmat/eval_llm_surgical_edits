@@ -1,0 +1,21 @@
+
+\section{Discussion and Future Work}
+\label{sec:conclusion}
+
+In this paper, we have developed a general and lightweight protocol to efficiently examine whether models pre-trained on large scale image datasets, like CLIP, DINO, VQGAN and Stable Diffusion, have explicit feature representations for different properties of the 3D physical scene. 
+
+It is interesting to find that different time steps of Stable Diffusion and different layers of DINOv2 representations can handle several different physical properties at a state-of-the-art performance, indicating the potential of utilising the Stable Diffusion and DINOv2 models for different downstream tasks. 
+
+However, for some properties
+such as material and occlusion,
+the networks are not distilling the information in a manner that  can be used by a linear probe. This could indicate that these properties are not modelled well by the network or that more than a linear probe is required to tease them out. 
+We show examples of the prediction failures for these properties in Figure~\ref{figure:supple_unet}.
+In the appendix, we show that such prediction failures also occur
+in generated (i.e.\ synthetic) images.
+It is worth noting that occlusion is a challenge even for the powerful Segment Anything Model (SAM)~\citep{kirillov2023sam}, where  the model `hallucinates small disconnected components at times'.
+
+In the appendix, we provide preliminary results of using the probed Stable Diffusion feature for downstream tasks (Section~\ref{sec:supple_preliminary}). We also provide examples of another use case of spotting  Stable Diffusion generated images based on the properties that the model is not good at (Section~\ref{sec:supple_sd_generated_img}).
+
+This paper has given some insight into answering the question: `To what extent do large vision models understand the 3D scene' for real images. 
+Of course, there are more properties that could be investigated in the manner proposed here. For example,  contact relations~\citep{fouhey20163d} and object orientation~\citep{xiang2018posecnn},
+as well as the more nuanced non-symmetric formulations of the current questions. 

@@ -1,0 +1,74 @@
+
+\documentclass{article} % For LaTeX2e
+
+\usepackage[table]{xcolor}
+\usepackage{template/iclr2024_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{template/math_commands.tex}
+
+\definecolor{citecolor}{HTML}{0071BC}
+\definecolor{linkcolor}{HTML}{ED1C24}
+
+\usepackage[pagebackref=false, breaklinks=true, letterpaper=true, colorlinks, citecolor=citecolor, linkcolor=linkcolor, bookmarks=false]{hyperref}
+\usepackage{url}
+\usepackage{graphicx, mathtools, amsmath, amssymb, subcaption, multirow, overpic, textpos, pifont, xfrac, bbm}
+\usepackage{microtype}
+\usepackage[skip=4pt]{caption}
+\usepackage{pythonhighlight}
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{epsfig}
+\usepackage{booktabs}
+\usepackage[scaled=0.8]{FiraMono}
+\usepackage[normalem]{ulem}
+\usepackage{wrapfig}
+\usepackage{adjustbox}
+\usepackage{twemojis}
+
+\input{definitions}
+
+\newcommand{\titlespace}{$\quad$}
+\newcommand{\titleheight}{\vspace{3pt}}
+
+\title{\name{} Merging Models from Different Tasks \textit{without Training}}
+\vspace{-0.4em}
+\author{%
+  \centerline{George Stoica\thanks{Equal Contribution. Code: \url{https://github.com/gstoica27/ZipIt}.}\titlespace{}\titlespace{} Daniel Bolya\printfnsymbol{1}}\\
+  \centerline{\bf Jakob Bjorner\titlespace{} Pratik Ramesh\titlespace{} Taylor Hearn\titlespace{} Judy Hoffman}\titleheight{}\\
+    \centerline{Georgia Tech}\titleheight{}\\
+  % \centerline{\texttt{\{gstoica3,dbolya\}@gatech.edu}}\\
+  \centerline{\texttt{\{gstoica3,dbolya,jbjorner3,pramesh39,thearn6,judy\}@gatech.edu}}
+}
+
+\iclrfinalcopy
+
+\begin{document}
+
+
+\maketitle
+% Remove page # from the first page of camera-ready.
+% \ificcvfinal\thispagestyle{empty}\fi
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+%%%%%%%%% ABSTRACT
+\vspace{-1.em}
+\input{sections/0_abstract.tex}
+\vspace{-0.7em}
+\input{sections/1_introduction.tex}
+\input{sections/2_related_work.tex}
+\input{sections/3_motivation.tex}
+\input{sections/4_approach.tex}
+\input{sections/5_results.tex}
+\input{sections/6_analysis.tex}
+\input{sections/7_conclusion.tex}
+\input{sections/8_reproducability.tex}
+
+\bibliography{main}
+\bibliographystyle{template/iclr2024_conference}
+\clearpage
+\appendix
+\input{sections/appendix}
+
+
+\end{document}

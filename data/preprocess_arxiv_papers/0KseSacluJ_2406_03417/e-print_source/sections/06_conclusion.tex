@@ -1,0 +1,12 @@
+%\section{Limitations}
+
+
+\section{Conclusions and Future Work}
+
+This paper has introduced \modelname{}, a novel neural surface representation. It is based on the theoretical results of using a ReLU-based MLP to encode geometric shapes. The results strongly motivate the use of local coordinate frames, which encompass the coordinate fields, to transform a point before decoding its SDF value using an MLP. This leads to a hybrid representation combined with coordinate frames associated with local voxels. The experimental results show a strong generalization behavior of \modelname{} in new instances for shape reconstruction, which significantly outperforms previous generalizable methods and achieves comparable results to shape-specific methods.
+
+%\vspace{-0.05in}
+\paragraph{Limitations.} One limitation of \modelname{} is that it is based on local shapes and cannot be used for the shape completion task. Different from DeepSDF, which learns global shape priors and can fill the large missing components in the input, \modelname{} is restricted to observable parts. We plan to incorporate more global priors into \modelname{}.
+Besides, with a fixed cell resolution, the local shape analysis is broken when a local cell intersects with thin structures. We plan to extend it with adaptive local cell resolutions.
+
+\paragraph{Broader Impact.} \modelname{} is a neural surface representation, which have the potential to be used for 3D reconstruction and generation.

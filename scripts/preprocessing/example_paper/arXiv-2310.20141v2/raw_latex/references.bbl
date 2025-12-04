@@ -1,0 +1,494 @@
+\begin{thebibliography}{97}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2019)Agarwal, Jiang, Kakade, and Sun]{agarwal2019reinforcement}
+Alekh Agarwal, Nan Jiang, Sham~M Kakade, and Wen Sun.
+\newblock Reinforcement learning: Theory and algorithms.
+\newblock \emph{CS Dept., UW Seattle, Seattle, WA, USA, Tech. Rep}, 32, 2019.
+
+\bibitem[Andrychowicz et~al.(2017)Andrychowicz, Wolski, Ray, Schneider, Fong, Welinder, McGrew, Tobin, Pieter~Abbeel, and Zaremba]{andrychowicz2017hindsight}
+Marcin Andrychowicz, Filip Wolski, Alex Ray, Jonas Schneider, Rachel Fong, Peter Welinder, Bob McGrew, Josh Tobin, OpenAI Pieter~Abbeel, and Wojciech Zaremba.
+\newblock Hindsight experience replay.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
+
+\bibitem[Arora et~al.(2019)Arora, Khandeparkar, Khodak, Plevrakis, and Saunshi]{arora2019theoretical}
+Sanjeev Arora, Hrishikesh Khandeparkar, Mikhail Khodak, Orestis Plevrakis, and Nikunj Saunshi.
+\newblock A theoretical analysis of contrastive unsupervised representation learning.
+\newblock In \emph{36th International Conference on Machine Learning, ICML 2019}, pp.\  9904--9923. International Machine Learning Society (IMLS), 2019.
+
+\bibitem[Barreto et~al.(2017)Barreto, Dabney, Munos, Hunt, Schaul, van Hasselt, and Silver]{barreto2017successor}
+Andr{\'e} Barreto, Will Dabney, R{\'e}mi Munos, Jonathan~J Hunt, Tom Schaul, Hado~P van Hasselt, and David Silver.
+\newblock Successor features for transfer in reinforcement learning.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
+
+\bibitem[Barreto et~al.(2019)Barreto, Borsa, Hou, Comanici, Ayg{\"u}n, Hamel, Toyama, Mourad, Silver, Precup, et~al.]{barreto2019option}
+Andr{\'e} Barreto, Diana Borsa, Shaobo Hou, Gheorghe Comanici, Eser Ayg{\"u}n, Philippe Hamel, Daniel Toyama, Shibl Mourad, David Silver, Doina Precup, et~al.
+\newblock The option keyboard: Combining skills in reinforcement learning.
+\newblock \emph{Advances in Neural Information Processing Systems}, 32, 2019.
+
+\bibitem[Bertsekas \& Tsitsiklis(1995)Bertsekas and Tsitsiklis]{bertsekas1995neuro}
+Dimitri~P Bertsekas and John~N Tsitsiklis.
+\newblock Neuro-dynamic programming: an overview.
+\newblock In \emph{Proceedings of 1995 34th IEEE conference on decision and control}, volume~1, pp.\  560--564. IEEE, 1995.
+
+\bibitem[Blier et~al.(2021)Blier, Tallec, and Ollivier]{blier2021learning}
+L{\'e}onard Blier, Corentin Tallec, and Yann Ollivier.
+\newblock Learning successor states and goal-dependent values: A mathematical viewpoint.
+\newblock \emph{arXiv preprint arXiv:2101.07123}, 2021.
+
+\bibitem[Bradbury et~al.(2018)Bradbury, Frostig, Hawkins, Johnson, Leary, Maclaurin, Necula, Paszke, VanderPlas, Wanderman-Milne, et~al.]{bradbury2018jax}
+James Bradbury, Roy Frostig, Peter Hawkins, Matthew~James Johnson, Chris Leary, Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye Wanderman-Milne, et~al.
+\newblock Jax: composable transformations of python+ numpy programs.
+\newblock 2018.
+
+\bibitem[Campos et~al.(2020)Campos, Trott, Xiong, Socher, Gir{\'o}-i Nieto, and Torres]{campos2020explore}
+V{\'\i}ctor Campos, Alexander Trott, Caiming Xiong, Richard Socher, Xavier Gir{\'o}-i Nieto, and Jordi Torres.
+\newblock Explore, discover and learn: Unsupervised discovery of state-covering skills.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  1317--1327. PMLR, 2020.
+
+\bibitem[Chane-Sane et~al.(2021)Chane-Sane, Schmid, and Laptev]{chane2021goal}
+Elliot Chane-Sane, Cordelia Schmid, and Ivan Laptev.
+\newblock Goal-conditioned reinforcement learning with imagined subgoals.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  1430--1440. PMLR, 2021.
+
+\bibitem[Chen et~al.(2021)Chen, Lu, Rajeswaran, Lee, Grover, Laskin, Abbeel, Srinivas, and Mordatch]{chen2021decision}
+Lili Chen, Kevin Lu, Aravind Rajeswaran, Kimin Lee, Aditya Grover, Misha Laskin, Pieter Abbeel, Aravind Srinivas, and Igor Mordatch.
+\newblock Decision transformer: Reinforcement learning via sequence modeling.
+\newblock \emph{Advances in neural information processing systems}, 34:\penalty0 15084--15097, 2021.
+
+\bibitem[Chen et~al.(2020)Chen, Kornblith, Norouzi, and Hinton]{chen2020simple}
+Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey Hinton.
+\newblock A simple framework for contrastive learning of visual representations.
+\newblock In \emph{International conference on machine learning}, pp.\  1597--1607. PMLR, 2020.
+
+\bibitem[Choi et~al.(2021)Choi, Sharma, Lee, Levine, and Gu]{choi2021variational}
+Jongwook Choi, Archit Sharma, Honglak Lee, Sergey Levine, and Shixiang~Shane Gu.
+\newblock Variational empowerment as representation learning for goal-conditioned reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  1953--1963. PMLR, 2021.
+
+\bibitem[Chopra et~al.(2005)Chopra, Hadsell, and LeCun]{chopra2005learning}
+Sumit Chopra, Raia Hadsell, and Yann LeCun.
+\newblock Learning a similarity metric discriminatively, with application to face verification.
+\newblock In \emph{2005 IEEE computer society conference on computer vision and pattern recognition (CVPR'05)}, volume~1, pp.\  539--546. IEEE, 2005.
+
+\bibitem[Dayan(1993)]{dayan1993improving}
+Peter Dayan.
+\newblock Improving generalization for temporal difference learning: The successor representation.
+\newblock \emph{Neural computation}, 5\penalty0 (4):\penalty0 613--624, 1993.
+
+\bibitem[Ding et~al.(2019)Ding, Florensa, Abbeel, and Phielipp]{ding2019goal}
+Yiming Ding, Carlos Florensa, Pieter Abbeel, and Mariano Phielipp.
+\newblock Goal-conditioned imitation learning.
+\newblock \emph{Advances in neural information processing systems}, 32, 2019.
+
+\bibitem[Dubi \& Horowitz(1979)Dubi and Horowitz]{dubi1979interpretation}
+A~Dubi and YS~Horowitz.
+\newblock The interpretation of conditional monte carlo as a form of importance sampling.
+\newblock \emph{SIAM Journal on Applied Mathematics}, 36\penalty0 (1):\penalty0 115--122, 1979.
+
+\bibitem[Durugkar et~al.(2021)Durugkar, Tec, Niekum, and Stone]{durugkar2021adversarial}
+Ishan Durugkar, Mauricio Tec, Scott Niekum, and Peter Stone.
+\newblock Adversarial intrinsic motivation for reinforcement learning.
+\newblock \emph{Advances in Neural Information Processing Systems}, 34:\penalty0 8622--8636, 2021.
+
+\bibitem[Emmons et~al.(2021)Emmons, Eysenbach, Kostrikov, and Levine]{emmons2021rvs}
+Scott Emmons, Benjamin Eysenbach, Ilya Kostrikov, and Sergey Levine.
+\newblock Rvs: What is essential for offline rl via supervised learning?
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+
+\bibitem[Ernst et~al.(2005)Ernst, Geurts, and Wehenkel]{ernst2005tree}
+Damien Ernst, Pierre Geurts, and Louis Wehenkel.
+\newblock Tree-based batch mode reinforcement learning.
+\newblock \emph{Journal of Machine Learning Research}, 6, 2005.
+
+\bibitem[Eysenbach et~al.(2018)Eysenbach, Gupta, Ibarz, and Levine]{eysenbach2018diversity}
+Benjamin Eysenbach, Abhishek Gupta, Julian Ibarz, and Sergey Levine.
+\newblock Diversity is all you need: Learning skills without a reward function.
+\newblock \emph{arXiv preprint arXiv:1802.06070}, 2018.
+
+\bibitem[Eysenbach et~al.(2019)Eysenbach, Salakhutdinov, and Levine]{eysenbach2019search}
+Benjamin Eysenbach, Ruslan Salakhutdinov, and Sergey Levine.
+\newblock Search on the replay buffer: Bridging planning and reinforcement learning.
+\newblock \emph{Advances in Neural Information Processing Systems}, 32, 2019.
+
+\bibitem[Eysenbach et~al.(2020)Eysenbach, Salakhutdinov, and Levine]{eysenbach2020c}
+Benjamin Eysenbach, Ruslan Salakhutdinov, and Sergey Levine.
+\newblock C-learning: Learning to achieve goals via recursive classification.
+\newblock \emph{arXiv preprint arXiv:2011.08909}, 2020.
+
+\bibitem[Eysenbach et~al.(2022)Eysenbach, Zhang, Levine, and Salakhutdinov]{eysenbach2022contrastive}
+Benjamin Eysenbach, Tianjun Zhang, Sergey Levine, and Russ~R Salakhutdinov.
+\newblock Contrastive learning as goal-conditioned reinforcement learning.
+\newblock \emph{Advances in Neural Information Processing Systems}, 35:\penalty0 35603--35620, 2022.
+
+\bibitem[Fang et~al.(2022)Fang, Yin, Nair, and Levine]{fang2022planning}
+Kuan Fang, Patrick Yin, Ashvin Nair, and Sergey Levine.
+\newblock Planning to practice: Efficient online fine-tuning by composing goals in latent space.
+\newblock In \emph{2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, pp.\  4076--4083. IEEE, 2022.
+
+\bibitem[Fang et~al.(2023)Fang, Yin, Nair, Walke, Yan, and Levine]{fang2023generalization}
+Kuan Fang, Patrick Yin, Ashvin Nair, Homer~Rich Walke, Gengchen Yan, and Sergey Levine.
+\newblock Generalization with lossy affordances: Leveraging broad offline data for learning visuomotor tasks.
+\newblock In \emph{Conference on Robot Learning}, pp.\  106--117. PMLR, 2023.
+
+\bibitem[Fu et~al.(2019)Fu, Kumar, Soh, and Levine]{fu2019diagnosing}
+Justin Fu, Aviral Kumar, Matthew Soh, and Sergey Levine.
+\newblock Diagnosing bottlenecks in deep q-learning algorithms.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  2021--2030. PMLR, 2019.
+
+\bibitem[Fu et~al.(2020)Fu, Kumar, Nachum, Tucker, and Levine]{fu2020d4rl}
+Justin Fu, Aviral Kumar, Ofir Nachum, George Tucker, and Sergey Levine.
+\newblock D4rl: Datasets for deep data-driven reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2004.07219}, 2020.
+
+\bibitem[Fujimoto \& Gu(2021)Fujimoto and Gu]{fujimoto2021minimalist}
+Scott Fujimoto and Shixiang~Shane Gu.
+\newblock A minimalist approach to offline reinforcement learning.
+\newblock \emph{Advances in neural information processing systems}, 34:\penalty0 20132--20145, 2021.
+
+\bibitem[Gao et~al.(2021)Gao, Yao, and Chen]{gao2021simcse}
+Tianyu Gao, Xingcheng Yao, and Danqi Chen.
+\newblock Simcse: Simple contrastive learning of sentence embeddings.
+\newblock In \emph{2021 Conference on Empirical Methods in Natural Language Processing, EMNLP 2021}, pp.\  6894--6910. Association for Computational Linguistics (ACL), 2021.
+
+\bibitem[Gershman(2018)]{gershman2018successor}
+Samuel~J Gershman.
+\newblock The successor representation: its computational logic and neural substrates.
+\newblock \emph{Journal of Neuroscience}, 38\penalty0 (33):\penalty0 7193--7200, 2018.
+
+\bibitem[Ghosh et~al.(2020)Ghosh, Gupta, Reddy, Fu, Devin, Eysenbach, and Levine]{ghosh2020learning}
+Dibya Ghosh, Abhishek Gupta, Ashwin Reddy, Justin Fu, Coline~Manon Devin, Benjamin Eysenbach, and Sergey Levine.
+\newblock Learning to reach goals via iterated supervised learning.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+
+\bibitem[Giles(2015)]{giles2015multilevel}
+Michael~B Giles.
+\newblock Multilevel monte carlo methods.
+\newblock \emph{Acta numerica}, 24:\penalty0 259--328, 2015.
+
+\bibitem[Gregor et~al.(2016)Gregor, Rezende, and Wierstra]{gregor2016variational}
+Karol Gregor, Danilo~Jimenez Rezende, and Daan Wierstra.
+\newblock Variational intrinsic control.
+\newblock \emph{arXiv preprint arXiv:1611.07507}, 2016.
+
+\bibitem[Grill et~al.(2020)Grill, Strub, Altch{\'e}, Tallec, Richemond, Buchatskaya, Doersch, Avila~Pires, Guo, Gheshlaghi~Azar, et~al.]{grill2020bootstrap}
+Jean-Bastien Grill, Florian Strub, Florent Altch{\'e}, Corentin Tallec, Pierre Richemond, Elena Buchatskaya, Carl Doersch, Bernardo Avila~Pires, Zhaohan Guo, Mohammad Gheshlaghi~Azar, et~al.
+\newblock Bootstrap your own latent-a new approach to self-supervised learning.
+\newblock \emph{Advances in neural information processing systems}, 33:\penalty0 21271--21284, 2020.
+
+\bibitem[Gupta et~al.(2020)Gupta, Kumar, Lynch, Levine, and Hausman]{gupta2020relay}
+Abhishek Gupta, Vikash Kumar, Corey Lynch, Sergey Levine, and Karol Hausman.
+\newblock Relay policy learning: Solving long-horizon tasks via imitation and reinforcement learning.
+\newblock In \emph{Conference on Robot Learning}, pp.\  1025--1037. PMLR, 2020.
+
+\bibitem[Gutmann \& Hyv{\"a}rinen(2010)Gutmann and Hyv{\"a}rinen]{gutmann2010noise}
+Michael Gutmann and Aapo Hyv{\"a}rinen.
+\newblock Noise-contrastive estimation: A new estimation principle for unnormalized statistical models.
+\newblock In \emph{Proceedings of the thirteenth international conference on artificial intelligence and statistics}, pp.\  297--304. JMLR Workshop and Conference Proceedings, 2010.
+
+\bibitem[Hammersley(1956)]{hammersley1956conditional}
+JM~Hammersley.
+\newblock Conditional monte carlo.
+\newblock \emph{Journal of the ACM (JACM)}, 3\penalty0 (2):\penalty0 73--76, 1956.
+
+\bibitem[Hansen-Estruch et~al.(2022)Hansen-Estruch, Zhang, Nair, Yin, and Levine]{hansen2022bisimulation}
+Philippe Hansen-Estruch, Amy Zhang, Ashvin Nair, Patrick Yin, and Sergey Levine.
+\newblock Bisimulation makes analogies in goal-conditioned reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  8407--8426. PMLR, 2022.
+
+\bibitem[He et~al.(2022)He, Chen, Xie, Li, Doll{\'a}r, and Girshick]{he2022masked}
+Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Doll{\'a}r, and Ross Girshick.
+\newblock Masked autoencoders are scalable vision learners.
+\newblock In \emph{Proceedings of the IEEE/CVF conference on computer vision and pattern recognition}, pp.\  16000--16009, 2022.
+
+\bibitem[Henaff(2020)]{henaff2020data}
+Olivier Henaff.
+\newblock Data-efficient image recognition with contrastive predictive coding.
+\newblock In \emph{International conference on machine learning}, pp.\  4182--4192. PMLR, 2020.
+
+\bibitem[Ho \& Ermon(2016)Ho and Ermon]{ho2016generative}
+Jonathan Ho and Stefano Ermon.
+\newblock Generative adversarial imitation learning.
+\newblock \emph{Advances in neural information processing systems}, 29, 2016.
+
+\bibitem[Janner et~al.(2020)Janner, Mordatch, and Levine]{janner2020gamma}
+Michael Janner, Igor Mordatch, and Sergey Levine.
+\newblock gamma-models: Generative temporal difference learning for infinite-horizon prediction.
+\newblock \emph{Advances in Neural Information Processing Systems}, 33:\penalty0 1724--1735, 2020.
+
+\bibitem[Jia et~al.(2021)Jia, Yang, Xia, Chen, Parekh, Pham, Le, Sung, Li, and Duerig]{jia2021scaling}
+Chao Jia, Yinfei Yang, Ye~Xia, Yi-Ting Chen, Zarana Parekh, Hieu Pham, Quoc Le, Yun-Hsuan Sung, Zhen Li, and Tom Duerig.
+\newblock Scaling up visual and vision-language representation learning with noisy text supervision.
+\newblock In \emph{International conference on machine learning}, pp.\  4904--4916. PMLR, 2021.
+
+\bibitem[Jozefowicz et~al.(2016)Jozefowicz, Vinyals, Schuster, Shazeer, and Wu]{jozefowicz2016exploring}
+Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu.
+\newblock Exploring the limits of language modeling.
+\newblock \emph{arXiv preprint arXiv:1602.02410}, 2016.
+
+\bibitem[Kostrikov et~al.(2021)Kostrikov, Nair, and Levine]{kostrikov2021offline}
+Ilya Kostrikov, Ashvin Nair, and Sergey Levine.
+\newblock Offline reinforcement learning with implicit q-learning.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+
+\bibitem[Kumar et~al.(2019)Kumar, Fu, Soh, Tucker, and Levine]{kumar2019stabilizing}
+Aviral Kumar, Justin Fu, Matthew Soh, George Tucker, and Sergey Levine.
+\newblock Stabilizing off-policy q-learning via bootstrapping error reduction.
+\newblock \emph{Advances in Neural Information Processing Systems}, 32, 2019.
+
+\bibitem[Kumar et~al.(2020)Kumar, Zhou, Tucker, and Levine]{kumar2020conservative}
+Aviral Kumar, Aurick Zhou, George Tucker, and Sergey Levine.
+\newblock Conservative q-learning for offline reinforcement learning.
+\newblock \emph{Advances in Neural Information Processing Systems}, 33:\penalty0 1179--1191, 2020.
+
+\bibitem[Laskin et~al.(2020{\natexlab{a}})Laskin, Srinivas, and Abbeel]{laskin2020curl}
+Michael Laskin, Aravind Srinivas, and Pieter Abbeel.
+\newblock Curl: Contrastive unsupervised representations for reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  5639--5650. PMLR, 2020{\natexlab{a}}.
+
+\bibitem[Laskin et~al.(2020{\natexlab{b}})Laskin, Lee, Stooke, Pinto, Abbeel, and Srinivas]{laskin2020reinforcement}
+Misha Laskin, Kimin Lee, Adam Stooke, Lerrel Pinto, Pieter Abbeel, and Aravind Srinivas.
+\newblock Reinforcement learning with augmented data.
+\newblock \emph{Advances in neural information processing systems}, 33:\penalty0 19884--19895, 2020{\natexlab{b}}.
+
+\bibitem[Levy et~al.(2018)Levy, Konidaris, Platt, and Saenko]{levy2018learning}
+Andrew Levy, George Konidaris, Robert Platt, and Kate Saenko.
+\newblock Learning multi-level hierarchies with hindsight.
+\newblock In \emph{International Conference on Learning Representations}, 2018.
+
+\bibitem[Linsker(1988)]{linsker1988self}
+Ralph Linsker.
+\newblock Self-organization in a perceptual network.
+\newblock \emph{Computer}, 21\penalty0 (3):\penalty0 105--117, 1988.
+
+\bibitem[Logeswaran \& Lee(2018)Logeswaran and Lee]{logeswaran2018efficient}
+Lajanugen Logeswaran and Honglak Lee.
+\newblock An efficient framework for learning sentence representations.
+\newblock \emph{arXiv preprint arXiv:1803.02893}, 2018.
+
+\bibitem[Lynch et~al.(2020)Lynch, Khansari, Xiao, Kumar, Tompson, Levine, and Sermanet]{lynch2020learning}
+Corey Lynch, Mohi Khansari, Ted Xiao, Vikash Kumar, Jonathan Tompson, Sergey Levine, and Pierre Sermanet.
+\newblock Learning latent plans from play.
+\newblock In \emph{Conference on robot learning}, pp.\  1113--1132. PMLR, 2020.
+
+\bibitem[Ma et~al.(2022)Ma, Sodhani, Jayaraman, Bastani, Kumar, and Zhang]{ma2022vip}
+Yecheng~Jason Ma, Shagun Sodhani, Dinesh Jayaraman, Osbert Bastani, Vikash Kumar, and Amy Zhang.
+\newblock Vip: Towards universal visual reward and representation via value-implicit pre-training.
+\newblock In \emph{The Eleventh International Conference on Learning Representations}, 2022.
+
+\bibitem[Ma \& Collins(2018)Ma and Collins]{ma2018noise}
+Zhuang Ma and Michael Collins.
+\newblock Noise contrastive estimation and negative sampling for conditional models: Consistency and statistical efficiency.
+\newblock \emph{arXiv preprint arXiv:1809.01812}, 2018.
+
+\bibitem[Mazoure et~al.(2022)Mazoure, Eysenbach, Nachum, and Tompson]{mazoure2022contrastive}
+Bogdan Mazoure, Benjamin Eysenbach, Ofir Nachum, and Jonathan Tompson.
+\newblock Contrastive value learning: Implicit models for simple offline rl.
+\newblock \emph{arXiv preprint arXiv:2211.02100}, 2022.
+
+\bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare, Graves, Riedmiller, Fidjeland, Ostrovski, et~al.]{mnih2015human}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei~A Rusu, Joel Veness, Marc~G Bellemare, Alex Graves, Martin Riedmiller, Andreas~K Fidjeland, Georg Ostrovski, et~al.
+\newblock Human-level control through deep reinforcement learning.
+\newblock \emph{nature}, 518\penalty0 (7540):\penalty0 529--533, 2015.
+
+\bibitem[Nachum et~al.(2018)Nachum, Gu, Lee, and Levine]{nachum2018data}
+Ofir Nachum, Shixiang~Shane Gu, Honglak Lee, and Sergey Levine.
+\newblock Data-efficient hierarchical reinforcement learning.
+\newblock \emph{Advances in neural information processing systems}, 31, 2018.
+
+\bibitem[Nair et~al.(2020{\natexlab{a}})Nair, Bahl, Khazatsky, Pong, Berseth, and Levine]{nair2020contextual}
+Ashvin Nair, Shikhar Bahl, Alexander Khazatsky, Vitchyr Pong, Glen Berseth, and Sergey Levine.
+\newblock Contextual imagined goals for self-supervised robotic learning.
+\newblock In \emph{Conference on Robot Learning}, pp.\  530--539. PMLR, 2020{\natexlab{a}}.
+
+\bibitem[Nair et~al.(2018)Nair, Pong, Dalal, Bahl, Lin, and Levine]{nair2018visual}
+Ashvin~V Nair, Vitchyr Pong, Murtaza Dalal, Shikhar Bahl, Steven Lin, and Sergey Levine.
+\newblock Visual reinforcement learning with imagined goals.
+\newblock \emph{Advances in neural information processing systems}, 31, 2018.
+
+\bibitem[Nair \& Finn(2019)Nair and Finn]{nair2019hierarchical}
+Suraj Nair and Chelsea Finn.
+\newblock Hierarchical foresight: Self-supervised learning of long-horizon tasks via visual subgoal generation.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+
+\bibitem[Nair et~al.(2020{\natexlab{b}})Nair, Savarese, and Finn]{nair2020goal}
+Suraj Nair, Silvio Savarese, and Chelsea Finn.
+\newblock Goal-aware prediction: Learning to model what matters.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  7207--7219. PMLR, 2020{\natexlab{b}}.
+
+\bibitem[Nair et~al.(2022)Nair, Rajeswaran, Kumar, Finn, and Gupta]{nair2022r3m}
+Suraj Nair, Aravind Rajeswaran, Vikash Kumar, Chelsea Finn, and Abhinav Gupta.
+\newblock R3m: A universal visual representation for robot manipulation.
+\newblock \emph{arXiv preprint arXiv:2203.12601}, 2022.
+
+\bibitem[Oh et~al.(2018)Oh, Guo, Singh, and Lee]{oh2018self}
+Junhyuk Oh, Yijie Guo, Satinder Singh, and Honglak Lee.
+\newblock Self-imitation learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  3878--3887. PMLR, 2018.
+
+\bibitem[Oh~Song et~al.(2016)Oh~Song, Xiang, Jegelka, and Savarese]{oh2016deep}
+Hyun Oh~Song, Yu~Xiang, Stefanie Jegelka, and Silvio Savarese.
+\newblock Deep metric learning via lifted structured feature embedding.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.\  4004--4012, 2016.
+
+\bibitem[Oord et~al.(2018)Oord, Li, and Vinyals]{oord2018representation}
+Aaron van~den Oord, Yazhe Li, and Oriol Vinyals.
+\newblock Representation learning with contrastive predictive coding.
+\newblock \emph{arXiv preprint arXiv:1807.03748}, 2018.
+
+\bibitem[Pertsch et~al.(2020)Pertsch, Rybkin, Ebert, Zhou, Jayaraman, Finn, and Levine]{pertsch2020long}
+Karl Pertsch, Oleh Rybkin, Frederik Ebert, Shenghao Zhou, Dinesh Jayaraman, Chelsea Finn, and Sergey Levine.
+\newblock Long-horizon visual planning with goal-conditioned hierarchical predictors.
+\newblock \emph{Advances in Neural Information Processing Systems}, 33:\penalty0 17321--17333, 2020.
+
+\bibitem[Plappert et~al.(2018)Plappert, Andrychowicz, Ray, McGrew, Baker, Powell, Schneider, Tobin, Chociej, Welinder, et~al.]{plappert2018multi}
+Matthias Plappert, Marcin Andrychowicz, Alex Ray, Bob McGrew, Bowen Baker, Glenn Powell, Jonas Schneider, Josh Tobin, Maciek Chociej, Peter Welinder, et~al.
+\newblock Multi-goal reinforcement learning: Challenging robotics environments and request for research.
+\newblock \emph{arXiv preprint arXiv:1802.09464}, 2018.
+
+\bibitem[Poole et~al.(2019)Poole, Ozair, Van Den~Oord, Alemi, and Tucker]{poole2019variational}
+Ben Poole, Sherjil Ozair, Aaron Van Den~Oord, Alex Alemi, and George Tucker.
+\newblock On variational bounds of mutual information.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  5171--5180. PMLR, 2019.
+
+\bibitem[Precup et~al.(2000)Precup, Sutton, and Singh]{precup2000eligibility}
+Doina Precup, Richard~S Sutton, and Satinder~P Singh.
+\newblock Eligibility traces for off-policy policy evaluation.
+\newblock In \emph{Proceedings of the Seventeenth International Conference on Machine Learning}, pp.\  759--766, 2000.
+
+\bibitem[Precup et~al.(2001)Precup, Sutton, and Dasgupta]{precup2001off}
+Doina Precup, Richard~S Sutton, and Sanjoy Dasgupta.
+\newblock Off-policy temporal difference learning with function approximation.
+\newblock In \emph{Proceedings of the Eighteenth International Conference on Machine Learning}, pp.\  417--424, 2001.
+
+\bibitem[Radford et~al.(2021)Radford, Kim, Hallacy, Ramesh, Goh, Agarwal, Sastry, Askell, Mishkin, Clark, et~al.]{radford2021learning}
+Alec Radford, Jong~Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et~al.
+\newblock Learning transferable visual models from natural language supervision.
+\newblock In \emph{International conference on machine learning}, pp.\  8748--8763. PMLR, 2021.
+
+\bibitem[Rainforth et~al.(2018)Rainforth, Cornish, Yang, Warrington, and Wood]{rainforth2018nesting}
+Tom Rainforth, Rob Cornish, Hongseok Yang, Andrew Warrington, and Frank Wood.
+\newblock On nesting monte carlo estimators.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  4267--4276. PMLR, 2018.
+
+\bibitem[Riedmiller et~al.(2018)Riedmiller, Hafner, Lampe, Neunert, Degrave, Wiele, Mnih, Heess, and Springenberg]{riedmiller2018learning}
+Martin Riedmiller, Roland Hafner, Thomas Lampe, Michael Neunert, Jonas Degrave, Tom Wiele, Vlad Mnih, Nicolas Heess, and Jost~Tobias Springenberg.
+\newblock Learning by playing solving sparse reward tasks from scratch.
+\newblock In \emph{International conference on machine learning}, pp.\  4344--4353. PMLR, 2018.
+
+\bibitem[Rudner et~al.(2021)Rudner, Pong, McAllister, Gal, and Levine]{rudner2021outcome}
+Tim~GJ Rudner, Vitchyr Pong, Rowan McAllister, Yarin Gal, and Sergey Levine.
+\newblock Outcome-driven reinforcement learning via variational inference.
+\newblock \emph{Advances in Neural Information Processing Systems}, 34:\penalty0 13045--13058, 2021.
+
+\bibitem[Schaul et~al.(2015)Schaul, Horgan, Gregor, and Silver]{schaul2015universal}
+Tom Schaul, Daniel Horgan, Karol Gregor, and David Silver.
+\newblock Universal value function approximators.
+\newblock In \emph{International conference on machine learning}, pp.\  1312--1320. PMLR, 2015.
+
+\bibitem[Schroff et~al.(2015)Schroff, Kalenichenko, and Philbin]{schroff2015facenet}
+Florian Schroff, Dmitry Kalenichenko, and James Philbin.
+\newblock Facenet: A unified embedding for face recognition and clustering.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.\  815--823, 2015.
+
+\bibitem[Sermanet et~al.(2018)Sermanet, Lynch, Chebotar, Hsu, Jang, Schaal, Levine, and Brain]{sermanet2018time}
+Pierre Sermanet, Corey Lynch, Yevgen Chebotar, Jasmine Hsu, Eric Jang, Stefan Schaal, Sergey Levine, and Google Brain.
+\newblock Time-contrastive networks: Self-supervised learning from video.
+\newblock In \emph{2018 IEEE international conference on robotics and automation (ICRA)}, pp.\  1134--1141. IEEE, 2018.
+
+\bibitem[Shah et~al.(2022)Shah, Eysenbach, Rhinehart, and Levine]{shah2022rapid}
+Dhruv Shah, Benjamin Eysenbach, Nicholas Rhinehart, and Sergey Levine.
+\newblock Rapid exploration for open-world navigation with latent goal models.
+\newblock In \emph{Conference on Robot Learning}, pp.\  674--684. PMLR, 2022.
+
+\bibitem[Sohn(2016)]{sohn2016improved}
+Kihyuk Sohn.
+\newblock Improved deep metric learning with multi-class n-pair loss objective.
+\newblock \emph{Advances in neural information processing systems}, 29, 2016.
+
+\bibitem[Srivastava et~al.(2019)Srivastava, Shyam, Mutz, Ja{\'s}kowski, and Schmidhuber]{srivastava2019training}
+Rupesh~Kumar Srivastava, Pranav Shyam, Filipe Mutz, Wojciech Ja{\'s}kowski, and J{\"u}rgen Schmidhuber.
+\newblock Training agents using upside-down reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:1912.02877}, 2019.
+
+\bibitem[Sun et~al.(2019)Sun, Li, Liu, Zhou, and Lin]{sun2019policy}
+Hao Sun, Zhizhong Li, Xiaotong Liu, Bolei Zhou, and Dahua Lin.
+\newblock Policy continuation with hindsight inverse dynamics.
+\newblock \emph{Advances in Neural Information Processing Systems}, 32, 2019.
+
+\bibitem[Sutton \& Barto(2018)Sutton and Barto]{sutton2018reinforcement}
+Richard~S Sutton and Andrew~G Barto.
+\newblock \emph{Reinforcement learning: An introduction}.
+\newblock MIT press, 2018.
+
+\bibitem[Tian et~al.(2020{\natexlab{a}})Tian, Nair, Ebert, Dasari, Eysenbach, Finn, and Levine]{tian2020model}
+Stephen Tian, Suraj Nair, Frederik Ebert, Sudeep Dasari, Benjamin Eysenbach, Chelsea Finn, and Sergey Levine.
+\newblock Model-based visual planning with self-supervised functional distances.
+\newblock In \emph{International Conference on Learning Representations}, 2020{\natexlab{a}}.
+
+\bibitem[Tian et~al.(2020{\natexlab{b}})Tian, Krishnan, and Isola]{tian2020contrastive}
+Yonglong Tian, Dilip Krishnan, and Phillip Isola.
+\newblock Contrastive multiview coding.
+\newblock In \emph{Computer Vision--ECCV 2020: 16th European Conference, Glasgow, UK, August 23--28, 2020, Proceedings, Part XI 16}, pp.\  776--794. Springer, 2020{\natexlab{b}}.
+
+\bibitem[Touati \& Ollivier(2021)Touati and Ollivier]{touati2021learning}
+Ahmed Touati and Yann Ollivier.
+\newblock Learning one representation to optimize all rewards.
+\newblock \emph{Advances in Neural Information Processing Systems}, 34:\penalty0 13--23, 2021.
+
+\bibitem[Tsai et~al.(2020)Tsai, Zhao, Yamada, Morency, and Salakhutdinov]{tsai2020neural}
+Yao-Hung~Hubert Tsai, Han Zhao, Makoto Yamada, Louis-Philippe Morency, and Russ~R Salakhutdinov.
+\newblock Neural methods for point-wise dependency estimation.
+\newblock \emph{Advances in Neural Information Processing Systems}, 33:\penalty0 62--72, 2020.
+
+\bibitem[Tschannen et~al.(2019)Tschannen, Djolonga, Rubenstein, Gelly, and Lucic]{tschannen2019mutual}
+Michael Tschannen, Josip Djolonga, Paul~K Rubenstein, Sylvain Gelly, and Mario Lucic.
+\newblock On mutual information maximization for representation learning.
+\newblock \emph{arXiv preprint arXiv:1907.13625}, 2019.
+
+\bibitem[Wang \& Isola(2020)Wang and Isola]{wang2020understanding}
+Tongzhou Wang and Phillip Isola.
+\newblock Understanding contrastive representation learning through alignment and uniformity on the hypersphere.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  9929--9939. PMLR, 2020.
+
+\bibitem[Wang et~al.(2023)Wang, Torralba, Isola, and Zhang]{pmlr-v202-wang23al}
+Tongzhou Wang, Antonio Torralba, Phillip Isola, and Amy Zhang.
+\newblock Optimal goal-reaching reinforcement learning via quasimetric learning.
+\newblock In Andreas Krause, Emma Brunskill, Kyunghyun Cho, Barbara Engelhardt, Sivan Sabato, and Jonathan Scarlett (eds.), \emph{Proceedings of the 40th International Conference on Machine Learning}, volume 202 of \emph{Proceedings of Machine Learning Research}, pp.\  36411--36430. PMLR, 23--29 Jul 2023.
+\newblock URL \url{https://proceedings.mlr.press/v202/wang23al.html}.
+
+\bibitem[Warde-Farley et~al.(2018)Warde-Farley, Van~de Wiele, Kulkarni, Ionescu, Hansen, and Mnih]{warde2018unsupervised}
+David Warde-Farley, Tom Van~de Wiele, Tejas Kulkarni, Catalin Ionescu, Steven Hansen, and Volodymyr Mnih.
+\newblock Unsupervised control through non-parametric discriminative rewards.
+\newblock \emph{arXiv preprint arXiv:1811.11359}, 2018.
+
+\bibitem[Watkins \& Dayan(1992)Watkins and Dayan]{watkins1992q}
+Christopher~JCH Watkins and Peter Dayan.
+\newblock Q-learning.
+\newblock \emph{Machine learning}, 8:\penalty0 279--292, 1992.
+
+\bibitem[Weinberger \& Saul(2009)Weinberger and Saul]{weinberger2009distance}
+Kilian~Q Weinberger and Lawrence~K Saul.
+\newblock Distance metric learning for large margin nearest neighbor classification.
+\newblock \emph{Journal of machine learning research}, 10\penalty0 (2), 2009.
+
+\bibitem[Wu et~al.(2018)Wu, Xiong, Yu, and Lin]{wu2018unsupervised}
+Zhirong Wu, Yuanjun Xiong, Stella~X Yu, and Dahua Lin.
+\newblock Unsupervised feature learning via non-parametric instance discrimination.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.\  3733--3742, 2018.
+
+\bibitem[Zhang et~al.(2020)Zhang, Liu, and Whiteson]{zhang2020gradientdice}
+Shangtong Zhang, Bo~Liu, and Shimon Whiteson.
+\newblock Gradientdice: Rethinking generalized offline estimation of stationary values.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  11194--11203. PMLR, 2020.
+
+\bibitem[Zheng et~al.(2023)Zheng, Eysenbach, Walke, Yin, Fang, Salakhutdinov, and Levine]{zheng2023stabilizing}
+Chongyi Zheng, Benjamin Eysenbach, Homer Walke, Patrick Yin, Kuan Fang, Ruslan Salakhutdinov, and Sergey Levine.
+\newblock Stabilizing contrastive rl: Techniques for offline goal reaching.
+\newblock \emph{arXiv preprint arXiv:2306.03346}, 2023.
+
+\end{thebibliography}
